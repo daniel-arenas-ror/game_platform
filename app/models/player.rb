@@ -3,5 +3,6 @@ class Player
   include Mongoid::Timestamps
 
   field :nickname, type: String
+  field :role, type: String
   belongs_to :room
 end
