@@ -53,4 +53,33 @@ class RoomsController < ApplicationController
       render :join
     end
   end
+
+  def start_game
+    @room = Room.find_by!(code: params[:code].upcase)
+    players = @room.players.to_a
+
+    if players.count >= 3
+
+      @room.update(status: 'playing')
+
+      shuffled = players.shuffle
+      fisherman = shuffled.shift
+      impostor = shuffled.shift
+      knowers = shuffled # Everyone else
+
+      # 2. Assign roles (You might want to add a 'role' field to your Player model)
+      # fisherman.update(role: 'fisherman')
+      # impostor.update(role: 'impostor')
+      # knowers.each { |p| p.update(role: 'knower') }
+
+      # 3. Broadcast to EVERYONE to change their screen
+      ActionCable.server.broadcast("game_#{@room.code}", {
+        action: "game_started"
+      })
+
+      render json: { status: "success" }
+    else
+      render json: { error: "Need at least 3 players" }, status: :unprocessable_entity
+    end
+  end
 end
