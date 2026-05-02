@@ -6,4 +6,5 @@ Rails.application.routes.draw do
 
   resources :rooms, only: [:create, :show]
   get "join/:code", to: "rooms#join", as: :join_room
+  post "join/:code", to: "rooms#player_join", as: :submit_join
 end
