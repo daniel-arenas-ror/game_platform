@@ -1,6 +1,6 @@
 class GameFactory
   def self.build(room)
-    case room.game.name.downcase
+    case room.game.code.downcase
     when 'fisherman'
       GameServices::FishermanManager.new(room)
     when 'quick draw'

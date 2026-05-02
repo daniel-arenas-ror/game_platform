@@ -54,8 +54,8 @@ class RoomsController < ApplicationController
     end
   end
 
-  def start_game
-    @room = Room.find_by!(code: params[:code].upcase)
+  def start
+    @room = Room.find_by!(code: params[:id].upcase)
     game_manager = GameFactory.build(@room)
     game_manager.setup_game!
 

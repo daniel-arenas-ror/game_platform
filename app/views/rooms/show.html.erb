@@ -37,9 +37,12 @@
         </div>
       </div>
 
-      <button class="w-full mt-12 bg-green-500 hover:bg-green-400 text-slate-900 font-black py-4 rounded-xl uppercase tracking-widest transition-all">
+      <%= button_to start_room_path(@room.code), 
+          method: :post, 
+          remote: true, 
+          class: "w-full mt-12 bg-green-500 hover:bg-green-400 text-slate-900 font-black py-4 rounded-xl uppercase tracking-widest transition-all text-center block" do %>
         Start Game
-      </button>
+      <% end %>
     </div>
 
   </div>
