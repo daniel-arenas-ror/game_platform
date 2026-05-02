@@ -12,9 +12,14 @@ class Room
   # or store the temporary state in a Hash field
   field :game_state, type: Hash, default: {}
 
+  before_create :generate_code
+
   private
 
   def generate_code
-    self.code = SecureRandom.alphanumeric(4).upcase
+    loop do
+      self.code = SecureRandom.alphanumeric(4).upcase
+      break unless Room.where(code: self.code).exists?
+    end
   end
 end
