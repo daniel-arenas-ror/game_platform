@@ -1,6 +1,6 @@
 class GameChannel < ApplicationCable::Channel
   def subscribed
-    # stream_from "some_channel"
+    stream_from "game_#{params[:room_code]}"
   end
 
   def unsubscribed

@@ -22,7 +22,7 @@
         <span class="bg-purple-600 text-xs py-1 px-3 rounded-full">Waiting...</span>
       </h2>
       
-      <div id="player-list" class="space-y-4">
+      <div id="player-list" data-room-code="<%= @room.code %>" class="space-y-4">
         <!-- We will inject players here with ActionCable -->
         <div class="flex items-center space-x-4 bg-slate-700/50 p-4 rounded-xl border border-slate-600 animate-pulse">
           <div class="w-10 h-10 bg-slate-600 rounded-full"></div>

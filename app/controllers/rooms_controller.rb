@@ -38,6 +38,11 @@ class RoomsController < ApplicationController
       # Later, we will broadcast this to the Room's ActionCable channel
       session[:nickname] = nickname
       session[:room_code] = @room.code
+
+      ActionCable.server.broadcast("game_#{@room.code}", {
+        action: "player_joined",
+        nickname: nickname
+      })
       
       redirect_to room_path(@room.code), notice: "Joined as #{nickname}!"
     else
