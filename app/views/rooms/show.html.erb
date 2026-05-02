@@ -24,6 +24,14 @@
       
       <div id="player-list" data-room-code="<%= @room.code %>" class="space-y-4">
         <!-- We will inject players here with ActionCable -->
+        <% @room.players.each do |player| %>
+            <div class="flex items-center space-x-4 bg-slate-700 p-4 rounded-xl border border-slate-600">
+            <div class="w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center font-bold">
+                <%= player.nickname[0].toUpperCase %>
+            </div>
+            <div class="text-white font-bold"><%= player.nickname %></div>
+            </div>
+        <% end %>
         <div class="flex items-center space-x-4 bg-slate-700/50 p-4 rounded-xl border border-slate-600 animate-pulse">
           <div class="w-10 h-10 bg-slate-600 rounded-full"></div>
           <div class="h-4 w-32 bg-slate-600 rounded"></div>

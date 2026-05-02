@@ -7,6 +7,7 @@ class Room
   field :game_type, type: String  # 'impostor'
   
   belongs_to :game
+  has_many :players, dependent: :destroy
 
   # Since you want "in-memory" feel, you can still use Mongo 
   # or store the temporary state in a Hash field

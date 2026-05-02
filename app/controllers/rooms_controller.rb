@@ -34,6 +34,8 @@ class RoomsController < ApplicationController
     nickname = params[:nickname].strip
 
     if nickname.present?
+      @player = @room.players.create!(nickname: nickname)
+
       # For now, we'll store the player in the session
       # Later, we will broadcast this to the Room's ActionCable channel
       session[:nickname] = nickname
@@ -41,7 +43,8 @@ class RoomsController < ApplicationController
 
       ActionCable.server.broadcast("game_#{@room.code}", {
         action: "player_joined",
-        nickname: nickname
+        nickname: @player.nickname,
+        player_id: @player.id.to_s
       })
       
       redirect_to room_path(@room.code), notice: "Joined as #{nickname}!"
