@@ -1,0 +1,13 @@
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=user_game_dev
+      - MONGO_INITDB_ROOT_PASSWORD=user_game_pass_dev
+volumes:
+  mongo-data:
