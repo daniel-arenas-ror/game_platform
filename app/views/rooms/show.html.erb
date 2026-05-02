@@ -27,7 +27,7 @@
         <% @room.players.each do |player| %>
             <div class="flex items-center space-x-4 bg-slate-700 p-4 rounded-xl border border-slate-600">
             <div class="w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center font-bold">
-                <%= player.nickname[0].toUpperCase %>
+                <%= player.nickname[0].upcase %>
             </div>
             <div class="text-white font-bold"><%= player.nickname %></div>
             </div>

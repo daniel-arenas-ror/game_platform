@@ -16,7 +16,7 @@ if (playerList) {
             <div class="text-white font-bold">${data.nickname}</div>
           </div>
         `;
-        playerList.insertAdjacentHTML('beforeend', newPlayer);
+        playerList.insertAdjacentHTML('afterbegin', newPlayer);
       }
     }
   });
