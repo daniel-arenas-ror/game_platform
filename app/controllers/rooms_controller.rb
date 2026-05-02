@@ -59,6 +59,10 @@ class RoomsController < ApplicationController
     game_manager = GameFactory.build(@room)
     game_manager.setup_game!
 
-    render json: { status: "success" }
+    if manager.setup_game!
+      render json: { status: "Game Started" }
+    else
+      render json: { error: "Failed to start" }, status: 422
+    end
   end
 end
