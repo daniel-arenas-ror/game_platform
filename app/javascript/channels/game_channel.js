@@ -8,17 +8,8 @@ if (playerList) {
   consumer.subscriptions.create({ channel: "GameChannel", room_code: roomCode }, {
     received(data) {
       switch (data.action) {
-        case "player_joined":
-          this.handlePlayerJoined(data);
-          break;
         case "game_started":
           this.handleGameStarted(data);
-          break;
-        case "reveal_roles":
-          this.handleRevealRoles();
-          break;
-        case "new_question":
-          this.handleNewQuestion(data);
           break;
         default:
           console.warn(`Unhandled action: ${data.action}`, data);
@@ -41,12 +32,7 @@ if (playerList) {
     },
 
     handleGameStarted(data) {
-      document.getElementById('lobby-container')?.classList.add('hidden');
-      document.getElementById('phaser-game')?.classList.remove('hidden');
-      
-      if (typeof window.initPhaserGame === "function") {
-        window.initPhaserGame();
-      }
+      window.location.reload();
     },
 
     handleRevealRoles() {

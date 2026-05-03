@@ -17,9 +17,16 @@ module GameServices
       knowers.each { |p| p.update!(role: 'knower') }
 
       word = ["Shark", "Anchor", "Submarine", "Coral"].sample
-      @room.update!(status: 'playing', game_state: { secret_word: word })
+      @room.update!(status: 'playing', game_state: {
+        question: "Leader famous that get scared the cats?",
+        answereds: ["Napoleón Bonaparte", "Julio César", "Mussolini"],
+        points: {
+          @players.collect{|p| [p.id.to_s, 0]}.to_h
+        }
+      })
 
       broadcast_start
+
       true
     end
 
@@ -28,16 +35,7 @@ module GameServices
     def broadcast_start
       ActionCable.server.broadcast("game_#{@room.code}", {
         action: "game_started",
-        view: "impostor_main_table"
       })
-
-      @players.each do |player|
-        # We send a "ping" to each player's specific channel or 
-        # a general broadcast that triggers a role-check.
-        ActionCable.server.broadcast("game_#{@room.code}", {
-          action: "reveal_roles"
-        })
-      end
     end
   end
 end

@@ -14,7 +14,7 @@ if(fishermanGameContainer) {
     received(data) {
       switch (data.action) {
         case "new_question":
-          window.phaserGame.events.emit('addQuestion', data.text);
+          
           break;
         case "all_answers_received":
 
