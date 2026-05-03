@@ -32,8 +32,6 @@ if(fishermanGameContainer) {
     }
   });
 
-
-
   let selectedIds = [];
 
   document.addEventListener('click', (e) => {
