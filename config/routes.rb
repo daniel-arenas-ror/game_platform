@@ -4,7 +4,7 @@ Rails.application.routes.draw do
 
   get "up" => "rails/health#show", as: :rails_health_check
 
-  resources :rooms, only: [:create, :show] do
+  resources :rooms, only: [:create, :show, :edit, :update] do
     member do
       post "start"
       get "playing"

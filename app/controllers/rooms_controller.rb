@@ -3,7 +3,21 @@ class RoomsController < ApplicationController
     @game = Game.find(params[:game_id])
     @room = Room.create!(game: @game)
 
-    redirect_to room_path(@room.code)
+    redirect_to edit_room_path(@room.code)
+  end
+
+  def edit
+    @room = Room.find_by(code: params[:id])
+  end
+
+  def update
+    @room = Room.find(params[:id])
+
+    if @room.update(room_params)
+      redirect_to room_path(@room.code), notice: "Game configured!"
+    else
+      render :edit
+    end
   end
 
   def show
@@ -80,5 +94,11 @@ class RoomsController < ApplicationController
     @game_state = @room.game_state
 
     render "playing"
+  end
+
+  private
+
+  def room_params
+    params.require(:room).permit(:name, game_state: {})
   end
 end

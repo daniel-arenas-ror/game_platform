@@ -1,0 +1,26 @@
+<!-- app/views/rooms/edit.html.erb -->
+<div class="max-w-2xl mx-auto bg-slate-800 p-8 rounded-3xl border border-slate-700 shadow-2xl">
+  <h1 class="text-3xl font-black text-white mb-6 uppercase italic">Room Settings</h1>
+
+  <%= form_with model: @room, local: true, class: "space-y-8" do |f| %>
+    
+    <!-- Standard Room Fields -->
+    <div>
+      <%= f.label :name, "ROOM NAME", class: "block text-xs font-black text-slate-500 mb-2 tracking-widest" %>
+      <%= f.text_field :name, class: "w-full bg-slate-900 border-2 border-slate-700 rounded-xl px-4 py-3 text-white focus:border-purple-500 outline-none" %>
+    </div>
+
+    <hr class="border-slate-700">
+
+    <!-- DYNAMIC GAME CONFIGURATION -->
+    <div id="game-specific-settings">
+      <h3 class="text-purple-400 font-bold mb-4 flex items-center">
+        <span class="mr-2">⚙️</span> <%= @room.game.name %> Configuration
+      </h3>
+
+      <%= render "rooms/games/#{@room.game.code}/edit", f: f %>
+    </div>
+
+    <%= f.submit "SAVE & READY", class: "w-full bg-gradient-to-r from-green-500 to-emerald-600 text-slate-900 font-black py-4 rounded-xl shadow-lg cursor-pointer hover:scale-105 transition-transform" %>
+  <% end %>
+</div>
