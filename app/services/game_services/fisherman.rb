@@ -48,7 +48,7 @@ module GameServices
         end
       end
 
-      @room.set("game_state.points" => new_points)
+      @room.set("game_state.points" => points)
     end
 
     def rotate_roles!
