@@ -20,9 +20,7 @@ module GameServices
       @room.update!(status: 'playing', game_state: {
         question: "Leader famous that get scared the cats?",
         answereds: ["Napoleón Bonaparte", "Julio César", "Mussolini"],
-        points: {
-          @players.collect{|p| [p.id.to_s, 0]}.to_h
-        }
+        points: @players.collect{|p| [p.id.to_s, 0]}.to_h
       })
 
       broadcast_start
@@ -41,6 +39,7 @@ module GameServices
     def calc_points!(target_ids, fisherman_id)
       points = @room.game_state["points"]
 
+      p "Calculating points for fisherman #{fisherman_id} with targets #{target_ids.inspect}"
       target_ids.map do |id|
         player = @room.players.find(id)
 
@@ -50,6 +49,9 @@ module GameServices
           points[id] += 1
         end
       end
+
+      p " points "
+      p points
 
       @room.update!(game_state: {
         points: points
@@ -72,6 +74,7 @@ module GameServices
       @room.update!(game_state: {
         question: "Leader famous that get scared the cats?",
         answereds: ["Napoleón Bonaparte", "Julio César", "Mussolini"],
+        points: @room.game_state["points"]
       })
     end
 
