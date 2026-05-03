@@ -7,6 +7,7 @@ Rails.application.routes.draw do
   resources :rooms, only: [:create, :show] do
     member do
       post "start"
+      get "playing"
     end
   end
 

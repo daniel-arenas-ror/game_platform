@@ -10,6 +10,10 @@ class RoomsController < ApplicationController
     @room = Room.find_by(code: params[:id])
     @game = @room.game
     
+    if @room.status == 'playing'
+      return redirect_to playing_room_path(@room.code), alert: "Game has already started"
+    end
+
     # The URL that other players will scan to join
     @join_url = join_room_url(code: @room.code)
     
@@ -64,5 +68,15 @@ class RoomsController < ApplicationController
     else
       render json: { error: "Failed to start" }, status: 422
     end
+  end
+
+  def playing
+    @room = Room.find_by!(code: params[:id].upcase)
+
+    return redirect_to join_room_path(@room.code), alert: "Game has not started yet" unless @room.status == 'playing'
+
+    @game_state = @room.game_state
+
+    render "playing"
   end
 end

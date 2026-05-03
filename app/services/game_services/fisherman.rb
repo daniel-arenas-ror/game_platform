@@ -1,5 +1,5 @@
 module GameServices
-  class FishermanManager < Base
+  class Fisherman < Base
     def initialize(room)
       @room = room
       @players = room.players.to_a
@@ -19,7 +19,7 @@ module GameServices
       word = ["Shark", "Anchor", "Submarine", "Coral"].sample
       @room.update!(status: 'playing', game_state: { secret_word: word })
 
-      broadcast_start(fisherman, impostor, knowers, secret_word)
+      broadcast_start
       true
     end
 
