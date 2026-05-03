@@ -3,14 +3,17 @@
   <div id="fisherman-game-container" data-room-code="<%= @room.code %>" data-player-id="<%= session[:player_id] %>">
     <div id="fisherman-game-master" class="relative min-h-screen bg-slate-900 text-white p-6">
 
+      <h1 class="text-3xl font-black text-white mb-6 uppercase italic"><%= @current_player.nickname %></h1>
+      <h2 class="text-3xl font-black text-white mb-6 uppercase italic"><%= @current_player.role %></h2>
+
       <!-- 1. SPINNER (Loading) -->
-      <div id="section-spinner" class="flex flex-col items-center justify-center min-h-[60vh]">
+      <div id="section-spinner" class="hidden flex flex-col items-center justify-center min-h-[60vh]">
         <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-purple-500"></div>
         <p class="mt-4 text-slate-400 animate-pulse">Setting up the boat...</p>
       </div>
 
       <!-- 2. QUESTION (Fisherman View) -->
-      <div id="section-fisherman-control" class="space-y-6">
+      <div id="section-fisherman-control" class="<%= @current_player.role == 'fisherman' ? '' : 'hidden' %> space-y-6">
         
         <div class="bg-slate-800 p-6 rounded-3xl border-2 border-yellow-500/30">
           <h2 class="text-xl font-bold text-white italic">"<%= @room.game_state['question'] %>"</h2>
@@ -47,37 +50,33 @@
       </div>
 
       <!-- 3. ANSWERED (Knower View) -->
-      <div id="section-knower" class="">
+      <div id="section-knower" class="<%= @current_player.role == 'knower' ? '' : 'hidden' %>">
         <div class="text-center">
           <h2 class="text-green-400 font-black text-3xl mb-2">YOU ARE A KNOWER</h2>
           <p class="text-slate-400 mb-8 italic">Don't let the impostor hear you!</p>
           
           <div class="bg-gradient-to-br from-green-500/20 to-emerald-500/10 p-12 rounded-[3rem] border-4 border-green-500/30 mb-8">
-            <p class="text-xs font-bold tracking-widest text-green-500 mb-2">THE SECRET WORD IS</p>
-            <h3 class="text-5xl font-black"><%= @room.game_state['secret_word'] %></h3>
+            <p class="text-xs font-bold tracking-widest text-green-500 mb-2">THE SECRET ANSWER IS</p>
+            <h3 class="text-5xl font-black"><%= @room.game_state['answereds'].sample %></h3>
           </div>
-          
-          <input type="text" placeholder="Write your response..." class="w-full bg-slate-800 border-2 border-slate-700 rounded-2xl p-4 text-center text-xl font-bold">
         </div>
       </div>
 
       <!-- 4. IMPOSTOR (Impostor View) -->
-      <div id="section-impostor" class="">
+      <div id="section-impostor" class="<%= @current_player.role == 'impostor' ? '' : 'hidden' %>">
         <div class="text-center">
           <h2 class="text-red-500 font-black text-3xl mb-2">YOU ARE THE IMPOSTOR</h2>
           <p class="text-slate-400 mb-8">Listen to the question and blend in!</p>
           
           <div class="bg-red-500/10 p-12 rounded-[3rem] border-4 border-dashed border-red-500/30 mb-8">
             <h3 class="text-3xl font-black text-red-500">???</h3>
-            <p class="text-xs text-red-400 mt-2">You don't know the word!</p>
+            <p class="text-xs text-red-400 mt-2">You don't know the word! - Invent a clever lie</p>
           </div>
-
-          <input type="text" placeholder="Invent a clever lie..." class="w-full bg-slate-800 border-2 border-red-900/30 rounded-2xl p-4 text-center text-xl font-bold text-red-200">
         </div>
       </div>
 
       <!-- 5. RESULTS -->
-      <div id="section-results" class="">
+      <div id="section-results" class="hidden">
         <h2 class="text-4xl font-black text-center mb-10 bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent italic">LEADERBOARD</h2>
         <div class="space-y-4">
           <% @room.players.each_with_index do |p, i| %>
