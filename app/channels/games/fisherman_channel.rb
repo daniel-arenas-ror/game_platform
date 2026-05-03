@@ -24,4 +24,14 @@ class Games::FishermanChannel < ApplicationCable::Channel
     manager = GameServices::ImpostorManager.new(room)
     manager.handle_answer(current_player, data['answer'])
   end
+
+  def submit_guess(data)
+    @room = Room.find_by(code: params[:room_code])
+    fisherman = GameServices::Fisherman.new(@room)
+    fisherman.handle_guess!(data[:target_ids], current_player.id.to_s)
+
+    ActionCable.server.broadcast("fisherman_room_#{room.code}", { 
+      action: "next_round_started" 
+    })
+  end
 end
