@@ -76,9 +76,8 @@ class RoomsController < ApplicationController
   def start
     @room = Room.find_by!(code: params[:id].upcase)
     game_manager = GameFactory.build(@room)
-    game_manager.setup_game!
 
-    if manager.setup_game!
+    if game_manager.setup_game!
       render json: { status: "Game Started" }
     else
       render json: { error: "Failed to start" }, status: 422

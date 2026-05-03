@@ -11,6 +11,9 @@ if (playerList) {
         case "game_started":
           this.handleGameStarted(data);
           break;
+        case "player_joined":
+          this.handlePlayerJoined(data);
+          break;
         default:
           console.warn(`Unhandled action: ${data.action}`, data);
       }
