@@ -42,6 +42,7 @@ class RoomsController < ApplicationController
 
       # For now, we'll store the player in the session
       # Later, we will broadcast this to the Room's ActionCable channel
+      session[:player_id] = @player.id
       session[:nickname] = nickname
       session[:room_code] = @room.code
 
@@ -71,6 +72,7 @@ class RoomsController < ApplicationController
   end
 
   def playing
+    current_player
     @room = Room.find_by!(code: params[:id].upcase)
 
     return redirect_to join_room_path(@room.code), alert: "Game has not started yet" unless @room.status == 'playing'

@@ -1,9 +1,15 @@
 import consumer from "channels/consumer"
 
-export default function subscribeFisherman(roomCode) {
-  return consumer.subscriptions.create({ 
+const fishermanGameContainer = document.getElementById('fisherman-game-container');
+
+if(fishermanGameContainer) {
+  const roomCode = fishermanGameContainer.dataset.roomCode;
+  const playerId = fishermanGameContainer.dataset.playerId;
+
+  consumer.subscriptions.create({ 
     channel: "Games::FishermanChannel", 
-    room_code: roomCode 
+    room_code: roomCode,
+    player_id: playerId
   }, {
     received(data) {
       switch (data.action) {
