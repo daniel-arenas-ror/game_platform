@@ -15,7 +15,8 @@ if(fishermanGameContainer) {
       console.log("refresh_game_frame received with data:", data);
 
       switch (data.action) {
-        case "new_question":
+        case "player_presence":
+          this.updatePlayerDot(data.player_id, data.connected);
           break;
         case "all_answers_received":
           break;
@@ -29,7 +30,21 @@ if(fishermanGameContainer) {
 
     sendGuess(data) {
       this.perform('submit_guess', { guess: text });
+    },
+
+    updatePlayerDot(playerId, isOnline) {
+      const dot = document.getElementById(`status-dot-${playerId}`);
+      if (dot) {
+        if (isOnline) {
+          dot.classList.replace('bg-red-500', 'bg-green-500');
+          dot.classList.add('shadow-[0_0_8px_rgba(34,197,94,0.6)]');
+        } else {
+          dot.classList.replace('bg-green-500', 'bg-red-500');
+          dot.classList.remove('shadow-[0_0_8px_rgba(34,197,94,0.6)]');
+        }
+      }
     }
+
   });
 
   let selectedIds = [];
