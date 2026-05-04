@@ -3,8 +3,8 @@
   <div id="fisherman-game-container" data-room-code="<%= @room.code %>" data-player-id="<%= session[:player_id] %>">
     <div id="fisherman-game-master" class="relative min-h-screen bg-slate-900 text-white p-6">
 
-      <h1 class="text-3xl font-black text-white mb-6 uppercase italic"><%= @current_player.nickname %></h1>
-      <h2 class="text-3xl font-black text-white mb-6 uppercase italic"><%= @current_player.role %></h2>
+      <h1 class="text-3xl font-black text-white mb-6 uppercase italic"><%= @current_player&.nickname %></h1>
+      <h2 class="text-3xl font-black text-white mb-6 uppercase italic"><%= @current_player&.role %></h2>
 
       <!-- 1. SPINNER (Loading) -->
       <div id="section-spinner" class="hidden flex flex-col items-center justify-center min-h-[60vh]">
@@ -13,7 +13,7 @@
       </div>
 
       <!-- 2. QUESTION (Fisherman View) -->
-      <div id="section-fisherman-control" class="<%= @current_player.role == 'fisherman' ? '' : 'hidden' %> space-y-6">
+      <div id="section-fisherman-control" class="<%= @current_player.role == 'fisherman' || (@current_player&.role.nil?) ? '' : 'hidden' %> space-y-6">
         
         <div class="bg-slate-800 p-6 rounded-3xl border-2 border-yellow-500/30">
           <h2 class="text-xl font-bold text-white italic">"<%= @room.game_state['question'] %>"</h2>
@@ -43,12 +43,14 @@
             </button>
           <% end %>
         </div>
-
-        <button id="btn-lock-guess" 
-                disabled
-                class="w-full py-5 rounded-2xl bg-slate-700 text-slate-500 font-black uppercase tracking-widest transition-all">
-          Select at least one
-        </button>
+        
+        <% if @current_player.role == 'fisherman' %>
+          <button id="btn-lock-guess" 
+                  disabled
+                  class="w-full py-5 rounded-2xl bg-slate-700 text-slate-500 font-black uppercase tracking-widest transition-all">
+            Select at least one
+          </button>
+        <% end %>
       </div>
 
       <!-- 3. ANSWERED (Knower View) -->
