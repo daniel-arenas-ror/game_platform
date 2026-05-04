@@ -39,4 +39,17 @@ class Games::FishermanChannel < ApplicationCable::Channel
       connected: is_online
     })
   end
+
+  def restart_game
+    room = Room.find_by(code: params[:room_code])
+    manager = GameServices::Fisherman.new(room)
+
+    # 1. Reset the entire room state
+    manager.setup_game!
+
+    # 2. Broadcast the refresh signal to everyone
+    ActionCable.server.broadcast("fisherman_room_#{room.code}", { 
+      action: "next_round_started" 
+    })
+  end
 end

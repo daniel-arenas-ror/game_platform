@@ -44,7 +44,6 @@ if(fishermanGameContainer) {
         }
       }
     }
-
   });
 
   let selectedIds = [];
@@ -97,6 +96,15 @@ if(fishermanGameContainer) {
       });
       // Optional: Show spinner immediately on click
       e.target.innerHTML = `<div class="animate-spin h-5 w-5 border-2 border-slate-900 border-t-transparent rounded-full mx-auto"></div>`;
+    }
+
+    if (e.target.id === 'btn-restart-game') {
+      // We call the restart_game method on the Ruby channel
+      fishermanSub.perform('restart_game');
+      
+      // Visual feedback: show a loading state on the button
+      e.target.disabled = true;
+      e.target.innerHTML = `<div class="animate-spin h-6 w-6 border-4 border-white border-t-transparent rounded-full mx-auto"></div>`;
     }
   });
 }

@@ -6,8 +6,11 @@ module GameServices
     end
 
     def setup_game!
+      @room.update!(status: 'playing')
+      start_points!
       rotate_roles!
       update_question!
+      set_rounds!
 
       broadcast_start
 
@@ -23,14 +26,24 @@ module GameServices
 
     private
 
+    def start_points!
+      points_hash = @players.each_with_object({}) do |player, hash|
+        hash[player.id.to_s] = 0
+      end
+
+      @room.set("game_state.points" => points_hash)
+    end
+
     def calc_points!(target_ids, fisherman_id)
-      points = @room.game_state["points"]
+      points = @room.game_state["points"] || {}
       target_ids.map do |id|
         player = @room.players.find(id)
 
         if player.role == 'impostor'
-          points[fisherman_id] += 1
+          points[fisherman_id] ||= 0
+          points[fisherman_id] += 1 
         else
+          points[id] ||= 0
           points[id] += 1
         end
       end
@@ -55,9 +68,13 @@ module GameServices
       @room.set("game_state.answereds" => ["Napoleón Bonaparte", "Julio César", "Mussolini"])
     end
 
+    def set_rounds!
+      @room.set("game_state.current_round" => @room.game_state["total_rounds"])
+    end
+
     def update_round!
-      @room.set("game_state.round" => @room.game_state["round"].to_i - 1)
-      if @room.game_state["round"].to_i <= 0
+      @room.set("game_state.current_round" => @room.game_state["current_round"].to_i - 1)
+      if @room.game_state["current_round"].to_i <= 0
         @room.update!(status: 'finished')
 
         points_hash = @room.game_state['points'] || {}
