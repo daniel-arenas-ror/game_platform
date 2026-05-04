@@ -6,22 +6,8 @@ module GameServices
     end
 
     def setup_game!
-      shuffled = @players.shuffle
-      
-      fisherman = shuffled.shift
-      impostor = shuffled.shift
-      knowers = shuffled
-
-      fisherman.update!(role: 'fisherman')
-      impostor.update!(role: 'impostor')
-      knowers.each { |p| p.update!(role: 'knower') }
-
-
-      @room.update!(status: 'playing', game_state: {
-        question: "Leader famous that get scared the cats?",
-        answereds: ["Napoleón Bonaparte", "Julio César", "Mussolini"],
-        points: @players.collect{|p| [p.id.to_s, 0]}.to_h
-      })
+      rotate_roles!
+      update_question!
 
       broadcast_start
 
@@ -32,6 +18,7 @@ module GameServices
       calc_points!(target_ids, fisherman_id)
       rotate_roles!
       update_question!
+      update_round!
     end
 
     private
@@ -66,6 +53,20 @@ module GameServices
     def update_question!
       @room.set("game_state.question" => "Leader famous that get scared the cats?")
       @room.set("game_state.answereds" => ["Napoleón Bonaparte", "Julio César", "Mussolini"])
+    end
+
+    def update_round!
+      @room.set("game_state.round" => @room.game_state["round"].to_i - 1)
+      if @room.game_state["round"].to_i <= 0
+        @room.update!(status: 'finished')
+
+        points_hash = @room.game_state['points'] || {}
+        @sorted_players = @room.players.sort_by do |player|
+          points_hash[player.id.to_s].to_i
+        end.reverse
+
+        @room.set("game_state.sorted_players" => @sorted_players.map { |p| { nickname: p.nickname, points: points_hash[p.id.to_s].to_i } })
+      end
     end
 
     def broadcast_start

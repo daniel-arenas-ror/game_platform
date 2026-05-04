@@ -88,7 +88,7 @@ class RoomsController < ApplicationController
     current_player
     @room = Room.find_by!(code: params[:id].upcase)
 
-    return redirect_to join_room_path(@room.code), alert: "Game has not started yet" unless @room.status == 'playing'
+    return redirect_to join_room_path(@room.code), alert: "Game has not started yet" if @room.status == 'lobby'
 
     @game_state = @room.game_state
 
