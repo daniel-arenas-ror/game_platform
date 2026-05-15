@@ -1,11 +1,13 @@
 class Games::FishermanChannel < ApplicationCable::Channel
   def subscribed
     p " subscribed to fisherman channel "
-    @room = Room.find_by(code: params[:room_code])
-    @player = Player.find(params[:player_id])
-    @player.update(connected: true)
+    p " params: #{params.inspect} "
 
-    broadcast_presence(true)
+    @room = Room.find_by(code: params[:room_code])
+    @player = Player.where(id: params[:player_id]).first
+    @player.update(connected: true) if @player
+
+    broadcast_presence(true) if @player
     stream_from "fisherman_room_#{@room.code}"
   end
 
@@ -13,10 +15,10 @@ class Games::FishermanChannel < ApplicationCable::Channel
     p " unsubscribed "
     p " params: #{params.inspect} "
 
-    @player = Player.find(params[:player_id])
-    @player.update(connected: false)
+    @player = Player.where(id: params[:player_id]).first
+    @player.update(connected: false) if @player
 
-    broadcast_presence(false)
+    broadcast_presence(false) if @player
   end
 
   def submit_guess(data)
@@ -33,6 +35,7 @@ class Games::FishermanChannel < ApplicationCable::Channel
   end
 
   def broadcast_presence(is_online)
+    p " broadcast_presence "
     ActionCable.server.broadcast("fisherman_room_#{@room.code}", {
       action: "player_presence",
       player_id: @player.id.to_s,

@@ -2,7 +2,8 @@ import consumer from "channels/consumer"
 
 const playerList = document.getElementById('player-list');
 
-if (playerList) {
+//if (playerList) {
+if (false) {
   const roomCode = playerList.dataset.roomCode;
 
   consumer.subscriptions.create({ channel: "GameChannel", room_code: roomCode }, {
