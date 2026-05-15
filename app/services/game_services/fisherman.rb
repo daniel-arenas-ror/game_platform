@@ -64,8 +64,10 @@ module GameServices
     end
 
     def update_question!
-      @room.set("game_state.question" => "Leader famous that get scared the cats?")
-      @room.set("game_state.answereds" => ["Napoleón Bonaparte", "Julio César", "Mussolini"])
+      question = ::Fisherman::Question.collection.aggregate([{ '$sample': { size: 1 } }]).first
+
+      @room.set("game_state.question" => question['text'])
+      @room.set("game_state.answereds" => question['answerds'])
     end
 
     def set_rounds!
