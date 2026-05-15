@@ -11,7 +11,11 @@
         <p class="text-purple-400 font-mono text-2xl mb-8">ROOM: <%= @room.code %></p>
         
         <div class="bg-white p-4 rounded-2xl inline-block mb-4 shadow-2xl">
-          <%= @svg.html_safe %>
+          <% if current_player.nil? %>
+            <%= @svg.html_safe %>
+          <% else %>
+            <%= image_tag("/games/fisherman/instructions.png")  %>
+          <% end %>
         </div>
         
         <p class="text-slate-400">Scan to join the game</p>
@@ -40,11 +44,13 @@
           </div>
         </div>
 
-        <%= button_to start_room_path(@room.code), 
-            method: :post, 
-            remote: true, 
-            class: "w-full mt-12 bg-green-500 hover:bg-green-400 text-slate-900 font-black py-4 rounded-xl uppercase tracking-widest transition-all text-center block" do %>
-          Start Game
+        <% if current_player.nil? %>
+          <%= button_to start_room_path(@room.code), 
+              method: :post, 
+              remote: true, 
+              class: "w-full mt-12 bg-green-500 hover:bg-green-400 text-slate-900 font-black py-4 rounded-xl uppercase tracking-widest transition-all text-center block" do %>
+            Start Game
+          <% end %>
         <% end %>
       </div>
 
