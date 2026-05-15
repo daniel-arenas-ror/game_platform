@@ -1,6 +1,6 @@
 <div data-controller="game-subscription" 
      data-game-subscription-room-code-value="<%= @room.code %>"
-     data-game-subscription-user-id-value="<%= current_player.id %>">
+     data-game-subscription-user-id-value="<%= current_player&.id %>">
 
   <div class="bg-slate-900 min-h-screen text-white p-8 flex flex-col items-center">
     <div class="max-w-4xl w-full grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
