@@ -8,6 +8,7 @@ static targets = ["loading", "question", "input", "leaderboard"]
   connect() {
     console.log("HowWantBeBillionaireController connected")
     this.updateVisibility()
+    this.subscribe()
   }
 
   disconnect() {
@@ -54,5 +55,30 @@ static targets = ["loading", "question", "input", "leaderboard"]
   // Quick debug cycle method linked to the small buttons at the bottom
   debugState(event) {
     this.statusValue = event.currentTarget.dataset.state
+  }
+
+  subscribe() {
+    this.channel = consumer.subscriptions.create({
+      channel: "MillionaireChannel",
+      room_code: this.roomCodeValue
+    }, {
+      connected: () => {
+        console.log("Connected to game channel!")
+      },
+      received: (data) => {
+        console.log("Received data on game channel:", data)
+
+        switch (data.action) {
+          case "game_started":
+
+            break;
+          case "player_joined":
+
+            break;
+          default:
+            console.warn(`Unhandled action: ${data.action}`, data);
+        }
+      }
+    })
   }
 }
