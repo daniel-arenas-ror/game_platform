@@ -1,0 +1,127 @@
+<div data-controller="millionaire"
+     data-millionaire-status-value="loading"
+     class="relative min-h-screen bg-radial-at-b from-slate-950 via-blue-950 to-slate-950 text-white p-6 flex flex-col justify-between selection:bg-yellow-500/30">
+
+  <!-- ================================================================= -->
+  <!-- SECTION 1: LOADING PAGE -->
+  <!-- ================================================================= -->
+  <div data-millionaire-target="loading" class="flex-1 flex flex-col items-center justify-center min-h-[60vh] space-y-6">
+    <div class="relative w-24 h-24">
+      <div class="absolute inset-0 rounded-full border-4 border-blue-500/20"></div>
+      <div class="absolute inset-0 rounded-full border-4 border-t-yellow-400 border-r-transparent animate-spin"></div>
+    </div>
+    <div class="text-center space-y-2">
+      <h2 class="text-2xl font-black uppercase tracking-widest bg-gradient-to-r from-yellow-400 to-amber-200 bg-clip-text text-transparent">Preparing Questions</h2>
+      <p class="text-sm text-blue-400 animate-pulse font-medium">Securing the bank vault...</p>
+    </div>
+  </div>
+
+  <!-- ================================================================= -->
+  <!-- SECTION 2: THE QUESTION (Host / TV View) -->
+  <!-- ================================================================= -->
+  <div data-millionaire-target="question" class="hidden flex-1 flex flex-col justify-center max-w-4xl mx-auto w-full space-y-12 my-auto">
+    <!-- Question Banner -->
+    <div class="relative bg-gradient-to-b from-blue-900/80 to-slate-900/90 border-y-2 border-blue-500/50 p-8 text-center shadow-2xl backdrop-blur-md">
+      <!-- Decorative Side Hexagon Lines -->
+      <div class="absolute left-0 top-1/2 -translate-y-1/2 w-4 h-1 bg-blue-500"></div>
+      <div class="absolute right-0 top-1/2 -translate-y-1/2 w-4 h-1 bg-blue-500"></div>
+      
+      <p class="text-xs font-bold text-blue-400 uppercase tracking-widest mb-2">Question for $1,000,000</p>
+      <h2 class="text-2xl md:text-3xl font-bold tracking-wide leading-relaxed">
+        Which of the following programming languages was originally designed by Yukihiro Matsumoto in Japan?
+      </h2>
+    </div>
+
+    <!-- Static View of Options -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-3xl mx-auto w-full font-mono">
+      <div class="bg-slate-900/80 border border-blue-500/30 p-4 rounded-xl flex items-center space-x-3">
+        <span class="text-yellow-400 font-bold">A:</span> <span class="font-sans font-semibold">Python</span>
+      </div>
+      <div class="bg-slate-900/80 border border-blue-500/30 p-4 rounded-xl flex items-center space-x-3">
+        <span class="text-yellow-400 font-bold">B:</span> <span class="font-sans font-semibold">Ruby</span>
+      </div>
+      <div class="bg-slate-900/80 border border-blue-500/30 p-4 rounded-xl flex items-center space-x-3">
+        <span class="text-yellow-400 font-bold">C:</span> <span class="font-sans font-semibold">TypeScript</span>
+      </div>
+      <div class="bg-slate-900/80 border border-blue-500/30 p-4 rounded-xl flex items-center space-x-3">
+        <span class="text-yellow-400 font-bold">D:</span> <span class="font-sans font-semibold">Rust</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================================================================= -->
+  <!-- SECTION 3: INTERACTIVE CONTROLS (Player Input View) -->
+  <!-- ================================================================= -->
+  <div data-millionaire-target="input" class="hidden flex-1 flex flex-col justify-end max-w-2xl mx-auto w-full pb-8 space-y-6">
+    <p class="text-center text-xs font-black tracking-widest text-blue-400 uppercase">Lock in your final answer</p>
+    
+    <div class="grid grid-cols-1 gap-3 font-mono">
+      <!-- Option A -->
+      <button data-action="click->millionaire#selectOption" data-option="A"
+              class="w-full text-left bg-gradient-to-r from-blue-950 to-slate-900 border-2 border-blue-800 p-5 rounded-2xl transition-all duration-200 hover:border-yellow-400 active:scale-[0.99] flex items-center justify-between group">
+        <div><span class="text-yellow-400 font-black mr-3">A:</span><span class="font-sans font-bold text-slate-200 group-hover:text-white">Python</span></div>
+        <div class="w-4 h-4 rounded-full border-2 border-blue-600 group-hover:border-yellow-400 flex items-center justify-center"></div>
+      </button>
+
+      <!-- Option B -->
+      <button data-action="click->millionaire#selectOption" data-option="B"
+              class="w-full text-left bg-gradient-to-r from-blue-950 to-slate-900 border-2 border-blue-800 p-5 rounded-2xl transition-all duration-200 hover:border-yellow-400 active:scale-[0.99] flex items-center justify-between group">
+        <div><span class="text-yellow-400 font-black mr-3">B:</span><span class="font-sans font-bold text-slate-200 group-hover:text-white">Ruby</span></div>
+        <div class="w-4 h-4 rounded-full border-2 border-blue-600 group-hover:border-yellow-400 flex items-center justify-center"></div>
+      </button>
+
+      <!-- Option C -->
+      <button data-action="click->millionaire#selectOption" data-option="C"
+              class="w-full text-left bg-gradient-to-r from-blue-950 to-slate-900 border-2 border-blue-800 p-5 rounded-2xl transition-all duration-200 hover:border-yellow-400 active:scale-[0.99] flex items-center justify-between group">
+        <div><span class="text-yellow-400 font-black mr-3">C:</span><span class="font-sans font-bold text-slate-200 group-hover:text-white">TypeScript</span></div>
+        <div class="w-4 h-4 rounded-full border-2 border-blue-600 group-hover:border-yellow-400 flex items-center justify-center"></div>
+      </button>
+
+      <!-- Option D -->
+      <button data-action="click->millionaire#selectOption" data-option="D"
+              class="w-full text-left bg-gradient-to-r from-blue-950 to-slate-900 border-2 border-blue-800 p-5 rounded-2xl transition-all duration-200 hover:border-yellow-400 active:scale-[0.99] flex items-center justify-between group">
+        <div><span class="text-yellow-400 font-black mr-3">D:</span><span class="font-sans font-bold text-slate-200 group-hover:text-white">Rust</span></div>
+        <div class="w-4 h-4 rounded-full border-2 border-blue-600 group-hover:border-yellow-400 flex items-center justify-center"></div>
+      </button>
+    </div>
+  </div>
+
+  <!-- ================================================================= -->
+  <!-- SECTION 4: LEADERBOARD -->
+  <!-- ================================================================= -->
+  <div data-millionaire-target="leaderboard" class="hidden flex-1 flex flex-col justify-center max-w-xl mx-auto w-full my-auto space-y-8">
+    <div class="text-center">
+      <h2 class="text-4xl font-black bg-gradient-to-b from-yellow-300 via-amber-400 to-amber-600 bg-clip-text text-transparent italic tracking-wider uppercase">Leaderboard</h2>
+      <p class="text-xs tracking-widest text-blue-400 font-bold uppercase mt-1">Current Prize Standings</p>
+    </div>
+
+    <div class="space-y-3">
+      <!-- Item 1 (Leader) -->
+      <div class="flex items-center justify-between bg-gradient-to-r from-yellow-500/20 via-slate-900 to-slate-900 border border-yellow-500/40 p-4 rounded-2xl shadow-lg shadow-yellow-500/5">
+        <div class="flex items-center space-x-4">
+          <span class="text-xl font-black text-yellow-400">#1</span>
+          <span class="font-bold text-slate-100">Alex_Dev 👑</span>
+        </div>
+        <span class="font-mono bg-yellow-400 text-slate-950 font-black px-4 py-1 rounded-full text-sm">$250,000</span>
+      </div>
+
+      <!-- Item 2 -->
+      <div class="flex items-center justify-between bg-slate-900/80 border border-blue-900/50 p-4 rounded-2xl">
+        <div class="flex items-center space-x-4">
+          <span class="text-xl font-black text-slate-500">#2</span>
+          <span class="font-bold text-slate-300">Satoshi_Phaser</span>
+        </div>
+        <span class="font-mono bg-blue-950 border border-blue-800 text-blue-400 font-bold px-4 py-1 rounded-full text-sm">$32,000</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Debug Navigation Bar (Remove in Production) -->
+  <div class="mt-auto pt-6 border-t border-blue-950/40 flex justify-center gap-2 text-[10px] tracking-wider font-mono uppercase text-blue-500">
+    <button data-action="click->millionaire#debugState" data-state="loading" class="px-2 py-1 bg-slate-900 border border-slate-800 rounded">1. Load</button>
+    <button data-action="click->millionaire#debugState" data-state="question" class="px-2 py-1 bg-slate-900 border border-slate-800 rounded">2. Question</button>
+    <button data-action="click->millionaire#debugState" data-state="input" class="px-2 py-1 bg-slate-900 border border-slate-800 rounded">3. Input</button>
+    <button data-action="click->millionaire#debugState" data-state="leaderboard" class="px-2 py-1 bg-slate-900 border border-slate-800 rounded">4. Results</button>
+  </div>
+
+</div>
