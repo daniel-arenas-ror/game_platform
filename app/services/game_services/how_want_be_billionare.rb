@@ -1,9 +1,11 @@
 
 module GameServices
-  class Fisherman < Base
+  class HowWantBeBillionare < Base
     def initialize(room)
     end
 
-    
+    def setup_game!
+      
+    end
   end
 end

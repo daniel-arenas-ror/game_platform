@@ -14,7 +14,7 @@
           <% if current_player.nil? %>
             <%= @svg.html_safe %>
           <% else %>
-            <%= image_tag("/games/fisherman/instructions.png")  %>
+            <%= image_tag("/games/#{@game.code}/instructions.png")  %>
           <% end %>
         </div>
         

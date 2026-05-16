@@ -3,8 +3,8 @@ class GameFactory
     case room.game.code.downcase
     when 'fisherman'
       GameServices::Fisherman.new(room)
-    when 'quick_draw'
-      ## TODO
+    when 'how_want_be_billionare'
+      GameServices::HowWantBeBillionare.new(room)
     when 'impostor'
       ## TODO
     else
