@@ -26,14 +26,6 @@ module GameServices
 
     private
 
-    def start_points!
-      points_hash = @players.each_with_object({}) do |player, hash|
-        hash[player.id.to_s] = 0
-      end
-
-      @room.set("game_state.points" => points_hash)
-    end
-
     def calc_points!(target_ids, fisherman_id)
       points = @room.game_state["points"] || {}
       target_ids.map do |id|
@@ -86,12 +78,6 @@ module GameServices
 
         @room.set("game_state.sorted_players" => @sorted_players.map { |p| { nickname: p.nickname, points: points_hash[p.id.to_s].to_i } })
       end
-    end
-
-    def broadcast_start
-      ActionCable.server.broadcast("game_#{@room.code}", {
-        action: "game_started",
-      })
     end
   end
 end
