@@ -14,6 +14,11 @@ module GameServices
       broadcast_start
     end
 
+    def next_round!
+      update_question!
+      calc_points!
+    end
+
     private
 
     def update_question!
@@ -21,6 +26,10 @@ module GameServices
 
       @room.set("game_state.question" => question['text'])
       @room.set("game_state.answerds" => question['answerds'])
+    end
+
+    def calc_points!
+      
     end
   end
 end
