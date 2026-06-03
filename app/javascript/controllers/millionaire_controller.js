@@ -81,9 +81,23 @@ export default class extends Controller {
 
         switch (data.action) {
           case "send_question":
-            console.log("Received question data:", data.question)
+            console.log("Received question data:", data)
             this.statusValue = "loading"
             this.updateVisibility()
+
+            this.questionMetaTarget.innerText = `Question for tier level: $${data.number * 1000}`
+            this.questionTextTarget.innerText = data.text
+            
+            this.optionATarget.innerText = data.options.A
+            this.optionBTarget.innerText = data.options.B
+            this.optionCTarget.innerText = data.options.C
+            this.optionDTarget.innerText = data.options.D
+
+            // 2. Clear out any button highlights from a previous round
+            document.querySelectorAll('[data-action="click->millionaire#selectOption"]').forEach(btn => {
+              btn.classList.remove("border-yellow-400")
+              btn.classList.add("border-blue-800")
+            })
 
             this.statusValue = "question"
             this.updateVisibility()

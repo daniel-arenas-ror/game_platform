@@ -4,7 +4,7 @@ module HowWantBeBillionare
     include Mongoid::Timestamps
 
     field :text, type: String
-    field :answerds, type: Array
+    field :answers, type: Array
     field :topic, type: String
 
   end

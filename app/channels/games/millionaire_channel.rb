@@ -37,28 +37,23 @@ class Games::MillionaireChannel < ApplicationCable::Channel
     @room = Room.find_by(code: params[:room_code])
 
     Thread.new do
-      # Let's say a game lasts 5 questions
-      5.times do |index|
+      # number of rounds
+      total_rounds = @room.game_state["total_rounds"].to_i || 5
+      total_rounds.times do |index|
         p " index #{index} "
 
-        # 1. Grab your question details from your game engine or DB pool
-        # For testing, we generate dynamic placeholders:
+        GameServices::HowWantBeBillionare.new(@room).next_round!
+        @room.reload
+
         question_data = {
           action: "send_question",
-          number: index + 1,
-          text: "This is automated question number #{index + 1}?",
-          options: {
-            A: "Option Alpha",
-            B: "Option Beta",
-            C: "Option Gamma",
-            D: "Option Delta"
-          }
+          text: @room.game_state["question"],
+          options: @room.game_state["answers"]
         }
 
         ActionCable.server.broadcast("millionaire_room_#{@room.code}", question_data)
 
-        # 3. Halt thread execution for exactly 10 seconds before looping
-        sleep 10
+        sleep @room.game_state["time_per_round"].to_i || 10
       end
 
       # 4. Once loops conclude, switch everyone to the scoreboard layout

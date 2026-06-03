@@ -25,7 +25,7 @@ module GameServices
       question = ::HowWantBeBillionare::Question.collection.aggregate([{ '$sample': { size: 1 } }]).first
 
       @room.set("game_state.question" => question['text'])
-      @room.set("game_state.answerds" => question['answerds'])
+      @room.set("game_state.answers" => question['answers'])
     end
 
     def calc_points!
