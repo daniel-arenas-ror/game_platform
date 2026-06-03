@@ -71,7 +71,9 @@ export default class extends Controller {
 
         if(this.statusValue === "loading" && this.element.dataset.playerId === '') {
           console.log("Starting game loop for host...")
-          this.channel.perform('start_game_loop')
+          this.channel.perform('start_game_loop', {
+            room_code: this.element.dataset.roomCode
+          })
         }
       },
       received: (data) => {
