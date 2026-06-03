@@ -2,7 +2,19 @@ import { Controller } from "@hotwired/stimulus"
 import consumer from "channels/consumer"
 
 export default class extends Controller {
-  static targets = ["loading", "question", "input", "leaderboard"]
+  static targets = [
+    "loading",
+    "question",
+    "input",
+    "leaderboard",
+    "questionText",
+    "questionMeta",
+    "optionA",
+    "optionB",
+    "optionC",
+    "optionD"
+  ]
+
   static values = { status: String, roomCode: String, playerId: String }
 
   connect() {
@@ -85,13 +97,13 @@ export default class extends Controller {
             this.statusValue = "loading"
             this.updateVisibility()
 
-            this.questionMetaTarget.innerText = `Question for tier level: $${data.number * 1000}`
+            this.questionMetaTarget.innerText = ``
             this.questionTextTarget.innerText = data.text
             
-            this.optionATarget.innerText = data.options.A
-            this.optionBTarget.innerText = data.options.B
-            this.optionCTarget.innerText = data.options.C
-            this.optionDTarget.innerText = data.options.D
+            this.optionATarget.innerText = data.options[0].text
+            this.optionBTarget.innerText = data.options[1].text
+            this.optionCTarget.innerText = data.options[2].text
+            this.optionDTarget.innerText = data.options[3].text
 
             // 2. Clear out any button highlights from a previous round
             document.querySelectorAll('[data-action="click->millionaire#selectOption"]').forEach(btn => {
@@ -99,7 +111,12 @@ export default class extends Controller {
               btn.classList.add("border-blue-800")
             })
 
-            this.statusValue = "question"
+            if (this.element.dataset.playerId === '') {
+              this.statusValue = "question"
+            } else {
+              this.statusValue = "input"
+            }
+
             this.updateVisibility()
             break;
           case "show_leaderboard":

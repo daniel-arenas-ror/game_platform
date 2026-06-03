@@ -29,26 +29,10 @@
       <div class="absolute left-0 top-1/2 -translate-y-1/2 w-4 h-1 bg-blue-500"></div>
       <div class="absolute right-0 top-1/2 -translate-y-1/2 w-4 h-1 bg-blue-500"></div>
       
-      <p class="text-xs font-bold text-blue-400 uppercase tracking-widest mb-2">Question for $1,000,000</p>
-      <h2 class="text-2xl md:text-3xl font-bold tracking-wide leading-relaxed">
-        Which of the following programming languages was originally designed by Yukihiro Matsumoto in Japan?
+      <p data-millionaire-target="questionMeta" class="text-xs font-bold text-blue-400 uppercase tracking-widest mb-2"></p>
+      <h2 data-millionaire-target="questionText" class="text-2xl md:text-3xl font-bold tracking-wide leading-relaxed">
+        Loading question text...
       </h2>
-    </div>
-
-    <!-- Static View of Options -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-3xl mx-auto w-full font-mono">
-      <div class="bg-slate-900/80 border border-blue-500/30 p-4 rounded-xl flex items-center space-x-3">
-        <span class="text-yellow-400 font-bold">A:</span> <span class="font-sans font-semibold">Python</span>
-      </div>
-      <div class="bg-slate-900/80 border border-blue-500/30 p-4 rounded-xl flex items-center space-x-3">
-        <span class="text-yellow-400 font-bold">B:</span> <span class="font-sans font-semibold">Ruby</span>
-      </div>
-      <div class="bg-slate-900/80 border border-blue-500/30 p-4 rounded-xl flex items-center space-x-3">
-        <span class="text-yellow-400 font-bold">C:</span> <span class="font-sans font-semibold">TypeScript</span>
-      </div>
-      <div class="bg-slate-900/80 border border-blue-500/30 p-4 rounded-xl flex items-center space-x-3">
-        <span class="text-yellow-400 font-bold">D:</span> <span class="font-sans font-semibold">Rust</span>
-      </div>
     </div>
   </div>
 
@@ -60,31 +44,48 @@
     
     <div class="grid grid-cols-1 gap-3 font-mono">
       <!-- Option A -->
-      <button data-action="click->millionaire#selectOption" data-option="A"
-              class="w-full text-left bg-gradient-to-r from-blue-950 to-slate-900 border-2 border-blue-800 p-5 rounded-2xl transition-all duration-200 hover:border-yellow-400 active:scale-[0.99] flex items-center justify-between group">
-        <div><span class="text-yellow-400 font-black mr-3">A:</span><span class="font-sans font-bold text-slate-200 group-hover:text-white">Python</span></div>
-        <div class="w-4 h-4 rounded-full border-2 border-blue-600 group-hover:border-yellow-400 flex items-center justify-center"></div>
+      <button
+        data-action="click->millionaire#selectOption"
+        data-option="A"
+        class="w-full text-left bg-gradient-to-r from-blue-950 to-slate-900 border-2 border-blue-800 p-5 rounded-2xl transition-all duration-200 hover:border-yellow-400 active:scale-[0.99] flex items-center justify-between group">
+          <div>
+            <span class="text-yellow-400 font-black mr-3">A:</span>
+            <span data-millionaire-target="optionA" class="font-sans font-bold text-slate-200 group-hover:text-white">Python</span>
+          </div>
+          <div class="w-4 h-4 rounded-full border-2 border-blue-600 group-hover:border-yellow-400 flex items-center justify-center"></div>
       </button>
 
       <!-- Option B -->
-      <button data-action="click->millionaire#selectOption" data-option="B"
-              class="w-full text-left bg-gradient-to-r from-blue-950 to-slate-900 border-2 border-blue-800 p-5 rounded-2xl transition-all duration-200 hover:border-yellow-400 active:scale-[0.99] flex items-center justify-between group">
-        <div><span class="text-yellow-400 font-black mr-3">B:</span><span class="font-sans font-bold text-slate-200 group-hover:text-white">Ruby</span></div>
-        <div class="w-4 h-4 rounded-full border-2 border-blue-600 group-hover:border-yellow-400 flex items-center justify-center"></div>
+      <button
+        data-action="click->millionaire#selectOption" data-option="B"
+        class="w-full text-left bg-gradient-to-r from-blue-950 to-slate-900 border-2 border-blue-800 p-5 rounded-2xl transition-all duration-200 hover:border-yellow-400 active:scale-[0.99] flex items-center justify-between group">
+          <div>
+            <span class="text-yellow-400 font-black mr-3">B:</span>
+            <span data-millionaire-target="optionB" class="font-sans font-bold text-slate-200 group-hover:text-white">Ruby</span>
+          </div>
+          <div class="w-4 h-4 rounded-full border-2 border-blue-600 group-hover:border-yellow-400 flex items-center justify-center"></div>
       </button>
 
       <!-- Option C -->
-      <button data-action="click->millionaire#selectOption" data-option="C"
-              class="w-full text-left bg-gradient-to-r from-blue-950 to-slate-900 border-2 border-blue-800 p-5 rounded-2xl transition-all duration-200 hover:border-yellow-400 active:scale-[0.99] flex items-center justify-between group">
-        <div><span class="text-yellow-400 font-black mr-3">C:</span><span class="font-sans font-bold text-slate-200 group-hover:text-white">TypeScript</span></div>
-        <div class="w-4 h-4 rounded-full border-2 border-blue-600 group-hover:border-yellow-400 flex items-center justify-center"></div>
+      <button
+        data-action="click->millionaire#selectOption" data-option="C"
+        class="w-full text-left bg-gradient-to-r from-blue-950 to-slate-900 border-2 border-blue-800 p-5 rounded-2xl transition-all duration-200 hover:border-yellow-400 active:scale-[0.99] flex items-center justify-between group">
+          <div>
+            <span class="text-yellow-400 font-black mr-3">C:</span>
+            <span data-millionaire-target="optionC" class="font-sans font-bold text-slate-200 group-hover:text-white">TypeScript</span>
+          </div>
+          <div class="w-4 h-4 rounded-full border-2 border-blue-600 group-hover:border-yellow-400 flex items-center justify-center"></div>
       </button>
 
       <!-- Option D -->
-      <button data-action="click->millionaire#selectOption" data-option="D"
-              class="w-full text-left bg-gradient-to-r from-blue-950 to-slate-900 border-2 border-blue-800 p-5 rounded-2xl transition-all duration-200 hover:border-yellow-400 active:scale-[0.99] flex items-center justify-between group">
-        <div><span class="text-yellow-400 font-black mr-3">D:</span><span class="font-sans font-bold text-slate-200 group-hover:text-white">Rust</span></div>
-        <div class="w-4 h-4 rounded-full border-2 border-blue-600 group-hover:border-yellow-400 flex items-center justify-center"></div>
+      <button
+        data-action="click->millionaire#selectOption" data-option="D"
+        class="w-full text-left bg-gradient-to-r from-blue-950 to-slate-900 border-2 border-blue-800 p-5 rounded-2xl transition-all duration-200 hover:border-yellow-400 active:scale-[0.99] flex items-center justify-between group">
+          <div>
+            <span class="text-yellow-400 font-black mr-3">D:</span>
+            <span data-millionaire-target="optionD" class="font-sans font-bold text-slate-200 group-hover:text-white">Rust</span>
+          </div>
+          <div class="w-4 h-4 rounded-full border-2 border-blue-600 group-hover:border-yellow-400 flex items-center justify-center"></div>
       </button>
     </div>
   </div>

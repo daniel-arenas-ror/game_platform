@@ -33,3 +33,15 @@ module GameServices
     end
   end
 end
+
+::HowWantBeBillionare::Question.create!(
+  text: "Which programming language is known for its simplicity and readability?",
+  points: 100,
+  answers: [
+    { text: "Python", correct: true },
+    { text: "Ruby", correct: false },
+    { text: "TypeScript", correct: false },
+    { text: "Rust", correct: false }
+  ],
+  topic: "Programming Languages"
+)
