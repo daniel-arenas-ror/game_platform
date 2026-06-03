@@ -13,7 +13,7 @@ class Games::MillionaireChannel < ApplicationCable::Channel
 
     broadcast_presence(true) if @player
 
-    stream_from "fisherman_room_#{@room.code}"
+    stream_from "millionaire_room_#{@room.code}"
   end
 
   def unsubscribed
@@ -24,7 +24,7 @@ class Games::MillionaireChannel < ApplicationCable::Channel
   end
 
   def broadcast_presence(is_online)
-    ActionCable.server.broadcast("fisherman_room_#{@room.code}", {
+    ActionCable.server.broadcast("millionaire_room_#{@room.code}", {
       action: "player_presence",
       player_id: @player.id.to_s,
       connected: is_online

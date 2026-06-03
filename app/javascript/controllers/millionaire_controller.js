@@ -94,7 +94,7 @@ export default class extends Controller {
             this.updateVisibility()
             break;
           case "player_presence":
-            console.log("Player presence update:", data.players)
+            console.log("Player presence update:", data)
             break;
           default:
             console.warn(`Unhandled action: ${data.action}`, data);
