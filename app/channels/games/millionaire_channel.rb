@@ -17,6 +17,10 @@ class Games::MillionaireChannel < ApplicationCable::Channel
   end
 
   def unsubscribed
+    if @player
+      @player.update(connected: false)
+      broadcast_presence(false)
+    end
   end
 
   def broadcast_presence(is_online)
@@ -28,11 +32,15 @@ class Games::MillionaireChannel < ApplicationCable::Channel
   end
 
   def start_game_loop
+    p " params in start_game_loop #{params.inspect} "
+
     @room = Room.find_by(code: params[:room_code])
 
     Thread.new do
       # Let's say a game lasts 5 questions
       5.times do |index|
+        p " index #{index} "
+
         # 1. Grab your question details from your game engine or DB pool
         # For testing, we generate dynamic placeholders:
         question_data = {
@@ -47,7 +55,6 @@ class Games::MillionaireChannel < ApplicationCable::Channel
           }
         }
 
-        # 2. Shackle the payload out to every connected client socket
         ActionCable.server.broadcast("millionaire_room_#{@room.code}", question_data)
 
         # 3. Halt thread execution for exactly 10 seconds before looping

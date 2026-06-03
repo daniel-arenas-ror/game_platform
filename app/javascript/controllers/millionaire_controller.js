@@ -70,6 +70,7 @@ export default class extends Controller {
         console.log("Connected to game channel!")
 
         if(this.statusValue === "loading" && this.element.dataset.playerId === '') {
+          console.log("Starting game loop for host...")
           this.channel.perform('start_game_loop')
         }
       },
@@ -80,11 +81,18 @@ export default class extends Controller {
           case "send_question":
             console.log("Received question data:", data.question)
             this.statusValue = "loading"
+            this.updateVisibility()
 
             this.statusValue = "question"
+            this.updateVisibility()
             break;
           case "show_leaderboard":
+            console.log("Received leaderboard data:", data.leaderboard)
             this.statusValue = "leaderboard"
+            this.updateVisibility()
+            break;
+          case "player_presence":
+            console.log("Player presence update:", data.players)
             break;
           default:
             console.warn(`Unhandled action: ${data.action}`, data);
