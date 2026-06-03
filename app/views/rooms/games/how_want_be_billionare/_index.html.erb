@@ -1,6 +1,9 @@
 <div data-controller="millionaire"
      data-millionaire-status-value="loading"
-     class="relative min-h-screen bg-radial-at-b from-slate-950 via-blue-950 to-slate-950 text-white p-6 flex flex-col justify-between selection:bg-yellow-500/30">
+     class="relative min-h-screen bg-radial-at-b from-slate-950 via-blue-950 to-slate-950 text-white p-6 flex flex-col justify-between selection:bg-yellow-500/30"
+     data-room-code="<%= @room.code %>"
+     data-player-id="<%= session[:player_id] %>"
+    >
 
   <!-- ================================================================= -->
   <!-- SECTION 1: LOADING PAGE -->

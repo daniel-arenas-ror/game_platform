@@ -2,11 +2,12 @@ import { Controller } from "@hotwired/stimulus"
 import consumer from "channels/consumer"
 
 export default class extends Controller {
-static targets = ["loading", "question", "input", "leaderboard"]
-  static values = { status: String }
+  static targets = ["loading", "question", "input", "leaderboard"]
+  static values = { status: String, roomCode: String, playerId: String }
 
   connect() {
     console.log("HowWantBeBillionaireController connected")
+
     this.updateVisibility()
     this.subscribe()
   }
@@ -58,22 +59,32 @@ static targets = ["loading", "question", "input", "leaderboard"]
   }
 
   subscribe() {
+    console.log(`Subscribing to channel with roomCode: ${this.element.dataset.roomCode} and playerId: ${this.element.dataset.playerId === undefined}`)
+
     this.channel = consumer.subscriptions.create({
-      channel: "MillionaireChannel",
-      room_code: this.roomCodeValue
+      channel: "Games::MillionaireChannel",
+      room_code: this.element.dataset.roomCode,
+      player_id: this.element.dataset.playerId
     }, {
       connected: () => {
         console.log("Connected to game channel!")
+
+        if(this.statusValue === "loading" && this.element.dataset.playerId === '') {
+          this.channel.perform('start_game_loop')
+        }
       },
       received: (data) => {
         console.log("Received data on game channel:", data)
 
         switch (data.action) {
-          case "game_started":
+          case "send_question":
+            console.log("Received question data:", data.question)
+            this.statusValue = "loading"
 
+            this.statusValue = "question"
             break;
-          case "player_joined":
-
+          case "show_leaderboard":
+            this.statusValue = "leaderboard"
             break;
           default:
             console.warn(`Unhandled action: ${data.action}`, data);
