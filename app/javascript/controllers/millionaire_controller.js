@@ -57,12 +57,13 @@ export default class extends Controller {
     document.querySelectorAll('[data-action="click->millionaire#selectOption"]').forEach(btn => {
       btn.classList.replace("border-yellow-400", "border-blue-800")
     })
+
     event.currentTarget.classList.replace("border-blue-800", "border-yellow-400")
 
     console.log(`Player selected option: ${selectedOption}`)
     
     // Here you would execute ActionCable payload transmissions:
-    // this.channel.perform('submit_millionaire_answer', { choice: selectedOption })
+    this.channel.perform('submit_millionaire_answer', { choice: selectedOption })
   }
 
   // Quick debug cycle method linked to the small buttons at the bottom

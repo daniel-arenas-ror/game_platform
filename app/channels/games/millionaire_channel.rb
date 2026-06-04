@@ -1,7 +1,6 @@
 class Games::MillionaireChannel < ApplicationCable::Channel
 
   def subscribed
-
     p "params: #{params.inspect}"
 
     @room = Room.find_by(code: params[:room_code])
@@ -32,8 +31,6 @@ class Games::MillionaireChannel < ApplicationCable::Channel
   end
 
   def start_game_loop
-    p " params in start_game_loop #{params.inspect} "
-
     @room = Room.find_by(code: params[:room_code])
 
     Thread.new do
@@ -59,5 +56,16 @@ class Games::MillionaireChannel < ApplicationCable::Channel
       # 4. Once loops conclude, switch everyone to the scoreboard layout
       ActionCable.server.broadcast("millionaire_room_#{@room.code}", { action: "show_leaderboard" })
     end
+  end
+
+  def submit_millionaire_answer(data)
+    p " ** Params ** "
+    p data
+
+    p " @player "
+    p @player
+
+    p " @room "
+    p @room.answers_history
   end
 end
