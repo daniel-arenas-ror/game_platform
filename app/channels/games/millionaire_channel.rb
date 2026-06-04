@@ -59,13 +59,6 @@ class Games::MillionaireChannel < ApplicationCable::Channel
   end
 
   def submit_millionaire_answer(data)
-    p " ** Params ** "
-    p data
-
-    p " @player "
-    p @player
-
-    p " @room "
-    p @room.answers_history
+    GameServices::HowWantBeBillionare.new(@room).add_answer(@player.id, data["choice"])
   end
 end

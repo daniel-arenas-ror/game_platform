@@ -12,6 +12,7 @@ class Room
   # Since you want "in-memory" feel, you can still use Mongo 
   # or store the temporary state in a Hash field
   field :game_state, type: Hash, default: {}
+  field :answers_history, type: Array, default: []
 
   before_create :generate_code
 

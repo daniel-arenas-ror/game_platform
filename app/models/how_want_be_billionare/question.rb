@@ -8,7 +8,6 @@ module HowWantBeBillionare
     field :answers, type: Array
     field :topic, type: String
     field :points, type: Integer
-    field :answers_history, type: Array, default: []
 
   end
 end
