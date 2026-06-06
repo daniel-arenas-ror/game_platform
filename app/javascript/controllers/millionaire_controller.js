@@ -123,10 +123,13 @@ export default class extends Controller {
           case "show_leaderboard":
             console.log("Received leaderboard data:", data.leaderboard)
 
-            this.leaderboardTarget.innerHTML = Object.entries(data.leaderboard).map(([playerId, points]) => `
-              <div class="flex justify-between">
-                <span>Player ${playerId}</span>
-                <span>${points} points</span>
+            this.leaderboardTarget.innerHTML = Object.entries(data.leaderboard).map(([playerId, points], index) => `
+              <div class="flex items-center justify-between bg-slate-900/80 border border-blue-900/50 p-4 rounded-2xl">
+                <div class="flex items-center space-x-4">
+                  <span class="text-xl font-black text-slate-500">#${index + 1}</span>
+                  <span class="font-bold text-slate-300">${playerId}</span>
+                </div>
+                <span class="font-mono bg-blue-950 border border-blue-800 text-blue-400 font-bold px-4 py-1 rounded-full text-sm">${points}</span>
               </div>
             `).join('')
 
