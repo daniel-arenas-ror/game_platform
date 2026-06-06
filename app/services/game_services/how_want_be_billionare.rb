@@ -49,7 +49,7 @@ module GameServices
       question_answers.each do |player_id, answer_index|
         if question.answers[answer_index.to_i]["correct"]
           user_points[player_id] ||= 0
-          user_points[player_id] += question.points
+          user_points[player_id] += question.points.to_i
         end
       end
 

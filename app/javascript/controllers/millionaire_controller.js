@@ -122,6 +122,14 @@ export default class extends Controller {
             break;
           case "show_leaderboard":
             console.log("Received leaderboard data:", data.leaderboard)
+
+            this.leaderboardTarget.innerHTML = Object.entries(data.leaderboard).map(([playerId, points]) => `
+              <div class="flex justify-between">
+                <span>Player ${playerId}</span>
+                <span>${points} points</span>
+              </div>
+            `).join('')
+
             this.statusValue = "leaderboard"
             this.updateVisibility()
             break;

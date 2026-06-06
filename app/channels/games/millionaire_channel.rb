@@ -37,8 +37,6 @@ class Games::MillionaireChannel < ApplicationCable::Channel
       # number of rounds
       total_rounds = @room.game_state["total_rounds"].to_i || 5
       total_rounds.times do |index|
-        p " index #{index} "
-
         GameServices::HowWantBeBillionare.new(@room).next_round!
         @room.reload
 
@@ -53,7 +51,7 @@ class Games::MillionaireChannel < ApplicationCable::Channel
         sleep @room.game_state["time_per_round"].to_i || 10
       end
 
-      @room.update(status: 'finished')
+      # @room.update(status: 'finished')
       ActionCable.server.broadcast("millionaire_room_#{@room.code}", {
         action: "show_leaderboard",
         leaderboard: @room.game_state["user_points"] || {}
