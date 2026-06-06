@@ -15,20 +15,17 @@ module GameServices
     end
 
     def next_round!
-      update_question!
       calc_points!
+      update_question!
     end
 
     def add_answer(player_id, choice)
-      question_id = @room.reload.game_state['question_id'].to_s
+      question_id = @room.game_state['question_id'].to_s
       player_id_str = player_id.to_s
 
-      history = @room.game_state['answers_history'] || {}
+      mongo_path = "game_state.answers_history.#{question_id}.#{player_id_str}"
 
-      history[question_id] ||= {}
-      history[question_id][player_id_str] = choice
-
-      @room.set("game_state.answers_history" => history)
+      @room.set(mongo_path => choice)
     end
 
     private
@@ -42,7 +39,21 @@ module GameServices
     end
 
     def calc_points!
-      
+      @room.reload
+      question_id = @room.game_state['question_id'].to_s
+      question = ::HowWantBeBillionare::Question.find(question_id)
+      mongo_path = "game_state.answers_history.#{question_id}"
+      question_answers = @room.game_state['answers_history'][question_id] ||= {}
+      user_points = @room.game_state['user_points'] ||= {}
+
+      question_answers.each do |player_id, answer_index|
+        if question.answers[answer_index.to_i]["correct"]
+          user_points[player_id] ||= 0
+          user_points[player_id] += question.points
+        end
+      end
+
+      @room.set("game_state.user_points" => user_points)
     end
   end
 end
