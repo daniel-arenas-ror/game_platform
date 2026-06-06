@@ -53,8 +53,11 @@ class Games::MillionaireChannel < ApplicationCable::Channel
         sleep @room.game_state["time_per_round"].to_i || 10
       end
 
-      # 4. Once loops conclude, switch everyone to the scoreboard layout
-      ActionCable.server.broadcast("millionaire_room_#{@room.code}", { action: "show_leaderboard" })
+      @room.update(status: 'finished')
+      ActionCable.server.broadcast("millionaire_room_#{@room.code}", {
+        action: "show_leaderboard",
+        leaderboard: @room.game_state["user_points"] || {}
+      })
     end
   end
 
