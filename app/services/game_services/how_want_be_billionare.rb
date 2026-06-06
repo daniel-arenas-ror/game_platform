@@ -20,7 +20,15 @@ module GameServices
     end
 
     def add_answer(player_id, choice)
-      @room.set("game_state.answers_history.#{@room.game_state['question_id']}" => { player_id: player_id, choice: choice })
+      question_id = @room.reload.game_state['question_id'].to_s
+      player_id_str = player_id.to_s
+
+      history = @room.game_state['answers_history'] || {}
+
+      history[question_id] ||= {}
+      history[question_id][player_id_str] = choice
+
+      @room.set("game_state.answers_history" => history)
     end
 
     private
