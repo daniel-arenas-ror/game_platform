@@ -1,0 +1,39 @@
+<%# Map preset picker %>
+<div class="space-y-4 bg-slate-900/50 p-6 rounded-2xl border border-slate-700">
+  <label class="block text-xs font-bold text-slate-400 mb-3 tracking-widest">MAP</label>
+  <div class="grid grid-cols-3 gap-3">
+    <% BattleCity::MapPreset.all.each do |preset| %>
+      <label class="relative cursor-pointer">
+        <input type="radio"
+               name="room[game_state][map_preset]"
+               value="<%= preset.name %>"
+               class="peer hidden"
+               <%= 'checked' if (@room.game_state['map_preset'] || 'classic') == preset.name %>>
+        <div class="text-center py-3 bg-slate-800 border-2 border-slate-700 rounded-xl text-white font-bold capitalize
+                    peer-checked:border-yellow-500 peer-checked:bg-yellow-500/10 transition-all">
+          <%= preset.name %>
+        </div>
+      </label>
+    <% end %>
+  </div>
+</div>
+
+<%# Max players picker %>
+<div class="space-y-4 bg-slate-900/50 p-6 rounded-2xl border border-slate-700 mt-2">
+  <label class="block text-xs font-bold text-slate-400 mb-3 tracking-widest">MAX PLAYERS</label>
+  <div class="grid grid-cols-3 gap-3">
+    <% [2, 3, 4].each do |n| %>
+      <label class="relative cursor-pointer">
+        <input type="radio"
+               name="room[game_state][max_players]"
+               value="<%= n %>"
+               class="peer hidden"
+               <%= 'checked' if (@room.game_state['max_players']&.to_i || 4) == n %>>
+        <div class="text-center py-3 bg-slate-800 border-2 border-slate-700 rounded-xl text-white font-bold
+                    peer-checked:border-yellow-500 peer-checked:bg-yellow-500/10 transition-all">
+          <%= n %> Tanks
+        </div>
+      </label>
+    <% end %>
+  </div>
+</div>

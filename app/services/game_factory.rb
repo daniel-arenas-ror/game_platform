@@ -5,6 +5,8 @@ class GameFactory
       GameServices::Fisherman.new(room)
     when 'how_want_be_billionare'
       GameServices::HowWantBeBillionare.new(room)
+    when 'battle_city'
+      GameServices::BattleCity.new(room)
     when 'impostor'
       ## TODO
     else
