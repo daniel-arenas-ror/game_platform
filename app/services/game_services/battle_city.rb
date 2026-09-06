@@ -5,6 +5,15 @@ module GameServices
     MOVE_EVERY_TICKS = 4    # one cell every 4 × 60 ms ≈ 240 ms
     RESPAWN_TICKS    = 50   # 50 × 60 ms = 3 seconds
 
+    # Bot behaviour
+    BOT_FIRE_CHANCE   = 0.04   # probability of firing each tick
+    BOT_TURN_CHANCE   = 0.04   # probability of random direction change each tick
+    BOT_SPAWN_CELLS   = [
+      { "x" => 1,  "y" => 1 },
+      { "x" => 12, "y" => 1 },
+      { "x" => 24, "y" => 1 }
+    ].freeze
+
     DIRECTIONS = {
       "up"    => [ 0, -1],
       "down"  => [ 0,  1],
@@ -21,11 +30,12 @@ module GameServices
       preset_name = @room.game_state["map_preset"] || "classic"
       preset      = ::BattleCity::MapPreset.find_by(name: preset_name)
       max_players = (@room.game_state["max_players"] || 4).to_i
+      bot_count   = (@room.game_state["bot_count"]   || 0).to_i.clamp(0, 3)
       players     = @players.first(max_players)
 
       walls       = build_walls(preset)
-      tanks       = build_tanks(players, preset)
-      tank_spawns = build_tank_spawns(players, preset)
+      tanks       = build_tanks(players, preset).merge(build_bot_tanks(bot_count))
+      tank_spawns = build_tank_spawns(players, preset).merge(build_bot_spawns(bot_count))
       scores      = players.each_with_object({}) { |p, h| h[p.id.to_s] = 0 }
 
       @room.update!(
@@ -43,7 +53,8 @@ module GameServices
           "map_preset"     => preset_name,
           "map_cols"       => preset.cols,
           "map_rows"       => preset.rows,
-          "kills_to_win"   => (@room.game_state["kills_to_win"] || 5).to_i
+          "kills_to_win"   => (@room.game_state["kills_to_win"] || 5).to_i,
+          "bot_count"      => bot_count
         )
       )
 
@@ -59,7 +70,7 @@ module GameServices
       state["tick"] = state["tick"].to_i + 1
       changed_tanks = {}
 
-      # ── 1. Movement + firing ───────────────────────────────────────────────
+      # ── 1. Player movement + firing ───────────────────────────────────────────
       inputs.each do |player_id, input|
         tank = state["tanks"][player_id]
         next unless tank && tank["alive"]
@@ -86,30 +97,37 @@ module GameServices
         end
       end
 
-      # ── 2. Advance bullets + resolve collisions ────────────────────────────
+      # ── 2. Bot AI ─────────────────────────────────────────────────────────────
+      tick_bots!(state).each { |id, t| changed_tanks[id] = t }
+
+      # ── 3. Advance bullets + resolve collisions ────────────────────────────────
       walls_destroyed, kills, base_hit, bullets_changed = advance_bullets!(state)
 
-      # ── 3. Apply kills + scoring ───────────────────────────────────────────
+      # ── 4. Apply kills + scoring ───────────────────────────────────────────────
       kills.each do |killed_id, killer_id|
         kill_tank!(state, killed_id)
-        changed_tanks[killed_id]        = state["tanks"][killed_id].dup
-        state["scores"][killer_id]      = state["scores"][killer_id].to_i + 1
+        changed_tanks[killed_id] = state["tanks"][killed_id].dup
+        # Only award score to human players (not bots)
+        if state["scores"].key?(killer_id)
+          state["scores"][killer_id] = state["scores"][killer_id].to_i + 1
+        end
       end
 
-      # ── 4. Respawns ────────────────────────────────────────────────────────
+      # ── 5. Respawns ────────────────────────────────────────────────────────────
       check_respawns!(state).each { |pid| changed_tanks[pid] = state["tanks"][pid].dup }
 
-      # ── 5. Game over conditions ────────────────────────────────────────────
+      # ── 6. Game over conditions ────────────────────────────────────────────────
       if base_hit
         state["status"]           = "game_over"
         state["game_over_reason"] = "base_destroyed"
-      elsif state["tanks"].size > 1 && alive_count(state) <= 1
+      elsif human_tank_count(state) > 1 && alive_human_count(state) <= 1
         state["status"]           = "game_over"
         state["game_over_reason"] = "last_tank_standing"
       else
         kills_to_win = state["kills_to_win"].to_i
         if kills_to_win > 0
-          winner = state["scores"].find { |_, score| score.to_i >= kills_to_win }
+          # Only human player scores count toward the kill limit
+          winner = state["scores"].find { |id, score| !bot_id?(id) && score.to_i >= kills_to_win }
           if winner
             state["status"]           = "game_over"
             state["game_over_reason"] = "kills_limit"
@@ -118,7 +136,7 @@ module GameServices
         end
       end
 
-      # ── 6. Build delta ─────────────────────────────────────────────────────
+      # ── 7. Build delta ─────────────────────────────────────────────────────────
       delta = {}
       delta["tanks"]           = changed_tanks       unless changed_tanks.empty?
       delta["bullets"]         = state["bullets"]    if bullets_changed
@@ -128,6 +146,67 @@ module GameServices
     end
 
     private
+
+    # ── Bot helpers ───────────────────────────────────────────────────────────────
+
+    def bot_id?(id)
+      id.to_s.start_with?("bot_")
+    end
+
+    def build_bot_tanks(count)
+      count.times.each_with_object({}) do |i, h|
+        spawn = BOT_SPAWN_CELLS[i]
+        h["bot_#{i}"] = {
+          "x"         => spawn["x"],
+          "y"         => spawn["y"],
+          "direction" => "down",
+          "alive"     => true,
+          "color"     => "silver",
+          "nickname"  => "Bot #{i + 1}"
+        }
+      end
+    end
+
+    def build_bot_spawns(count)
+      count.times.each_with_object({}) do |i, h|
+        h["bot_#{i}"] = BOT_SPAWN_CELLS[i].dup
+      end
+    end
+
+    # Simple bot AI: mostly drive downward toward the base, fire occasionally.
+    def tick_bots!(state)
+      changed = {}
+
+      state["tanks"].each do |tank_id, tank|
+        next unless bot_id?(tank_id) && tank["alive"]
+
+        old_x   = tank["x"]
+        old_y   = tank["y"]
+        old_dir = tank["direction"]
+
+        # Random direction change
+        tank["direction"] = DIRECTIONS.keys.sample if rand < BOT_TURN_CHANCE
+
+        # Movement — try current direction; turn randomly if blocked
+        last_move = tank["last_move_tick"].to_i
+        if (state["tick"] - last_move) >= MOVE_EVERY_TICKS
+          unless move_tank!(state, tank, tank["direction"])
+            tank["direction"] = DIRECTIONS.keys.sample
+            move_tank!(state, tank, tank["direction"])
+          end
+          tank["last_move_tick"] = state["tick"]
+        end
+
+        # Fire
+        fire!(state, tank_id, tank) if rand < BOT_FIRE_CHANCE && can_fire?(state, tank_id)
+
+        if tank["x"] != old_x || tank["y"] != old_y || tank["direction"] != old_dir
+          changed[tank_id] = tank.dup
+        end
+      end
+
+      changed
+    end
 
     # ── Movement ──────────────────────────────────────────────────────────────
 
@@ -161,7 +240,6 @@ module GameServices
       bx = tank["x"] + d[0]
       by = tank["y"] + d[1]
 
-      # Abort if the muzzle cell is out of bounds or blocked by a solid wall
       return if out_of_bounds?(state, bx, by)
       wall_type = state["walls"]["#{bx},#{by}"]
       return if wall_type && !PASSABLE_WALLS.include?(wall_type)
@@ -188,13 +266,11 @@ module GameServices
         nx = bullet["x"] + d[0]
         ny = bullet["y"] + d[1]
 
-        # Out of bounds
         if out_of_bounds?(state, nx, ny)
           to_remove << bullet["id"]
           next
         end
 
-        # Wall hit
         wall_key = "#{nx},#{ny}"
         if (wall_type = state["walls"][wall_key])
           to_remove << bullet["id"]
@@ -205,7 +281,6 @@ module GameServices
           next
         end
 
-        # Base hit
         base = state["base"]
         if base&.dig("alive") && nx == base["x"] && ny == base["y"]
           to_remove << bullet["id"]
@@ -214,28 +289,24 @@ module GameServices
           next
         end
 
-        # Tank hit — bullets cannot hit their owner
         hit = state["tanks"].find { |tid, t| t["alive"] && tid != bullet["owner_id"] && t["x"] == nx && t["y"] == ny }
         if hit
           tid, _ = hit
           to_remove << bullet["id"]
-          kills[tid] = bullet["owner_id"]  # killed_id => killer_id
+          kills[tid] = bullet["owner_id"]
           next
         end
 
-        # No collision — move the bullet forward
         bullet["x"] = nx
         bullet["y"] = ny
       end
 
       state["bullets"].reject! { |b| to_remove.include?(b["id"]) }
 
-      # Bullet-on-bullet: if two bullets share a cell after advancing, cancel both
       state["bullets"]
         .group_by { |b| "#{b['x']},#{b['y']}" }
         .each_value { |group| state["bullets"] -= group if group.size > 1 }
 
-      # bullets_changed when: bullets exist (they moved), or any were destroyed / created this tick
       bullets_changed = !state["bullets"].empty? || !to_remove.empty?
 
       [walls_destroyed, kills, base_hit, bullets_changed]
@@ -260,13 +331,12 @@ module GameServices
         spawn = state.dig("tank_spawns", player_id)
         next unless spawn
 
-        # Delay respawn if the spawn cell is occupied
         next if state["tanks"].any? { |_, t| t["alive"] && t["x"] == spawn["x"] && t["y"] == spawn["y"] }
 
         tank.merge!(
           "x"              => spawn["x"],
           "y"              => spawn["y"],
-          "direction"      => "up",
+          "direction"      => bot_id?(player_id) ? "down" : "up",
           "alive"          => true,
           "respawn_tick"   => nil,
           "last_move_tick" => 0
@@ -285,6 +355,14 @@ module GameServices
 
     def alive_count(state)
       state["tanks"].count { |_, t| t["alive"] }
+    end
+
+    def human_tank_count(state)
+      state["tanks"].count { |id, _| !bot_id?(id) }
+    end
+
+    def alive_human_count(state)
+      state["tanks"].count { |id, t| !bot_id?(id) && t["alive"] }
     end
 
     def build_walls(preset)

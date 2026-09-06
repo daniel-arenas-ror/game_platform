@@ -1,7 +1,7 @@
 <%# Map preset picker %>
 <div class="space-y-4 bg-slate-900/50 p-6 rounded-2xl border border-slate-700">
   <label class="block text-xs font-bold text-slate-400 mb-3 tracking-widest">MAP</label>
-  <div class="grid grid-cols-3 gap-3">
+  <div class="grid grid-cols-2 gap-3">
     <% BattleCity::MapPreset.all.each do |preset| %>
       <label class="relative cursor-pointer">
         <input type="radio"
@@ -9,9 +9,10 @@
                value="<%= preset.name %>"
                class="peer hidden"
                <%= 'checked' if (@room.game_state['map_preset'] || 'classic') == preset.name %>>
-        <div class="text-center py-3 bg-slate-800 border-2 border-slate-700 rounded-xl text-white font-bold capitalize
+        <div class="flex items-center gap-3 px-3 py-2 bg-slate-800 border-2 border-slate-700 rounded-xl
                     peer-checked:border-yellow-500 peer-checked:bg-yellow-500/10 transition-all">
-          <%= preset.name %>
+          <%= battle_city_map_preview(preset, size: 52) %>
+          <span class="text-white font-bold capitalize text-sm"><%= preset.name %></span>
         </div>
       </label>
     <% end %>
@@ -32,6 +33,26 @@
         <div class="text-center py-3 bg-slate-800 border-2 border-slate-700 rounded-xl text-white font-bold
                     peer-checked:border-yellow-500 peer-checked:bg-yellow-500/10 transition-all">
           <%= n == 0 ? "∞" : n %>
+        </div>
+      </label>
+    <% end %>
+  </div>
+</div>
+
+<%# Bot enemies picker %>
+<div class="space-y-4 bg-slate-900/50 p-6 rounded-2xl border border-slate-700 mt-2">
+  <label class="block text-xs font-bold text-slate-400 mb-3 tracking-widest">BOT ENEMIES</label>
+  <div class="grid grid-cols-4 gap-3">
+    <% [0, 1, 2, 3].each do |n| %>
+      <label class="relative cursor-pointer">
+        <input type="radio"
+               name="room[game_state][bot_count]"
+               value="<%= n %>"
+               class="peer hidden"
+               <%= 'checked' if (@room.game_state['bot_count']&.to_i || 0) == n %>>
+        <div class="text-center py-3 bg-slate-800 border-2 border-slate-700 rounded-xl text-white font-bold
+                    peer-checked:border-yellow-500 peer-checked:bg-yellow-500/10 transition-all">
+          <%= n == 0 ? "None" : "#{n} 🤖" %>
         </div>
       </label>
     <% end %>

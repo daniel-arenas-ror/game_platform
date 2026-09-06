@@ -3,7 +3,7 @@ import consumer from "channels/consumer"
 import { Application, Graphics, Container } from "pixi.js"
 
 const WALL_COLORS  = { brick: 0xc0392b, steel: 0x7f8c8d, water: 0x2471a3, trees: 0x1e8449 }
-const TANK_COLORS  = { yellow: 0xf1c40f, green: 0x2ecc71, white: 0xecf0f1, red: 0xe74c3c }
+const TANK_COLORS  = { yellow: 0xf1c40f, green: 0x2ecc71, white: 0xecf0f1, red: 0xe74c3c, silver: 0x95a5a6 }
 const BASE_COLOR   = { alive: 0xf39c12, dead: 0x4a4a4a }
 const BULLET_COLOR = 0xffffff
 const BG_COLOR     = 0x0d0d1a
@@ -273,6 +273,8 @@ export default class extends Controller {
         this.renderBrick(g, ox, oy, cs)
       } else if (type === "steel") {
         this.renderSteel(g, ox, oy, cs)
+      } else if (type === "trees") {
+        this.renderTrees(g, ox, oy, cs)
       } else {
         g.rect(ox, oy, cs, cs)
         g.fill(WALL_COLORS[type] ?? 0x888888)
@@ -328,6 +330,18 @@ export default class extends Controller {
     g.fill(0x566573)
   }
 
+  renderTrees(g, ox, oy, cs) {
+    // Dark green base
+    g.rect(ox, oy, cs, cs).fill(0x1a5c2a)
+
+    // Two lighter green "canopy" blobs
+    const r = Math.max(2, Math.floor(cs * 0.28))
+    g.circle(ox + Math.floor(cs * 0.33), oy + Math.floor(cs * 0.38), r)
+    g.fill({ color: 0x27ae60, alpha: 0.9 })
+    g.circle(ox + Math.floor(cs * 0.67), oy + Math.floor(cs * 0.55), r)
+    g.fill({ color: 0x2ecc71, alpha: 0.85 })
+  }
+
   renderBase() {
     const base = this.state.base
     if (!base) return
@@ -370,13 +384,13 @@ export default class extends Controller {
   renderTanks() {
     const cs = this.cellSize
 
-    Object.entries(this.state.tanks).forEach(([, tank]) => {
+    Object.entries(this.state.tanks).forEach(([tankId, tank]) => {
       if (!tank.alive) return
-      this.renderTankSprite(tank, cs)
+      this.renderTankSprite(tank, cs, tankId.startsWith("bot_"))
     })
   }
 
-  renderTankSprite(tank, cs) {
+  renderTankSprite(tank, cs, isBot = false) {
     const p   = 1                               // outer padding
     const ox  = tank.x * cs + p
     const oy  = tank.y * cs + p
@@ -425,6 +439,14 @@ export default class extends Controller {
       case "down":  g.rect(bcx, oy + sh - barLen,  barW, barLen).fill(dk); break
       case "left":  g.rect(ox,           bcy, barLen, barW).fill(dk); break
       case "right": g.rect(ox + sw - barLen, bcy, barLen, barW).fill(dk); break
+    }
+
+    // Bot indicator — small red crosshair on the turret
+    if (isBot) {
+      const cx = turX + Math.floor(turW / 2)
+      const cy = turY + Math.floor(turH / 2)
+      g.rect(cx - 1, turY,     2, turH).fill(0xe74c3c)
+      g.rect(turX,   cy - 1,  turW, 2).fill(0xe74c3c)
     }
 
     this.gameLayer.addChild(g)

@@ -98,6 +98,171 @@ BattleCity::MapPreset.create!(
   cells: classic_cells
 )
 
+# ---------------------------------------------------------------------------
+# Battle City — "open" map
+# Minimal interior obstacles — pure chaos, high kill count games.
+# ---------------------------------------------------------------------------
+open_cells = []
+
+(0..25).each do |x|
+  open_cells << { "x" => x, "y" => 0,  "type" => "steel" }
+  open_cells << { "x" => x, "y" => 25, "type" => "steel" }
+end
+(1..24).each do |y|
+  open_cells << { "x" => 0,  "y" => y, "type" => "steel" }
+  open_cells << { "x" => 25, "y" => y, "type" => "steel" }
+end
+
+# Small brick cover near each spawn
+[
+  [2,3],[3,3],[2,4],
+  [22,3],[23,3],[23,4],
+  [2,21],[3,22],[2,22],
+  [22,21],[23,22],[23,21]
+].each do |x, y|
+  open_cells << { "x" => x, "y" => y, "type" => "brick" }
+end
+
+# Four steel pillars bracketing the centre
+[[10,11],[11,11],[10,12],[11,12],
+ [14,11],[15,11],[14,12],[15,12]].each do |x, y|
+  open_cells << { "x" => x, "y" => y, "type" => "steel" }
+end
+
+# Base protection — minimal
+[[11,24],[13,24]].each { |x, y| open_cells << { "x" => x, "y" => y, "type" => "steel" } }
+[[11,23],[12,23],[13,23]].each { |x, y| open_cells << { "x" => x, "y" => y, "type" => "brick" } }
+
+BattleCity::MapPreset.create!(
+  name: "open",
+  cols: 26, rows: 26, base_x: 12, base_y: 24,
+  tank_spawns: [
+    { "x" => 2, "y" => 2 }, { "x" => 23, "y" => 2 },
+    { "x" => 2, "y" => 22 }, { "x" => 23, "y" => 22 }
+  ],
+  cells: open_cells
+)
+
+# ---------------------------------------------------------------------------
+# Battle City — "siege" map
+# Two vertical brick fortresses on the flanks with gated openings,
+# steel bunkers inside each fortress, open centre highway.
+# ---------------------------------------------------------------------------
+siege_cells = []
+
+(0..25).each do |x|
+  siege_cells << { "x" => x, "y" => 0,  "type" => "steel" }
+  siege_cells << { "x" => x, "y" => 25, "type" => "steel" }
+end
+(1..24).each do |y|
+  siege_cells << { "x" => 0,  "y" => y, "type" => "steel" }
+  siege_cells << { "x" => 25, "y" => y, "type" => "steel" }
+end
+
+# Left fortress wall — x=5, gaps at y=8-9 and y=15-16
+(2..23).each do |y|
+  next if [8, 9, 15, 16].include?(y)
+  siege_cells << { "x" => 5, "y" => y, "type" => "brick" }
+end
+
+# Right fortress wall — x=20, same gaps
+(2..23).each do |y|
+  next if [8, 9, 15, 16].include?(y)
+  siege_cells << { "x" => 20, "y" => y, "type" => "brick" }
+end
+
+# Steel bunkers inside each fortress
+[[2,11],[3,11],[2,12],[3,12],
+ [2,13],[3,13],[2,14],[3,14]].each do |x, y|
+  siege_cells << { "x" => x, "y" => y, "type" => "steel" }
+end
+[[22,11],[23,11],[22,12],[23,12],
+ [22,13],[23,13],[22,14],[23,14]].each do |x, y|
+  siege_cells << { "x" => x, "y" => y, "type" => "steel" }
+end
+
+# Centre lane obstacles
+[[11,8],[12,8],[13,8],[14,8],
+ [11,17],[12,17],[13,17],[14,17]].each do |x, y|
+  siege_cells << { "x" => x, "y" => y, "type" => "brick" }
+end
+
+# Base — heavier brick fortification
+[[10,23],[11,23],[12,23],[13,23],[14,23],
+ [10,24],[14,24]].each { |x, y| siege_cells << { "x" => x, "y" => y, "type" => "brick" } }
+[[9,24],[15,24]].each  { |x, y| siege_cells << { "x" => x, "y" => y, "type" => "steel" } }
+
+BattleCity::MapPreset.create!(
+  name: "siege",
+  cols: 26, rows: 26, base_x: 12, base_y: 24,
+  tank_spawns: [
+    { "x" => 2, "y" => 2 }, { "x" => 23, "y" => 2 },
+    { "x" => 2, "y" => 22 }, { "x" => 23, "y" => 22 }
+  ],
+  cells: siege_cells
+)
+
+# ---------------------------------------------------------------------------
+# Battle City — "forest" map
+# Large tree patches let tanks hide and ambush. Bullets can't pass through
+# trees but tanks can drive into them for cover.
+# ---------------------------------------------------------------------------
+forest_cells = []
+
+(0..25).each do |x|
+  forest_cells << { "x" => x, "y" => 0,  "type" => "steel" }
+  forest_cells << { "x" => x, "y" => 25, "type" => "steel" }
+end
+(1..24).each do |y|
+  forest_cells << { "x" => 0,  "y" => y, "type" => "steel" }
+  forest_cells << { "x" => 25, "y" => y, "type" => "steel" }
+end
+
+# Four large corner tree patches
+[
+  [3,3],[4,3],[5,3],[6,3],[3,4],[4,4],[5,4],[6,4],[3,5],[4,5],[5,5],[6,5],
+  [19,3],[20,3],[21,3],[22,3],[19,4],[20,4],[21,4],[22,4],[19,5],[20,5],[21,5],[22,5],
+  [3,17],[4,17],[5,17],[6,17],[3,18],[4,18],[5,18],[6,18],[3,19],[4,19],[5,19],[6,19],
+  [19,17],[20,17],[21,17],[22,17],[19,18],[20,18],[21,18],[22,18],[19,19],[20,19],[21,19],[22,19]
+].each do |x, y|
+  forest_cells << { "x" => x, "y" => y, "type" => "trees" }
+end
+
+# Four central mini-patches (leave cross-corridors open)
+[
+  [9,10],[10,10],[9,11],[10,11],
+  [15,10],[16,10],[15,11],[16,11],
+  [9,14],[10,14],[9,15],[10,15],
+  [15,14],[16,14],[15,15],[16,15]
+].each do |x, y|
+  forest_cells << { "x" => x, "y" => y, "type" => "trees" }
+end
+
+# Brick walls in open corridors
+[[12,7],[13,7],[12,18],[13,18],
+ [7,12],[7,13],[18,12],[18,13]].each do |x, y|
+  forest_cells << { "x" => x, "y" => y, "type" => "brick" }
+end
+
+# Steel centre block
+[[12,12],[13,12],[12,13],[13,13]].each do |x, y|
+  forest_cells << { "x" => x, "y" => y, "type" => "steel" }
+end
+
+# Base protection
+[[11,24],[13,24]].each { |x, y| forest_cells << { "x" => x, "y" => y, "type" => "steel" } }
+[[11,23],[12,23],[13,23]].each { |x, y| forest_cells << { "x" => x, "y" => y, "type" => "brick" } }
+
+BattleCity::MapPreset.create!(
+  name: "forest",
+  cols: 26, rows: 26, base_x: 12, base_y: 24,
+  tank_spawns: [
+    { "x" => 2, "y" => 2 }, { "x" => 23, "y" => 2 },
+    { "x" => 2, "y" => 22 }, { "x" => 23, "y" => 22 }
+  ],
+  cells: forest_cells
+)
+
 ::HowWantBeBillionare::Question.create!(
   text: "Which of the following countries are considered Scandinavian?",
   points: 100,
