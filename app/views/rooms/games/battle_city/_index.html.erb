@@ -13,24 +13,39 @@
       </p>
     </div>
 
-    <%# PixiJS canvas is appended here by the Stimulus controller %>
+    <%# Game canvas + countdown overlay container %>
     <div data-controller="battle-city-host"
          data-battle-city-host-room-code-value="<%= @room.code %>"
-         class="border-2 border-slate-800 rounded-lg overflow-hidden"
+         data-battle-city-host-test-player-id-value="<%= @room.players.first&.id %>"
+         class="relative border-2 border-slate-800 rounded-lg overflow-hidden"
          style="width: 520px; height: 520px; background: #0d0d1a;">
+
+      <%# PixiJS canvas is appended here by the Stimulus controller %>
+
+      <%# Countdown overlay — shown during 3-2-1-GO sequence %>
+      <div id="battle-city-countdown"
+           class="hidden absolute inset-0 flex items-center justify-center bg-black/70 z-10 pointer-events-none">
+        <span id="battle-city-count"
+              class="font-black text-white select-none"
+              style="font-size: 130px; text-shadow: 0 0 40px rgba(250,204,21,0.9);">3</span>
+      </div>
     </div>
 
-    <%# Scoreboard %>
+    <%# Per-player scoreboards %>
     <div class="mt-5 flex gap-4 flex-wrap justify-center">
+      <% tank_colors = %w[text-yellow-400 text-green-400 text-slate-300 text-red-400] %>
       <% @room.players.each_with_index do |player, i| %>
-        <% colors = %w[text-yellow-400 text-green-400 text-slate-300 text-red-400] %>
         <div class="bg-slate-900 border border-slate-700 rounded-xl px-5 py-3 text-center min-w-[100px]">
           <p class="text-[10px] text-slate-600 uppercase tracking-widest">Player <%= i + 1 %></p>
-          <p class="<%= colors[i] %> font-bold mt-1 text-sm"><%= player.nickname %></p>
-          <p class="<%= colors[i] %> font-mono font-black text-2xl" id="score-<%= player.id %>">0</p>
+          <p class="<%= tank_colors[i] %> font-bold mt-1 text-sm"><%= player.nickname %></p>
+          <p class="<%= tank_colors[i] %> font-mono font-black text-2xl" id="score-<%= player.id %>">0</p>
         </div>
       <% end %>
     </div>
+
+    <p class="mt-4 text-slate-700 text-[10px] font-mono">
+      DEV: arrow keys control first tank
+    </p>
   </div>
 
 <% else %>
@@ -40,7 +55,6 @@
   <% current_player %>
   <div class="flex flex-col items-center justify-between min-h-screen bg-slate-950 text-white p-6 select-none">
 
-    <%# Header %>
     <div class="text-center pt-4">
       <p class="text-xs text-slate-500 uppercase tracking-widest">Battle City</p>
       <h2 class="text-xl font-black text-yellow-400 mt-1"><%= session[:nickname] %></h2>

@@ -2,43 +2,50 @@ import { Controller } from "@hotwired/stimulus"
 import consumer from "channels/consumer"
 import { Application, Graphics } from "pixi.js"
 
-// Colours used for wall types (coloured rectangles — replaced by sprites in Phase 7)
 const WALL_COLORS  = { brick: 0xc0392b, steel: 0x7f8c8d, water: 0x2471a3, trees: 0x1e8449 }
 const TANK_COLORS  = { yellow: 0xf1c40f, green: 0x2ecc71, white: 0xecf0f1, red: 0xe74c3c }
 const BASE_COLOR   = { alive: 0xf39c12, dead: 0x555555 }
 const BULLET_COLOR = 0xffffff
 const BG_COLOR     = 0x0d0d1a
 
+const KEY_TO_DIR = {
+  ArrowUp:    "up",
+  ArrowDown:  "down",
+  ArrowLeft:  "left",
+  ArrowRight: "right"
+}
+
 export default class extends Controller {
-  static values = { roomCode: String }
+  // testPlayerId is the first player's id — used for keyboard testing in dev
+  static values = { roomCode: String, testPlayerId: String }
 
   async connect() {
-    this.state   = null
+    this.state     = null
     this.pixiReady = false
 
-    // Boot PixiJS — async in v8
     this.app = new Application()
     await this.app.init({
-      width: 520,
-      height: 520,
+      width:      520,
+      height:     520,
       background: BG_COLOR,
-      antialias: false
+      antialias:  false
     })
 
-    // Attach canvas to the host container div
     this.element.appendChild(this.app.canvas)
     this.pixiReady = true
 
-    // Render pending state if a snapshot arrived before PixiJS was ready
     if (this.state) this.render()
 
     this.subscribe()
+    this.bindKeyboard()
   }
 
   disconnect() {
     this.channel?.unsubscribe()
     this.app?.destroy(true)
     this.pixiReady = false
+    document.removeEventListener("keydown", this._onKeyDown)
+    document.removeEventListener("keyup",   this._onKeyUp)
   }
 
   // ── ActionCable ──────────────────────────────────────────────────────────
@@ -49,8 +56,11 @@ export default class extends Controller {
       room_code: this.roomCodeValue,
       player_id: ""
     }, {
-      connected: () => console.log("[BattleCity] host connected"),
-      received:  (data) => this.handleMessage(data)
+      connected: () => {
+        console.log("[BattleCity] host connected — starting game loop")
+        this.channel.perform("start_game_loop", { room_code: this.roomCodeValue })
+      },
+      received: (data) => this.handleMessage(data)
     })
   }
 
@@ -63,6 +73,10 @@ export default class extends Controller {
 
       case "state_delta":
         this.applyDelta(data.delta)
+        break
+
+      case "countdown":
+        this.showCountdown(data.count)
         break
 
       case "game_over":
@@ -80,11 +94,53 @@ export default class extends Controller {
     if (this.pixiReady) this.render()
   }
 
+  // ── Countdown overlay ────────────────────────────────────────────────────
+
+  showCountdown(count) {
+    const overlay  = document.getElementById("battle-city-countdown")
+    const countEl  = document.getElementById("battle-city-count")
+    if (!overlay || !countEl) return
+
+    if (count > 0) {
+      overlay.classList.remove("hidden")
+      countEl.textContent = count
+    } else {
+      countEl.textContent = "GO!"
+      setTimeout(() => overlay.classList.add("hidden"), 700)
+    }
+  }
+
+  // ── Keyboard testing (dev only — removed in Phase 4) ────────────────────
+
+  bindKeyboard() {
+    this._onKeyDown = (e) => {
+      const dir = KEY_TO_DIR[e.key]
+      if (!dir || !this.testPlayerIdValue) return
+      e.preventDefault()
+      this.channel.perform("player_input", {
+        player_id: this.testPlayerIdValue,
+        direction: dir,
+        firing: false
+      })
+    }
+
+    this._onKeyUp = (e) => {
+      if (!KEY_TO_DIR[e.key] || !this.testPlayerIdValue) return
+      this.channel.perform("player_input", {
+        player_id: this.testPlayerIdValue,
+        direction: null,
+        firing: false
+      })
+    }
+
+    document.addEventListener("keydown", this._onKeyDown)
+    document.addEventListener("keyup",   this._onKeyUp)
+  }
+
   // ── Rendering ────────────────────────────────────────────────────────────
 
   get cellSize() {
-    const cols = this.state?.map_cols || 26
-    return Math.floor(520 / cols)
+    return Math.floor(520 / (this.state?.map_cols || 26))
   }
 
   render() {
@@ -127,36 +183,48 @@ export default class extends Controller {
     const cs      = this.cellSize
     const padding = 2
 
-    Object.values(this.state.tanks).forEach(tank => {
+    Object.entries(this.state.tanks).forEach(([playerId, tank]) => {
       if (!tank.alive) return
 
-      const g     = new Graphics()
       const color = TANK_COLORS[tank.color] ?? 0xffffff
+      const bx    = tank.x * cs + padding
+      const by    = tank.y * cs + padding
+      const bw    = cs - padding * 2
+      const bh    = cs - padding * 2
 
-      g.rect(
-        tank.x * cs + padding,
-        tank.y * cs + padding,
-        cs - padding * 2,
-        cs - padding * 2
-      )
+      // Tank body
+      const g = new Graphics()
+      g.rect(bx, by, bw, bh)
       g.fill(color)
-
-      // Simple direction indicator — small triangle / notch
-      this.addDirectionIndicator(g, tank, cs, padding, color)
-
       this.app.stage.addChild(g)
+
+      // Direction indicator — thin dark bar on the leading edge
+      this.renderBarrel(tank, cs, padding, color)
     })
   }
 
-  addDirectionIndicator(g, tank, cs, padding, color) {
-    // Draw a small dark square on the leading edge to show facing direction
-    const notch = Math.max(2, Math.floor(cs / 5))
-    const cx    = tank.x * cs + padding + Math.floor((cs - padding * 2) / 2) - Math.floor(notch / 2)
-    const cy    = tank.y * cs + padding + Math.floor((cs - padding * 2) / 2) - Math.floor(notch / 2)
-    const inner = new Graphics()
-    inner.rect(cx, cy, notch, notch)
-    inner.fill(0x000000)
-    this.app.stage.addChild(inner)
+  renderBarrel(tank, cs, padding, color) {
+    const barW  = Math.max(2, Math.floor(cs / 4))
+    const barH  = Math.max(2, Math.floor(cs / 4))
+    const halfW = Math.floor((cs - padding * 2) / 2) - Math.floor(barW / 2)
+    const halfH = Math.floor((cs - padding * 2) / 2) - Math.floor(barH / 2)
+    const ox    = tank.x * cs + padding
+    const oy    = tank.y * cs + padding
+    const size  = cs - padding * 2
+
+    let bx, by
+    switch (tank.direction) {
+      case "up":    bx = ox + halfW;        by = oy;                break
+      case "down":  bx = ox + halfW;        by = oy + size - barH;  break
+      case "left":  bx = ox;                by = oy + halfH;        break
+      case "right": bx = ox + size - barW;  by = oy + halfH;        break
+      default:      return
+    }
+
+    const barrel = new Graphics()
+    barrel.rect(bx, by, barW, barH)
+    barrel.fill(0x000000)
+    this.app.stage.addChild(barrel)
   }
 
   renderBullets() {
@@ -176,7 +244,6 @@ export default class extends Controller {
   }
 
   showGameOver(data) {
-    // Will be fleshed out in Phase 6 — log for now
     console.log("[BattleCity] game over", data)
   }
 }
