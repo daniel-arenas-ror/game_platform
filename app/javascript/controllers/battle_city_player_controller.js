@@ -57,6 +57,7 @@ export default class extends Controller {
       this.colorBadgeTarget.style.backgroundColor = COLOR_HEX[tank.color] ?? "#888"
     }
     this.updateScore(this.myScore)
+    if (tank) this.updateAliveState(tank.alive)
   }
 
   applyDelta(delta) {
@@ -64,6 +65,31 @@ export default class extends Controller {
     if (myScore !== undefined) {
       this.myScore = myScore
       this.updateScore(myScore)
+    }
+
+    const myTank = delta.tanks?.[this.playerIdValue]
+    if (myTank !== undefined) this.updateAliveState(myTank.alive)
+  }
+
+  // Dim the dpad and show "Respawning…" when tank is dead
+  updateAliveState(alive) {
+    if (!this.hasDpadTarget) return
+    if (alive) {
+      this.dpadTarget.style.opacity  = "1"
+      this.dpadTarget.style.filter   = ""
+      const badge = this.dpadTarget.querySelector("[data-respawn-label]")
+      if (badge) badge.remove()
+    } else {
+      this.dpadTarget.style.opacity  = "0.35"
+      this.dpadTarget.style.filter   = "grayscale(1)"
+      if (!this.dpadTarget.querySelector("[data-respawn-label]")) {
+        const label = document.createElement("p")
+        label.setAttribute("data-respawn-label", "")
+        label.textContent  = "Respawning…"
+        label.style.cssText = "position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#94a3b8;letter-spacing:.1em;pointer-events:none;"
+        this.dpadTarget.style.position = "relative"
+        this.dpadTarget.appendChild(label)
+      }
     }
   }
 
