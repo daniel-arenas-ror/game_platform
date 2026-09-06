@@ -52,23 +52,35 @@ class Games::BattleCityChannel < ApplicationCable::Channel
 
         tick_start = Process.clock_gettime(Process::CLOCK_MONOTONIC)
 
-        # Fresh inputs from MongoDB (written by player_input on each player conn)
         @room.reload
         inputs = @room.game_state["pending_inputs"] || {}
 
         delta = service.tick!(state, inputs)
 
-        # Broadcast only when something moved
-        unless delta.empty?
-          broadcast_to_room({ action: "state_delta", delta: delta })
+        # Persist full live state every 5 ticks so new subscribers get a fresh snapshot
+        if state["tick"] % 5 == 0
+          @room.set(
+            "game_state.tanks"   => state["tanks"],
+            "game_state.bullets" => state["bullets"],
+            "game_state.walls"   => state["walls"],
+            "game_state.scores"  => state["scores"],
+            "game_state.base"    => state["base"],
+            "game_state.tick"    => state["tick"]
+          )
         end
 
-        # Persist tank positions so new subscribers get a fresh snapshot
-        if state["tick"] % 10 == 0
-          @room.set(
-            "game_state.tanks" => state["tanks"],
-            "game_state.tick"  => state["tick"]
-          )
+        broadcast_to_room({ action: "state_delta", delta: delta }) unless delta.empty?
+
+        # Game over — broadcast final result then stop the loop
+        if state["status"] == "game_over"
+          @running = false
+          @room.update!(status: "finished", game_state: @room.game_state.merge("status" => "finished"))
+          broadcast_to_room({
+            action: "game_over",
+            scores: state["scores"],
+            reason: state["game_over_reason"]
+          })
+          break
         end
 
         elapsed    = Process.clock_gettime(Process::CLOCK_MONOTONIC) - tick_start
