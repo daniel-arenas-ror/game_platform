@@ -8,16 +8,8 @@ const BASE_COLOR   = { alive: 0xf39c12, dead: 0x555555 }
 const BULLET_COLOR = 0xffffff
 const BG_COLOR     = 0x0d0d1a
 
-const KEY_TO_DIR = {
-  ArrowUp:    "up",
-  ArrowDown:  "down",
-  ArrowLeft:  "left",
-  ArrowRight: "right"
-}
-
 export default class extends Controller {
-  // testPlayerId is the first player's id — used for keyboard testing in dev
-  static values = { roomCode: String, testPlayerId: String }
+  static values = { roomCode: String }
 
   async connect() {
     this.state     = null
@@ -37,15 +29,12 @@ export default class extends Controller {
     if (this.state) this.render()
 
     this.subscribe()
-    this.bindKeyboard()
   }
 
   disconnect() {
     this.channel?.unsubscribe()
     this.app?.destroy(true)
     this.pixiReady = false
-    document.removeEventListener("keydown", this._onKeyDown)
-    document.removeEventListener("keyup",   this._onKeyUp)
   }
 
   // ── ActionCable ──────────────────────────────────────────────────────────
@@ -108,33 +97,6 @@ export default class extends Controller {
       countEl.textContent = "GO!"
       setTimeout(() => overlay.classList.add("hidden"), 700)
     }
-  }
-
-  // ── Keyboard testing (dev only — removed in Phase 4) ────────────────────
-
-  bindKeyboard() {
-    this._onKeyDown = (e) => {
-      const dir = KEY_TO_DIR[e.key]
-      if (!dir || !this.testPlayerIdValue) return
-      e.preventDefault()
-      this.channel.perform("player_input", {
-        player_id: this.testPlayerIdValue,
-        direction: dir,
-        firing: false
-      })
-    }
-
-    this._onKeyUp = (e) => {
-      if (!KEY_TO_DIR[e.key] || !this.testPlayerIdValue) return
-      this.channel.perform("player_input", {
-        player_id: this.testPlayerIdValue,
-        direction: null,
-        firing: false
-      })
-    }
-
-    document.addEventListener("keydown", this._onKeyDown)
-    document.addEventListener("keyup",   this._onKeyUp)
   }
 
   // ── Rendering ────────────────────────────────────────────────────────────
@@ -247,3 +209,4 @@ export default class extends Controller {
     console.log("[BattleCity] game over", data)
   }
 }
+
