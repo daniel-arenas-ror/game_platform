@@ -10,7 +10,8 @@ const COLOR_HEX = {
 
 export default class extends Controller {
   static values  = { roomCode: String, playerId: String }
-  static targets = ["score", "colorBadge", "statusText", "dpad", "countdownOverlay"]
+  static targets = ["score", "colorBadge", "statusText", "dpad", "countdownOverlay",
+                    "gameOverOverlay", "gameOverTitle", "gameOverSub", "finalScore"]
 
   connect() {
     console.log("[BattleCity Player] controller connected", this.roomCodeValue, this.playerIdValue)
@@ -45,20 +46,25 @@ export default class extends Controller {
       case "state_delta":    this.applyDelta(data.delta);    break
       case "countdown":      this.showCountdown(data.count); break
       case "game_over":      this.showGameOver(data);        break
+      case "game_restarted": window.location.reload();       break
     }
   }
 
   applySnapshot(state) {
-    const tank = state.tanks?.[this.playerIdValue]
+    this.myScore = state.scores?.[this.playerIdValue] ?? 0
+    const tank   = state.tanks?.[this.playerIdValue]
     if (tank && this.hasColorBadgeTarget) {
       this.colorBadgeTarget.style.backgroundColor = COLOR_HEX[tank.color] ?? "#888"
     }
-    this.updateScore(state.scores?.[this.playerIdValue] ?? 0)
+    this.updateScore(this.myScore)
   }
 
   applyDelta(delta) {
     const myScore = delta.scores?.[this.playerIdValue]
-    if (myScore !== undefined) this.updateScore(myScore)
+    if (myScore !== undefined) {
+      this.myScore = myScore
+      this.updateScore(myScore)
+    }
   }
 
   updateScore(score) {
@@ -80,7 +86,30 @@ export default class extends Controller {
   }
 
   showGameOver(data) {
-    console.log("[BattleCity] game over", data)
+    const myScore  = data.scores?.[this.playerIdValue] ?? this.myScore ?? 0
+    const isWinner = data.winner_id === this.playerIdValue ||
+                     (data.reason !== "base_destroyed" &&
+                      data.winner_id == null &&
+                      Object.values(data.scores ?? {}).length > 0 &&
+                      myScore === Math.max(...Object.values(data.scores ?? {})))
+
+    const reasons = {
+      base_destroyed:     "The base was destroyed",
+      last_tank_standing: "Last tank standing",
+      kills_limit:        "Kill limit reached"
+    }
+
+    if (this.hasGameOverTitleTarget) {
+      this.gameOverTitleTarget.textContent  = isWinner ? "YOU WIN!" : "GAME OVER"
+      this.gameOverTitleTarget.style.color  = isWinner ? "#f1c40f" : "#ffffff"
+    }
+    if (this.hasGameOverSubTarget)
+      this.gameOverSubTarget.textContent = reasons[data.reason] ?? ""
+    if (this.hasFinalScoreTarget)
+      this.finalScoreTarget.textContent = myScore
+
+    if (this.hasGameOverOverlayTarget)
+      this.gameOverOverlayTarget.classList.remove("hidden")
   }
 
   // ── D-pad — Pointer Events (works on touch + mouse) ───────────────────────

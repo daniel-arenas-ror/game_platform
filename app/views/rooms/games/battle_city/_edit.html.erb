@@ -18,6 +18,26 @@
   </div>
 </div>
 
+<%# Kills to win %>
+<div class="space-y-4 bg-slate-900/50 p-6 rounded-2xl border border-slate-700 mt-2">
+  <label class="block text-xs font-bold text-slate-400 mb-3 tracking-widest">KILLS TO WIN (0 = base only)</label>
+  <div class="grid grid-cols-4 gap-3">
+    <% [0, 3, 5, 10].each do |n| %>
+      <label class="relative cursor-pointer">
+        <input type="radio"
+               name="room[game_state][kills_to_win]"
+               value="<%= n %>"
+               class="peer hidden"
+               <%= 'checked' if (@room.game_state['kills_to_win']&.to_i || 5) == n %>>
+        <div class="text-center py-3 bg-slate-800 border-2 border-slate-700 rounded-xl text-white font-bold
+                    peer-checked:border-yellow-500 peer-checked:bg-yellow-500/10 transition-all">
+          <%= n == 0 ? "∞" : n %>
+        </div>
+      </label>
+    <% end %>
+  </div>
+</div>
+
 <%# Max players picker %>
 <div class="space-y-4 bg-slate-900/50 p-6 rounded-2xl border border-slate-700 mt-2">
   <label class="block text-xs font-bold text-slate-400 mb-3 tracking-widest">MAX PLAYERS</label>

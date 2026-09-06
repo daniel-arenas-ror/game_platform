@@ -90,6 +90,19 @@ class Games::BattleCityChannel < ApplicationCable::Channel
     end
   end
 
+  # Called by the host's "Play Again" button — resets state and reloads all clients.
+  def restart_game
+    return unless host?
+
+    @running = false   # stop current loop if somehow still running
+    @room    = Room.find_by(code: params[:room_code])
+
+    GameServices::BattleCity.new(@room).setup_game!
+
+    # Tell everyone to reload — they will re-subscribe and get a fresh state_snapshot
+    broadcast_to_room({ action: "game_restarted" })
+  end
+
   # Called by each player (or by the host keyboard in debug mode) to queue movement.
   def player_input(data)
     player_id = resolve_player_id(data)

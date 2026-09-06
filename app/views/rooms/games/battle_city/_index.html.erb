@@ -13,21 +13,44 @@
       </p>
     </div>
 
-    <%# Game canvas + countdown overlay %>
+    <%# Game canvas + overlays %>
     <div data-controller="battle-city-host"
          data-battle-city-host-room-code-value="<%= @room.code %>"
          class="relative border-2 border-slate-800 rounded-lg overflow-hidden"
          style="width: 520px; height: 520px; background: #0d0d1a;">
 
+      <%# PixiJS canvas appended here by the controller %>
+
+      <%# Countdown overlay %>
       <div id="battle-city-countdown"
            class="hidden absolute inset-0 flex items-center justify-center bg-black/70 z-10 pointer-events-none">
         <span id="battle-city-count"
               class="font-black text-white select-none"
               style="font-size: 130px; text-shadow: 0 0 40px rgba(250,204,21,0.9);">3</span>
       </div>
+
+      <%# Game Over overlay (inside canvas area) %>
+      <div id="battle-city-game-over"
+           class="hidden absolute inset-0 flex items-center justify-center bg-black/88 z-20">
+        <div class="text-center px-8 py-8 w-full">
+          <h2 class="font-black text-yellow-400 mb-1 tracking-widest"
+              style="font-size: 56px; text-shadow: 0 0 30px rgba(250,204,21,0.7);">
+            GAME OVER
+          </h2>
+          <p id="battle-city-over-reason"
+             class="text-slate-400 text-xs font-mono uppercase tracking-widest mb-6"></p>
+
+          <div id="battle-city-rankings" class="space-y-2 mb-8 text-left max-w-xs mx-auto"></div>
+
+          <button id="battle-city-play-again"
+                  class="bg-yellow-400 hover:bg-yellow-300 text-slate-950 font-black px-10 py-3 rounded-xl uppercase tracking-widest text-lg transition-colors cursor-pointer">
+            PLAY AGAIN
+          </button>
+        </div>
+      </div>
     </div>
 
-    <%# Per-player scoreboards %>
+    <%# Per-player live scoreboards %>
     <div class="mt-5 flex gap-4 flex-wrap justify-center">
       <% tank_colors = %w[text-yellow-400 text-green-400 text-slate-300 text-red-400] %>
       <% @room.players.each_with_index do |player, i| %>
@@ -59,6 +82,24 @@
             style="font-size: 120px; text-shadow: 0 0 40px rgba(250,204,21,0.9);">3</span>
     </div>
 
+    <%# Game Over overlay — covers phone screen %>
+    <div data-battle-city-player-target="gameOverOverlay"
+         class="hidden absolute inset-0 z-30 flex flex-col items-center justify-center bg-slate-950 px-8 text-center">
+      <p data-battle-city-player-target="gameOverTitle"
+         class="font-black tracking-widest"
+         style="font-size: 64px; text-shadow: 0 0 30px rgba(250,204,21,0.7);">
+        GAME OVER
+      </p>
+      <p data-battle-city-player-target="gameOverSub"
+         class="text-slate-400 text-sm font-mono uppercase tracking-widest mt-2 mb-8"></p>
+      <div class="bg-slate-800 border border-slate-700 rounded-2xl px-8 py-4">
+        <p class="text-[10px] text-slate-500 uppercase tracking-widest">Your kills</p>
+        <p data-battle-city-player-target="finalScore"
+           class="font-mono font-black text-5xl text-yellow-400 mt-1">0</p>
+      </div>
+      <p class="text-slate-600 text-xs mt-10 font-mono">Waiting for host to restart…</p>
+    </div>
+
     <%# Header — color badge, nickname, kill score %>
     <div class="flex items-center justify-between px-6 pt-6 pb-2">
       <div class="flex items-center gap-3">
@@ -74,26 +115,20 @@
       </div>
     </div>
 
-    <%# D-pad — fills remaining screen space, centered %>
+    <%# D-pad %>
     <div class="flex-1 flex items-center justify-center" data-battle-city-player-target="dpad">
       <div class="grid gap-3"
            style="grid-template-columns: repeat(3, 88px); grid-template-rows: repeat(3, 88px);">
 
-        <%# Row 1: blank | UP | blank %>
         <div></div>
         <button class="rounded-2xl bg-slate-800 border-2 border-slate-600 flex items-center justify-center text-4xl font-black text-white"
                 data-direction="up"
-                style="touch-action: none; -webkit-user-select: none; user-select: none;">
-          ▲
-        </button>
+                style="touch-action: none; -webkit-user-select: none; user-select: none;">▲</button>
         <div></div>
 
-        <%# Row 2: LEFT | FIRE | RIGHT %>
         <button class="rounded-2xl bg-slate-800 border-2 border-slate-600 flex items-center justify-center text-4xl font-black text-white"
                 data-direction="left"
-                style="touch-action: none; -webkit-user-select: none; user-select: none;">
-          ◀
-        </button>
+                style="touch-action: none; -webkit-user-select: none; user-select: none;">◀</button>
         <button class="rounded-2xl border-2 flex items-center justify-center"
                 data-fire="true"
                 style="background: #c0392b; border-color: #e74c3c; touch-action: none; -webkit-user-select: none; user-select: none;">
@@ -101,17 +136,12 @@
         </button>
         <button class="rounded-2xl bg-slate-800 border-2 border-slate-600 flex items-center justify-center text-4xl font-black text-white"
                 data-direction="right"
-                style="touch-action: none; -webkit-user-select: none; user-select: none;">
-          ▶
-        </button>
+                style="touch-action: none; -webkit-user-select: none; user-select: none;">▶</button>
 
-        <%# Row 3: blank | DOWN | blank %>
         <div></div>
         <button class="rounded-2xl bg-slate-800 border-2 border-slate-600 flex items-center justify-center text-4xl font-black text-white"
                 data-direction="down"
-                style="touch-action: none; -webkit-user-select: none; user-select: none;">
-          ▼
-        </button>
+                style="touch-action: none; -webkit-user-select: none; user-select: none;">▼</button>
         <div></div>
       </div>
     </div>

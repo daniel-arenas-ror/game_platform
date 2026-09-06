@@ -42,7 +42,8 @@ module GameServices
           "walls"          => walls,
           "map_preset"     => preset_name,
           "map_cols"       => preset.cols,
-          "map_rows"       => preset.rows
+          "map_rows"       => preset.rows,
+          "kills_to_win"   => (@room.game_state["kills_to_win"] || 5).to_i
         )
       )
 
@@ -100,11 +101,21 @@ module GameServices
 
       # ── 5. Game over conditions ────────────────────────────────────────────
       if base_hit
-        state["status"]            = "game_over"
-        state["game_over_reason"]  = "base_destroyed"
+        state["status"]           = "game_over"
+        state["game_over_reason"] = "base_destroyed"
       elsif state["tanks"].size > 1 && alive_count(state) <= 1
-        state["status"]            = "game_over"
-        state["game_over_reason"]  = "last_tank_standing"
+        state["status"]           = "game_over"
+        state["game_over_reason"] = "last_tank_standing"
+      else
+        kills_to_win = state["kills_to_win"].to_i
+        if kills_to_win > 0
+          winner = state["scores"].find { |_, score| score.to_i >= kills_to_win }
+          if winner
+            state["status"]           = "game_over"
+            state["game_over_reason"] = "kills_limit"
+            state["winner_id"]        = winner[0]
+          end
+        end
       end
 
       # ── 6. Build delta ─────────────────────────────────────────────────────

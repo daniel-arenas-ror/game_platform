@@ -71,6 +71,10 @@ export default class extends Controller {
       case "game_over":
         this.showGameOver(data)
         break
+
+      case "game_restarted":
+        window.location.reload()
+        break
     }
   }
 
@@ -79,8 +83,18 @@ export default class extends Controller {
     if (delta.tanks)           Object.assign(this.state.tanks, delta.tanks)
     if (delta.bullets)         this.state.bullets = delta.bullets
     if (delta.walls_destroyed) delta.walls_destroyed.forEach(k => delete this.state.walls[k])
-    if (delta.scores)          Object.assign(this.state.scores, delta.scores)
+    if (delta.scores) {
+      Object.assign(this.state.scores, delta.scores)
+      this.updateScoreboard(delta.scores)
+    }
     if (this.pixiReady) this.render()
+  }
+
+  updateScoreboard(scores) {
+    Object.entries(scores).forEach(([playerId, score]) => {
+      const el = document.getElementById(`score-${playerId}`)
+      if (el) el.textContent = score
+    })
   }
 
   // ── Countdown overlay ────────────────────────────────────────────────────
@@ -206,7 +220,51 @@ export default class extends Controller {
   }
 
   showGameOver(data) {
-    console.log("[BattleCity] game over", data)
+    const overlay   = document.getElementById("battle-city-game-over")
+    const reasonEl  = document.getElementById("battle-city-over-reason")
+    const rankEl    = document.getElementById("battle-city-rankings")
+    const playAgain = document.getElementById("battle-city-play-again")
+    if (!overlay) return
+
+    // Reason text
+    const reasons = {
+      base_destroyed:      "The base was destroyed!",
+      last_tank_standing:  "Last tank standing!",
+      kills_limit:         "Kill limit reached!"
+    }
+    if (reasonEl) reasonEl.textContent = reasons[data.reason] ?? data.reason ?? ""
+
+    // Ranked list
+    if (rankEl && this.state?.tanks) {
+      const COLORS = { yellow: "#f1c40f", green: "#2ecc71", white: "#ecf0f1", red: "#e74c3c" }
+      const scores = data.scores ?? {}
+      const sorted = Object.entries(scores)
+        .sort(([, a], [, b]) => b - a)
+
+      rankEl.innerHTML = sorted.map(([pid, score], idx) => {
+        const tank    = this.state.tanks[pid]
+        const name    = tank?.nickname ?? `Player ${idx + 1}`
+        const color   = COLORS[tank?.color] ?? "#ffffff"
+        const medal   = ["🥇", "🥈", "🥉"][idx] ?? `${idx + 1}.`
+        const isWinner = pid === data.winner_id || (idx === 0 && data.reason === "kills_limit")
+        return `
+          <div class="flex items-center justify-between py-1 px-2 rounded-lg ${isWinner ? "bg-yellow-400/10" : ""}">
+            <span class="text-slate-400 w-6 text-sm">${medal}</span>
+            <span class="flex-1 font-bold text-sm" style="color: ${color}">${name}</span>
+            <span class="font-mono font-black text-lg" style="color: ${color}">${score}</span>
+          </div>`
+      }).join("")
+    }
+
+    // Wire Play Again button (once)
+    if (playAgain && !playAgain._wired) {
+      playAgain._wired = true
+      playAgain.addEventListener("click", () => {
+        this.channel?.perform("restart_game", { room_code: this.roomCodeValue })
+      })
+    }
+
+    overlay.classList.remove("hidden")
   }
 }
 
