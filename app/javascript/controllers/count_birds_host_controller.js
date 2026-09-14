@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 import consumer from "channels/consumer"
 
 // Bird drawn as a filled "M" silhouette using bezier curves
-// Distractors are colored (non-black) shapes
+// Each bird moves independently — no flocking
 // Background: painted sky gradient + fluffy clouds
 
 const BIRD_COLOR        = "#1a1a2e"
@@ -10,7 +10,6 @@ const DISTRACTOR_COLORS = ["#e74c3c", "#e67e22", "#8e44ad", "#16a085", "#c0392b"
 const FPS               = 60
 const FRAME_MS          = 1000 / FPS
 
-// Clouds are generated once per round and stay fixed
 let CLOUDS = []
 
 export default class extends Controller {
@@ -23,10 +22,10 @@ export default class extends Controller {
   ]
 
   connect() {
-    this.birds        = []
-    this.animFrame    = null
-    this.timerHandle  = null
-    this.lastTime     = 0
+    this.birds       = []
+    this.animFrame   = null
+    this.timerHandle = null
+    this.lastTime    = 0
     this.subscribe()
   }
 
@@ -53,11 +52,11 @@ export default class extends Controller {
   handleMessage(data) {
     console.log("[CountBirds Host] received", data.action, data)
     switch (data.action) {
-      case "start_round":      this.onStartRound(data);     break
-      case "player_submitted": this.onPlayerSubmitted(data); break
-      case "reveal":           this.onReveal(data);          break
-      case "game_over":        this.onGameOver(data);        break
-      case "game_restarted":   window.location.reload();     break
+      case "start_round":      this.onStartRound(data);      break
+      case "player_submitted": this.onPlayerSubmitted(data);  break
+      case "reveal":           this.onReveal(data);           break
+      case "game_over":        this.onGameOver(data);         break
+      case "game_restarted":   window.location.reload();      break
     }
   }
 
@@ -66,8 +65,8 @@ export default class extends Controller {
   onStartRound(data) {
     const { round, total_rounds, bird_count, difficulty, distractor_count, duration } = data
 
-    this.roundCounterTarget.textContent  = `Round ${round} / ${total_rounds}`
-    this.roundCounter2Target.textContent = `Round ${round} / ${total_rounds}`
+    this.roundCounterTarget.textContent    = `Round ${round} / ${total_rounds}`
+    this.roundCounter2Target.textContent   = `Round ${round} / ${total_rounds}`
     this.difficultyBadgeTarget.textContent = difficulty.toUpperCase()
     this.difficultyBadgeTarget.style.color = this.difficultyColor(difficulty)
 
@@ -78,17 +77,14 @@ export default class extends Controller {
   }
 
   onPlayerSubmitted(data) {
-    // Could show a small indicator — keep simple for now
     console.log(`[CountBirds Host] ${data.nickname} submitted`)
   }
 
   onReveal(data) {
     clearInterval(this.timerHandle)
     this.stopAnimation()
-
     this.correctCountTarget.textContent = data.bird_count
     this.playerResultsTarget.innerHTML  = this.buildPlayerResults(data)
-
     this.showPhase("phaseReveal")
   }
 
@@ -97,11 +93,10 @@ export default class extends Controller {
     this.playAgainTarget.addEventListener("click", () => {
       this.channel.perform("restart_game", {})
     }, { once: true })
-
     this.showPhase("phaseGameOver")
   }
 
-  // ── Bird animation ────────────────────────────────────────────────────────
+  // ── Bird spawning ─────────────────────────────────────────────────────────
 
   spawnBirds(birdCount, distractorCount, difficulty) {
     const canvas = this.canvasTarget
@@ -113,12 +108,10 @@ export default class extends Controller {
     this.birds = []
     this.generateClouds(W, H)
 
-    // Real (dark) birds — avoid spawning inside each other by distributing
     for (let i = 0; i < birdCount; i++) {
       this.birds.push(this.createBird(W, H, difficulty, BIRD_COLOR, false))
     }
 
-    // Distractors (vivid colored)
     for (let i = 0; i < distractorCount; i++) {
       const color = DISTRACTOR_COLORS[i % DISTRACTOR_COLORS.length]
       this.birds.push(this.createBird(W, H, difficulty, color, true))
@@ -143,27 +136,27 @@ export default class extends Controller {
   }
 
   createBird(W, H, difficulty, color, isDistractor) {
-    // Chaos birds are a bit faster than moving; static stay still
-    const baseSpeed = difficulty === "chaos"  ? 2.5 + Math.random() * 3.0
-                    : difficulty === "moving" ? 1.2 + Math.random() * 1.8
-                    : 0
+    const speed = difficulty === "chaos"  ? 1.5 + Math.random() * 2.0
+                : difficulty === "moving" ? 0.7 + Math.random() * 1.0
+                : 0
 
     const angle = Math.random() * Math.PI * 2
     return {
       x:           Math.random() * W,
       y:           Math.random() * H,
-      vx:          Math.cos(angle) * baseSpeed,
-      vy:          Math.sin(angle) * baseSpeed,
-      // Much larger birds — 40–70px half-wingspan
+      vx:          Math.cos(angle) * speed,
+      vy:          Math.sin(angle) * speed,
       size:        42 + Math.random() * 28,
       color,
       isDistractor,
       wingPhase:   Math.random() * Math.PI * 2,
       wingSpeed:   0.05 + Math.random() * 0.04,
       turnTimer:   0,
-      turnEvery:   difficulty === "chaos" ? 35 + Math.floor(Math.random() * 55) : 9999
+      turnEvery:   difficulty === "chaos" ? 60 + Math.floor(Math.random() * 90) : 9999
     }
   }
+
+  // ── Animation loop ────────────────────────────────────────────────────────
 
   startAnimation(difficulty) {
     this.stopAnimation()
@@ -177,7 +170,7 @@ export default class extends Controller {
       }
       this.lastTime = ts
       this.updateBirds(canvas.width, canvas.height, difficulty)
-      this.drawBirds(ctx, canvas.width, canvas.height)
+      this.draw(ctx, canvas.width, canvas.height)
       this.animFrame = requestAnimationFrame(loop)
     }
 
@@ -196,10 +189,10 @@ export default class extends Controller {
       if (difficulty === "chaos") {
         b.turnTimer++
         if (b.turnTimer >= b.turnEvery) {
-          b.turnTimer  = 0
-          b.turnEvery  = 40 + Math.floor(Math.random() * 60)
-          const angle  = Math.random() * Math.PI * 2
-          const spd    = Math.hypot(b.vx, b.vy)
+          b.turnTimer = 0
+          b.turnEvery = 60 + Math.floor(Math.random() * 90)
+          const spd   = Math.hypot(b.vx, b.vy)
+          const angle = Math.random() * Math.PI * 2
           b.vx = Math.cos(angle) * spd
           b.vy = Math.sin(angle) * spd
         }
@@ -209,73 +202,67 @@ export default class extends Controller {
       b.y += b.vy
 
       // Wrap edges
-      if (b.x < -b.size)  b.x = W + b.size
+      if (b.x < -b.size)    b.x = W + b.size
       if (b.x > W + b.size) b.x = -b.size
-      if (b.y < -b.size)  b.y = H + b.size
+      if (b.y < -b.size)    b.y = H + b.size
       if (b.y > H + b.size) b.y = -b.size
     }
   }
 
-  drawBirds(ctx, W, H) {
-    // 1. Sky gradient
+  // ── Drawing ───────────────────────────────────────────────────────────────
+
+  draw(ctx, W, H) {
+    // Sky gradient
     const sky = ctx.createLinearGradient(0, 0, 0, H)
-    sky.addColorStop(0,   "#1a6fa8")   // deep blue top
-    sky.addColorStop(0.5, "#4ab3e8")   // mid sky
-    sky.addColorStop(1,   "#b8e4f9")   // pale horizon
+    sky.addColorStop(0,   "#1a6fa8")
+    sky.addColorStop(0.5, "#4ab3e8")
+    sky.addColorStop(1,   "#b8e4f9")
     ctx.fillStyle = sky
     ctx.fillRect(0, 0, W, H)
 
-    // 2. Clouds
+    // Clouds
+    ctx.fillStyle   = "rgba(255,255,255,0.88)"
+    ctx.shadowColor = "rgba(200,230,255,0.5)"
+    ctx.shadowBlur  = 18
     for (const c of CLOUDS) {
       ctx.save()
       ctx.translate(c.x, c.y)
       ctx.scale(c.scale, c.scale)
-      ctx.fillStyle = "rgba(255,255,255,0.88)"
-      ctx.shadowColor = "rgba(200,230,255,0.5)"
-      ctx.shadowBlur  = 18
       for (const p of c.puffs) {
         ctx.beginPath()
         ctx.arc(p.ox, p.oy, p.r, 0, Math.PI * 2)
         ctx.fill()
       }
-      ctx.shadowBlur = 0
       ctx.restore()
     }
+    ctx.shadowBlur = 0
 
-    // 3. Birds on top
+    // Birds
     for (const b of this.birds) {
       this.drawBird(ctx, b)
     }
   }
 
   drawBird(ctx, b) {
-    const flap = Math.sin(b.wingPhase) * b.size * 0.45   // pronounced flap
+    const flap = Math.sin(b.wingPhase) * b.size * 0.45
 
     ctx.save()
     ctx.translate(b.x, b.y)
-
-    // Filled silhouette: left wing + body + right wing as one closed path
-    ctx.beginPath()
-
-    // Left wing tip
-    ctx.moveTo(-b.size, 0)
-    // Left wing arc up to body center
-    ctx.quadraticCurveTo(-b.size * 0.55, -flap, 0, 0)
-    // Right wing arc to tip
-    ctx.quadraticCurveTo(b.size * 0.55, -flap, b.size, 0)
-    // Slim body: taper right wing back through a narrow waist
-    ctx.quadraticCurveTo(b.size * 0.55, flap * 0.15, 0, b.size * 0.08)
-    ctx.quadraticCurveTo(-b.size * 0.55, flap * 0.15, -b.size, 0)
-    ctx.closePath()
-
-    ctx.fillStyle = b.color
-
-    // Soft shadow so birds visible over bright clouds
+    ctx.fillStyle   = b.color
     ctx.shadowColor = "rgba(0,0,0,0.45)"
     ctx.shadowBlur  = 6
-    ctx.fill()
-    ctx.shadowBlur  = 0
 
+    // Filled wing silhouette
+    ctx.beginPath()
+    ctx.moveTo(-b.size, 0)
+    ctx.quadraticCurveTo(-b.size * 0.55, -flap, 0, 0)
+    ctx.quadraticCurveTo( b.size * 0.55, -flap, b.size, 0)
+    ctx.quadraticCurveTo( b.size * 0.55, flap * 0.15, 0, b.size * 0.08)
+    ctx.quadraticCurveTo(-b.size * 0.55, flap * 0.15, -b.size, 0)
+    ctx.closePath()
+    ctx.fill()
+
+    ctx.shadowBlur = 0
     ctx.restore()
   }
 
@@ -335,9 +322,7 @@ export default class extends Controller {
     const phases = ["phaseWaiting", "phaseShowing", "phaseReveal", "phaseGameOver"]
     phases.forEach(p => {
       const key = `has${p.charAt(0).toUpperCase() + p.slice(1)}Target`
-      if (this[key]) {
-        this[`${p}Target`].classList.toggle("hidden", p !== name)
-      }
+      if (this[key]) this[`${p}Target`].classList.toggle("hidden", p !== name)
     })
   }
 

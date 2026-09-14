@@ -40,7 +40,8 @@ class Games::CountBirdsChannel < ApplicationCable::Channel
         round = i + 1
 
         # ── 1. Generate round config ───────────────────────────────────────
-        bird_count       = GameServices::CountBirds.bird_count_for(round)
+        density          = @room.game_state["density"] || "normal"
+        bird_count       = GameServices::CountBirds.bird_count_for(round, density: density)
         difficulty       = GameServices::CountBirds.difficulty_for(round)
         distractor_count = GameServices::CountBirds.distractor_count_for(round)
         count_duration   = GameServices::CountBirds.count_duration_for(round, total_rounds)

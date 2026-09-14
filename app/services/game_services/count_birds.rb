@@ -1,9 +1,9 @@
 module GameServices
   class CountBirds < Base
     # How many black birds appear in each round.
-    # Base = round number + 4, with ±2 randomness, minimum 3.
-    def self.bird_count_for(round)
-      base = round + 4
+    # Normal: starts ~5, grows to ~15.  Dense: starts ~10, grows to ~25.
+    def self.bird_count_for(round, density: "normal")
+      base = density == "dense" ? round + 9 : round + 4
       [base + rand(-2..2), 3].max
     end
 
