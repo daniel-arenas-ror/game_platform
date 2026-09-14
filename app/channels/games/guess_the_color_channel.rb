@@ -67,6 +67,7 @@ class Games::GuessTheColorChannel < ApplicationCable::Channel
           total_rounds: total_rounds
         })
         sleep PICK_DURATION
+        sleep 1.5   # grace period — lets in-flight client submissions arrive before we read picks
 
         # ── 3. Score & reveal ──────────────────────────────────────────────
         @room.reload
@@ -125,16 +126,18 @@ class Games::GuessTheColorChannel < ApplicationCable::Channel
 
   # ── Player actions ────────────────────────────────────────────────────────
 
-  # Called by the player when they lock in their RGB pick.
+  # Called automatically when the player's timer runs out.
+  # No status guard — the 1.5s grace period means submissions can arrive
+  # slightly after the server moves on. Duplicate check prevents double-scoring.
   def submit_color(data)
     return unless @player
 
     @room.reload
-    return unless @room.game_state["status"] == "picking"
 
-    # Ignore duplicate submissions
+    # Ignore duplicate submissions and submissions after scoring is done
     picks = @room.game_state["picks"] || {}
     return if picks[@player.id.to_s]
+    return if %w[revealing game_over].include?(@room.game_state["status"])
 
     r = data["r"].to_i.clamp(0, 255)
     g = data["g"].to_i.clamp(0, 255)

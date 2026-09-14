@@ -57,10 +57,10 @@ export default class extends Controller {
     this.updateScore(this.totalScore)
 
     switch (state.status) {
-      case "showing_color": this.showPhase("phaseWatch");      break
-      case "picking":       this.showPhase("phasePicking");    break
-      case "revealing":     this.showPhase("phaseSubmitted");  break
-      case "game_over":     this.showPhase("phaseGameOver");   break
+      case "showing_color": this.showPhase("phaseWatch");    break
+      case "picking":       this.showPhase("phasePicking");  break
+      case "revealing":     this.showPhase("phaseWatch");    break  // waiting for reveal broadcast
+      case "game_over":     this.showPhase("phaseGameOver"); break
       default:              this.showPhase("phaseWaiting");
     }
   }
@@ -79,7 +79,9 @@ export default class extends Controller {
     this.submitted = false
 
     // Re-enable sliders for the new round
-    ;[this.sliderRTarget, this.sliderGTarget, this.sliderBTarget].forEach(s => s.disabled = false)
+    if (this.hasSliderRTarget) this.sliderRTarget.disabled = false
+    if (this.hasSliderGTarget) this.sliderGTarget.disabled = false
+    if (this.hasSliderBTarget) this.sliderBTarget.disabled = false
     if (this.hasSubmittedLabelTarget) this.submittedLabelTarget.classList.add("hidden")
 
     this.showPhase("phasePicking")
@@ -178,7 +180,9 @@ export default class extends Controller {
     this.channel?.perform("submit_color", { r, g, b })
 
     // Disable sliders so the player can't change after submission
-    ;[this.sliderRTarget, this.sliderGTarget, this.sliderBTarget].forEach(s => s.disabled = true)
+    if (this.hasSliderRTarget) this.sliderRTarget.disabled = true
+    if (this.hasSliderGTarget) this.sliderGTarget.disabled = true
+    if (this.hasSliderBTarget) this.sliderBTarget.disabled = true
 
     // Show small confirmation label instead of navigating away
     if (this.hasSubmittedLabelTarget)
