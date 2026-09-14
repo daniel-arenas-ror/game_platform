@@ -1,0 +1,181 @@
+<% is_host = session[:player_id].blank? %>
+
+<% if is_host %>
+  <%# ================================================================= %>
+  <%# HOST VIEW — big screen / TV                                        %>
+  <%# ================================================================= %>
+  <div data-controller="count-birds-host"
+       data-count-birds-host-room-code-value="<%= @room.code %>"
+       class="relative flex flex-col items-center justify-center min-h-screen bg-slate-950 overflow-hidden">
+
+    <%# Canvas — birds are drawn here by the controller %>
+    <canvas data-count-birds-host-target="canvas"
+            class="absolute inset-0 w-full h-full"></canvas>
+
+    <%# Waiting overlay %>
+    <div data-count-birds-host-target="phaseWaiting"
+         class="relative z-10 text-center">
+      <p class="text-6xl mb-4">🐦</p>
+      <h1 class="text-3xl font-black tracking-widest uppercase text-yellow-400 mb-2">Count Birds</h1>
+      <p class="text-slate-500 text-xs font-mono tracking-widest">
+        Room: <span class="text-white font-bold"><%= @room.code %></span>
+      </p>
+      <p class="text-slate-400 text-sm mt-4 font-mono">Waiting for game to start…</p>
+    </div>
+
+    <%# Round info + countdown — shown during counting phase %>
+    <div data-count-birds-host-target="phaseShowing"
+         class="hidden absolute inset-0 z-10 pointer-events-none">
+
+      <%# Round counter — top left %>
+      <div class="absolute top-4 left-4">
+        <p data-count-birds-host-target="roundCounter"
+           class="text-white font-mono text-sm bg-black/50 px-3 py-1 rounded-full"></p>
+      </div>
+
+      <%# Difficulty badge — top right %>
+      <div class="absolute top-4 right-4">
+        <p data-count-birds-host-target="difficultyBadge"
+           class="text-xs font-bold uppercase tracking-widest bg-black/50 px-3 py-1 rounded-full text-slate-400"></p>
+      </div>
+
+      <%# Countdown timer — bottom center %>
+      <div class="absolute bottom-8 left-1/2 -translate-x-1/2">
+        <p data-count-birds-host-target="countdown"
+           class="font-black text-white text-6xl"
+           style="text-shadow: 0 0 20px rgba(0,0,0,0.8);"></p>
+      </div>
+
+      <%# Hint — bottom right %>
+      <div class="absolute bottom-8 right-6">
+        <p class="text-slate-400 text-xs font-mono bg-black/40 px-3 py-1 rounded-full">
+          Count only the <span class="text-white font-bold">black birds</span>
+        </p>
+      </div>
+    </div>
+
+    <%# Reveal overlay — shown after time is up %>
+    <div data-count-birds-host-target="phaseReveal"
+         class="hidden absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/85">
+      <p class="text-slate-400 text-xs uppercase tracking-widest font-mono mb-3">The answer was</p>
+      <p data-count-birds-host-target="correctCount"
+         class="font-black text-yellow-400 mb-6"
+         style="font-size: 120px; line-height: 1; text-shadow: 0 0 40px rgba(250,204,21,0.6);"></p>
+      <div data-count-birds-host-target="playerResults"
+           class="flex gap-4 flex-wrap justify-center max-w-2xl mb-6"></div>
+      <p data-count-birds-host-target="roundCounter2"
+         class="text-slate-600 text-xs font-mono mt-2"></p>
+    </div>
+
+    <%# Game over overlay %>
+    <div data-count-birds-host-target="phaseGameOver"
+         class="hidden absolute inset-0 z-30 flex flex-col items-center justify-center bg-slate-950">
+      <p class="text-6xl mb-4">🏆</p>
+      <h2 class="text-5xl font-black text-yellow-400 tracking-widest mb-8">GAME OVER</h2>
+      <div data-count-birds-host-target="finalLeaderboard"
+           class="space-y-3 w-full max-w-sm mb-10"></div>
+      <button data-count-birds-host-target="playAgain"
+              class="bg-yellow-400 hover:bg-yellow-300 text-slate-950 font-black px-10 py-3
+                     rounded-xl uppercase tracking-widest text-lg transition-colors cursor-pointer">
+        Play Again
+      </button>
+    </div>
+  </div>
+
+<% else %>
+  <%# ================================================================= %>
+  <%# PLAYER VIEW — mobile phone                                         %>
+  <%# ================================================================= %>
+  <% current_player %>
+  <div data-controller="count-birds-player"
+       data-count-birds-player-room-code-value="<%= @room.code %>"
+       data-count-birds-player-player-id-value="<%= session[:player_id] %>"
+       class="flex flex-col min-h-screen bg-slate-950 text-white select-none">
+
+    <%# Header %>
+    <div class="flex items-center justify-between px-6 pt-6 pb-2">
+      <span class="font-black text-lg tracking-wide"><%= session[:nickname] %></span>
+      <div class="text-right">
+        <p class="text-[10px] text-slate-600 uppercase tracking-widest">Points</p>
+        <p data-count-birds-player-target="score"
+           class="font-mono font-black text-3xl text-yellow-400 leading-none">0</p>
+      </div>
+    </div>
+
+    <div class="flex-1 flex flex-col items-center justify-center px-6 pb-6 gap-6">
+
+      <%# Waiting phase %>
+      <div data-count-birds-player-target="phaseWaiting" class="text-center">
+        <p class="text-5xl mb-3">🐦</p>
+        <p class="text-slate-400 font-mono text-sm">Watch the screen and count the black birds!</p>
+      </div>
+
+      <%# Counting phase %>
+      <div data-count-birds-player-target="phaseCounting" class="hidden w-full text-center">
+
+        <%# Timer %>
+        <p data-count-birds-player-target="countdown"
+           class="text-yellow-400 font-black text-5xl mb-6"></p>
+
+        <%# Current count display %>
+        <p class="text-slate-400 text-xs uppercase tracking-widest font-mono mb-2">Your count</p>
+        <p data-count-birds-player-target="countDisplay"
+           class="font-black text-white mb-8"
+           style="font-size: 100px; line-height: 1;">0</p>
+
+        <%# +/- buttons %>
+        <div class="flex gap-6 justify-center">
+          <button data-action="click->count-birds-player#decrement"
+                  class="w-28 h-28 rounded-3xl bg-slate-800 border-2 border-slate-600
+                         flex items-center justify-center text-5xl font-black text-white
+                         active:scale-95 transition-transform cursor-pointer">
+            −
+          </button>
+          <button data-action="click->count-birds-player#increment"
+                  class="w-28 h-28 rounded-3xl bg-yellow-400 border-2 border-yellow-300
+                         flex items-center justify-center text-5xl font-black text-slate-950
+                         active:scale-95 transition-transform cursor-pointer">
+            +
+          </button>
+        </div>
+
+        <%# Submitted label %>
+        <p data-count-birds-player-target="submittedLabel"
+           class="hidden mt-6 text-slate-400 text-sm font-mono tracking-widest">
+          Answer submitted ✓
+        </p>
+      </div>
+
+      <%# Reveal phase %>
+      <div data-count-birds-player-target="phaseReveal" class="hidden text-center w-full">
+        <p class="text-slate-400 text-xs uppercase tracking-widest font-mono mb-2">Correct answer</p>
+        <p data-count-birds-player-target="correctCount"
+           class="font-black text-yellow-400 mb-1"
+           style="font-size: 80px; line-height: 1;"></p>
+        <p class="text-slate-500 text-xs font-mono mb-6">black birds</p>
+
+        <div class="bg-slate-800 border border-slate-700 rounded-2xl px-8 py-4 inline-block">
+          <p class="text-[10px] text-slate-500 uppercase tracking-widest">Your answer</p>
+          <p data-count-birds-player-target="myAnswer"
+             class="font-mono font-black text-4xl mt-1"></p>
+        </div>
+
+        <p data-count-birds-player-target="roundPointsLabel"
+           class="font-black text-3xl mt-4"></p>
+      </div>
+
+      <%# Game over phase %>
+      <div data-count-birds-player-target="phaseGameOver" class="hidden text-center">
+        <p class="text-5xl mb-3">🏆</p>
+        <p data-count-birds-player-target="gameOverTitle"
+           class="font-black text-3xl tracking-wide mb-4"></p>
+        <p data-count-birds-player-target="finalScore"
+           class="text-yellow-400 font-mono font-black text-5xl"></p>
+        <p class="text-slate-500 text-xs mt-1 font-mono">total points</p>
+        <p class="text-slate-600 text-xs mt-8 font-mono">Waiting for host to restart…</p>
+      </div>
+    </div>
+
+    <p class="text-center text-slate-800 text-[10px] font-mono pb-4">Room: <%= @room.code %></p>
+  </div>
+<% end %>
