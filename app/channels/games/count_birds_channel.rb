@@ -1,8 +1,9 @@
 class Games::CountBirdsChannel < ApplicationCable::Channel
-  STREAM_PREFIX    = "count_birds_room_"
-  COUNT_DURATION   = 5    # seconds birds are shown and players count
-  GRACE_PERIOD     = 1.5  # extra wait before reading picks (handles client timer drift)
-  REVEAL_DURATION  = 4    # seconds the reveal is shown before next round
+  STREAM_PREFIX      = "count_birds_room_"
+  MIN_COUNT_DURATION = 5    # seconds on round 1
+  MAX_COUNT_DURATION = 15   # cap — reached gradually as rounds progress
+  GRACE_PERIOD       = 1.5  # extra wait before reading picks (handles client timer drift)
+  REVEAL_DURATION    = 4    # seconds the reveal is shown before next round
 
   def subscribed
     @room   = Room.find_by(code: params[:room_code])
@@ -42,6 +43,7 @@ class Games::CountBirdsChannel < ApplicationCable::Channel
         bird_count       = GameServices::CountBirds.bird_count_for(round)
         difficulty       = GameServices::CountBirds.difficulty_for(round)
         distractor_count = GameServices::CountBirds.distractor_count_for(round)
+        count_duration   = GameServices::CountBirds.count_duration_for(round, total_rounds)
 
         @room.set(
           "game_state.round"       => round,
@@ -57,11 +59,11 @@ class Games::CountBirdsChannel < ApplicationCable::Channel
           bird_count:       bird_count,
           difficulty:       difficulty,
           distractor_count: distractor_count,
-          duration:         COUNT_DURATION
+          duration:         count_duration
         })
 
         # ── 2. Wait for players to count ───────────────────────────────────
-        sleep COUNT_DURATION
+        sleep count_duration
         sleep GRACE_PERIOD   # let in-flight submissions arrive
 
         # ── 3. Score picks ─────────────────────────────────────────────────

@@ -6,7 +6,7 @@
   <%# ================================================================= %>
   <div data-controller="count-birds-host"
        data-count-birds-host-room-code-value="<%= @room.code %>"
-       class="relative flex flex-col items-center justify-center min-h-screen bg-slate-950 overflow-hidden">
+       class="relative flex flex-col items-center justify-center min-h-screen bg-sky-300 overflow-hidden">
 
     <%# Canvas — birds are drawn here by the controller %>
     <canvas data-count-birds-host-target="canvas"
@@ -30,26 +30,25 @@
       <%# Round counter — top left %>
       <div class="absolute top-4 left-4">
         <p data-count-birds-host-target="roundCounter"
-           class="text-white font-mono text-sm bg-black/50 px-3 py-1 rounded-full"></p>
+           class="text-white font-bold font-mono text-sm bg-black/60 px-3 py-1 rounded-full backdrop-blur-sm"></p>
       </div>
 
       <%# Difficulty badge — top right %>
       <div class="absolute top-4 right-4">
         <p data-count-birds-host-target="difficultyBadge"
-           class="text-xs font-bold uppercase tracking-widest bg-black/50 px-3 py-1 rounded-full text-slate-400"></p>
+           class="text-xs font-black uppercase tracking-widest bg-black/60 px-3 py-1 rounded-full backdrop-blur-sm"></p>
       </div>
 
       <%# Countdown timer — bottom center %>
       <div class="absolute bottom-8 left-1/2 -translate-x-1/2">
         <p data-count-birds-host-target="countdown"
-           class="font-black text-white text-6xl"
-           style="text-shadow: 0 0 20px rgba(0,0,0,0.8);"></p>
+           class="font-black text-white text-7xl drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]"></p>
       </div>
 
       <%# Hint — bottom right %>
       <div class="absolute bottom-8 right-6">
-        <p class="text-slate-400 text-xs font-mono bg-black/40 px-3 py-1 rounded-full">
-          Count only the <span class="text-white font-bold">black birds</span>
+        <p class="text-white text-xs font-bold bg-black/55 px-3 py-1 rounded-full backdrop-blur-sm">
+          Count only the <span class="text-yellow-300">dark birds</span>
         </p>
       </div>
     </div>

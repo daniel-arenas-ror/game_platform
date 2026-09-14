@@ -23,6 +23,14 @@ module GameServices
       ((round - 5) * 1.5).round.clamp(1, 15)
     end
 
+    # Counting duration scales linearly from 5s (round 1) to 15s (last round).
+    # Always an integer number of seconds.
+    def self.count_duration_for(round, total_rounds)
+      return 5 if total_rounds <= 1
+      t = (round - 1).to_f / (total_rounds - 1)   # 0.0 → 1.0
+      (5 + t * 10).round.clamp(5, 15)
+    end
+
     # Scoring: exact = 100pts, off by 1 = 50pts, anything else = 0.
     def self.calculate_score(correct, guess)
       return 0  unless guess

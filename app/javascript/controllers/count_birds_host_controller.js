@@ -1,13 +1,17 @@
 import { Controller } from "@hotwired/stimulus"
 import consumer from "channels/consumer"
 
-// Bird drawn as a simple "M" silhouette using canvas arcs
+// Bird drawn as a filled "M" silhouette using bezier curves
 // Distractors are colored (non-black) shapes
+// Background: painted sky gradient + fluffy clouds
 
-const BIRD_COLOR       = "#000000"
-const DISTRACTOR_COLORS = ["#e74c3c", "#3498db", "#2ecc71", "#9b59b6", "#f39c12"]
-const FPS              = 60
-const FRAME_MS         = 1000 / FPS
+const BIRD_COLOR        = "#1a1a2e"
+const DISTRACTOR_COLORS = ["#e74c3c", "#e67e22", "#8e44ad", "#16a085", "#c0392b"]
+const FPS               = 60
+const FRAME_MS          = 1000 / FPS
+
+// Clouds are generated once per round and stay fixed
+let CLOUDS = []
 
 export default class extends Controller {
   static values  = { roomCode: String }
@@ -107,37 +111,57 @@ export default class extends Controller {
     canvas.height = H
 
     this.birds = []
+    this.generateClouds(W, H)
 
-    // Real (black) birds
+    // Real (dark) birds — avoid spawning inside each other by distributing
     for (let i = 0; i < birdCount; i++) {
       this.birds.push(this.createBird(W, H, difficulty, BIRD_COLOR, false))
     }
 
-    // Distractors (colored)
+    // Distractors (vivid colored)
     for (let i = 0; i < distractorCount; i++) {
       const color = DISTRACTOR_COLORS[i % DISTRACTOR_COLORS.length]
       this.birds.push(this.createBird(W, H, difficulty, color, true))
     }
   }
 
+  generateClouds(W, H) {
+    CLOUDS = []
+    const count = 6 + Math.floor(Math.random() * 5)
+    for (let i = 0; i < count; i++) {
+      CLOUDS.push({
+        x:     Math.random() * W,
+        y:     H * 0.05 + Math.random() * H * 0.55,
+        scale: 0.6 + Math.random() * 1.2,
+        puffs: Array.from({ length: 4 + Math.floor(Math.random() * 4) }, () => ({
+          ox: (Math.random() - 0.5) * 90,
+          oy: (Math.random() - 0.5) * 30,
+          r:  28 + Math.random() * 30
+        }))
+      })
+    }
+  }
+
   createBird(W, H, difficulty, color, isDistractor) {
-    const speed = difficulty === "chaos"  ? 1.5 + Math.random() * 2.5
-                : difficulty === "moving" ? 0.8 + Math.random() * 1.2
-                : 0  // static
+    // Chaos birds are a bit faster than moving; static stay still
+    const baseSpeed = difficulty === "chaos"  ? 2.5 + Math.random() * 3.0
+                    : difficulty === "moving" ? 1.2 + Math.random() * 1.8
+                    : 0
 
     const angle = Math.random() * Math.PI * 2
     return {
       x:           Math.random() * W,
       y:           Math.random() * H,
-      vx:          Math.cos(angle) * speed,
-      vy:          Math.sin(angle) * speed,
-      size:        14 + Math.random() * 10,
+      vx:          Math.cos(angle) * baseSpeed,
+      vy:          Math.sin(angle) * baseSpeed,
+      // Much larger birds — 40–70px half-wingspan
+      size:        42 + Math.random() * 28,
       color,
       isDistractor,
       wingPhase:   Math.random() * Math.PI * 2,
-      wingSpeed:   0.08 + Math.random() * 0.06,
+      wingSpeed:   0.05 + Math.random() * 0.04,
       turnTimer:   0,
-      turnEvery:   difficulty === "chaos" ? 40 + Math.floor(Math.random() * 60) : 9999
+      turnEvery:   difficulty === "chaos" ? 35 + Math.floor(Math.random() * 55) : 9999
     }
   }
 
@@ -193,32 +217,64 @@ export default class extends Controller {
   }
 
   drawBirds(ctx, W, H) {
-    ctx.clearRect(0, 0, W, H)
+    // 1. Sky gradient
+    const sky = ctx.createLinearGradient(0, 0, 0, H)
+    sky.addColorStop(0,   "#1a6fa8")   // deep blue top
+    sky.addColorStop(0.5, "#4ab3e8")   // mid sky
+    sky.addColorStop(1,   "#b8e4f9")   // pale horizon
+    ctx.fillStyle = sky
+    ctx.fillRect(0, 0, W, H)
 
+    // 2. Clouds
+    for (const c of CLOUDS) {
+      ctx.save()
+      ctx.translate(c.x, c.y)
+      ctx.scale(c.scale, c.scale)
+      ctx.fillStyle = "rgba(255,255,255,0.88)"
+      ctx.shadowColor = "rgba(200,230,255,0.5)"
+      ctx.shadowBlur  = 18
+      for (const p of c.puffs) {
+        ctx.beginPath()
+        ctx.arc(p.ox, p.oy, p.r, 0, Math.PI * 2)
+        ctx.fill()
+      }
+      ctx.shadowBlur = 0
+      ctx.restore()
+    }
+
+    // 3. Birds on top
     for (const b of this.birds) {
       this.drawBird(ctx, b)
     }
   }
 
   drawBird(ctx, b) {
-    // Wing flap: offset from base position using sin
-    const flap = Math.sin(b.wingPhase) * b.size * 0.35
+    const flap = Math.sin(b.wingPhase) * b.size * 0.45   // pronounced flap
 
     ctx.save()
     ctx.translate(b.x, b.y)
-    ctx.fillStyle   = b.color
-    ctx.strokeStyle = b.color
-    ctx.lineWidth   = b.size * 0.18
 
-    // Two arcs: left wing and right wing ("M" silhouette)
+    // Filled silhouette: left wing + body + right wing as one closed path
     ctx.beginPath()
-    // Left wing
-    ctx.moveTo(0, 0)
-    ctx.quadraticCurveTo(-b.size * 0.6, -flap, -b.size, 0)
-    // Right wing
-    ctx.moveTo(0, 0)
-    ctx.quadraticCurveTo(b.size * 0.6, -flap, b.size, 0)
-    ctx.stroke()
+
+    // Left wing tip
+    ctx.moveTo(-b.size, 0)
+    // Left wing arc up to body center
+    ctx.quadraticCurveTo(-b.size * 0.55, -flap, 0, 0)
+    // Right wing arc to tip
+    ctx.quadraticCurveTo(b.size * 0.55, -flap, b.size, 0)
+    // Slim body: taper right wing back through a narrow waist
+    ctx.quadraticCurveTo(b.size * 0.55, flap * 0.15, 0, b.size * 0.08)
+    ctx.quadraticCurveTo(-b.size * 0.55, flap * 0.15, -b.size, 0)
+    ctx.closePath()
+
+    ctx.fillStyle = b.color
+
+    // Soft shadow so birds visible over bright clouds
+    ctx.shadowColor = "rgba(0,0,0,0.45)"
+    ctx.shadowBlur  = 6
+    ctx.fill()
+    ctx.shadowBlur  = 0
 
     ctx.restore()
   }
