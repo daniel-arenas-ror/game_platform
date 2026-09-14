@@ -7,6 +7,8 @@ class GameFactory
       GameServices::HowWantBeBillionare.new(room)
     when 'battle_city'
       GameServices::BattleCity.new(room)
+    when 'guess_the_color'
+      GameServices::GuessTheColor.new(room)
     when 'impostor'
       ## TODO
     else

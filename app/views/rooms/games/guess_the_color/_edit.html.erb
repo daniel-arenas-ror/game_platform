@@ -1,0 +1,40 @@
+<%# Rounds picker %>
+<div class="space-y-4 bg-slate-900/50 p-6 rounded-2xl border border-slate-700">
+  <label class="block text-xs font-bold text-slate-400 mb-3 tracking-widest">ROUNDS</label>
+  <div class="grid grid-cols-3 gap-3">
+    <% [3, 5, 10].each do |n| %>
+      <label class="relative cursor-pointer">
+        <input type="radio"
+               name="room[game_state][total_rounds]"
+               value="<%= n %>"
+               class="peer hidden"
+               <%= 'checked' if (@room.game_state['total_rounds']&.to_i || 5) == n %>>
+        <div class="text-center py-3 bg-slate-800 border-2 border-slate-700 rounded-xl text-white font-bold
+                    peer-checked:border-yellow-500 peer-checked:bg-yellow-500/10 transition-all">
+          <%= n %> rounds
+        </div>
+      </label>
+    <% end %>
+  </div>
+</div>
+
+<%# Difficulty picker %>
+<div class="space-y-4 bg-slate-900/50 p-6 rounded-2xl border border-slate-700 mt-2">
+  <label class="block text-xs font-bold text-slate-400 mb-3 tracking-widest">DIFFICULTY</label>
+  <div class="grid grid-cols-2 gap-3">
+    <% [["easy", "Easy", "Vivid colors"], ["hard", "Hard", "Any RGB color"]].each do |value, label, desc| %>
+      <label class="relative cursor-pointer">
+        <input type="radio"
+               name="room[game_state][difficulty]"
+               value="<%= value %>"
+               class="peer hidden"
+               <%= 'checked' if (@room.game_state['difficulty'] || 'easy') == value %>>
+        <div class="text-center py-3 px-2 bg-slate-800 border-2 border-slate-700 rounded-xl transition-all
+                    peer-checked:border-yellow-500 peer-checked:bg-yellow-500/10">
+          <p class="text-white font-bold"><%= label %></p>
+          <p class="text-slate-500 text-xs mt-1"><%= desc %></p>
+        </div>
+      </label>
+    <% end %>
+  </div>
+</div>

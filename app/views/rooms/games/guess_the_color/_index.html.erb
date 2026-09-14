@@ -1,0 +1,202 @@
+<% is_host = session[:player_id].blank? %>
+
+<% if is_host %>
+  <%# ================================================================= %>
+  <%# HOST VIEW — big screen / TV                                        %>
+  <%# ================================================================= %>
+  <div data-controller="guess-the-color-host"
+       data-guess-the-color-host-room-code-value="<%= @room.code %>"
+       class="flex flex-col items-center justify-center min-h-screen bg-slate-950 text-white">
+
+    <%# Header %>
+    <div class="mb-6 text-center">
+      <h1 class="text-3xl font-black tracking-widest uppercase text-yellow-400">Guess the Color</h1>
+      <p class="text-slate-500 text-xs mt-1 font-mono tracking-widest">
+        Room: <span class="text-white font-bold"><%= @room.code %></span>
+      </p>
+    </div>
+
+    <%# Main stage — phases rendered here by the controller %>
+    <div data-guess-the-color-host-target="stage"
+         class="w-full max-w-2xl px-6">
+
+      <%# Waiting phase %>
+      <div data-guess-the-color-host-target="phaseWaiting"
+           class="text-center py-20">
+        <p class="text-slate-400 text-lg font-mono">Waiting for game to start…</p>
+      </div>
+
+      <%# Showing color phase %>
+      <div data-guess-the-color-host-target="phaseShowing"
+           class="hidden text-center">
+        <p class="text-slate-400 text-xs uppercase tracking-widest mb-4 font-mono">Memorize this color!</p>
+        <div data-guess-the-color-host-target="colorBlock"
+             class="w-full rounded-3xl shadow-2xl"
+             style="height: 320px;"></div>
+        <p data-guess-the-color-host-target="showingTimer"
+           class="text-slate-400 font-mono text-2xl mt-6"></p>
+      </div>
+
+      <%# Picking phase %>
+      <div data-guess-the-color-host-target="phasePicking"
+           class="hidden text-center">
+        <p class="text-slate-400 text-xs uppercase tracking-widest mb-2 font-mono">Players are picking…</p>
+        <p data-guess-the-color-host-target="pickingTimer"
+           class="text-yellow-400 font-black text-8xl my-4"></p>
+        <div data-guess-the-color-host-target="submittedList"
+             class="flex gap-3 justify-center flex-wrap mt-4"></div>
+      </div>
+
+      <%# Reveal phase %>
+      <div data-guess-the-color-host-target="phaseReveal"
+           class="hidden">
+        <p class="text-center text-slate-400 text-xs uppercase tracking-widest mb-6 font-mono">Results</p>
+        <div data-guess-the-color-host-target="revealGrid"
+             class="flex gap-4 flex-wrap justify-center"></div>
+        <div data-guess-the-color-host-target="roundScores"
+             class="mt-8 space-y-2 max-w-sm mx-auto"></div>
+      </div>
+
+      <%# Game over phase %>
+      <div data-guess-the-color-host-target="phaseGameOver"
+           class="hidden text-center py-10">
+        <h2 class="text-5xl font-black text-yellow-400 tracking-widest mb-2">GAME OVER</h2>
+        <div data-guess-the-color-host-target="finalLeaderboard"
+             class="mt-8 space-y-3 max-w-sm mx-auto"></div>
+        <button data-guess-the-color-host-target="playAgain"
+                class="mt-10 bg-yellow-400 hover:bg-yellow-300 text-slate-950 font-black px-10 py-3
+                       rounded-xl uppercase tracking-widest text-lg transition-colors cursor-pointer">
+          Play Again
+        </button>
+      </div>
+    </div>
+
+    <%# Round counter %>
+    <p data-guess-the-color-host-target="roundCounter"
+       class="mt-8 text-slate-600 text-xs font-mono tracking-widest"></p>
+  </div>
+
+<% else %>
+  <%# ================================================================= %>
+  <%# PLAYER VIEW — mobile phone                                         %>
+  <%# ================================================================= %>
+  <% current_player %>
+  <div data-controller="guess-the-color-player"
+       data-guess-the-color-player-room-code-value="<%= @room.code %>"
+       data-guess-the-color-player-player-id-value="<%= session[:player_id] %>"
+       class="flex flex-col min-h-screen bg-slate-950 text-white select-none">
+
+    <%# Header %>
+    <div class="flex items-center justify-between px-6 pt-6 pb-2">
+      <span class="font-black text-lg tracking-wide"><%= session[:nickname] %></span>
+      <div class="text-right">
+        <p class="text-[10px] text-slate-600 uppercase tracking-widest">Points</p>
+        <p data-guess-the-color-player-target="score"
+           class="font-mono font-black text-3xl text-yellow-400 leading-none">0</p>
+      </div>
+    </div>
+
+    <%# Main content — phases rendered here by the controller %>
+    <div class="flex-1 flex flex-col items-center justify-center px-6 pb-6">
+
+      <%# Waiting phase %>
+      <div data-guess-the-color-player-target="phaseWaiting"
+           class="text-center">
+        <p class="text-4xl mb-3">🎨</p>
+        <p class="text-slate-400 font-mono text-sm">Waiting for host…</p>
+      </div>
+
+      <%# Watch screen phase (color is showing on host) %>
+      <div data-guess-the-color-player-target="phaseWatch"
+           class="hidden text-center">
+        <p class="text-6xl mb-4">👀</p>
+        <p class="text-white font-black text-2xl tracking-wide">Watch the screen!</p>
+        <p class="text-slate-400 text-sm mt-2 font-mono">Memorize the color</p>
+      </div>
+
+      <%# Picking phase %>
+      <div data-guess-the-color-player-target="phasePicking"
+           class="hidden w-full">
+
+        <%# Countdown %>
+        <div class="flex items-center justify-between mb-4">
+          <p class="text-slate-400 text-xs uppercase tracking-widest font-mono">Pick the color</p>
+          <p data-guess-the-color-player-target="pickingTimer"
+             class="font-mono font-black text-2xl text-yellow-400"></p>
+        </div>
+
+        <%# Live color preview %>
+        <div data-guess-the-color-player-target="colorPreview"
+             class="w-full rounded-2xl mb-6"
+             style="height: 160px; background: rgb(128,128,128);"></div>
+
+        <%# RGB Sliders %>
+        <div class="space-y-4">
+          <% [["r", "R", "bg-red-500"], ["g", "G", "bg-green-500"], ["b", "B", "bg-blue-500"]].each do |ch, label, color| %>
+            <div class="flex items-center gap-3">
+              <span class="text-xs font-black w-4 text-slate-400"><%= label %></span>
+              <input type="range" min="0" max="255" value="128"
+                     data-guess-the-color-player-target="slider<%= ch.upcase %>"
+                     data-channel="<%= ch %>"
+                     class="flex-1 h-3 rounded-full appearance-none cursor-pointer accent-yellow-400">
+              <span data-guess-the-color-player-target="value<%= ch.upcase %>"
+                    class="text-xs font-mono w-8 text-right text-slate-400">128</span>
+            </div>
+          <% end %>
+        </div>
+
+        <%# Submit button %>
+        <button data-guess-the-color-player-target="submitBtn"
+                class="mt-6 w-full bg-yellow-400 hover:bg-yellow-300 text-slate-950 font-black
+                       py-4 rounded-2xl uppercase tracking-widest text-lg transition-colors cursor-pointer">
+          Lock In
+        </button>
+      </div>
+
+      <%# Submitted/waiting for reveal %>
+      <div data-guess-the-color-player-target="phaseSubmitted"
+           class="hidden text-center">
+        <p class="text-5xl mb-4">✅</p>
+        <p class="text-white font-bold text-xl">Color locked in!</p>
+        <div data-guess-the-color-player-target="submittedPreview"
+             class="w-32 h-32 rounded-2xl mx-auto mt-4 shadow-lg"></div>
+        <p class="text-slate-400 text-sm mt-4 font-mono">Waiting for results…</p>
+      </div>
+
+      <%# Reveal phase %>
+      <div data-guess-the-color-player-target="phaseReveal"
+           class="hidden text-center w-full">
+        <p class="text-slate-400 text-xs uppercase tracking-widest mb-4 font-mono">Your result</p>
+        <div class="flex gap-4 justify-center mb-6">
+          <div class="text-center">
+            <div data-guess-the-color-player-target="targetPreview"
+                 class="w-28 h-28 rounded-2xl shadow-lg mx-auto"></div>
+            <p class="text-slate-500 text-xs mt-2 font-mono">Target</p>
+          </div>
+          <div class="text-center">
+            <div data-guess-the-color-player-target="myPickPreview"
+                 class="w-28 h-28 rounded-2xl shadow-lg mx-auto"></div>
+            <p class="text-slate-500 text-xs mt-2 font-mono">Your pick</p>
+          </div>
+        </div>
+        <p data-guess-the-color-player-target="roundPointsLabel"
+           class="text-yellow-400 font-black text-4xl"></p>
+        <p class="text-slate-500 text-xs mt-1 font-mono">points this round</p>
+      </div>
+
+      <%# Game over phase %>
+      <div data-guess-the-color-player-target="phaseGameOver"
+           class="hidden text-center">
+        <p class="text-5xl mb-3">🏆</p>
+        <p data-guess-the-color-player-target="gameOverTitle"
+           class="font-black text-3xl tracking-wide"></p>
+        <p data-guess-the-color-player-target="finalScore"
+           class="text-yellow-400 font-mono font-black text-5xl mt-4"></p>
+        <p class="text-slate-500 text-xs mt-1 font-mono">total points</p>
+        <p class="text-slate-600 text-xs mt-8 font-mono">Waiting for host to restart…</p>
+      </div>
+    </div>
+
+    <p class="text-center text-slate-800 text-[10px] font-mono pb-4">Room: <%= @room.code %></p>
+  </div>
+<% end %>

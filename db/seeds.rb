@@ -25,6 +25,12 @@ Game.create!(
   description: "Multiplayer tank battle! Drive your tank from your phone, destroy enemies and protect the base."
 )
 
+Game.create!(
+  name: "Guess the Color",
+  code: "guess_the_color",
+  description: "The host screen shows a color for 5 seconds. Match it on your phone with RGB sliders before time runs out!"
+)
+
 # ---------------------------------------------------------------------------
 # Battle City — Classic map preset
 # 26×26 grid. Steel border, brick clusters, base at (12, 24).
