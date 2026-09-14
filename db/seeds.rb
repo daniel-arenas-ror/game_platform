@@ -31,6 +31,12 @@ Game.create!(
   description: "The host screen shows a color for 5 seconds. Match it on your phone with RGB sliders before time runs out!"
 )
 
+Game.create!(
+  name: "Count Birds",
+  code: "count_birds",
+  description: "Count the black birds on screen! Rounds get harder — birds move, change color, and distractors appear."
+)
+
 # ---------------------------------------------------------------------------
 # Battle City — Classic map preset
 # 26×26 grid. Steel border, brick clusters, base at (12, 24).
