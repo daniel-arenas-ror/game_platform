@@ -6,7 +6,7 @@ export default class extends Controller {
   static targets = [
     "phaseWaiting", "phaseWatch", "phasePicking", "phaseSubmitted", "phaseReveal", "phaseGameOver",
     "colorPreview", "sliderR", "sliderG", "sliderB", "valueR", "valueG", "valueB",
-    "pickingTimer", "submitBtn", "submittedPreview",
+    "pickingTimer", "submittedLabel", "submittedPreview",
     "targetPreview", "myPickPreview", "roundPointsLabel",
     "score", "gameOverTitle", "finalScore"
   ]
@@ -77,6 +77,11 @@ export default class extends Controller {
   onStartPicking(data) {
     this.stopTimer()
     this.submitted = false
+
+    // Re-enable sliders for the new round
+    ;[this.sliderRTarget, this.sliderGTarget, this.sliderBTarget].forEach(s => s.disabled = false)
+    if (this.hasSubmittedLabelTarget) this.submittedLabelTarget.classList.add("hidden")
+
     this.showPhase("phasePicking")
     this.startCountdown(data.duration)
   }
@@ -160,6 +165,7 @@ export default class extends Controller {
 
   // ── Submit ────────────────────────────────────────────────────────────────
 
+  // Called automatically when the timer runs out — no manual button.
   submitColor() {
     if (this.submitted) return
     this.submitted = true
@@ -171,12 +177,12 @@ export default class extends Controller {
 
     this.channel?.perform("submit_color", { r, g, b })
 
-    // Show submitted state
-    if (this.hasSubmittedPreviewTarget)
-      this.submittedPreviewTarget.style.background = `rgb(${r},${g},${b})`
+    // Disable sliders so the player can't change after submission
+    ;[this.sliderRTarget, this.sliderGTarget, this.sliderBTarget].forEach(s => s.disabled = true)
 
-    this.stopTimer()
-    this.showPhase("phaseSubmitted")
+    // Show small confirmation label instead of navigating away
+    if (this.hasSubmittedLabelTarget)
+      this.submittedLabelTarget.classList.remove("hidden")
   }
 
   // ── Timer ─────────────────────────────────────────────────────────────────
