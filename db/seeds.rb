@@ -8,15 +8,9 @@ Game.create!(
 )
 
 Game.create!(
-  name: "The Impostor",
-  code: "impostor",
-  description: "A social deduction game. The fisherman must find the impostor before they blend in with the knowers."
-)
-
-Game.create!(
-  name: "Quick Draw",
-  code: "quick_draw",
-  description: "A fast-paced drawing game where speed is everything. (Coming soon)"
+  name: "How Want to Be a Billionaire",
+  code: "how_want_be_billionare",
+  description: "A trivia game. Answer questions correctly to earn points and become a billionaire!"
 )
 
 Game.create!(
