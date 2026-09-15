@@ -8,6 +8,7 @@ Rails.application.routes.draw do
     member do
       post "start"
       get "playing"
+      post "change_game"
     end
   end
 

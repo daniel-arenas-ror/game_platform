@@ -57,6 +57,7 @@ export default class extends Controller {
       case "reveal":           this.onReveal(data);           break
       case "game_over":        this.onGameOver(data);         break
       case "game_restarted":   window.location.reload();      break
+      case "game_changed":     window.location.href = `/rooms/${this.roomCodeValue}`; break
     }
   }
 

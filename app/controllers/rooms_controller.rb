@@ -92,11 +92,39 @@ class RoomsController < ApplicationController
     return redirect_to join_room_path(@room.code), alert: "Game has not started yet" if @room.status == 'lobby'
 
     @game_state = @room.game_state
+    @games      = Game.all
 
     render "playing"
   end
 
+  def change_game
+    @room = Room.find_by!(code: params[:id].upcase)
+
+    # Broadcast to current game channel so all players redirect to the new lobby
+    stream = game_stream_name(@room.game.code, @room.code)
+    ActionCable.server.broadcast(stream, { action: "game_changed", room_code: @room.code })
+
+    new_game = Game.find(params[:game_id])
+    @room.update!(game: new_game, status: "lobby", game_state: {})
+
+    redirect_to room_path(@room.code)
+  end
+
   private
+
+  GAME_STREAM_PREFIXES = {
+    "fisherman"              => "fisherman_room_",
+    "how_want_be_billionare" => "millionaire_room_",
+    "battle_city"            => "battle_city_room_",
+    "guess_the_color"        => "guess_the_color_room_",
+    "count_birds"            => "count_birds_room_",
+    "sequence_memory"        => "sequence_memory_room_"
+  }.freeze
+
+  def game_stream_name(game_code, room_code)
+    prefix = GAME_STREAM_PREFIXES[game_code] || "#{game_code}_room_"
+    "#{prefix}#{room_code}"
+  end
 
   def room_params
     params.require(:room).permit(:name, game_state: {})

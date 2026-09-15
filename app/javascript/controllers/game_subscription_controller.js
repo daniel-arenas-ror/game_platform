@@ -31,6 +31,9 @@ export default class extends Controller {
           case "game_started":
             window.location.reload();
             break;
+          case "game_changed":
+            window.location.reload();
+            break;
           case "player_joined":
             const playerList = document.getElementById('player-list');
             if (!playerList) return;

@@ -78,6 +78,7 @@
                      rounded-xl uppercase tracking-widest text-lg transition-colors cursor-pointer">
         Play Again
       </button>
+      <%= render partial: "rooms/games/change_game", locals: { room: @room, games: @games } %>
     </div>
   </div>
 
