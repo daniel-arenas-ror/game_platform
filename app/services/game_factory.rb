@@ -11,6 +11,8 @@ class GameFactory
       GameServices::GuessTheColor.new(room)
     when 'count_birds'
       GameServices::CountBirds.new(room)
+    when 'sequence_memory'
+      GameServices::SequenceMemory.new(room)
     when 'impostor'
       ## TODO
     else

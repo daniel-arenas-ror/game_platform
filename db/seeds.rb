@@ -37,6 +37,12 @@ Game.create!(
   description: "Count the black birds on screen! Rounds get harder — birds move, change color, and distractors appear."
 )
 
+Game.create!(
+  name: "Sequence Memory",
+  code: "sequence_memory",
+  description: "Watch the grid light up in sequence, then repeat it on your phone! Each round adds one more step — how far can your memory take you?"
+)
+
 # ---------------------------------------------------------------------------
 # Battle City — Classic map preset
 # 26×26 grid. Steel border, brick clusters, base at (12, 24).

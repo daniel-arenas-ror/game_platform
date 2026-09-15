@@ -1,0 +1,154 @@
+<% is_host = session[:player_id].blank? %>
+
+<% if is_host %>
+  <%# ================================================================= %>
+  <%# HOST VIEW — big screen / TV                                        %>
+  <%# ================================================================= %>
+  <div data-controller="sequence-memory-host"
+       data-sequence-memory-host-room-code-value="<%= @room.code %>"
+       data-sequence-memory-host-grid-size-value="<%= @room.game_state['grid_size'] || 4 %>"
+       class="relative flex flex-col items-center justify-center min-h-screen bg-slate-950 overflow-hidden">
+
+    <%# Waiting phase %>
+    <div data-sequence-memory-host-target="phaseWaiting" class="text-center">
+      <p class="text-6xl mb-4">🧠</p>
+      <h1 class="text-3xl font-black tracking-widest uppercase text-yellow-400 mb-2">Sequence Memory</h1>
+      <p class="text-slate-500 text-xs font-mono tracking-widest">
+        Room: <span class="text-white font-bold"><%= @room.code %></span>
+      </p>
+      <p class="text-slate-400 text-sm mt-4 font-mono">Waiting for game to start…</p>
+    </div>
+
+    <%# Watching phase — sequence playback %>
+    <div data-sequence-memory-host-target="phaseWatching"
+         class="hidden flex flex-col items-center justify-center w-full px-8">
+
+      <div class="mb-6 text-center">
+        <p data-sequence-memory-host-target="roundLabel"
+           class="text-slate-400 font-mono text-sm tracking-widest"></p>
+        <p class="text-white font-black text-2xl mt-1">Watch carefully…</p>
+      </div>
+
+      <%# Grid rendered by JS %>
+      <div data-sequence-memory-host-target="grid"
+           class="grid gap-3"></div>
+    </div>
+
+    <%# Input phase — players are answering %>
+    <div data-sequence-memory-host-target="phaseInput"
+         class="hidden flex flex-col items-center justify-center w-full px-8">
+
+      <div class="mb-6 text-center">
+        <p data-sequence-memory-host-target="roundLabel2"
+           class="text-slate-400 font-mono text-sm tracking-widest mb-1"></p>
+        <p class="text-white font-black text-2xl">Your turn!</p>
+        <p data-sequence-memory-host-target="countdown"
+           class="text-yellow-400 font-black text-6xl mt-2"></p>
+      </div>
+
+      <div data-sequence-memory-host-target="grid2"
+           class="grid gap-3"></div>
+    </div>
+
+    <%# Reveal phase %>
+    <div data-sequence-memory-host-target="phaseReveal"
+         class="hidden absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/85 px-8">
+      <p class="text-slate-400 text-xs uppercase tracking-widest font-mono mb-2">The sequence was</p>
+      <div data-sequence-memory-host-target="revealGrid"
+           class="grid gap-2 mb-6"></div>
+      <div data-sequence-memory-host-target="playerResults"
+           class="flex gap-4 flex-wrap justify-center max-w-2xl"></div>
+      <p data-sequence-memory-host-target="roundLabel3"
+         class="text-slate-600 text-xs font-mono mt-4"></p>
+    </div>
+
+    <%# Game over overlay %>
+    <div data-sequence-memory-host-target="phaseGameOver"
+         class="hidden absolute inset-0 z-30 flex flex-col items-center justify-center bg-slate-950">
+      <p class="text-6xl mb-4">🏆</p>
+      <h2 class="text-5xl font-black text-yellow-400 tracking-widest mb-8">GAME OVER</h2>
+      <div data-sequence-memory-host-target="finalLeaderboard"
+           class="space-y-3 w-full max-w-sm mb-10"></div>
+      <button data-sequence-memory-host-target="playAgain"
+              class="bg-yellow-400 hover:bg-yellow-300 text-slate-950 font-black px-10 py-3
+                     rounded-xl uppercase tracking-widest text-lg transition-colors cursor-pointer">
+        Play Again
+      </button>
+    </div>
+  </div>
+
+<% else %>
+  <%# ================================================================= %>
+  <%# PLAYER VIEW — mobile phone                                         %>
+  <%# ================================================================= %>
+  <% current_player %>
+  <div data-controller="sequence-memory-player"
+       data-sequence-memory-player-room-code-value="<%= @room.code %>"
+       data-sequence-memory-player-player-id-value="<%= session[:player_id] %>"
+       data-sequence-memory-player-grid-size-value="<%= @room.game_state['grid_size'] || 4 %>"
+       class="flex flex-col min-h-screen bg-slate-950 text-white select-none">
+
+    <%# Header %>
+    <div class="flex items-center justify-between px-6 pt-6 pb-2">
+      <span class="font-black text-lg tracking-wide"><%= session[:nickname] %></span>
+      <div class="text-right">
+        <p class="text-[10px] text-slate-600 uppercase tracking-widest">Points</p>
+        <p data-sequence-memory-player-target="score"
+           class="font-mono font-black text-3xl text-yellow-400 leading-none">0</p>
+      </div>
+    </div>
+
+    <div class="flex-1 flex flex-col items-center justify-center px-4 pb-6 gap-4">
+
+      <%# Waiting phase %>
+      <div data-sequence-memory-player-target="phaseWaiting" class="text-center">
+        <p class="text-5xl mb-3">🧠</p>
+        <p class="text-slate-400 font-mono text-sm">Watch the screen and remember the sequence!</p>
+      </div>
+
+      <%# Watching phase — tell player to watch the host screen %>
+      <div data-sequence-memory-player-target="phaseWatching" class="hidden text-center">
+        <p class="text-5xl mb-3">👀</p>
+        <p class="text-white font-black text-xl mb-2">Watch the screen!</p>
+        <p data-sequence-memory-player-target="watchRoundLabel"
+           class="text-slate-400 font-mono text-sm"></p>
+      </div>
+
+      <%# Input phase — tappable grid %>
+      <div data-sequence-memory-player-target="phaseInput" class="hidden w-full text-center">
+        <p class="text-yellow-400 font-bold text-sm uppercase tracking-widest mb-1">Your turn!</p>
+        <p data-sequence-memory-player-target="countdown"
+           class="text-white font-black text-4xl mb-4"></p>
+
+        <div data-sequence-memory-player-target="grid"
+             class="grid gap-2 mx-auto"></div>
+
+        <p data-sequence-memory-player-target="tapProgress"
+           class="text-slate-500 font-mono text-xs mt-3"></p>
+        <p data-sequence-memory-player-target="submittedLabel"
+           class="hidden text-slate-400 font-mono text-sm mt-3 tracking-widest">Submitted ✓</p>
+      </div>
+
+      <%# Reveal phase %>
+      <div data-sequence-memory-player-target="phaseReveal" class="hidden text-center w-full">
+        <p data-sequence-memory-player-target="roundPointsLabel"
+           class="font-black text-4xl mb-1"></p>
+        <p data-sequence-memory-player-target="roundPointsDesc"
+           class="text-slate-400 text-sm font-mono"></p>
+      </div>
+
+      <%# Game over phase %>
+      <div data-sequence-memory-player-target="phaseGameOver" class="hidden text-center">
+        <p class="text-5xl mb-3">🏆</p>
+        <p data-sequence-memory-player-target="gameOverTitle"
+           class="font-black text-3xl tracking-wide mb-4"></p>
+        <p data-sequence-memory-player-target="finalScore"
+           class="text-yellow-400 font-mono font-black text-5xl"></p>
+        <p class="text-slate-500 text-xs mt-1 font-mono">total points</p>
+        <p class="text-slate-600 text-xs mt-8 font-mono">Waiting for host to restart…</p>
+      </div>
+    </div>
+
+    <p class="text-center text-slate-800 text-[10px] font-mono pb-4">Room: <%= @room.code %></p>
+  </div>
+<% end %>
