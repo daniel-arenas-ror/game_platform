@@ -50,6 +50,7 @@ class Games::BattleCityChannel < ApplicationCable::Channel
       loop do
         break unless @running
 
+
         tick_start = Process.clock_gettime(Process::CLOCK_MONOTONIC)
 
         @room.reload
@@ -87,6 +88,10 @@ class Games::BattleCityChannel < ApplicationCable::Channel
         sleep_time = 0.060 - elapsed
         sleep(sleep_time) if sleep_time > 0
       end
+    rescue => e
+      Rails.logger.error("[BattleCityChannel] game loop crashed in room #{@room&.code}: #{e.message}\n#{e.backtrace.first(3).join("\n")}")
+      broadcast_to_room({ action: "game_error" }) rescue nil
+      @room&.update!(status: "finished") rescue nil
     end
   end
 

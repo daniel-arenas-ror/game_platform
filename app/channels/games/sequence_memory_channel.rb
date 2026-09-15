@@ -30,12 +30,14 @@ class Games::SequenceMemoryChannel < ApplicationCable::Channel
   def start_game_loop(data)
     return unless host?
 
+    @stop_loop   = false
     @room        = Room.find_by(code: params[:room_code])
     total_rounds = @room.game_state["total_rounds"].to_i
     svc          = GameServices::SequenceMemory.new(@room)
 
     Thread.new do
       total_rounds.times do |i|
+        break if @stop_loop
         round = i + 1
 
         # ── 1. Extend the sequence by one cell ────────────────────────────
@@ -112,22 +114,29 @@ class Games::SequenceMemoryChannel < ApplicationCable::Channel
       end
 
       # ── 6. Game over ──────────────────────────────────────────────────────
-      @room.reload
-      @room.update!(
-        status:     "finished",
-        game_state: @room.game_state.merge("status" => "game_over")
-      )
-      broadcast({
-        action:    "game_over",
-        scores:    @room.game_state["scores"],
-        nicknames: nicknames_map
-      })
+      unless @stop_loop
+        @room.reload
+        @room.update!(
+          status:     "finished",
+          game_state: @room.game_state.merge("status" => "game_over")
+        )
+        broadcast({
+          action:    "game_over",
+          scores:    @room.game_state["scores"],
+          nicknames: nicknames_map
+        })
+      end
+    rescue => e
+      Rails.logger.error("[SequenceMemoryChannel] game loop crashed in room #{@room&.code}: #{e.message}\n#{e.backtrace.first(3).join("\n")}")
+      broadcast({ action: "game_error" }) rescue nil
+      @room&.update!(status: "finished") rescue nil
     end
   end
 
   def restart_game(data)
     return unless host?
 
+    @stop_loop = true
     @room = Room.find_by(code: params[:room_code])
     GameServices::SequenceMemory.new(@room).setup_game!
     broadcast({ action: "game_restarted" })

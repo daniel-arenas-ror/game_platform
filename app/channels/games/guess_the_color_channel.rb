@@ -33,12 +33,14 @@ class Games::GuessTheColorChannel < ApplicationCable::Channel
   def start_game_loop(data)
     return unless host?
 
+    @stop_loop   = false
     @room        = Room.find_by(code: params[:room_code])
     service      = GameServices::GuessTheColor.new(@room)
     total_rounds = @room.game_state["total_rounds"].to_i
 
     Thread.new do
       total_rounds.times do |i|
+        break if @stop_loop
         round = i + 1
 
         # ── 1. Generate & show color ───────────────────────────────────────
@@ -102,16 +104,22 @@ class Games::GuessTheColorChannel < ApplicationCable::Channel
       end
 
       # ── 4. Game over ───────────────────────────────────────────────────
-      @room.reload
-      @room.update!(
-        status:     "finished",
-        game_state: @room.game_state.merge("status" => "game_over")
-      )
-      broadcast({
-        action:    "game_over",
-        scores:    @room.game_state["scores"],
-        nicknames: nicknames_map
-      })
+      unless @stop_loop
+        @room.reload
+        @room.update!(
+          status:     "finished",
+          game_state: @room.game_state.merge("status" => "game_over")
+        )
+        broadcast({
+          action:    "game_over",
+          scores:    @room.game_state["scores"],
+          nicknames: nicknames_map
+        })
+      end
+    rescue => e
+      Rails.logger.error("[GuessTheColorChannel] game loop crashed in room #{@room&.code}: #{e.message}\n#{e.backtrace.first(3).join("\n")}")
+      broadcast({ action: "game_error" }) rescue nil
+      @room&.update!(status: "finished") rescue nil
     end
   end
 
@@ -119,6 +127,7 @@ class Games::GuessTheColorChannel < ApplicationCable::Channel
   def restart_game(data)
     return unless host?
 
+    @stop_loop = true
     @room = Room.find_by(code: params[:room_code])
     GameServices::GuessTheColor.new(@room).setup_game!
     broadcast({ action: "game_restarted" })
