@@ -4,7 +4,11 @@ development:
 test:
   adapter: test
 
+# Using the in-process async adapter since we run a single Render instance.
+# Every game's round-loop channel (Millionaire, CountBirds, BattleCity, GuessTheColor)
+# broadcasts in-process fine as long as there's exactly one web process.
+# If you ever scale to more than one instance, switch this back to the redis
+# adapter (set REDIS_URL) so broadcasts reach every process.
 production:
-  adapter: redis
-  url: <%= ENV.fetch("REDIS_URL") { "redis://localhost:6379/1" } %>
+  adapter: async
   channel_prefix: game_platform_production

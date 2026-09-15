@@ -5,7 +5,7 @@
      class="relative min-h-screen bg-radial-at-b from-slate-950 via-blue-950 to-slate-950 text-white p-6 flex flex-col justify-between selection:bg-yellow-500/30">
 
   <!-- ================================================================= -->
-  <!-- SECTION 1: LOADING PAGE -->
+  <!-- SECTION 1: LOADING -->
   <!-- ================================================================= -->
   <div data-millionaire-target="loading" class="flex-1 flex flex-col items-center justify-center min-h-[60vh] space-y-6">
     <div class="relative w-24 h-24">
@@ -19,7 +19,7 @@
   </div>
 
   <!-- ================================================================= -->
-  <!-- SECTION 2: THE QUESTION (Host / TV view) -->
+  <!-- SECTION 2: QUESTION — host / TV view (no answer tiles) -->
   <!-- ================================================================= -->
   <div data-millionaire-target="question" class="hidden flex-1 flex flex-col justify-center max-w-4xl mx-auto w-full space-y-12 my-auto">
     <div class="relative bg-gradient-to-b from-blue-900/80 to-slate-900/90 border-y-2 border-blue-500/50 p-8 text-center shadow-2xl backdrop-blur-md">
@@ -30,14 +30,14 @@
         Loading question...
       </h2>
     </div>
+    <p class="text-center text-slate-600 text-xs font-mono tracking-widest uppercase">Players are selecting their answers…</p>
   </div>
 
   <!-- ================================================================= -->
-  <!-- SECTION 3: INTERACTIVE CONTROLS (Player input) -->
+  <!-- SECTION 3: INPUT — player phone view -->
   <!-- ================================================================= -->
   <div data-millionaire-target="input" class="hidden flex-1 flex flex-col justify-between max-w-2xl mx-auto w-full pb-8 space-y-4">
 
-    <%# Question text (duplicated for player view) %>
     <div class="relative bg-gradient-to-b from-blue-900/80 to-slate-900/90 border-y-2 border-blue-500/50 p-6 text-center shadow-2xl mt-4">
       <p data-millionaire-target="questionMeta" class="text-xs font-bold text-blue-400 uppercase tracking-widest mb-1"></p>
       <h2 data-millionaire-target="questionText" class="text-lg font-bold tracking-wide leading-relaxed">
@@ -52,54 +52,79 @@
         <button data-action="click->millionaire#selectOption" data-option="0"
                 class="w-full text-left bg-gradient-to-r from-blue-950 to-slate-900 border-2 border-blue-800 p-5 rounded-2xl
                        transition-all duration-200 hover:border-yellow-400 active:scale-[0.99] flex items-center justify-between group">
-          <div>
-            <span class="text-yellow-400 font-black mr-3">A:</span>
-            <span data-millionaire-target="optionA" class="font-sans font-bold text-slate-200 group-hover:text-white"></span>
-          </div>
+          <div><span class="text-yellow-400 font-black mr-3">A:</span>
+               <span data-millionaire-target="optionA" class="font-sans font-bold text-slate-200 group-hover:text-white"></span></div>
           <div class="w-4 h-4 rounded-full border-2 border-blue-600 group-hover:border-yellow-400"></div>
         </button>
 
         <button data-action="click->millionaire#selectOption" data-option="1"
                 class="w-full text-left bg-gradient-to-r from-blue-950 to-slate-900 border-2 border-blue-800 p-5 rounded-2xl
                        transition-all duration-200 hover:border-yellow-400 active:scale-[0.99] flex items-center justify-between group">
-          <div>
-            <span class="text-yellow-400 font-black mr-3">B:</span>
-            <span data-millionaire-target="optionB" class="font-sans font-bold text-slate-200 group-hover:text-white"></span>
-          </div>
+          <div><span class="text-yellow-400 font-black mr-3">B:</span>
+               <span data-millionaire-target="optionB" class="font-sans font-bold text-slate-200 group-hover:text-white"></span></div>
           <div class="w-4 h-4 rounded-full border-2 border-blue-600 group-hover:border-yellow-400"></div>
         </button>
 
         <button data-action="click->millionaire#selectOption" data-option="2"
                 class="w-full text-left bg-gradient-to-r from-blue-950 to-slate-900 border-2 border-blue-800 p-5 rounded-2xl
                        transition-all duration-200 hover:border-yellow-400 active:scale-[0.99] flex items-center justify-between group">
-          <div>
-            <span class="text-yellow-400 font-black mr-3">C:</span>
-            <span data-millionaire-target="optionC" class="font-sans font-bold text-slate-200 group-hover:text-white"></span>
-          </div>
+          <div><span class="text-yellow-400 font-black mr-3">C:</span>
+               <span data-millionaire-target="optionC" class="font-sans font-bold text-slate-200 group-hover:text-white"></span></div>
           <div class="w-4 h-4 rounded-full border-2 border-blue-600 group-hover:border-yellow-400"></div>
         </button>
 
         <button data-action="click->millionaire#selectOption" data-option="3"
                 class="w-full text-left bg-gradient-to-r from-blue-950 to-slate-900 border-2 border-blue-800 p-5 rounded-2xl
                        transition-all duration-200 hover:border-yellow-400 active:scale-[0.99] flex items-center justify-between group">
-          <div>
-            <span class="text-yellow-400 font-black mr-3">D:</span>
-            <span data-millionaire-target="optionD" class="font-sans font-bold text-slate-200 group-hover:text-white"></span>
-          </div>
+          <div><span class="text-yellow-400 font-black mr-3">D:</span>
+               <span data-millionaire-target="optionD" class="font-sans font-bold text-slate-200 group-hover:text-white"></span></div>
           <div class="w-4 h-4 rounded-full border-2 border-blue-600 group-hover:border-yellow-400"></div>
         </button>
       </div>
 
-      <%# Shown after the player locks in an answer %>
       <p data-millionaire-target="lockedMessage"
          class="hidden text-center text-green-400 font-black tracking-widest text-sm uppercase mt-2">
-        Answer locked in ✓ — waiting for round to end...
+        Answer locked in ✓ — waiting for reveal...
       </p>
     </div>
   </div>
 
   <!-- ================================================================= -->
-  <!-- SECTION 4: LEADERBOARD -->
+  <!-- SECTION 4: REVEAL — shown to both host and players after timer -->
+  <!-- ================================================================= -->
+  <div data-millionaire-target="reveal" class="hidden flex-1 flex flex-col items-center max-w-2xl mx-auto w-full pb-8 gap-4 my-auto">
+
+    <p data-millionaire-target="revealRoundLabel"
+       class="text-xs font-bold text-blue-400 uppercase tracking-widest"></p>
+
+    <%# Answer tiles — JS colors them correct/wrong/neutral %>
+    <div class="grid grid-cols-1 gap-2 w-full font-mono">
+      <% [%w[A 0], %w[B 1], %w[C 2], %w[D 3]].each do |letter, idx| %>
+        <div data-millionaire-target="revealOption"
+             data-option-index="<%= idx %>"
+             class="flex items-center border-2 border-slate-700 p-4 rounded-2xl gap-3 transition-all duration-300">
+          <span class="text-yellow-400 font-black w-6"><%= letter %>:</span>
+          <span data-millionaire-target="revealOptionText" class="flex-1 font-sans font-bold text-slate-200"></span>
+          <span data-millionaire-target="revealOptionIcon" class="text-base w-6 text-right"></span>
+        </div>
+      <% end %>
+    </div>
+
+    <%# Player result (shown for players, hidden for host) %>
+    <div data-millionaire-target="revealPlayerResult"
+         class="hidden text-center w-full bg-slate-800/60 rounded-2xl p-5 border border-slate-700">
+      <p data-millionaire-target="revealResultText" class="text-2xl font-black mb-1"></p>
+      <p data-millionaire-target="revealTotalText" class="text-sm text-slate-400 font-mono"></p>
+    </div>
+
+    <%# Host round scores (shown for host, hidden for players) %>
+    <div data-millionaire-target="revealHostScores"
+         class="hidden w-full space-y-2"></div>
+
+  </div>
+
+  <!-- ================================================================= -->
+  <!-- SECTION 5: LEADERBOARD — final standings -->
   <!-- ================================================================= -->
   <div data-millionaire-target="leaderboard" class="hidden flex-1 flex flex-col justify-center max-w-xl mx-auto w-full my-auto space-y-8">
     <div class="text-center">

@@ -9,7 +9,6 @@ module GameServices
     def setup_game!
       @room.update!(status: 'playing')
 
-      # Initialize per-player points and reset tracking state
       user_points = @players.each_with_object({}) { |p, h| h[p.id.to_s] = 0 }
       @room.set(
         'game_state.user_points'        => user_points,
@@ -21,9 +20,13 @@ module GameServices
       broadcast_start
     end
 
-    # Called at the END of each round: score the round just played, then load the next question.
-    def next_round!
+    # Score the current round; returns reveal data for broadcasting.
+    def score_round!
       calc_points!
+    end
+
+    # Load the next question into game_state.
+    def advance_question!
       update_question!
     end
 
@@ -31,7 +34,6 @@ module GameServices
       question_id   = @room.game_state['question_id'].to_s
       player_id_str = player_id.to_s
 
-      # Reject duplicate answers for the same question
       existing = @room.game_state.dig('answers_history', question_id, player_id_str)
       return if !existing.nil?
 
@@ -42,9 +44,7 @@ module GameServices
 
     def update_question!
       @room.reload
-      asked_ids = (@room.game_state['asked_question_ids'] || [])
-
-      # Convert stored strings back to BSON::ObjectId for the $nin query
+      asked_ids  = @room.game_state['asked_question_ids'] || []
       asked_oids = asked_ids.filter_map do |id|
         id.is_a?(BSON::ObjectId) ? id : BSON::ObjectId(id.to_s)
       rescue StandardError
@@ -57,7 +57,6 @@ module GameServices
 
       question = ::HowWantBeBillionare::Question.collection.aggregate(pipeline).first
 
-      # All questions exhausted — reset so the game can continue
       if question.nil?
         asked_ids = []
         @room.set('game_state.asked_question_ids' => [])
@@ -72,22 +71,35 @@ module GameServices
       )
     end
 
+    # Scores the current round and returns a hash with all data needed for the reveal broadcast.
     def calc_points!
       @room.reload
       question_id      = @room.game_state['question_id'].to_s
       question         = ::HowWantBeBillionare::Question.find(question_id)
       question_answers = @room.game_state.dig('answers_history', question_id) || {}
       user_points      = @room.game_state['user_points'] || {}
+      round_scores     = {}
+
+      correct_indices = question.answers.each_with_index
+                        .select { |a, _| a['correct'] }
+                        .map    { |_, i| i }
 
       question_answers.each do |player_id, answer_index|
-        answer = question.answers[answer_index.to_i]
-        next unless answer&.dig('correct')
+        next unless correct_indices.include?(answer_index.to_i)
 
         user_points[player_id] ||= 0
         user_points[player_id] += question.points.to_i
+        round_scores[player_id] = question.points.to_i
       end
 
       @room.set('game_state.user_points' => user_points)
+
+      {
+        round_scores:           round_scores,
+        user_points:            user_points,
+        correct_answer_indices: correct_indices,
+        question_points:        question.points.to_i
+      }
     end
   end
 end
