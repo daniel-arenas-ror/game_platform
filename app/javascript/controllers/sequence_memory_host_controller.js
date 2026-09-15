@@ -1,14 +1,18 @@
 import { Controller } from "@hotwired/stimulus"
 import consumer from "channels/consumer"
 
-const CELL_NEUTRAL   = "#1e3a5f"   // dark blue — resting state
-const CELL_HIGHLIGHT = "#facc15"   // yellow — flash
-const CELL_SEQUENCE  = "#f59e0b"   // amber — shown during reveal (numbered)
+const CELL_NEUTRAL   = "#1e3a5f"
+const CELL_HIGHLIGHT = "#facc15"
+const CELL_SEQUENCE  = "#f59e0b"
 const CELL_RADIUS    = "14px"
 
-// Cell px size by grid dimension
 const CELL_SIZE = { 3: 120, 4: 96, 6: 68 }
 const GAP_SIZE  = { 3: 14,  4: 12, 6: 10 }
+
+// Countdown colour thresholds
+const COLOR_GREEN  = "#4ade80"
+const COLOR_YELLOW = "#facc15"
+const COLOR_RED    = "#f87171"
 
 export default class extends Controller {
   static values  = { roomCode: String, gridSize: Number }
@@ -16,11 +20,14 @@ export default class extends Controller {
     "phaseWaiting", "phaseWatching", "phaseInput", "phaseReveal", "phaseGameOver",
     "grid", "grid2", "revealGrid",
     "roundLabel", "roundLabel2", "roundLabel3",
+    "stepIndicator", "submittedCount",
     "countdown", "playerResults", "finalLeaderboard", "playAgain"
   ]
 
   connect() {
-    this.timerHandle = null
+    this.timerHandle    = null
+    this.submittedCount = 0
+    this.inputDuration  = 0
     this.subscribe()
   }
 
@@ -63,11 +70,11 @@ export default class extends Controller {
     const steps = sequence.length
     this.roundLabelTarget.textContent =
       `Round ${round} / ${total_rounds} · ${steps} step${steps > 1 ? "s" : ""}`
+    this.stepIndicatorTarget.textContent = ""
 
     this.buildGrid(this.gridTarget)
     this.showPhase("phaseWatching")
 
-    // Brief pause before starting so the phase transition is visible
     setTimeout(() => {
       this.animateSequence(this.gridTarget, sequence, flash_duration, flash_gap)
     }, 600)
@@ -76,20 +83,25 @@ export default class extends Controller {
   onPlayerTurn(data) {
     const { round, total_rounds, input_duration } = data
 
-    this.roundLabel2Target.textContent = `Round ${round} / ${total_rounds}`
+    this.submittedCount    = 0
+    this.inputDuration     = input_duration
+    this.roundLabel2Target.textContent       = `Round ${round} / ${total_rounds}`
+    this.submittedCountTarget.textContent    = ""
+
     this.buildGrid(this.grid2Target)
     this.showPhase("phaseInput")
     this.startCountdown(this.countdownTarget, input_duration)
   }
 
   onPlayerSubmitted(data) {
-    // Could add a small "✓ nickname" badge — keeping simple for now
-    console.log(`[SequenceMemory Host] ${data.nickname} submitted`)
+    this.submittedCount++
+    this.submittedCountTarget.textContent =
+      `${this.submittedCount} player${this.submittedCount > 1 ? "s" : ""} submitted`
   }
 
   onReveal(data) {
     clearInterval(this.timerHandle)
-    const { round, total_rounds, sequence, submissions, round_scores, scores, nicknames } = data
+    const { round, total_rounds, sequence } = data
 
     this.roundLabel3Target.textContent = `Round ${round} / ${total_rounds}`
     this.buildRevealGrid(this.revealGridTarget, sequence)
@@ -125,7 +137,8 @@ export default class extends Controller {
         height: ${cs}px;
         background-color: ${CELL_NEUTRAL};
         border-radius: ${CELL_RADIUS};
-        transition: background-color 0.08s ease;
+        box-shadow: inset 0 2px 6px rgba(0,0,0,0.4), 0 1px 3px rgba(0,0,0,0.6);
+        transition: background-color 0.08s ease, transform 0.1s ease;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -139,14 +152,14 @@ export default class extends Controller {
 
   buildRevealGrid(container, sequence) {
     const size = this.gridSizeValue
-    // Smaller cells for reveal so player results also fit
-    const cs   = Math.round((CELL_SIZE[size] || 80) * 0.65)
+    const cs   = Math.round((CELL_SIZE[size] || 80) * 0.62)
     this.buildGrid(container, cs)
 
     sequence.forEach((cellIndex, i) => {
       const cell = this.getCell(container, cellIndex)
       if (!cell) return
       cell.style.backgroundColor = CELL_SEQUENCE
+      cell.style.boxShadow = `0 0 12px rgba(245,158,11,0.6)`
       cell.textContent = i + 1
     })
   }
@@ -160,23 +173,40 @@ export default class extends Controller {
   animateSequence(container, sequence, flashDuration, flashGap) {
     const flashMs = Math.round(flashDuration * 1000)
     const gapMs   = Math.round(flashGap * 1000)
+    const total   = sequence.length
 
     let delay = 0
-    sequence.forEach((cellIndex) => {
-      // Light up
+    sequence.forEach((cellIndex, step) => {
+      // Update step indicator just before the flash
       setTimeout(() => {
-        const cell = this.getCell(container, cellIndex)
-        if (cell) cell.style.backgroundColor = CELL_HIGHLIGHT
+        this.stepIndicatorTarget.textContent = `Step ${step + 1} / ${total}`
       }, delay)
 
-      // Go dark
+      // Light up + pulse
       setTimeout(() => {
         const cell = this.getCell(container, cellIndex)
-        if (cell) cell.style.backgroundColor = CELL_NEUTRAL
+        if (!cell) return
+        cell.style.backgroundColor = CELL_HIGHLIGHT
+        cell.style.transform       = "scale(1.1)"
+        cell.style.boxShadow       = `0 0 24px rgba(250,204,21,0.7), inset 0 2px 6px rgba(0,0,0,0.2)`
+      }, delay)
+
+      // Return to neutral
+      setTimeout(() => {
+        const cell = this.getCell(container, cellIndex)
+        if (!cell) return
+        cell.style.backgroundColor = CELL_NEUTRAL
+        cell.style.transform       = "scale(1)"
+        cell.style.boxShadow       = `inset 0 2px 6px rgba(0,0,0,0.4), 0 1px 3px rgba(0,0,0,0.6)`
       }, delay + flashMs)
 
       delay += flashMs + gapMs
     })
+
+    // Clear step indicator after last flash
+    setTimeout(() => {
+      this.stepIndicatorTarget.textContent = "Done!"
+    }, delay)
   }
 
   // ── Countdown ─────────────────────────────────────────────────────────────
@@ -184,13 +214,22 @@ export default class extends Controller {
   startCountdown(el, seconds) {
     clearInterval(this.timerHandle)
     let remaining = seconds
-    el.textContent = remaining
+    el.textContent  = remaining
+    el.style.color  = COLOR_GREEN
 
     this.timerHandle = setInterval(() => {
       remaining -= 1
       el.textContent = remaining
+      el.style.color = this.countdownColor(remaining, seconds)
       if (remaining <= 0) clearInterval(this.timerHandle)
     }, 1000)
+  }
+
+  countdownColor(remaining, total) {
+    const ratio = remaining / total
+    if (ratio > 0.5)  return COLOR_GREEN
+    if (ratio > 0.25) return COLOR_YELLOW
+    return COLOR_RED
   }
 
   // ── HTML builders ─────────────────────────────────────────────────────────
@@ -202,17 +241,34 @@ export default class extends Controller {
     return Object.entries(round_scores || {})
       .sort((a, b) => b[1] - a[1])
       .map(([id, pts]) => {
-        const name       = nicknames?.[id] || id
-        const sub        = submissions?.[id]
-        const correct    = this.countCorrect(sequence, sub)
-        const scoreColor = pts > 0 ? "text-green-400" : "text-slate-500"
+        const name    = nicknames?.[id] || id
+        const sub     = submissions?.[id]
+        const correct = this.countCorrect(sequence, sub)
+        const dotBar  = this.buildDotBar(sequence, sub)
+        const ptColor = pts > 0 ? "text-green-400" : "text-slate-500"
         return `
-          <div class="bg-white/10 rounded-xl px-4 py-3 text-center min-w-[100px]">
-            <p class="text-white text-xs font-mono truncate max-w-[90px] mx-auto">${this.esc(name)}</p>
-            <p class="text-white font-black text-xl mt-1">${correct}<span class="text-slate-500 text-sm font-normal">/${seqLen}</span></p>
-            <p class="${scoreColor} text-xs font-bold mt-1">+${pts} pts</p>
+          <div class="bg-white/10 backdrop-blur-sm rounded-2xl px-4 py-3 text-center min-w-[110px]">
+            <p class="text-white text-xs font-mono truncate max-w-[100px] mx-auto">${this.esc(name)}</p>
+            <div class="flex gap-1 justify-center mt-2 mb-1">${dotBar}</div>
+            <p class="text-white font-black text-lg">${correct}<span class="text-slate-500 text-xs font-normal"> / ${seqLen}</span></p>
+            <p class="${ptColor} text-xs font-bold">+${pts} pts</p>
           </div>`
       }).join("")
+  }
+
+  // Dot bar: green dot per correct step, red dot per wrong/missing step
+  buildDotBar(sequence, submission) {
+    return sequence.map((cell, i) => {
+      const hit = Array.isArray(submission) && submission[i] === cell
+      // Stop marking correct after first miss (partial credit rule)
+      const prevMiss = Array.isArray(submission) &&
+        sequence.slice(0, i).some((c, j) => submission[j] !== c)
+      const color = (!prevMiss && hit) ? "#4ade80" : "#f87171"
+      return `<span style="
+        display:inline-block;width:10px;height:10px;
+        border-radius:50%;background:${color};
+      "></span>`
+    }).join("")
   }
 
   buildLeaderboard(data) {

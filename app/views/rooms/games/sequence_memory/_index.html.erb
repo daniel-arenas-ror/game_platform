@@ -27,6 +27,8 @@
         <p data-sequence-memory-host-target="roundLabel"
            class="text-slate-400 font-mono text-sm tracking-widest"></p>
         <p class="text-white font-black text-2xl mt-1">Watch carefully…</p>
+        <p data-sequence-memory-host-target="stepIndicator"
+           class="text-slate-500 font-mono text-sm mt-2 tracking-widest"></p>
       </div>
 
       <%# Grid rendered by JS %>
@@ -43,7 +45,9 @@
            class="text-slate-400 font-mono text-sm tracking-widest mb-1"></p>
         <p class="text-white font-black text-2xl">Your turn!</p>
         <p data-sequence-memory-host-target="countdown"
-           class="text-yellow-400 font-black text-6xl mt-2"></p>
+           class="font-black text-6xl mt-2 transition-colors"></p>
+        <p data-sequence-memory-host-target="submittedCount"
+           class="text-slate-600 font-mono text-xs mt-3 tracking-widest"></p>
       </div>
 
       <div data-sequence-memory-host-target="grid2"
