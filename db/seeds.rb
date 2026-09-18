@@ -37,6 +37,12 @@ Game.create!(
   description: "Watch the grid light up in sequence, then repeat it on your phone! Each round adds one more step — how far can your memory take you?"
 )
 
+Game.create!(
+  name: "Submarine Combat",
+  code: "submarine_combat",
+  description: "Place your submarines on the grid, then fire coordinates every round. Your shot hits every opponent hiding a ship there. Last fleet standing wins!"
+)
+
 # ---------------------------------------------------------------------------
 # Battle City — Classic map preset
 # 26×26 grid. Steel border, brick clusters, base at (12, 24).
