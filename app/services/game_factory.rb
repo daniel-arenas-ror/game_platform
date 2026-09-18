@@ -13,6 +13,8 @@ class GameFactory
       GameServices::CountBirds.new(room)
     when 'sequence_memory'
       GameServices::SequenceMemory.new(room)
+    when 'submarine_combat'
+      GameServices::SubmarineCombat.new(room)
     when 'impostor'
       ## TODO
     else

@@ -1,0 +1,47 @@
+<%# Grid size picker %>
+<div class="space-y-4 bg-slate-900/50 p-6 rounded-2xl border border-slate-700">
+  <label class="block text-xs font-bold text-slate-400 mb-3 tracking-widest">GRID SIZE</label>
+  <div class="grid grid-cols-3 gap-3">
+    <% [[6, "6 × 6", "Quick"], [8, "8 × 8", "Standard"], [10, "10 × 10", "Epic"]].each do |size, label, badge| %>
+      <label class="relative cursor-pointer">
+        <input type="radio"
+               name="room[game_state][grid_size]"
+               value="<%= size %>"
+               class="peer hidden"
+               <%= 'checked' if (@room.game_state['grid_size']&.to_i || 8) == size %>>
+        <div class="text-center py-4 bg-slate-800 border-2 border-slate-700 rounded-xl transition-all
+                    peer-checked:border-cyan-500 peer-checked:bg-cyan-500/10">
+          <p class="text-white font-black text-lg"><%= label %></p>
+          <p class="text-slate-500 text-xs mt-1"><%= badge %></p>
+        </div>
+      </label>
+    <% end %>
+  </div>
+</div>
+
+<%# Submarine count picker %>
+<div class="space-y-4 bg-slate-900/50 p-6 rounded-2xl border border-slate-700 mt-2">
+  <label class="block text-xs font-bold text-slate-400 mb-3 tracking-widest">SUBMARINES PER PLAYER</label>
+  <div class="grid grid-cols-4 gap-3">
+    <% [
+      [2, "2", "Size 3 + 2"],
+      [3, "3", "3 + 2 + 1"],
+      [4, "4", "3 + 2 + 2 + 1"],
+      [5, "5", "3 + 2 + 2 + 1 + 1"]
+    ].each do |count, label, desc| %>
+      <label class="relative cursor-pointer">
+        <input type="radio"
+               name="room[game_state][sub_count]"
+               value="<%= count %>"
+               class="peer hidden"
+               <%= 'checked' if (@room.game_state['sub_count']&.to_i || 3) == count %>>
+        <div class="text-center py-4 bg-slate-800 border-2 border-slate-700 rounded-xl transition-all
+                    peer-checked:border-cyan-500 peer-checked:bg-cyan-500/10">
+          <p class="text-white font-black text-2xl"><%= label %></p>
+          <p class="text-slate-500 text-[10px] mt-1 leading-tight"><%= desc %></p>
+        </div>
+      </label>
+    <% end %>
+  </div>
+  <p class="text-slate-600 text-xs mt-2">Numbers show ship sizes (cells). Larger fleets = longer games.</p>
+</div>

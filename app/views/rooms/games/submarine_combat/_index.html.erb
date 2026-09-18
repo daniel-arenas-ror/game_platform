@@ -1,0 +1,37 @@
+<% is_host = session[:player_id].blank? %>
+
+<% if is_host %>
+  <%# ================================================================= %>
+  <%# HOST VIEW                                                          %>
+  <%# ================================================================= %>
+  <div data-controller="submarine-combat-host"
+       data-submarine-combat-host-room-code-value="<%= @room.code %>"
+       data-submarine-combat-host-grid-size-value="<%= @room.game_state['grid_size'] || 8 %>"
+       data-submarine-combat-host-sub-count-value="<%= @room.game_state['sub_count'] || 3 %>"
+       class="min-h-screen bg-slate-950 text-white flex flex-col items-center justify-center p-6">
+
+    <p class="text-cyan-400 font-mono text-sm uppercase tracking-widest">
+      Submarine Combat — coming in Phase 2
+    </p>
+    <p class="text-slate-600 text-xs mt-2">Room: <%= @room.code %></p>
+
+  </div>
+
+<% else %>
+  <%# ================================================================= %>
+  <%# PLAYER VIEW                                                        %>
+  <%# ================================================================= %>
+  <div data-controller="submarine-combat-player"
+       data-submarine-combat-player-room-code-value="<%= @room.code %>"
+       data-submarine-combat-player-player-id-value="<%= session[:player_id] %>"
+       data-submarine-combat-player-grid-size-value="<%= @room.game_state['grid_size'] || 8 %>"
+       data-submarine-combat-player-sub-count-value="<%= @room.game_state['sub_count'] || 3 %>"
+       class="min-h-screen bg-slate-950 text-white flex flex-col items-center justify-center p-6">
+
+    <p class="text-cyan-400 font-mono text-sm uppercase tracking-widest">
+      Submarine Combat — coming in Phase 2
+    </p>
+    <p class="text-slate-600 text-xs mt-2">Player: <%= current_player&.nickname %></p>
+
+  </div>
+<% end %>
