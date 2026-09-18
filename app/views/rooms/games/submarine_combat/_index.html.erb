@@ -10,7 +10,7 @@
        data-submarine-combat-host-sub-count-value="<%= @room.game_state['sub_count'] || 3 %>"
        class="min-h-screen bg-slate-950 text-white">
 
-    <%# Phase: Waiting for all players to place their fleet %>
+    <%# ── Phase: Waiting for all players to place their fleet ── %>
     <div data-submarine-combat-host-target="phaseWaiting">
       <div class="flex flex-col items-center justify-center min-h-screen p-8">
         <p class="text-cyan-400 font-mono text-xs uppercase tracking-widest mb-2">Submarine Combat</p>
@@ -19,7 +19,6 @@
 
         <div data-submarine-combat-host-target="playerList"
              class="flex flex-wrap gap-3 justify-center mb-10 min-h-[48px]">
-          <%# Populated by JS on state_snapshot and placement_confirmed %>
         </div>
 
         <button data-action="click->submarine-combat-host#startBattle"
@@ -33,19 +32,53 @@
       </div>
     </div>
 
-    <%# Phase: Battle (Phase 3) %>
+    <%# ── Phase: Battle ── %>
     <div data-submarine-combat-host-target="phaseBattle" class="hidden">
-      <div class="flex flex-col items-center justify-center min-h-screen p-8 text-center">
-        <p class="text-cyan-400 font-mono text-xs uppercase tracking-widest mb-2">Battle</p>
-        <p class="text-slate-500 text-sm">Phase 3 coming soon</p>
+      <div class="flex flex-col items-center p-6 pt-8">
+
+        <%# Round header + timer %>
+        <div class="flex items-center gap-6 mb-6">
+          <p data-submarine-combat-host-target="roundLabel"
+             class="text-slate-300 font-mono text-sm uppercase tracking-widest">
+            Round —
+          </p>
+          <div data-submarine-combat-host-target="timerDisplay"
+               class="w-14 h-14 rounded-full border-4 border-cyan-500 flex items-center justify-center
+                      text-cyan-400 font-black text-xl tabular-nums">
+            —
+          </div>
+        </div>
+
+        <%# Submissions tracker — who has fired this round %>
+        <div data-submarine-combat-host-target="submissionsList"
+             class="flex flex-wrap gap-2 justify-center mb-8 min-h-[36px]">
+        </div>
+
+        <%# All player grids (2-col grid populated by JS) %>
+        <div data-submarine-combat-host-target="allGrids"
+             class="grid grid-cols-2 gap-6 w-full max-w-3xl">
+        </div>
+
       </div>
     </div>
 
-    <%# Phase: Game Over (Phase 3) %>
+    <%# ── Phase: Game Over ── %>
     <div data-submarine-combat-host-target="phaseGameOver" class="hidden">
       <div class="flex flex-col items-center justify-center min-h-screen p-8 text-center">
         <p class="text-yellow-400 font-mono text-xs uppercase tracking-widest mb-2">Game Over</p>
-        <p class="text-slate-500 text-sm">Phase 3 coming soon</p>
+        <h1 data-submarine-combat-host-target="gameOverTitle"
+            class="text-4xl font-black text-white mb-8">
+        </h1>
+
+        <div data-submarine-combat-host-target="finalScores"
+             class="w-full max-w-xs mb-10 space-y-2">
+        </div>
+
+        <button data-action="click->submarine-combat-host#restartGame"
+                class="px-8 py-4 bg-cyan-600 text-white font-black text-base rounded-2xl
+                       hover:bg-cyan-500 transition-colors">
+          Play Again
+        </button>
       </div>
     </div>
 
@@ -62,7 +95,7 @@
        data-submarine-combat-player-sub-count-value="<%= @room.game_state['sub_count'] || 3 %>"
        class="min-h-screen bg-slate-950 text-white">
 
-    <%# Phase: Placement — interactive ship grid %>
+    <%# ── Phase: Placement ── %>
     <div data-submarine-combat-player-target="phasePlacement">
       <div class="flex flex-col items-center px-4 pt-8 pb-6">
 
@@ -70,25 +103,18 @@
         <h1 class="text-2xl font-black text-white mb-1">Place Your Fleet</h1>
         <p class="text-slate-500 text-xs mb-5">Tap a ship to select, then tap a cell to move it</p>
 
-        <%# Selected-ship info bar %>
-        <div data-submarine-combat-player-target="shipInfo"
-             class="mb-4 h-6 text-center">
-          <%# Populated by JS %>
-        </div>
+        <div data-submarine-combat-player-target="shipInfo" class="mb-4 h-6 text-center"></div>
 
-        <%# CSS grid — JS sets grid-template-columns and injects cells %>
         <div data-submarine-combat-player-target="grid"
              class="grid gap-0.5 w-full max-w-xs mb-6">
         </div>
 
-        <%# Action buttons %>
         <div class="flex gap-3">
           <button data-action="click->submarine-combat-player#rotateShip"
                   data-submarine-combat-player-target="rotateBtn"
                   disabled
                   class="px-5 py-3 bg-slate-700 text-white font-bold rounded-xl text-sm
-                         disabled:opacity-40 disabled:cursor-not-allowed
-                         hover:bg-slate-600 transition-colors">
+                         disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-600 transition-colors">
             Rotate
           </button>
           <button data-action="click->submarine-combat-player#shuffleAll"
@@ -99,8 +125,7 @@
           <button data-action="click->submarine-combat-player#confirmPlacement"
                   data-submarine-combat-player-target="confirmBtn"
                   class="px-5 py-3 bg-cyan-600 text-white font-bold rounded-xl text-sm
-                         disabled:opacity-40 disabled:cursor-not-allowed
-                         hover:bg-cyan-500 transition-colors">
+                         disabled:opacity-40 disabled:cursor-not-allowed hover:bg-cyan-500 transition-colors">
             Confirm
           </button>
         </div>
@@ -108,7 +133,7 @@
       </div>
     </div>
 
-    <%# Phase: Waiting — player confirmed, waiting for others %>
+    <%# ── Phase: Waiting (confirmed, waiting for battle start) ── %>
     <div data-submarine-combat-player-target="phaseWaiting" class="hidden">
       <div class="flex flex-col items-center justify-center min-h-screen p-8 text-center">
         <p class="text-cyan-400 font-mono text-xs uppercase tracking-widest mb-2">Fleet Locked In</p>
@@ -117,33 +142,82 @@
 
         <div data-submarine-combat-player-target="waitingList"
              class="flex flex-wrap gap-3 justify-center">
-          <%# Populated by JS %>
         </div>
       </div>
     </div>
 
-    <%# Phase: Battle (Phase 3) %>
+    <%# ── Phase: Battle ── %>
     <div data-submarine-combat-player-target="phaseBattle" class="hidden">
-      <div class="flex flex-col items-center justify-center min-h-screen p-8 text-center">
-        <p class="text-cyan-400 font-mono text-xs uppercase tracking-widest mb-2">Battle</p>
-        <p class="text-slate-500 text-sm">Phase 3 coming soon</p>
+      <div class="flex flex-col items-center px-4 pt-6 pb-8">
+
+        <%# Round header + timer %>
+        <div class="flex items-center justify-between w-full max-w-xs mb-4">
+          <p data-submarine-combat-player-target="roundLabel"
+             class="text-slate-400 font-mono text-xs uppercase tracking-widest">
+            Round —
+          </p>
+          <div data-submarine-combat-player-target="timerDisplay"
+               class="w-12 h-12 rounded-full border-4 border-cyan-500 flex items-center justify-center
+                      text-cyan-400 font-black text-lg tabular-nums">
+            —
+          </div>
+        </div>
+
+        <%# Submissions tracker (who has fired) %>
+        <div data-submarine-combat-player-target="submissionsList"
+             class="flex flex-wrap gap-1.5 justify-center mb-4 min-h-[28px]">
+        </div>
+
+        <%# Shot status / instruction %>
+        <p data-submarine-combat-player-target="shotStatus"
+           class="text-slate-400 text-xs mb-3 text-center">
+          Tap a cell to pick your target
+        </p>
+
+        <%# Attack grid %>
+        <div data-submarine-combat-player-target="attackGrid"
+             class="grid gap-0.5 w-full max-w-xs mb-4">
+        </div>
+
+        <%# Fire button %>
+        <button data-action="click->submarine-combat-player#submitShot"
+                data-submarine-combat-player-target="fireBtn"
+                disabled
+                class="w-full max-w-xs py-4 bg-red-600 text-white font-black text-base rounded-2xl
+                       disabled:opacity-30 disabled:cursor-not-allowed hover:bg-red-500 transition-colors mb-8">
+          Fire!
+        </button>
+
+        <%# Defense grid %>
+        <p class="text-slate-600 font-mono text-xs uppercase tracking-widest mb-3">Your Fleet</p>
+
+        <div data-submarine-combat-player-target="defenseGrid"
+             class="grid gap-0.5 w-full max-w-[180px]">
+        </div>
+
       </div>
     </div>
 
-    <%# Phase: Spectator — player was eliminated %>
+    <%# ── Phase: Spectator (eliminated) ── %>
     <div data-submarine-combat-player-target="phaseSpectator" class="hidden">
       <div class="flex flex-col items-center justify-center min-h-screen p-8 text-center">
         <p class="text-red-400 font-mono text-xs uppercase tracking-widest mb-2">Eliminated</p>
         <h1 class="text-2xl font-black text-white mb-2">Your Fleet Was Destroyed</h1>
-        <p class="text-slate-400 text-sm">Watch the remaining battle...</p>
+        <p class="text-slate-400 text-sm">Watch the remaining battle on the main screen...</p>
       </div>
     </div>
 
-    <%# Phase: Game Over %>
+    <%# ── Phase: Game Over ── %>
     <div data-submarine-combat-player-target="phaseGameOver" class="hidden">
       <div class="flex flex-col items-center justify-center min-h-screen p-8 text-center">
         <p class="text-yellow-400 font-mono text-xs uppercase tracking-widest mb-2">Game Over</p>
-        <p class="text-slate-500 text-sm">Phase 3 coming soon</p>
+        <h1 data-submarine-combat-player-target="gameOverTitle"
+            class="text-3xl font-black text-white mb-8">
+        </h1>
+
+        <div data-submarine-combat-player-target="finalScores"
+             class="w-full max-w-xs space-y-2">
+        </div>
       </div>
     </div>
 
