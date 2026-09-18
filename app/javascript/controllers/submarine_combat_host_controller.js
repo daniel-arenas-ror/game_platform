@@ -15,9 +15,12 @@ export default class extends Controller {
     "phaseWaiting", "playerList", "startBtn",
     // Battle phase
     "phaseBattle",
-    "roundLabel", "timerDisplay", "submissionsList", "allGrids",
+    "roundLabel", "timerDisplay", "submissionsList",
+    "playerBoards",
     // Game Over
-    "phaseGameOver", "gameOverTitle", "finalScores"
+    "phaseGameOver", "gameOverTitle", "finalScores",
+    // Polish
+    "toastContainer"
   ]
   static values = { roomCode: String, gridSize: Number, subCount: Number }
 
@@ -26,6 +29,10 @@ export default class extends Controller {
     this.currentNicknames = {}
     this.activeIds        = []
     this.submittedIds     = []
+    this.currentScores    = {}
+    // { playerId: { "row,col": { row, col, hit: bool } } } — per-player attack history
+    this.playerShotHistory = {}
+    this.injectStyles()
     this.subscribe()
   }
 
@@ -69,13 +76,28 @@ export default class extends Controller {
     this.currentNicknames = data.nicknames || {}
 
     if (state.phase === "battle") {
-      // Reconnected mid-battle — render current grid state
-      this.activeIds = Object.entries(placements)
-        .filter(([, p]) => !p.eliminated)
-        .map(([id]) => id)
-      this.showPhase("battle")
-      this.renderAllGrids(placements, this.currentNicknames)
+      // Reconnected mid-battle — reconstruct fired-coord history from game_state.shots
+      this.activeIds     = Object.entries(placements).filter(([, p]) => !p.eliminated).map(([id]) => id)
+      this.currentScores = state.scores || {}
+
+      // Reconstruct per-player attack history from game_state.shots
+      Object.entries(state.shots || {}).forEach(([shooterId, coordList]) => {
+        this.playerShotHistory[shooterId] = {}
+        coordList.forEach(([row, col]) => {
+          const key   = `${row},${col}`
+          const isHit = Object.entries(placements).some(([targetId, placement]) =>
+            targetId !== shooterId &&
+            placement.ships.some(ship =>
+              (ship.hits || []).some(([hr, hc]) => hr === row && hc === col)
+            )
+          )
+          this.playerShotHistory[shooterId][key] = { row, col, hit: isHit }
+        })
+      })
+
       this.roundLabelTarget.textContent = `Round ${state.round || "—"}`
+      this.showPhase("battle")
+      this.renderPlayerBoards(placements)
     } else {
       const confirmedIds = Object.entries(placements)
         .filter(([, p]) => p.confirmed)
@@ -106,6 +128,11 @@ export default class extends Controller {
     this.roundLabelTarget.textContent = `Round ${data.round}`
     this.renderSubmissions()
 
+    // Refresh aggregate board and player status at the start of each round
+    // (placements may have changed if someone was eliminated last round)
+    // We don't have placements here, but we can refresh the grid from allFiredCoords
+    // and re-render player status on round_result when placements arrive.
+
     this.showPhase("battle")
     this.startCountdown(data.duration)
   }
@@ -120,19 +147,36 @@ export default class extends Controller {
   onRoundResult(data) {
     this.stopCountdown()
     this.currentNicknames = { ...this.currentNicknames, ...data.nicknames }
-    this.renderAllGrids(data.placements || {}, this.currentNicknames)
+    const placements = data.placements || {}
 
-    // Show eliminations
-    if ((data.eliminated || []).length > 0) {
-      data.eliminated.forEach(id => {
-        const nick = this.currentNicknames[id] || id.slice(-4)
-        const banner = document.createElement("p")
-        banner.className = "text-red-400 font-bold text-sm text-center mt-2"
-        banner.textContent = `${nick} eliminated!`
-        this.allGridsTarget.parentElement.appendChild(banner)
-        setTimeout(() => banner.remove(), 3000)
-      })
-    }
+    // Accumulate this round's shots into per-player attack history
+    this.currentScores = data.scores || {}
+    Object.entries(data.picks || {}).forEach(([shooterId, pick]) => {
+      if (!pick) return
+      const [row, col] = pick
+      const key        = `${row},${col}`
+      if (!this.playerShotHistory[shooterId]) this.playerShotHistory[shooterId] = {}
+      if (!this.playerShotHistory[shooterId][key]) {
+        // Hit = this shooter's pick appears in their hits list for this round
+        const myHits = (data.hits || {})[shooterId] || []
+        const isHit  = myHits.some(([, hr, hc]) => hr === row && hc === col)
+        this.playerShotHistory[shooterId][key] = { row, col, hit: isHit }
+      }
+    })
+
+    this.renderPlayerBoards(placements)
+
+    // Sunk ship toasts
+    Object.entries(data.sunk_ships || {}).forEach(([targetId, shipIndices]) => {
+      const targetNick = this.currentNicknames[targetId] || targetId.slice(-4)
+      shipIndices.forEach(() => this.showToast(`${targetNick}'s ship sunk!`, "sunk"))
+    })
+
+    // Elimination toasts
+    ;(data.eliminated || []).forEach(id => {
+      const nick = this.currentNicknames[id] || id.slice(-4)
+      this.showToast(`${nick} eliminated!`, "elim")
+    })
   }
 
   onGameOver(data) {
@@ -157,51 +201,69 @@ export default class extends Controller {
 
   // ── Grid rendering ───────────────────────────────────────────────────────
 
-  renderAllGrids(placements, nicknames) {
-    const container = this.allGridsTarget
+  // One panel per player showing THAT PLAYER'S OWN attack history:
+  //   red  = they fired there and hit someone's ship
+  //   grey = they fired there but missed everyone
+  //   dark = they haven't fired there yet
+  renderPlayerBoards(placements) {
+    const container   = this.playerBoardsTarget
     container.innerHTML = ""
-    const n = this.gridSizeValue
+    const n           = this.gridSizeValue
+    const playerCount = Object.keys(placements).length
+
+    const cols = playerCount === 1 ? 1 : playerCount <= 4 ? 2 : 3
+    container.style.gridTemplateColumns = `repeat(${cols}, 1fr)`
+
+    const gap        = 24
+    const padding    = 32
+    const maxTotal   = Math.min(window.innerWidth - 48, 896)
+    const panelWidth = (maxTotal - gap * (cols - 1)) / cols
+    const cellPx     = Math.max(8, Math.floor((panelWidth - padding) / n))
 
     Object.entries(placements).forEach(([playerId, placement]) => {
-      const nick        = (nicknames || {})[playerId] || playerId.slice(-4)
-      const eliminated  = !!placement.eliminated
-      const hitCells    = placement.ships.flatMap(ship => ship.hits || [])
+      const nick       = (this.currentNicknames || {})[playerId] || playerId.slice(-4)
+      const eliminated = !!placement.eliminated
+      const pts        = (this.currentScores   || {})[playerId] ?? 0
+      const history    = this.playerShotHistory[playerId] || {}
 
-      // Panel wrapper
       const panel = document.createElement("div")
       panel.className = [
         "bg-slate-900 rounded-2xl p-4 border-2",
-        eliminated ? "border-red-900 opacity-50" : "border-slate-700"
+        eliminated ? "border-red-900/50 opacity-60" : "border-slate-700"
       ].join(" ")
 
-      // Player name
-      const nameEl = document.createElement("p")
-      nameEl.className = "text-sm font-bold text-slate-300 mb-2 text-center"
-      nameEl.textContent = eliminated ? `${nick} (out)` : nick
-      panel.appendChild(nameEl)
+      const header = document.createElement("div")
+      header.className = "flex items-center justify-between mb-3"
+      header.innerHTML = `
+        <span class="font-bold text-sm ${eliminated ? "text-red-400" : "text-slate-200"}">
+          ${nick}${eliminated ? " (out)" : ""}
+        </span>
+        <span class="font-mono text-xs text-cyan-400">${pts} hits</span>
+      `
+      panel.appendChild(header)
 
-      // Mini-grid
       const grid = document.createElement("div")
-      grid.className   = "grid gap-[2px]"
-      grid.style.gridTemplateColumns = `repeat(${n}, 1fr)`
+      grid.className = "grid gap-[2px] mx-auto"
+      grid.style.gridTemplateColumns = `repeat(${n}, ${cellPx}px)`
 
       for (let r = 0; r < n; r++) {
         for (let c = 0; c < n; c++) {
-          const shipIdx = placement.ships.findIndex(ship =>
-            ship.cells.some(([sr, sc]) => sr === r && sc === c)
-          )
-          const isHit = hitCells.some(([hr, hc]) => hr === r && hc === c)
-
+          const shot = history[`${r},${c}`]  // undefined if not yet fired by this player
           const cell = document.createElement("div")
-          cell.className = "aspect-square rounded-[2px]"
+          cell.style.width  = `${cellPx}px`
+          cell.style.height = `${cellPx}px`
+          cell.className    = "rounded-[2px]"
 
-          if (isHit) {
-            cell.style.backgroundColor = "#dc2626"
-          } else if (shipIdx >= 0) {
-            const color = SHIP_COLORS[shipIdx % SHIP_COLORS.length]
-            cell.style.backgroundColor = color.fill + "99"
-          } else {
+          if (!shot) {
+            // This player hasn't targeted this coordinate yet
             cell.style.backgroundColor = "#0f172a"
+            cell.style.border          = "1px solid #1e293b"
+          } else if (shot.hit) {
+            // They fired here and hit at least one opponent's ship
+            cell.style.backgroundColor = "#dc2626"
+          } else {
+            // They fired here but no one had a ship there
+            cell.style.backgroundColor = "#475569"
           }
 
           grid.appendChild(cell)
@@ -211,6 +273,60 @@ export default class extends Controller {
       panel.appendChild(grid)
       container.appendChild(panel)
     })
+  }
+
+  // ── Phase 5 polish ───────────────────────────────────────────────────────
+
+  injectStyles() {
+    if (document.getElementById("submarine-combat-styles")) return
+    const style = document.createElement("style")
+    style.id    = "submarine-combat-styles"
+    style.textContent = `
+      @keyframes sub-hit {
+        0%   { transform: scale(1.8); opacity: 0; }
+        60%  { transform: scale(0.9); }
+        100% { transform: scale(1);   opacity: 1; }
+      }
+      @keyframes sub-toast-in {
+        from { transform: translateY(12px); opacity: 0; }
+        to   { transform: translateY(0);    opacity: 1; }
+      }
+      @keyframes sub-toast-out {
+        from { opacity: 1; }
+        to   { opacity: 0; transform: translateY(-8px); }
+      }
+    `
+    document.head.appendChild(style)
+  }
+
+  showToast(message, type = "info") {
+    if (!this.hasToastContainerTarget) return
+    const COLORS = {
+      sunk: { bg: "#d97706", border: "#92400e" },
+      elim: { bg: "#7c3aed", border: "#5b21b6" },
+      info: { bg: "#0891b2", border: "#0e7490" },
+    }
+    const c     = COLORS[type] || COLORS.info
+    const toast = document.createElement("div")
+    toast.style.cssText = `
+      padding: 10px 20px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 0.04em;
+      border: 2px solid ${c.border};
+      background: ${c.bg};
+      color: #fff;
+      white-space: nowrap;
+      animation: sub-toast-in 0.25s ease forwards;
+    `
+    toast.textContent = message
+    this.toastContainerTarget.appendChild(toast)
+
+    setTimeout(() => {
+      toast.style.animation = "sub-toast-out 0.25s ease forwards"
+      setTimeout(() => toast.remove(), 260)
+    }, 3200)
   }
 
   // ── Submissions tracker ──────────────────────────────────────────────────

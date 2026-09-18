@@ -20,9 +20,12 @@ export default class extends Controller {
     "roundLabel", "timerDisplay", "submissionsList", "shotStatus",
     "attackGrid", "fireBtn",
     "defenseGrid",
-    // Spectator / Game over
-    "phaseSpectator",
-    "phaseGameOver", "gameOverTitle", "finalScores"
+    // Spectator
+    "phaseSpectator", "spectatorGrids", "spectatorRoundLabel",
+    // Game over
+    "phaseGameOver", "gameOverTitle", "finalScores",
+    // Polish overlays
+    "eliminationOverlay", "toastContainer"
   ]
   static values = { roomCode: String, playerId: String, gridSize: Number, subCount: Number }
 
@@ -37,7 +40,9 @@ export default class extends Controller {
     this.shotSubmitted   = false
     this.myPlacement     = null // current placement data from server
     this.countdownTimer  = null
+    this.isSpectator     = false
 
+    this.injectStyles()
     this.subscribe()
   }
 
@@ -164,58 +169,96 @@ export default class extends Controller {
   onRoundResult(data) {
     this.stopCountdown()
 
+    const myPick      = (data.picks || {})[this.playerIdValue]
+    const myHits      = (data.hits  || {})[this.playerIdValue] || []
+    const sunkShips   = data.sunk_ships || {}
+    const eliminated  = data.eliminated || []
+
     // Record my shot result
-    const myPick = (data.picks || {})[this.playerIdValue]
     if (myPick) {
       const [row, col] = myPick
-      const myHits     = (data.hits || {})[this.playerIdValue] || []
       const isHit      = myHits.some(([, hr, hc]) => hr === row && hc === col)
-      // Replace or add entry for this round's shot
-      this.myShots = this.myShots.filter(s => !(s.row === row && s.col === col))
+      this.myShots     = this.myShots.filter(s => !(s.row === row && s.col === col))
       this.myShots.push({ row, col, hit: isHit })
     }
 
-    // Update my placement to reflect hits I've received
+    // Update my placement (hits I've received)
     const myPlacement = (data.placements || {})[this.playerIdValue]
     if (myPlacement) {
       this.myPlacement = myPlacement
       this.buildDefenseGrid(myPlacement)
     }
 
-    // Rebuild attack grid to show result
+    // Rebuild attack grid
     this.buildAttackGrid()
 
-    // Show result message
+    // Animate newly-shot cell
     if (myPick) {
       const [row, col] = myPick
-      const myHits = (data.hits || {})[this.playerIdValue] || []
+      this.animateLastShot(row, col)
+    }
+
+    // ── Toasts ────────────────────────────────────────────────────────────
+
+    if (myPick) {
       const hitCount = myHits.length
       if (hitCount > 0) {
-        this.shotStatusTarget.textContent = `Hit! You struck ${hitCount} ship cell${hitCount > 1 ? "s" : ""}`
+        this.showToast(`Hit! ${hitCount} cell${hitCount > 1 ? "s" : ""} struck`, "hit")
+        this.shotStatusTarget.textContent = `Hit! You struck ${hitCount} cell${hitCount > 1 ? "s" : ""}`
       } else {
+        this.showToast("Miss", "miss")
         this.shotStatusTarget.textContent = "Miss — no ships at that coordinate"
       }
     } else {
       this.shotStatusTarget.textContent = "No shot submitted this round"
     }
 
-    // Check if I was eliminated
-    if ((data.eliminated || []).includes(this.playerIdValue)) {
-      setTimeout(() => this.showPhase("spectator"), 1500)
+    // Ship sunk toasts
+    Object.entries(sunkShips).forEach(([targetId, shipIndices]) => {
+      const targetNick = (data.nicknames || {})[targetId] || "opponent"
+      shipIndices.forEach(() => {
+        if (targetId === this.playerIdValue) {
+          this.showToast("Your ship was sunk!", "sunk")
+        } else {
+          this.showToast(`${targetNick}'s ship sunk!`, "sunk")
+        }
+      })
+    })
+
+    // ── Spectator update ──────────────────────────────────────────────────
+    if (this.isSpectator) {
+      this.renderSpectatorGrids(data.placements || {}, data.nicknames || {})
+      if (this.hasSpectatorRoundLabelTarget) {
+        this.spectatorRoundLabelTarget.textContent = `Round ${data.round}`
+      }
+    }
+
+    // ── Elimination ───────────────────────────────────────────────────────
+    if (eliminated.includes(this.playerIdValue)) {
+      this.showEliminationOverlay()
+      setTimeout(() => {
+        this.isSpectator = true
+        this.renderSpectatorGrids(data.placements || {}, data.nicknames || {})
+        this.showPhase("spectator")
+      }, 2500)
     }
   }
 
   onGameOver(data) {
     this.stopCountdown()
 
+    const scores  = data.scores || {}
+    const sorted  = Object.entries(scores).sort(([, a], [, b]) => b - a)
+    const myRank  = sorted.findIndex(([id]) => id === this.playerIdValue) + 1
     const isWinner = data.winner_id === this.playerIdValue
-    this.gameOverTitleTarget.textContent = isWinner ? "Victory!" : "Defeated"
+
+    const rankLabels = { 1: "Victory!", 2: "2nd Place", 3: "3rd Place" }
+    this.gameOverTitleTarget.textContent = rankLabels[myRank] ?? `${myRank}th Place`
     this.gameOverTitleTarget.className   = isWinner
       ? "text-3xl font-black text-yellow-400 mb-8"
       : "text-3xl font-black text-slate-400 mb-8"
 
     this.renderFinalScores(data.scores, data.nicknames, this.finalScoresTarget)
-
     this.showPhase("gameOver")
   }
 
@@ -533,6 +576,140 @@ export default class extends Controller {
       clearInterval(this.countdownTimer)
       this.countdownTimer = null
     }
+  }
+
+  // ── Phase 5 polish ───────────────────────────────────────────────────────
+
+  injectStyles() {
+    if (document.getElementById("submarine-combat-styles")) return
+    const style = document.createElement("style")
+    style.id    = "submarine-combat-styles"
+    style.textContent = `
+      @keyframes sub-hit {
+        0%   { transform: scale(1.8); opacity: 0; }
+        60%  { transform: scale(0.9); }
+        100% { transform: scale(1);   opacity: 1; }
+      }
+      @keyframes sub-toast-in {
+        from { transform: translateY(12px); opacity: 0; }
+        to   { transform: translateY(0);    opacity: 1; }
+      }
+      @keyframes sub-toast-out {
+        from { opacity: 1; }
+        to   { opacity: 0; transform: translateY(-8px); }
+      }
+      @keyframes sub-elim {
+        0%   { opacity: 0; }
+        15%  { opacity: 1; }
+        80%  { opacity: 1; }
+        100% { opacity: 0; }
+      }
+    `
+    document.head.appendChild(style)
+  }
+
+  showToast(message, type = "info") {
+    if (!this.hasToastContainerTarget) return
+    const COLORS = {
+      hit:  { bg: "#dc2626", border: "#991b1b" },
+      miss: { bg: "#1e293b", border: "#475569" },
+      sunk: { bg: "#d97706", border: "#92400e" },
+      info: { bg: "#0891b2", border: "#0e7490" },
+    }
+    const c     = COLORS[type] || COLORS.info
+    const toast = document.createElement("div")
+    toast.style.cssText = `
+      padding: 10px 20px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 0.05em;
+      border: 2px solid ${c.border};
+      background: ${c.bg};
+      color: #fff;
+      white-space: nowrap;
+      animation: sub-toast-in 0.25s ease forwards;
+    `
+    toast.textContent = message
+    this.toastContainerTarget.appendChild(toast)
+
+    setTimeout(() => {
+      toast.style.animation = "sub-toast-out 0.25s ease forwards"
+      setTimeout(() => toast.remove(), 260)
+    }, 2800)
+  }
+
+  showEliminationOverlay() {
+    if (!this.hasEliminationOverlayTarget) return
+    const overlay = this.eliminationOverlayTarget
+    overlay.classList.remove("hidden")
+    overlay.style.animation = "sub-elim 2.5s ease forwards"
+    setTimeout(() => {
+      overlay.classList.add("hidden")
+      overlay.style.animation = ""
+    }, 2500)
+  }
+
+  animateLastShot(row, col) {
+    const n    = this.gridSizeValue
+    const idx  = row * n + col
+    const cell = this.attackGridTarget.children[idx]
+    if (!cell) return
+    // Restart the animation
+    cell.style.animation = "none"
+    void cell.offsetWidth // force reflow
+    cell.style.animation = "sub-hit 0.4s ease forwards"
+  }
+
+  renderSpectatorGrids(placements, nicknames) {
+    if (!this.hasSpectatorGridsTarget) return
+    const container = this.spectatorGridsTarget
+    container.innerHTML = ""
+    const n = this.gridSizeValue
+
+    Object.entries(placements).forEach(([playerId, placement]) => {
+      const nick       = (nicknames || {})[playerId] || playerId.slice(-4)
+      const eliminated = !!placement.eliminated
+      const hitCells   = placement.ships.flatMap(ship => ship.hits || [])
+
+      const panel = document.createElement("div")
+      panel.className = [
+        "bg-slate-900 rounded-2xl p-3 border-2",
+        eliminated ? "border-red-900 opacity-50" : "border-slate-700"
+      ].join(" ")
+
+      const nameEl = document.createElement("p")
+      nameEl.className   = "text-xs font-bold text-slate-300 mb-2 text-center"
+      nameEl.textContent = eliminated ? `${nick} (out)` : nick
+      panel.appendChild(nameEl)
+
+      const grid = document.createElement("div")
+      grid.className = "grid gap-[2px]"
+      grid.style.gridTemplateColumns = `repeat(${n}, 1fr)`
+
+      for (let r = 0; r < n; r++) {
+        for (let c = 0; c < n; c++) {
+          const shipIdx = placement.ships.findIndex(ship =>
+            ship.cells.some(([sr, sc]) => sr === r && sc === c)
+          )
+          const isHit = hitCells.some(([hr, hc]) => hr === r && hc === c)
+          const cell  = document.createElement("div")
+          cell.className = "aspect-square rounded-[2px]"
+
+          if (isHit) {
+            cell.style.backgroundColor = "#dc2626"
+          } else if (shipIdx >= 0) {
+            cell.style.backgroundColor = SHIP_COLORS[shipIdx % SHIP_COLORS.length].fill + "99"
+          } else {
+            cell.style.backgroundColor = "#0f172a"
+          }
+          grid.appendChild(cell)
+        }
+      }
+
+      panel.appendChild(grid)
+      container.appendChild(panel)
+    })
   }
 
   // Rebuild shot history from game_state on reconnect mid-battle
