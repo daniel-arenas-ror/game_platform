@@ -11,7 +11,8 @@ class Games::SubmarineCombatChannel < ApplicationCable::Channel
 
     stream_from "#{STREAM_PREFIX}#{@room.code}"
 
-    transmit({ action: "state_snapshot", state: @room.game_state })
+    nicknames = @room.players.each_with_object({}) { |p, h| h[p.id.to_s] = p.nickname }
+    transmit({ action: "state_snapshot", state: @room.game_state, nicknames: nicknames })
   end
 
   def unsubscribed
