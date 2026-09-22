@@ -119,7 +119,8 @@ class RoomsController < ApplicationController
     "guess_the_color"        => "guess_the_color_room_",
     "count_birds"            => "count_birds_room_",
     "sequence_memory"        => "sequence_memory_room_",
-    "submarine_combat"       => "submarine_combat_room_"
+    "submarine_combat"       => "submarine_combat_room_",
+    "mind_match"             => "mind_match_room_"
   }.freeze
 
   def game_stream_name(game_code, room_code)

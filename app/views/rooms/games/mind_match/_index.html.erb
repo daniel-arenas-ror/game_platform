@@ -1,0 +1,201 @@
+<% is_host = session[:player_id].blank? %>
+
+<% if is_host %>
+  <%# ================================================================= %>
+  <%# HOST VIEW                                                          %>
+  <%# ================================================================= %>
+  <div data-controller="mind-match-host"
+       data-mind-match-host-room-code-value="<%= @room.code %>"
+       class="min-h-screen bg-slate-950 text-white">
+
+    <%# ── Phase: Waiting (before game starts) ── %>
+    <div data-mind-match-host-target="phaseWaiting">
+      <div class="flex flex-col items-center justify-center min-h-screen p-8">
+        <p class="text-violet-400 font-mono text-xs uppercase tracking-widest mb-2">Mind Match</p>
+        <h1 class="text-4xl font-black text-white mb-3">Get Ready!</h1>
+        <p class="text-slate-400 text-sm mb-10">Players are connected. Starting soon…</p>
+
+        <div data-mind-match-host-target="playerList"
+             class="flex flex-wrap gap-3 justify-center mb-10 min-h-[48px]">
+        </div>
+      </div>
+    </div>
+
+    <%# ── Phase: Category (show current category + timer) ── %>
+    <div data-mind-match-host-target="phaseCategory" class="hidden">
+      <div class="flex flex-col items-center justify-center min-h-screen p-8">
+
+        <%# Round indicator %>
+        <p data-mind-match-host-target="roundLabel"
+           class="text-violet-400 font-mono text-xs uppercase tracking-widest mb-6">
+          Round —
+        </p>
+
+        <%# Category card %>
+        <div class="bg-slate-800 border-2 border-violet-500 rounded-3xl px-10 py-8 mb-8 text-center max-w-xl w-full">
+          <p class="text-slate-400 text-xs uppercase tracking-widest mb-3">Category</p>
+          <p data-mind-match-host-target="categoryText"
+             class="text-white font-black text-3xl leading-snug">
+          </p>
+        </div>
+
+        <%# Timer ring %>
+        <div data-mind-match-host-target="timerDisplay"
+             class="w-20 h-20 rounded-full border-4 border-violet-500 flex items-center justify-center
+                    text-violet-400 font-black text-2xl tabular-nums mb-8">
+          —
+        </div>
+
+        <%# Who has submitted %>
+        <div class="text-center">
+          <p class="text-slate-500 text-xs uppercase tracking-widest mb-3">Submitted</p>
+          <div data-mind-match-host-target="submissionsList"
+               class="flex flex-wrap gap-2 justify-center min-h-[32px]">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <%# ── Phase: Reveal ── %>
+    <div data-mind-match-host-target="phaseReveal" class="hidden">
+      <div class="flex flex-col items-center justify-center min-h-screen p-8">
+        <p class="text-violet-400 font-mono text-xs uppercase tracking-widest mb-2">Round Results</p>
+        <p data-mind-match-host-target="revealCategory"
+           class="text-slate-300 text-lg font-semibold mb-8"></p>
+
+        <%# Groups list %>
+        <div data-mind-match-host-target="groupsList"
+             class="w-full max-w-2xl space-y-3 mb-10">
+        </div>
+
+        <%# Scoreboard %>
+        <div class="w-full max-w-sm">
+          <p class="text-slate-500 text-xs uppercase tracking-widest mb-3 text-center">Scores</p>
+          <div data-mind-match-host-target="scoresList"
+               class="space-y-2">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <%# ── Phase: Game Over ── %>
+    <div data-mind-match-host-target="phaseGameOver" class="hidden">
+      <div class="flex flex-col items-center justify-center min-h-screen p-8">
+        <p class="text-violet-400 font-mono text-xs uppercase tracking-widest mb-2">Game Over</p>
+        <h1 class="text-4xl font-black text-white mb-2">Final Scores</h1>
+
+        <div data-mind-match-host-target="finalScores"
+             class="w-full max-w-sm space-y-3 my-8">
+        </div>
+
+        <button data-action="click->mind-match-host#restartGame"
+                class="px-10 py-4 bg-violet-600 text-white font-black text-lg rounded-2xl
+                       hover:bg-violet-500 transition-colors">
+          Play Again
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+<% else %>
+  <%# ================================================================= %>
+  <%# PLAYER VIEW                                                        %>
+  <%# ================================================================= %>
+  <div data-controller="mind-match-player"
+       data-mind-match-player-room-code-value="<%= @room.code %>"
+       data-mind-match-player-player-id-value="<%= session[:player_id] %>"
+       class="min-h-screen bg-slate-950 text-white">
+
+    <%# ── Phase: Waiting ── %>
+    <div data-mind-match-player-target="phaseWaiting">
+      <div class="flex flex-col items-center justify-center min-h-screen p-8 text-center">
+        <p class="text-violet-400 font-mono text-xs uppercase tracking-widest mb-2">Mind Match</p>
+        <h1 class="text-3xl font-black text-white mb-3">Get Ready!</h1>
+        <p class="text-slate-400 text-sm">The host will start the game soon…</p>
+        <div class="mt-8 w-8 h-8 border-4 border-violet-500 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    </div>
+
+    <%# ── Phase: Typing (category shown, player types a word) ── %>
+    <div data-mind-match-player-target="phaseTyping" class="hidden">
+      <div class="flex flex-col items-center justify-center min-h-screen p-6 text-center">
+
+        <%# Timer %>
+        <div data-mind-match-player-target="timerDisplay"
+             class="w-16 h-16 rounded-full border-4 border-violet-500 flex items-center justify-center
+                    text-violet-400 font-black text-xl tabular-nums mb-6">
+          —
+        </div>
+
+        <%# Category %>
+        <div class="bg-slate-800 border-2 border-violet-500 rounded-3xl px-8 py-6 mb-8 w-full max-w-sm">
+          <p class="text-slate-400 text-xs uppercase tracking-widest mb-2">Think of…</p>
+          <p data-mind-match-player-target="categoryText"
+             class="text-white font-black text-2xl leading-snug">
+          </p>
+        </div>
+
+        <%# Word input %>
+        <div data-mind-match-player-target="inputArea" class="w-full max-w-sm">
+          <input data-mind-match-player-target="wordInput"
+                 type="text"
+                 placeholder="Type your word…"
+                 maxlength="30"
+                 autocomplete="off"
+                 autocorrect="off"
+                 autocapitalize="off"
+                 spellcheck="false"
+                 class="w-full bg-slate-800 border-2 border-slate-600 rounded-2xl px-5 py-4
+                        text-white text-xl text-center font-semibold placeholder-slate-600
+                        focus:outline-none focus:border-violet-500 transition-colors">
+          <button data-action="click->mind-match-player#submitWord"
+                  data-mind-match-player-target="submitBtn"
+                  class="mt-4 w-full py-4 bg-violet-600 text-white font-black text-lg rounded-2xl
+                         hover:bg-violet-500 disabled:opacity-30 disabled:cursor-not-allowed transition-colors">
+            Submit
+          </button>
+        </div>
+
+        <%# Submitted state (replaces input after submitting) %>
+        <div data-mind-match-player-target="submittedMsg" class="hidden">
+          <p class="text-violet-400 font-black text-xl">Word submitted!</p>
+          <p class="text-slate-500 text-sm mt-2">Waiting for other players…</p>
+        </div>
+
+      </div>
+    </div>
+
+    <%# ── Phase: Reveal ── %>
+    <div data-mind-match-player-target="phaseReveal" class="hidden">
+      <div class="flex flex-col items-center justify-center min-h-screen p-6 text-center">
+        <p class="text-violet-400 font-mono text-xs uppercase tracking-widest mb-2">Round Results</p>
+        <p data-mind-match-player-target="revealCategory"
+           class="text-slate-300 text-base font-semibold mb-6"></p>
+
+        <div data-mind-match-player-target="groupsList"
+             class="w-full max-w-sm space-y-3 mb-8">
+        </div>
+
+        <div class="w-full max-w-sm">
+          <p class="text-slate-500 text-xs uppercase tracking-widest mb-3">Your Score</p>
+          <p data-mind-match-player-target="myScore"
+             class="text-white font-black text-4xl">0</p>
+        </div>
+      </div>
+    </div>
+
+    <%# ── Phase: Game Over ── %>
+    <div data-mind-match-player-target="phaseGameOver" class="hidden">
+      <div class="flex flex-col items-center justify-center min-h-screen p-6 text-center">
+        <p class="text-violet-400 font-mono text-xs uppercase tracking-widest mb-2">Game Over</p>
+        <h1 class="text-3xl font-black text-white mb-6">Final Scores</h1>
+
+        <div data-mind-match-player-target="finalScores"
+             class="w-full max-w-sm space-y-3">
+        </div>
+      </div>
+    </div>
+
+  </div>
+<% end %>

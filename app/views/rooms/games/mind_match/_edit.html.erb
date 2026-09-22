@@ -1,0 +1,42 @@
+<%# Rounds picker %>
+<div class="space-y-4 bg-slate-900/50 p-6 rounded-2xl border border-slate-700">
+  <label class="block text-xs font-bold text-slate-400 mb-3 tracking-widest">NUMBER OF ROUNDS</label>
+  <div class="grid grid-cols-3 gap-3">
+    <% [[3, "3", "Quick"], [5, "5", "Standard"], [10, "10", "Marathon"]].each do |rounds, label, badge| %>
+      <label class="relative cursor-pointer">
+        <input type="radio"
+               name="room[game_state][total_rounds]"
+               value="<%= rounds %>"
+               class="peer hidden"
+               <%= 'checked' if (@room.game_state['total_rounds']&.to_i || 5) == rounds %>>
+        <div class="text-center py-4 bg-slate-800 border-2 border-slate-700 rounded-xl transition-all
+                    peer-checked:border-violet-500 peer-checked:bg-violet-500/10">
+          <p class="text-white font-black text-2xl"><%= label %></p>
+          <p class="text-slate-500 text-xs mt-1"><%= badge %></p>
+        </div>
+      </label>
+    <% end %>
+  </div>
+</div>
+
+<%# Time per round picker %>
+<div class="space-y-4 bg-slate-900/50 p-6 rounded-2xl border border-slate-700 mt-2">
+  <label class="block text-xs font-bold text-slate-400 mb-3 tracking-widest">TIME PER ROUND</label>
+  <div class="grid grid-cols-3 gap-3">
+    <% [[10, "10s", "Fast"], [15, "15s", "Normal"], [20, "20s", "Relaxed"]].each do |secs, label, badge| %>
+      <label class="relative cursor-pointer">
+        <input type="radio"
+               name="room[game_state][time_per_round]"
+               value="<%= secs %>"
+               class="peer hidden"
+               <%= 'checked' if (@room.game_state['time_per_round']&.to_i || 15) == secs %>>
+        <div class="text-center py-4 bg-slate-800 border-2 border-slate-700 rounded-xl transition-all
+                    peer-checked:border-violet-500 peer-checked:bg-violet-500/10">
+          <p class="text-white font-black text-2xl"><%= label %></p>
+          <p class="text-slate-500 text-xs mt-1"><%= badge %></p>
+        </div>
+      </label>
+    <% end %>
+  </div>
+  <p class="text-slate-600 text-xs mt-2">Players have this long to type their word each round.</p>
+</div>

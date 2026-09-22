@@ -43,6 +43,12 @@ Game.create!(
   description: "Place your submarines on the grid, then fire coordinates every round. Your shot hits every opponent hiding a ship there. Last fleet standing wins!"
 )
 
+Game.create!(
+  name: "Mind Match",
+  code: "mind_match",
+  description: "The host shows a category. Everyone types one word — points for every player who thinks the same as you. The more minds you match, the higher your score!"
+)
+
 # ---------------------------------------------------------------------------
 # Battle City — Classic map preset
 # 26×26 grid. Steel border, brick clusters, base at (12, 24).

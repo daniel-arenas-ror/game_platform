@@ -15,6 +15,8 @@ class GameFactory
       GameServices::SequenceMemory.new(room)
     when 'submarine_combat'
       GameServices::SubmarineCombat.new(room)
+    when 'mind_match'
+      GameServices::MindMatch.new(room)
     when 'impostor'
       ## TODO
     else
