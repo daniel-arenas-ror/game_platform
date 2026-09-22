@@ -33,13 +33,8 @@ bin/rails test:system
 ### Linting & Security
 
 ```bash
-# Run RuboCop linter
 rubocop
-
-# Run with GitHub-style output (used in CI)
-rubocop -f github
-
-# Security scan
+rubocop -f github          # GitHub-style output (used in CI)
 brakeman
 bundler-audit check --update
 ```
@@ -48,73 +43,128 @@ bundler-audit check --update
 
 ### What This App Does
 
-A real-time multiplayer game platform where a host creates a **Room**, shares a QR code, and players join via their phones. Games run over WebSockets (ActionCable). Currently implemented games:
+A real-time multiplayer game platform. A host creates a **Room**, shares a QR code, and players join via their phones. Games run over WebSockets (ActionCable). The host screen stays on a TV/laptop; players interact on their phones.
 
-- **The Fisherman** (`fisherman`) — Social deduction: players are assigned roles (fisherman, impostor, knower). The fisherman guesses who the impostor is each round.
-- **How Want Be Billionaire** (`how_want_be_billionare`) — Timed trivia/quiz with points.
+### Implemented Games
 
-Scaffolded but not yet implemented: Impostor, Quick Draw. FIFA World Cup has data models only.
+| Code | Name | Notes |
+|------|------|-------|
+| `fisherman` | The Fisherman | Social deduction with roles (fisherman/impostor/knower) |
+| `how_want_be_billionare` | How Want Be Billionaire | Timed trivia |
+| `battle_city` | Battle City | Full |
+| `guess_the_color` | Guess The Color | Full |
+| `count_birds` | Count Birds | Full |
+| `sequence_memory` | Sequence Memory | Full |
+| `submarine_combat` | Submarine Combat | Ship placement + battle loop |
+| `mind_match` | Mind Match | Word-matching telepathy game |
+| `impostor` | Impostor | TODO stub in GameFactory |
 
-### Key Models (Mongoid, not ActiveRecord)
+FIFA World Cup has data models only (no game logic).
 
-- **Game** — Static game definitions (name, `code`, description). Seeded.
-- **Room** — A live game session. Has a unique 4-char `code` used in URLs and QR codes. Tracks `status` (`lobby` → `playing` → `finished`). Stores all transient game state in a `game_state` Hash field and `answers_history` Array — no separate tables.
-- **Player** — Belongs to a Room. Holds `nickname`, `role`, and `connected` status. Player identity is tracked via HTTP session (`session[:player_id]` → `current_player`).
+### Key Models (Mongoid — no ActiveRecord migrations)
 
-The `game_state` hash inside Room stores the current question, scores, round count, and any other runtime data. Its shape varies by game type.
+- **Game** — Static game definitions (name, `code`, description). Seeded. `code` drives routing + GameFactory.
+- **Room** — A live session. Unique 4-char `code`. `status`: `lobby` → `playing` → `finished`. `game_state` Hash stores all transient runtime state — shape varies by game.
+- **Player** — Belongs to a Room. `nickname`, `role`, `connected` (Boolean). Identity tracked via `session[:player_id]`.
 
 ### Service Layer
 
-**`GameFactory.build(room)`** — Returns the correct service instance based on `room.game.code`. Entry point from the controller when starting a game.
+**`GameFactory.build(room)`** — Entry point from `rooms#start`. Returns the correct service based on `room.game.code`.
 
 **`GameServices::Base`** — Shared helpers: `start_points!`, `broadcast_start`.
 
-**`GameServices::Fisherman`** and **`GameServices::HowWantBeBillionare`** — Contain all game logic: setup, role assignment, scoring, round progression.
+Each game service implements at minimum:
+- `setup_game!` — Initializes `game_state`, sets `room.status = "playing"`, calls `broadcast_start`.
+- Game logic methods (scoring, round progression, answer handling, etc.)
 
-### ActionCable Channels
+### Adding a New Game — Required Files
 
-Two layers of channels:
+1. **`app/services/game_services/{code}.rb`** — Inherits `Base`. Implements `setup_game!` + game logic.
+2. **`app/channels/games/{code}_channel.rb`** — Handles WebSocket actions. Streams from `{code}_room_{room_code}`.
+3. **`app/services/game_factory.rb`** — Add `when '{code}' then GameServices::{Name}.new(room)`.
+4. **`app/controllers/rooms_controller.rb`** — Add `"{code}" => "{code}_room_"` to `GAME_STREAM_PREFIXES`.
+5. **`app/views/rooms/games/{code}/_index.html.erb`** — In-game view. Rendered dynamically by `rooms#playing`. Root element needs `data-controller`, `data-{ctrl}-room-code-value`, `data-{ctrl}-player-id-value`.
+6. **`app/javascript/controllers/{code}_host_controller.js`** + **`{code}_player_controller.js`**
+7. *(Optional)* **`app/views/rooms/games/{code}/_edit.html.erb`** — Pre-game config pickers.
+8. **`db/seeds.rb`** — Add `Game.find_or_create_by!(code: '{code}')`.
 
-1. **`GameChannel`** (`game_{room_code}`) — Lobby channel. Used to broadcast `player_joined` and `game_started` events before a game begins.
-2. **`Games::FishermanChannel`** (`fisherman_room_{room_code}`) and **`Games::MillionaireChannel`** (`millionaire_room_{room_code}`) — Game-specific channels. Handle in-game actions like submitting guesses/answers and tracking connection status.
+### ActionCable — Two-Layer Model
 
-`MillionaireChannel#start_game_loop` runs in a separate thread to drive timed rounds.
+**Layer 1 — Lobby:** `GameChannel` (`game_{room_code}`) — present before game starts. Broadcasts `player_joined`, `game_started`, `game_changed`.
 
-### Routing & View Rendering
+**Layer 2 — Game-specific:** `Games::{Name}Channel` (`{code}_room_{room_code}`) — subscribed by Stimulus when the playing view loads. Drives all in-game events.
 
+### Stimulus Controller Conventions
+
+```javascript
+static values  = { roomCode: String, playerId: String }
+static targets = [ "phaseWaiting", "phaseRound", "phaseReveal", "phaseGameOver", ... ]
+
+connect() {
+  this.channel = consumer.subscriptions.create(
+    { channel: "Games::XChannel", room_code: this.roomCodeValue, player_id: this.playerIdValue },
+    { connected: () => this.onConnected(), received: (data) => this.handleMessage(data) }
+  )
+}
+
+handleMessage(data) {
+  switch (data.action) { /* route to handlers */ }
+}
+
+showPhase(name) {
+  ["phaseWaiting", ...].forEach(p => {
+    this[`${p}Target`].classList.toggle("hidden", p !== name)
+  })
+}
 ```
-GET  /                   → home#index         (game selection)
-POST /rooms              → rooms#create
-GET  /rooms/:id          → rooms#show         (lobby + QR code)
-POST /rooms/:id/start    → rooms#start        (triggers GameFactory & setup_game!)
-GET  /rooms/:id/playing  → rooms#playing      (in-game view)
-GET  /join/:code         → rooms#join
-POST /join/:code         → rooms#player_join
-```
 
-The playing view dynamically renders a game-specific partial:
+- **Host** = `player_id` is blank. Host calls `channel.perform("start_game_loop", {})` in `onConnected()`.
+- **Player** = `player_id` from `session[:player_id]`.
+- Always `unsubscribe()` and `clearInterval()` in `disconnect()`.
+- Inject CSS animations once via `<style id="...">` — check for existing tag before inserting.
+
+### Mongoid `game_state` Patterns
+
 ```ruby
-render "rooms/games/#{game_code}/index"
-# e.g. app/views/rooms/games/fisherman/_index.html.erb
+# Atomic nested-field update — preferred for mid-game partial updates
+@room.set("game_state.scores" => scores, "game_state.status" => "collecting")
+
+# Full document update — used in setup_game! and status transitions
+@room.update!(status: "playing", game_state: @room.game_state.merge({ ... }))
+
+# Always reload before reading state inside background threads
+@room.reload
 ```
 
-Game configuration views follow the same pattern under `rooms/games/{code}/_edit.html.erb`.
+### Routing
+
+```
+GET   /                        → home#index
+POST  /rooms                   → rooms#create
+GET   /rooms/:id               → rooms#show (lobby + QR)
+PATCH /rooms/:id               → rooms#update (config)
+POST  /rooms/:id/start         → rooms#start → GameFactory → setup_game!
+GET   /rooms/:id/playing       → rooms#playing (renders game partial)
+POST  /rooms/:id/change_game   → rooms#change_game
+GET   /join/:code              → rooms#join
+POST  /join/:code              → rooms#player_join
+```
 
 ### Frontend
 
-- **Tailwind CSS** via `tailwindcss-rails` (dark theme, bg-slate-900 base)
-- **Stimulus** controllers in `app/javascript/controllers/`
-- **ActionCable JS** channels in `app/javascript/channels/`
-- **Importmap** (no Node/bundler required)
-- **Turbo Frames** wrap game state for targeted DOM updates
+- **Tailwind CSS** via `tailwindcss-rails`. Dark theme: `bg-slate-950` base, `bg-slate-800` cards, `border-slate-700` borders. Per-game accent colors (violet for Mind Match, cyan for Submarine Combat, etc.).
+- **Stimulus** auto-loaded via `eagerLoadControllersFrom("controllers", application)` — no manual registration.
+- **Importmap** — no Node/bundler. Use ES6 `import` only.
+- Turbo is available but game views use direct DOM manipulation via Stimulus, not Turbo Frames.
 
-### Infrastructure Notes
+### Infrastructure
 
-- **MongoDB** via Docker Compose. No ActiveRecord migrations — document structure is defined in models.
-- **Production ActionCable** requires Redis (`REDIS_URL` env var, see `config/cable.yml`).
-- **CI** runs on GitHub Actions: RuboCop → Brakeman/bundler-audit → unit tests → system tests.
+- **MongoDB** via Docker Compose. `config/mongoid.yml` for connection.
+- **ActionCable** uses `async` adapter in dev, **Redis** (`REDIS_URL`) in production (`config/cable.yml`).
+- **CI** (GitHub Actions): RuboCop → Brakeman/bundler-audit → unit tests → system tests.
 
 ### Known Issues
 
-- `Fisherman::Question` has a typo: the field is named `answerds` (not `answers`).
-- Several `p` debug statements exist in the channel files; not suitable for production.
+- `Fisherman::Question` has a typo: field is `answerds` (not `answers`). The service and game_state reference this typo — do not "fix" it without updating all references.
+- `p` debug statements exist in `FishermanChannel` and `MillionaireChannel` — not production-safe.
+- `HowWantBeBillionareChannel` uses BSON::ObjectId casting with rescue blocks for question ID lookups.
