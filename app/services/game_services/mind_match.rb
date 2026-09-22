@@ -61,14 +61,16 @@ module GameServices
       @room.update!(
         status: "playing",
         game_state: @room.game_state.merge(
-          "status"        => "waiting",
-          "round"         => 0,
-          "total_rounds"  => total_rounds,
-          "time_per_round" => time_per_round,
-          "scores"        => scores,
-          "used_categories" => [],
-          "answers"       => {},
-          "round_scores"  => {}
+          "status"           => "waiting",
+          "round"            => 0,
+          "total_rounds"     => total_rounds,
+          "time_per_round"   => time_per_round,
+          "scores"           => scores,
+          "used_categories"  => [],
+          "answers"          => {},
+          "round_scores"     => {},
+          "loop_running"     => false,
+          "current_category" => nil
         )
       )
 
@@ -104,7 +106,7 @@ module GameServices
       groups = {}
       answers.each do |player_id, raw_word|
         next if raw_word.to_s.strip.empty?
-        word = raw_word.to_s.downcase.strip
+        word = normalize_word(raw_word)
         groups[word] ||= []
         groups[word] << player_id
       end
@@ -130,7 +132,7 @@ module GameServices
 
       # Return groups as array sorted by size desc, keeping original casing from first submitter
       display_groups = groups.map do |word, player_ids|
-        original = answers.find { |_, v| v.to_s.downcase.strip == word }&.last || word
+        original = answers.find { |_, v| normalize_word(v) == word }&.last || word
         { "word" => original, "player_ids" => player_ids }
       end.sort_by { |g| -g["player_ids"].size }
 
@@ -143,6 +145,27 @@ module GameServices
       return if answers[player_id.to_s]  # already submitted
 
       @room.set("game_state.answers.#{player_id}" => word.to_s.strip.first(30))
+    end
+
+    private
+
+    # Normalize a word for matching: lowercase, collapse spaces, strip leading/trailing
+    # punctuation, and fold common English plurals (strip trailing 's' for words > 4 chars
+    # that don't already end in 'ss', 'us', 'is', 'as', 'os').
+    def normalize_word(raw)
+      w = raw.to_s
+             .downcase
+             .strip
+             .gsub(/[[:punct:]]+\z/, "")   # strip trailing punctuation
+             .gsub(/\A[[:punct:]]+/, "")   # strip leading punctuation
+             .gsub(/\s+/, " ")             # collapse internal spaces
+
+      # Fold common English plurals: "cats" → "cat", but keep "grass", "plus", "virus"
+      if w.length > 4 && w.end_with?("s") && !w.end_with?("ss", "us", "is", "as", "os")
+        w = w.chomp("s")
+      end
+
+      w
     end
   end
 end

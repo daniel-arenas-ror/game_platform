@@ -1,6 +1,7 @@
 class Games::MindMatchChannel < ApplicationCable::Channel
-  STREAM_PREFIX   = "mind_match_room_"
-  REVEAL_DURATION = 6   # seconds the grouped results are shown before the next round
+  STREAM_PREFIX       = "mind_match_room_"
+  REVEAL_DURATION     = 5   # seconds the grouped results are shown
+  TRANSITION_DURATION = 3   # seconds the "round X — get ready" screen shows
 
   def subscribed
     @room   = Room.find_by(code: params[:room_code])
@@ -28,14 +29,20 @@ class Games::MindMatchChannel < ApplicationCable::Channel
 
   # ── Host actions ──────────────────────────────────────────────────────────
 
-  # Called by the host controller once the ActionCable connection is established.
   def start_game_loop(data)
     return unless host?
 
-    @stop_loop   = false
-    @room        = Room.find_by(code: params[:room_code])
-    svc          = GameServices::MindMatch.new(@room)
-    total_rounds = @room.game_state["total_rounds"].to_i
+    # Guard: don't start a second loop if one is already running
+    @room.reload
+    return if @room.game_state["loop_running"]
+
+    @stop_loop = false
+    @room      = Room.find_by(code: params[:room_code])
+
+    @room.set("game_state.loop_running" => true)
+
+    svc            = GameServices::MindMatch.new(@room)
+    total_rounds   = @room.game_state["total_rounds"].to_i
     time_per_round = @room.game_state["time_per_round"].to_i
 
     Thread.new do
@@ -43,7 +50,18 @@ class Games::MindMatchChannel < ApplicationCable::Channel
         break if @stop_loop
         round = i + 1
 
-        # ── 1. Pick a category and broadcast it ──────────────────────────
+        # ── 0. Transition screen between rounds (skipped before round 1) ──
+        if i > 0
+          broadcast({
+            action:       "next_round",
+            round:        round,
+            total_rounds: total_rounds
+          })
+          sleep TRANSITION_DURATION
+          break if @stop_loop
+        end
+
+        # ── 1. Pick a category and broadcast it ───────────────────────────
         category = svc.pick_category!
         @room.set("game_state.round" => round, "game_state.status" => "collecting")
 
@@ -84,7 +102,10 @@ class Games::MindMatchChannel < ApplicationCable::Channel
         @room.reload
         @room.update!(
           status:     "finished",
-          game_state: @room.game_state.merge("status" => "game_over")
+          game_state: @room.game_state.merge(
+            "status"       => "game_over",
+            "loop_running" => false
+          )
         )
         broadcast({
           action:    "game_over",
@@ -95,7 +116,7 @@ class Games::MindMatchChannel < ApplicationCable::Channel
     rescue => e
       Rails.logger.error("[MindMatchChannel] loop crashed in room #{@room&.code}: #{e.message}\n#{e.backtrace.first(3).join("\n")}")
       broadcast({ action: "game_error" }) rescue nil
-      @room&.update!(status: "finished") rescue nil
+      @room&.update!(status: "finished", game_state: @room.game_state.merge("loop_running" => false)) rescue nil
     end
   end
 
@@ -104,6 +125,7 @@ class Games::MindMatchChannel < ApplicationCable::Channel
 
     @stop_loop = true
     @room = Room.find_by(code: params[:room_code])
+    @room.set("game_state.loop_running" => false)
     GameServices::MindMatch.new(@room).setup_game!
     broadcast({ action: "game_restarted" })
   end

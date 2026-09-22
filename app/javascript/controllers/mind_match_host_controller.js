@@ -4,10 +4,11 @@ import consumer from "../channels/consumer"
 export default class extends Controller {
   static values  = { roomCode: String }
   static targets = [
-    "phaseWaiting", "phaseCategory", "phaseReveal", "phaseGameOver",
+    "phaseWaiting", "phaseTransition", "phaseCategory", "phaseReveal", "phaseGameOver",
     "playerList",
+    "transitionLabel", "transitionCountdown",
     "roundLabel", "categoryCard", "categoryText", "timerDisplay",
-    "submissionsList", "submissionCount",
+    "submissionsList", "submissionCount", "submissionBar",
     "revealCategory", "groupsList", "scoresList",
     "finalScores",
     "toastContainer"
@@ -32,6 +33,7 @@ export default class extends Controller {
   disconnect() {
     this.channel?.unsubscribe()
     clearInterval(this.countdownTimer)
+    clearInterval(this.transitionTimer)
   }
 
   // ── ActionCable ──────────────────────────────────────────────────────
@@ -44,6 +46,7 @@ export default class extends Controller {
     switch (data.action) {
       case "state_snapshot":    return this.onStateSnapshot(data.state)
       case "player_presence":   return this.onPlayerPresence(data)
+      case "next_round":        return this.onNextRound(data)
       case "show_category":     return this.onShowCategory(data)
       case "player_submitted":  return this.onPlayerSubmitted(data)
       case "reveal":            return this.onReveal(data)
@@ -76,6 +79,23 @@ export default class extends Controller {
       this.totalPlayers = Object.keys(this.nicknames).length
     }
     this.renderPlayerList()
+  }
+
+  onNextRound(data) {
+    this.stopCountdown()
+    this.showPhase("phaseTransition")
+
+    if (this.transitionLabelTarget)
+      this.transitionLabelTarget.textContent = `Round ${data.round} of ${data.total_rounds}`
+
+    // Client-side 3 → 2 → 1 countdown matching TRANSITION_DURATION
+    let n = 3
+    if (this.transitionCountdownTarget) this.transitionCountdownTarget.textContent = n
+    this.transitionTimer = setInterval(() => {
+      n -= 1
+      if (this.transitionCountdownTarget) this.transitionCountdownTarget.textContent = Math.max(0, n)
+      if (n <= 0) { clearInterval(this.transitionTimer); this.transitionTimer = null }
+    }, 1000)
   }
 
   onShowCategory(data) {
@@ -219,9 +239,16 @@ export default class extends Controller {
   }
 
   _updateSubmissionCount() {
-    if (!this.submissionCountTarget) return
-    this.submissionCountTarget.textContent =
-      `${this.submittedCount} / ${this.totalPlayers} submitted`
+    if (this.submissionCountTarget)
+      this.submissionCountTarget.textContent =
+        `${this.submittedCount} / ${this.totalPlayers} submitted`
+
+    if (this.submissionBarTarget) {
+      const pct = this.totalPlayers > 0
+        ? Math.round((this.submittedCount / this.totalPlayers) * 100)
+        : 0
+      this.submissionBarTarget.style.width = `${pct}%`
+    }
   }
 
   _animateCategoryCard() {
@@ -287,7 +314,7 @@ export default class extends Controller {
   // ── Phase switch ──────────────────────────────────────────────────────
 
   showPhase(name) {
-    ["phaseWaiting", "phaseCategory", "phaseReveal", "phaseGameOver"].forEach(p => {
+    ["phaseWaiting", "phaseTransition", "phaseCategory", "phaseReveal", "phaseGameOver"].forEach(p => {
       const el = this[`${p}Target`]
       if (el) el.classList.toggle("hidden", p !== name)
     })

@@ -4,7 +4,8 @@ import consumer from "../channels/consumer"
 export default class extends Controller {
   static values  = { roomCode: String, playerId: String }
   static targets = [
-    "phaseWaiting", "phaseTyping", "phaseReveal", "phaseGameOver",
+    "phaseWaiting", "phaseTransition", "phaseTyping", "phaseReveal", "phaseGameOver",
+    "transitionLabel", "transitionCountdown",
     "timerDisplay", "categoryCard", "categoryText",
     "wordInput", "submitBtn", "inputArea", "submittedMsg",
     "revealCategory", "groupsList", "myScore", "roundPointsFlash",
@@ -37,6 +38,7 @@ export default class extends Controller {
   disconnect() {
     this.channel?.unsubscribe()
     clearInterval(this.countdownTimer)
+    clearInterval(this.transitionTimer)
     document.removeEventListener("keydown", this.boundKeydown)
   }
 
@@ -45,6 +47,7 @@ export default class extends Controller {
   handleMessage(data) {
     switch (data.action) {
       case "state_snapshot":   return this.onStateSnapshot(data.state)
+      case "next_round":       return this.onNextRound(data)
       case "show_category":    return this.onShowCategory(data)
       case "player_submitted": return this.onPlayerSubmitted(data)
       case "reveal":           return this.onReveal(data)
@@ -70,6 +73,22 @@ export default class extends Controller {
     } else {
       this.showPhase("phaseWaiting")
     }
+  }
+
+  onNextRound(data) {
+    this.stopCountdown()
+    this.showPhase("phaseTransition")
+
+    if (this.transitionLabelTarget)
+      this.transitionLabelTarget.textContent = `Round ${data.round} of ${data.total_rounds}`
+
+    let n = 3
+    if (this.transitionCountdownTarget) this.transitionCountdownTarget.textContent = n
+    this.transitionTimer = setInterval(() => {
+      n -= 1
+      if (this.transitionCountdownTarget) this.transitionCountdownTarget.textContent = Math.max(0, n)
+      if (n <= 0) { clearInterval(this.transitionTimer); this.transitionTimer = null }
+    }, 1000)
   }
 
   onShowCategory(data) {
@@ -305,10 +324,15 @@ export default class extends Controller {
   // ── Phase switch ──────────────────────────────────────────────────────
 
   showPhase(name) {
-    ["phaseWaiting", "phaseTyping", "phaseReveal", "phaseGameOver"].forEach(p => {
+    ["phaseWaiting", "phaseTransition", "phaseTyping", "phaseReveal", "phaseGameOver"].forEach(p => {
       const el = this[`${p}Target`]
       if (el) el.classList.toggle("hidden", p !== name)
     })
+
+    // Auto-focus the word input when the typing phase appears (helpful on mobile)
+    if (name === "phaseTyping") {
+      setTimeout(() => this.wordInputTarget?.focus(), 150)
+    }
   }
 
   // ── CSS injection ─────────────────────────────────────────────────────

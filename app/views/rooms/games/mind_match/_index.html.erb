@@ -13,6 +13,21 @@
          class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center gap-3 pointer-events-none">
     </div>
 
+    <%# ── Phase: Round Transition ── %>
+    <div data-mind-match-host-target="phaseTransition" class="hidden">
+      <div class="flex flex-col items-center justify-center min-h-screen p-8 text-center">
+        <p class="text-slate-500 font-mono text-xs uppercase tracking-widest mb-4">Up next</p>
+        <p data-mind-match-host-target="transitionLabel"
+           class="text-white font-black text-5xl mb-4"></p>
+        <p class="text-slate-400 text-sm">Get ready…</p>
+        <div data-mind-match-host-target="transitionCountdown"
+             class="mt-10 w-16 h-16 rounded-full border-4 border-violet-500 flex items-center justify-center
+                    text-violet-400 font-black text-2xl tabular-nums">
+          3
+        </div>
+      </div>
+    </div>
+
     <%# ── Phase: Waiting ── %>
     <div data-mind-match-host-target="phaseWaiting">
       <div class="flex flex-col items-center justify-center min-h-screen p-8">
@@ -51,12 +66,18 @@
           —
         </div>
 
-        <%# Submission counter + badges %>
-        <div class="text-center">
+        <%# Submission counter + progress bar + badges %>
+        <div class="w-full max-w-xs text-center">
           <p data-mind-match-host-target="submissionCount"
-             class="text-slate-500 text-xs uppercase tracking-widest mb-3">
+             class="text-slate-400 text-sm font-semibold mb-2">
             0 / 0 submitted
           </p>
+          <div class="w-full bg-slate-800 rounded-full h-2 mb-4 overflow-hidden">
+            <div data-mind-match-host-target="submissionBar"
+                 class="h-2 bg-violet-500 rounded-full transition-all duration-300"
+                 style="width: 0%">
+            </div>
+          </div>
           <div data-mind-match-host-target="submissionsList"
                class="flex flex-wrap gap-2 justify-center min-h-[32px]">
           </div>
@@ -116,6 +137,21 @@
     <%# Toast container — fixed overlay %>
     <div data-mind-match-player-target="toastContainer"
          class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center gap-3 pointer-events-none">
+    </div>
+
+    <%# ── Phase: Round Transition ── %>
+    <div data-mind-match-player-target="phaseTransition" class="hidden">
+      <div class="flex flex-col items-center justify-center min-h-screen p-8 text-center">
+        <p class="text-slate-500 font-mono text-xs uppercase tracking-widest mb-4">Up next</p>
+        <p data-mind-match-player-target="transitionLabel"
+           class="text-white font-black text-5xl mb-4"></p>
+        <p class="text-slate-400 text-sm">Get ready…</p>
+        <div data-mind-match-player-target="transitionCountdown"
+             class="mt-10 w-16 h-16 rounded-full border-4 border-violet-500 flex items-center justify-center
+                    text-violet-400 font-black text-2xl tabular-nums">
+          3
+        </div>
+      </div>
     </div>
 
     <%# ── Phase: Waiting ── %>
