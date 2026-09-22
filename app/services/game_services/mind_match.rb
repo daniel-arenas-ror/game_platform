@@ -85,8 +85,9 @@ module GameServices
 
       category = available.sample
       @room.set(
-        "game_state.used_categories" => used + [category],
-        "game_state.answers"         => {}
+        "game_state.used_categories"   => used + [category],
+        "game_state.answers"           => {},
+        "game_state.current_category"  => category
       )
       category
     end

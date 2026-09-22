@@ -5,13 +5,15 @@ export default class extends Controller {
   static values  = { roomCode: String, playerId: String }
   static targets = [
     "phaseWaiting", "phaseTyping", "phaseReveal", "phaseGameOver",
-    "timerDisplay", "categoryText",
+    "timerDisplay", "categoryCard", "categoryText",
     "wordInput", "submitBtn", "inputArea", "submittedMsg",
-    "revealCategory", "groupsList", "myScore",
-    "finalScores"
+    "revealCategory", "groupsList", "myScore", "roundPointsFlash",
+    "finalScores",
+    "toastContainer"
   ]
 
   connect() {
+    this.injectStyles()
     this.channel = consumer.subscriptions.create(
       {
         channel:   "Games::MindMatchChannel",
@@ -28,7 +30,6 @@ export default class extends Controller {
     this.countdownTimer = null
     this.submitted      = false
 
-    // Allow submit on Enter key
     this.boundKeydown = (e) => { if (e.key === "Enter") this.submitWord() }
     document.addEventListener("keydown", this.boundKeydown)
   }
@@ -39,7 +40,7 @@ export default class extends Controller {
     document.removeEventListener("keydown", this.boundKeydown)
   }
 
-  // ── ActionCable callbacks ────────────────────────────────────────────
+  // ── ActionCable ──────────────────────────────────────────────────────
 
   handleMessage(data) {
     switch (data.action) {
@@ -52,7 +53,7 @@ export default class extends Controller {
     }
   }
 
-  // ── Message handlers ─────────────────────────────────────────────────
+  // ── Handlers ─────────────────────────────────────────────────────────
 
   onStateSnapshot(state) {
     this.nicknames = state.nicknames || {}
@@ -61,8 +62,7 @@ export default class extends Controller {
       this.showPhase("phaseGameOver")
       this.renderFinalScores(state.scores || {})
     } else if (state.status === "collecting") {
-      // Reconnected mid-round — show typing phase (already submitted check below)
-      const alreadySubmitted = !!state.answers?.[this.playerIdValue]
+      const alreadySubmitted = !!(state.answers || {})[this.playerIdValue]
       this.showPhase("phaseTyping")
       if (this.categoryTextTarget)
         this.categoryTextTarget.textContent = state.current_category || ""
@@ -83,11 +83,11 @@ export default class extends Controller {
       this.wordInputTarget.value = ""
 
     this._resetInput()
+    this._animateCategoryCard()
     this.startCountdown(data.duration)
   }
 
   onPlayerSubmitted(data) {
-    // If it's this player confirming their own submit, mark submitted
     if (data.player_id === this.playerIdValue) {
       this._markSubmitted()
     }
@@ -101,14 +101,23 @@ export default class extends Controller {
     if (this.revealCategoryTarget)
       this.revealCategoryTarget.textContent = data.category
 
-    this.renderGroups(data.groups || [], data.round_scores || {})
-
     const myPts = (data.round_scores || {})[this.playerIdValue] || 0
-    const total  = (data.scores || {})[this.playerIdValue] || 0
-    if (this.myScoreTarget)
-      this.myScoreTarget.textContent = total
+    const total  = (data.scores     || {})[this.playerIdValue] || 0
 
-    this._flashPoints(myPts)
+    this.renderGroupsStaggered(data.groups || [], data.round_scores || {})
+
+    if (this.myScoreTarget) this.myScoreTarget.textContent = total
+
+    // Toast feedback
+    if (myPts > 1) {
+      this.showToast(`✨ You matched! +${myPts} pts`, "match")
+      this._flashPoints(myPts)
+    } else if (myPts === 1) {
+      // Solo answer still scores 1 (matched with self — shouldn't happen but just in case)
+      this.showToast(`+1 pt`, "info")
+    } else {
+      this.showToast("😬 No match this round", "miss")
+    }
   }
 
   onGameOver(data) {
@@ -116,6 +125,14 @@ export default class extends Controller {
     this.nicknames = data.nicknames || this.nicknames
     this.showPhase("phaseGameOver")
     this.renderFinalScores(data.scores || {})
+
+    const sorted = Object.entries(data.scores || {}).sort(([, a], [, b]) => b - a)
+    const myRank = sorted.findIndex(([id]) => id === this.playerIdValue)
+    if (myRank === 0) {
+      this.showToast("🏆 You won! Congratulations!", "win")
+    } else if (myRank >= 0) {
+      this.showToast(`You finished #${myRank + 1}`, "info")
+    }
   }
 
   onGameRestarted(_data) {
@@ -130,21 +147,23 @@ export default class extends Controller {
   submitWord() {
     if (this.submitted) return
     const word = this.wordInputTarget?.value?.trim() || ""
-    if (!word) return
-
+    if (!word) {
+      this._shakeInput()
+      return
+    }
     this.channel.perform("submit_word", { word })
-    // Optimistically mark submitted (server will confirm via player_submitted)
     this.submitted = true
     this._markSubmitted()
   }
 
   // ── Rendering ────────────────────────────────────────────────────────
 
-  renderGroups(groups, roundScores) {
+  renderGroupsStaggered(groups, roundScores) {
     if (!this.groupsListTarget) return
-
+    this.groupsListTarget.innerHTML = ""
     const myId = this.playerIdValue
-    this.groupsListTarget.innerHTML = groups.map(g => {
+
+    groups.forEach((g, i) => {
       const n     = g.player_ids.length
       const isMe  = g.player_ids.includes(myId)
       const pts   = n > 1 ? `+${n} pts` : "No match"
@@ -154,15 +173,17 @@ export default class extends Controller {
       if (n > 1 && isMe)  color = "border-yellow-400 bg-yellow-400/10"
       else if (n > 1)     color = "border-violet-400 bg-violet-400/10"
 
-      return `
-        <div class="border-2 ${color} rounded-2xl px-5 py-4 flex items-center justify-between gap-4">
-          <div>
-            <p class="text-white font-black text-lg">${this.esc(g.word)}</p>
-            <p class="text-slate-400 text-xs mt-1">${nicks}</p>
-          </div>
-          <p class="text-sm font-bold ${n > 1 ? "text-yellow-400" : "text-slate-600"} whitespace-nowrap">${pts}</p>
-        </div>`
-    }).join("")
+      const el = document.createElement("div")
+      el.className = `mm-group-in border-2 ${color} rounded-2xl px-5 py-4 flex items-center justify-between gap-4`
+      el.style.animationDelay = `${i * 120}ms`
+      el.innerHTML = `
+        <div>
+          <p class="text-white font-black text-lg">${this.esc(g.word)}</p>
+          <p class="text-slate-400 text-xs mt-1">${nicks}</p>
+        </div>
+        <p class="text-sm font-bold ${n > 1 ? "text-yellow-400" : "text-slate-600"} whitespace-nowrap">${pts}</p>`
+      this.groupsListTarget.appendChild(el)
+    })
   }
 
   renderFinalScores(scores) {
@@ -172,13 +193,14 @@ export default class extends Controller {
     this.finalScoresTarget.innerHTML = Object.entries(scores)
       .sort(([, a], [, b]) => b - a)
       .map(([id, pts], i) => {
-        const nick   = this.esc(this.nicknames[id] || id)
-        const isMe   = id === myId
-        const medal  = i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : `${i + 1}.`
+        const nick      = this.esc(this.nicknames[id] || id)
+        const isMe      = id === myId
+        const medal     = i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : `${i + 1}.`
         const highlight = isMe ? "border border-violet-500/60 bg-violet-500/10" : "bg-slate-800"
+        const youTag    = isMe ? ` <span class='text-violet-400 text-xs'>(you)</span>` : ""
         return `
           <div class="flex items-center justify-between px-5 py-3 ${highlight} rounded-xl">
-            <span class="text-base text-white font-semibold">${medal} ${nick}${isMe ? " <span class='text-violet-400 text-xs'>(you)</span>" : ""}</span>
+            <span class="text-base text-white font-semibold">${medal} ${nick}${youTag}</span>
             <span class="text-base text-violet-300 font-black">${pts}</span>
           </div>`
       }).join("")
@@ -199,22 +221,61 @@ export default class extends Controller {
     if (this.submitBtnTarget)    this.submitBtnTarget.disabled = false
   }
 
-  _flashPoints(pts) {
-    if (pts <= 0) return
-    const el = document.createElement("p")
-    el.textContent = `+${pts} pts`
-    el.className = "text-yellow-400 font-black text-2xl text-center mt-2 animate-bounce"
-    this.myScoreTarget?.parentElement?.appendChild(el)
-    setTimeout(() => el.remove(), 2000)
+  _animateCategoryCard() {
+    const card = this.categoryCardTarget
+    if (!card) return
+    card.classList.remove("mm-category-in")
+    void card.offsetWidth
+    card.classList.add("mm-category-in")
   }
 
-  // ── Timer ────────────────────────────────────────────────────────────
+  _flashPoints(pts) {
+    if (!this.roundPointsFlashTarget) return
+    this.roundPointsFlashTarget.textContent = `+${pts}`
+    this.roundPointsFlashTarget.classList.remove("hidden", "mm-pts-pop")
+    void this.roundPointsFlashTarget.offsetWidth
+    this.roundPointsFlashTarget.classList.add("mm-pts-pop")
+    setTimeout(() => this.roundPointsFlashTarget.classList.add("hidden"), 2000)
+  }
+
+  _shakeInput() {
+    const el = this.wordInputTarget
+    if (!el) return
+    el.classList.remove("mm-shake")
+    void el.offsetWidth
+    el.classList.add("mm-shake")
+    el.addEventListener("animationend", () => el.classList.remove("mm-shake"), { once: true })
+  }
+
+  // ── Toast ─────────────────────────────────────────────────────────────
+
+  showToast(msg, type = "info") {
+    if (!this.toastContainerTarget) return
+    const colors = {
+      match: "bg-violet-700 border-violet-400",
+      win:   "bg-yellow-700 border-yellow-400",
+      miss:  "bg-slate-700  border-slate-500",
+      info:  "bg-slate-700  border-slate-500"
+    }
+    const el = document.createElement("div")
+    el.className = `mm-toast-in pointer-events-none px-5 py-3 rounded-2xl border shadow-xl
+                    text-white text-sm font-semibold max-w-xs text-center ${colors[type] || colors.info}`
+    el.textContent = msg
+    this.toastContainerTarget.appendChild(el)
+
+    setTimeout(() => {
+      el.classList.remove("mm-toast-in")
+      el.classList.add("mm-toast-out")
+      el.addEventListener("animationend", () => el.remove(), { once: true })
+    }, 3000)
+  }
+
+  // ── Timer ─────────────────────────────────────────────────────────────
 
   startCountdown(seconds) {
     this.stopCountdown()
     let remaining = seconds
     this._setTimer(remaining)
-
     this.countdownTimer = setInterval(() => {
       remaining -= 1
       this._setTimer(remaining)
@@ -238,16 +299,72 @@ export default class extends Controller {
     this.timerDisplayTarget.classList.toggle("text-red-400",      urgent)
     this.timerDisplayTarget.classList.toggle("border-violet-500", !urgent)
     this.timerDisplayTarget.classList.toggle("text-violet-400",   !urgent)
+    this.timerDisplayTarget.classList.toggle("mm-timer-pulse",    urgent)
   }
 
-  // ── Phase switch ─────────────────────────────────────────────────────
+  // ── Phase switch ──────────────────────────────────────────────────────
 
   showPhase(name) {
-    const phases = ["phaseWaiting", "phaseTyping", "phaseReveal", "phaseGameOver"]
-    phases.forEach(p => {
+    ["phaseWaiting", "phaseTyping", "phaseReveal", "phaseGameOver"].forEach(p => {
       const el = this[`${p}Target`]
       if (el) el.classList.toggle("hidden", p !== name)
     })
+  }
+
+  // ── CSS injection ─────────────────────────────────────────────────────
+
+  injectStyles() {
+    if (document.getElementById("mind-match-styles")) return
+    const style = document.createElement("style")
+    style.id = "mind-match-styles"
+    style.textContent = `
+      @keyframes mm-category-enter {
+        from { opacity: 0; transform: scale(0.85) translateY(12px); }
+        to   { opacity: 1; transform: scale(1)    translateY(0); }
+      }
+      @keyframes mm-group-enter {
+        from { opacity: 0; transform: translateX(-16px); }
+        to   { opacity: 1; transform: translateX(0); }
+      }
+      @keyframes mm-badge-enter {
+        from { opacity: 0; transform: scale(0.7); }
+        to   { opacity: 1; transform: scale(1); }
+      }
+      @keyframes mm-toast-slide-in {
+        from { opacity: 0; transform: translateY(20px) scale(0.95); }
+        to   { opacity: 1; transform: translateY(0)    scale(1); }
+      }
+      @keyframes mm-toast-slide-out {
+        from { opacity: 1; transform: translateY(0)    scale(1); }
+        to   { opacity: 0; transform: translateY(-10px) scale(0.95); }
+      }
+      @keyframes mm-timer-pulse-ring {
+        0%, 100% { transform: scale(1); }
+        50%      { transform: scale(1.12); }
+      }
+      @keyframes mm-pts-pop {
+        0%   { opacity: 0; transform: scale(0.5) translateY(10px); }
+        60%  { opacity: 1; transform: scale(1.3) translateY(-6px); }
+        100% { opacity: 1; transform: scale(1)   translateY(0); }
+      }
+      @keyframes mm-shake {
+        0%, 100% { transform: translateX(0); }
+        20%      { transform: translateX(-8px); }
+        40%      { transform: translateX(8px); }
+        60%      { transform: translateX(-5px); }
+        80%      { transform: translateX(5px); }
+      }
+
+      .mm-category-in  { animation: mm-category-enter 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+      .mm-group-in     { animation: mm-group-enter   0.35s ease both; }
+      .mm-badge-in     { animation: mm-badge-enter   0.2s  ease both; }
+      .mm-toast-in     { animation: mm-toast-slide-in  0.3s ease both; }
+      .mm-toast-out    { animation: mm-toast-slide-out 0.3s ease both; }
+      .mm-timer-pulse  { animation: mm-timer-pulse-ring 0.6s ease infinite; }
+      .mm-pts-pop      { animation: mm-pts-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+      .mm-shake        { animation: mm-shake 0.4s ease; }
+    `
+    document.head.appendChild(style)
   }
 
   esc(str) {

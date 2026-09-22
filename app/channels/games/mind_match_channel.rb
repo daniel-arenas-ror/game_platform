@@ -10,7 +10,13 @@ class Games::MindMatchChannel < ApplicationCable::Channel
 
     stream_from "#{STREAM_PREFIX}#{@room.code}"
 
-    transmit({ action: "state_snapshot", state: @room.game_state })
+    transmit({
+      action: "state_snapshot",
+      state:  @room.game_state.merge(
+        "nicknames"     => nicknames_map,
+        "total_players" => @room.players.count
+      )
+    })
   end
 
   def unsubscribed
@@ -42,11 +48,13 @@ class Games::MindMatchChannel < ApplicationCable::Channel
         @room.set("game_state.round" => round, "game_state.status" => "collecting")
 
         broadcast({
-          action:       "show_category",
-          category:     category,
-          round:        round,
-          total_rounds: total_rounds,
-          duration:     time_per_round
+          action:        "show_category",
+          category:      category,
+          round:         round,
+          total_rounds:  total_rounds,
+          duration:      time_per_round,
+          total_players: @room.players.count,
+          nicknames:     nicknames_map
         })
 
         sleep time_per_round

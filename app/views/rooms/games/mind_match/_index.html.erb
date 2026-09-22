@@ -6,9 +6,14 @@
   <%# ================================================================= %>
   <div data-controller="mind-match-host"
        data-mind-match-host-room-code-value="<%= @room.code %>"
-       class="min-h-screen bg-slate-950 text-white">
+       class="min-h-screen bg-slate-950 text-white relative">
 
-    <%# ── Phase: Waiting (before game starts) ── %>
+    <%# Toast container — fixed overlay %>
+    <div data-mind-match-host-target="toastContainer"
+         class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center gap-3 pointer-events-none">
+    </div>
+
+    <%# ── Phase: Waiting ── %>
     <div data-mind-match-host-target="phaseWaiting">
       <div class="flex flex-col items-center justify-center min-h-screen p-8">
         <p class="text-violet-400 font-mono text-xs uppercase tracking-widest mb-2">Mind Match</p>
@@ -21,18 +26,18 @@
       </div>
     </div>
 
-    <%# ── Phase: Category (show current category + timer) ── %>
+    <%# ── Phase: Category ── %>
     <div data-mind-match-host-target="phaseCategory" class="hidden">
       <div class="flex flex-col items-center justify-center min-h-screen p-8">
 
-        <%# Round indicator %>
         <p data-mind-match-host-target="roundLabel"
            class="text-violet-400 font-mono text-xs uppercase tracking-widest mb-6">
           Round —
         </p>
 
-        <%# Category card %>
-        <div class="bg-slate-800 border-2 border-violet-500 rounded-3xl px-10 py-8 mb-8 text-center max-w-xl w-full">
+        <%# Category card with entrance animation target %>
+        <div data-mind-match-host-target="categoryCard"
+             class="bg-slate-800 border-2 border-violet-500 rounded-3xl px-10 py-8 mb-8 text-center max-w-xl w-full">
           <p class="text-slate-400 text-xs uppercase tracking-widest mb-3">Category</p>
           <p data-mind-match-host-target="categoryText"
              class="text-white font-black text-3xl leading-snug">
@@ -46,9 +51,12 @@
           —
         </div>
 
-        <%# Who has submitted %>
+        <%# Submission counter + badges %>
         <div class="text-center">
-          <p class="text-slate-500 text-xs uppercase tracking-widest mb-3">Submitted</p>
+          <p data-mind-match-host-target="submissionCount"
+             class="text-slate-500 text-xs uppercase tracking-widest mb-3">
+            0 / 0 submitted
+          </p>
           <div data-mind-match-host-target="submissionsList"
                class="flex flex-wrap gap-2 justify-center min-h-[32px]">
           </div>
@@ -63,12 +71,10 @@
         <p data-mind-match-host-target="revealCategory"
            class="text-slate-300 text-lg font-semibold mb-8"></p>
 
-        <%# Groups list %>
         <div data-mind-match-host-target="groupsList"
              class="w-full max-w-2xl space-y-3 mb-10">
         </div>
 
-        <%# Scoreboard %>
         <div class="w-full max-w-sm">
           <p class="text-slate-500 text-xs uppercase tracking-widest mb-3 text-center">Scores</p>
           <div data-mind-match-host-target="scoresList"
@@ -105,7 +111,12 @@
   <div data-controller="mind-match-player"
        data-mind-match-player-room-code-value="<%= @room.code %>"
        data-mind-match-player-player-id-value="<%= session[:player_id] %>"
-       class="min-h-screen bg-slate-950 text-white">
+       class="min-h-screen bg-slate-950 text-white relative">
+
+    <%# Toast container — fixed overlay %>
+    <div data-mind-match-player-target="toastContainer"
+         class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center gap-3 pointer-events-none">
+    </div>
 
     <%# ── Phase: Waiting ── %>
     <div data-mind-match-player-target="phaseWaiting">
@@ -117,19 +128,19 @@
       </div>
     </div>
 
-    <%# ── Phase: Typing (category shown, player types a word) ── %>
+    <%# ── Phase: Typing ── %>
     <div data-mind-match-player-target="phaseTyping" class="hidden">
       <div class="flex flex-col items-center justify-center min-h-screen p-6 text-center">
 
-        <%# Timer %>
         <div data-mind-match-player-target="timerDisplay"
              class="w-16 h-16 rounded-full border-4 border-violet-500 flex items-center justify-center
                     text-violet-400 font-black text-xl tabular-nums mb-6">
           —
         </div>
 
-        <%# Category %>
-        <div class="bg-slate-800 border-2 border-violet-500 rounded-3xl px-8 py-6 mb-8 w-full max-w-sm">
+        <%# Category card with animation target %>
+        <div data-mind-match-player-target="categoryCard"
+             class="bg-slate-800 border-2 border-violet-500 rounded-3xl px-8 py-6 mb-8 w-full max-w-sm">
           <p class="text-slate-400 text-xs uppercase tracking-widest mb-2">Think of…</p>
           <p data-mind-match-player-target="categoryText"
              class="text-white font-black text-2xl leading-snug">
@@ -157,8 +168,8 @@
           </button>
         </div>
 
-        <%# Submitted state (replaces input after submitting) %>
-        <div data-mind-match-player-target="submittedMsg" class="hidden">
+        <%# Submitted confirmation %>
+        <div data-mind-match-player-target="submittedMsg" class="hidden text-center">
           <p class="text-violet-400 font-black text-xl">Word submitted!</p>
           <p class="text-slate-500 text-sm mt-2">Waiting for other players…</p>
         </div>
@@ -177,10 +188,14 @@
              class="w-full max-w-sm space-y-3 mb-8">
         </div>
 
-        <div class="w-full max-w-sm">
-          <p class="text-slate-500 text-xs uppercase tracking-widest mb-3">Your Score</p>
+        <div class="relative">
+          <p class="text-slate-500 text-xs uppercase tracking-widest mb-2">Your Score</p>
           <p data-mind-match-player-target="myScore"
              class="text-white font-black text-4xl">0</p>
+          <%# Points flash — shown briefly after reveal %>
+          <p data-mind-match-player-target="roundPointsFlash"
+             class="hidden absolute -top-4 left-1/2 -translate-x-1/2 text-yellow-400 font-black text-2xl whitespace-nowrap">
+          </p>
         </div>
       </div>
     </div>
