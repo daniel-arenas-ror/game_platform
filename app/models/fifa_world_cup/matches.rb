@@ -1,4 +1,4 @@
-module FifaworldCup
+module FifaWorldCup
   class Matches
     include Mongoid::Document
     include Mongoid::Timestamps
@@ -9,6 +9,6 @@ module FifaworldCup
     field :away_team, type: String
     field :kickoff, type: DateTime
     
-    belongs_to :group, class_name: "FifaworldCup::Group"
+    belongs_to :group, class_name: "FifaWorldCup::Group"
   end
 end

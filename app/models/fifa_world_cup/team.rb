@@ -1,4 +1,4 @@
-module FifaworldCup
+module FifaWorldCup
   class Team
     include Mongoid::Document
     include Mongoid::Timestamps
