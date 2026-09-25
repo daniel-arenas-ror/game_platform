@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
-  get "home/index"
   root "home#index"
+  get "sitemap.xml", to: "home#sitemap", defaults: { format: :xml }, as: :sitemap
+  get "robots.txt", to: "home#robots", defaults: { format: :text }, as: :robots
 
   get "up" => "rails/health#show", as: :rails_health_check
 

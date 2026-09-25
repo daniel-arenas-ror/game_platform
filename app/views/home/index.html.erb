@@ -1,12 +1,31 @@
-<!-- app/views/home/index.html.erb -->
+<% content_for :head do %>
+  <script type="application/ld+json">
+    <%= raw json_escape({
+      "@context" => "https://schema.org",
+      "@type" => "WebApplication",
+      "name" => SeoHelper::SITE_NAME,
+      "url" => root_url,
+      "description" => SeoHelper::DEFAULT_DESCRIPTION,
+      "applicationCategory" => "GameApplication",
+      "operatingSystem" => "Any (web browser)",
+      "offers" => { "@type" => "Offer", "price" => "0", "priceCurrency" => "USD" },
+      "hasPart" => @games.map { |g| { "@type" => "VideoGame", "name" => g.name, "description" => g.description } }
+    }.to_json) %>
+  </script>
+<% end %>
+
 <div class="bg-slate-900 min-h-screen py-12 px-4 sm:px-6 lg:px-8">
   <div class="max-w-7xl mx-auto">
     
     <header class="text-center mb-16">
       <h1 class="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600 mb-4">
-        Game Hub
+        <%= SeoHelper::SITE_NAME %>
       </h1>
-      <p class="text-slate-400 text-lg">Pick a game, create a room, and invite your friends.</p>
+      <p class="text-slate-300 text-xl font-semibold mb-2">Free party games you play from your phone</p>
+      <p class="text-slate-400 text-lg max-w-2xl mx-auto">
+        Put the host screen on a TV or laptop, friends scan the QR code and join from their phones.
+        No app to install, no sign-up — just pick a game and play together.
+      </p>
     </header>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -35,6 +54,27 @@
         </div>
       <% end %>
     </div>
+
+    <section class="mt-24" aria-labelledby="how-it-works">
+      <h2 id="how-it-works" class="text-3xl font-bold text-white text-center mb-10">How it works</h2>
+      <ol class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <li class="bg-slate-800 rounded-2xl border border-slate-700 p-6">
+          <span class="text-purple-400 font-black text-4xl">1</span>
+          <h3 class="text-xl font-bold text-white mt-2 mb-2">Create a room</h3>
+          <p class="text-slate-400">Choose a game above. The host screen shows a room code and a QR code — put it on the biggest screen you have.</p>
+        </li>
+        <li class="bg-slate-800 rounded-2xl border border-slate-700 p-6">
+          <span class="text-purple-400 font-black text-4xl">2</span>
+          <h3 class="text-xl font-bold text-white mt-2 mb-2">Join from your phone</h3>
+          <p class="text-slate-400">Players scan the QR code, type a nickname and they're in. Works in any mobile browser.</p>
+        </li>
+        <li class="bg-slate-800 rounded-2xl border border-slate-700 p-6">
+          <span class="text-purple-400 font-black text-4xl">3</span>
+          <h3 class="text-xl font-bold text-white mt-2 mb-2">Play together</h3>
+          <p class="text-slate-400">Trivia, social deduction, memory, tank battles and more — everyone plays live on their own phone.</p>
+        </li>
+      </ol>
+    </section>
 
   </div>
 </div>

@@ -1,4 +1,7 @@
 class RoomsController < ApplicationController
+  # Rooms and join links are temporary and private — keep them out of search results.
+  before_action { response.set_header("X-Robots-Tag", "noindex, nofollow") }
+
   def create
     session[:player_id] = nil
     @game = Game.find(params[:game_id])
