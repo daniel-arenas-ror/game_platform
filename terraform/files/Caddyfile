@@ -1,0 +1,9 @@
+{
+	email {$ACME_EMAIL}
+}
+
+# TLS termination + automatic Let's Encrypt certs. WebSockets (/cable) are proxied transparently.
+{$APP_DOMAIN} {
+	encode zstd gzip
+	reverse_proxy web:80
+}

@@ -1,0 +1,10 @@
+# Copy to terraform.tfvars and adjust.
+aws_region = "us-east-1"
+acme_email = "you@example.com"
+
+# Optional: use your own domain. Without it the app is served at https://<ip>.sslip.io
+# domain_name       = "games.example.com"
+# route53_zone_name = "example.com"   # only if the zone is in Route 53; otherwise point an A record at the public_ip output
+
+# instance_type = "t4g.small"
+# architecture  = "arm64"
