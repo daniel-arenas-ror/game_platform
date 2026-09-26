@@ -45,9 +45,13 @@
       <% @games.each do |game| %>
         <% current_game = @room&.game_id == game.id %>
         <div class="bg-slate-800 rounded-2xl overflow-hidden border <%= current_game ? "border-purple-500" : "border-slate-700" %> hover:border-purple-500 transition-all group shadow-xl">
-          <!-- Placeholder for Game Image/Banner -->
-          <div class="relative h-48 bg-slate-700 flex items-center justify-center group-hover:bg-slate-600 transition-colors">
-            <span class="text-slate-500 text-5xl">🎮</span>
+          <div class="relative h-48 bg-slate-700 flex items-center justify-center overflow-hidden group-hover:bg-slate-600 transition-colors">
+            <% if File.exist?(Rails.public_path.join("games", game.code, "instructions.png")) %>
+              <%= image_tag "/games/#{game.code}/instructions.png", alt: "#{game.name} — how to play", loading: "lazy",
+                    class: "w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-300" %>
+            <% else %>
+              <span class="text-slate-500 text-5xl">🎮</span>
+            <% end %>
             <% if current_game %>
               <span class="absolute top-3 right-3 bg-purple-600 text-white text-xs font-bold px-3 py-1 rounded-full">Current game</span>
             <% end %>
