@@ -28,6 +28,29 @@
       </p>
     </header>
 
+    <% unless @room %>
+      <div class="max-w-md mx-auto mb-14 bg-slate-800 border border-slate-700 rounded-2xl p-5 shadow-xl">
+        <%= form_with url: find_room_path, method: :get, class: "flex gap-3" do |f| %>
+          <%= f.label :code, "Room code", class: "sr-only" %>
+          <%= f.text_field :code,
+                placeholder: "ROOM CODE",
+                maxlength: 4,
+                required: true,
+                autocomplete: "off",
+                autocapitalize: "characters",
+                spellcheck: false,
+                class: "min-w-0 flex-1 bg-slate-900 border-2 border-slate-700 rounded-xl px-4 py-3 text-white text-center font-mono font-black text-xl uppercase tracking-[0.4em] placeholder:text-slate-600 placeholder:tracking-widest focus:border-purple-500 focus:outline-none transition-colors" %>
+          <%= f.button "Join", name: nil,
+                class: "shrink-0 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-black px-6 rounded-xl transition-transform active:scale-95 cursor-pointer" %>
+        <% end %>
+        <% if flash[:alert] %>
+          <p class="text-red-400 text-sm text-center mt-3"><%= flash[:alert] %></p>
+        <% else %>
+          <p class="text-slate-500 text-sm text-center mt-3">Got a code from the host's screen? Enter it to join.</p>
+        <% end %>
+      </div>
+    <% end %>
+
     <% if @room %>
       <div class="mb-10 bg-slate-800 border border-purple-500/60 rounded-2xl p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>

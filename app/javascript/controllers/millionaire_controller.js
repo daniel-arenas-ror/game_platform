@@ -94,6 +94,7 @@ export default class extends Controller {
           this.channel.perform("start_game_loop", {})
         }
       },
+      rejected: () => window.location.reload(),   // removed after a long disconnect → server sends us to /join
       received: (data) => this.handleMessage(data)
     })
   }

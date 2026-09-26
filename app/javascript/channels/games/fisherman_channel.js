@@ -11,6 +11,8 @@ if(fishermanGameContainer) {
     room_code: roomCode,
     player_id: playerId
   }, {
+    rejected() { window.location.reload(); },   // removed after a long disconnect → server sends us to /join
+
     received(data) {
       console.log("refresh_game_frame received with data:", data);
 

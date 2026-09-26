@@ -4,8 +4,10 @@ class Games::FishermanChannel < ApplicationCable::Channel
     p " params: #{params.inspect} "
 
     @room = Room.find_by(code: params[:room_code])
-    @player = Player.where(id: params[:player_id]).first
-    @player.update(connected: true) if @player
+    @player = find_player
+    return if subscription_rejected?
+
+    track_player_subscribed(@player)
 
     broadcast_presence(true) if @player
     stream_from "fisherman_room_#{@room.code}"
@@ -15,8 +17,7 @@ class Games::FishermanChannel < ApplicationCable::Channel
     p " unsubscribed "
     p " params: #{params.inspect} "
 
-    @player = Player.where(id: params[:player_id]).first
-    @player.update(connected: false) if @player
+    track_player_unsubscribed(@player)
 
     broadcast_presence(false) if @player
   end

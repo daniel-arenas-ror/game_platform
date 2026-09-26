@@ -24,6 +24,18 @@ module GameServices
       update_round!
     end
 
+    # Everyone reloads to drop the player from the fisherman's list. If the fisherman or the
+    # impostor left, the round can't finish, so deal new roles and a new question.
+    def player_removed!(_player_id)
+      roles = @players.map(&:role)
+      if @players.size >= 2 && !(roles.include?('fisherman') && roles.include?('impostor'))
+        rotate_roles!
+        update_question!
+      end
+
+      ActionCable.server.broadcast("fisherman_room_#{@room.code}", { action: "next_round_started" })
+    end
+
     private
 
     def calc_points!(target_ids, fisherman_id)

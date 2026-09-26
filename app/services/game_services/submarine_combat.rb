@@ -142,6 +142,21 @@ module GameServices
       }
     end
 
+    # While fleets are being placed, re-send the confirmation list: the player who left may
+    # have been the last one the host was waiting for.
+    def player_removed!(_player_id)
+      return unless @room.game_state["phase"] == "placement"
+
+      placements = @room.game_state["placements"] || {}
+      ActionCable.server.broadcast("submarine_combat_room_#{@room.code}", {
+        action:        "placement_confirmed",
+        player_id:     nil,
+        all_confirmed: placements.any? && placements.values.all? { |p| p["confirmed"] },
+        nicknames:     @players.to_h { |p| [ p.id.to_s, p.nickname ] },
+        confirmed_ids: placements.select { |_, p| p["confirmed"] }.keys
+      })
+    end
+
     private
 
     # Attempts to place a ship of +size+ cells on a +grid_size+ × +grid_size+ grid

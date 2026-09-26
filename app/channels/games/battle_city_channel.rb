@@ -3,9 +3,10 @@ class Games::BattleCityChannel < ApplicationCable::Channel
 
   def subscribed
     @room   = Room.find_by(code: params[:room_code])
-    @player = Player.where(id: params[:player_id]).first if params[:player_id].present?
+    @player = find_player
+    return if subscription_rejected?
 
-    @player&.update(connected: true)
+    track_player_subscribed(@player)
 
     stream_from "#{STREAM_PREFIX}#{@room.code}"
 
@@ -18,7 +19,7 @@ class Games::BattleCityChannel < ApplicationCable::Channel
 
     return unless @player
 
-    @player.update(connected: false)
+    track_player_unsubscribed(@player)
     ActionCable.server.broadcast("#{STREAM_PREFIX}#{@room.code}", {
       action: "player_presence",
       player_id: @player.id.to_s,

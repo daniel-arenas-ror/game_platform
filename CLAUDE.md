@@ -92,6 +92,8 @@ Each game service implements at minimum:
 
 **Layer 1 — Lobby:** `GameChannel` (`game_{room_code}`) — present before game starts. Broadcasts `player_joined`, `game_started`, `game_changed`.
 
+**Player presence:** every channel loads the player with `find_player` (rejects removed players) and calls `track_player_subscribed` / `track_player_unsubscribed` (helpers in `ApplicationCable::Channel`). When a player's last subscription closes, `PlayerRemover` deletes them after a 30s grace period, drops their keys from `game_state`, broadcasts `player_left`, and calls the game service's `player_removed!` hook.
+
 **Layer 2 — Game-specific:** `Games::{Name}Channel` (`{code}_room_{room_code}`) — subscribed by Stimulus when the playing view loads. Drives all in-game events.
 
 ### Stimulus Controller Conventions

@@ -3,9 +3,10 @@ class Games::MillionaireChannel < ApplicationCable::Channel
 
   def subscribed
     @room   = Room.find_by(code: params[:room_code])
-    @player = Player.where(id: params[:player_id]).first
+    @player = find_player
+    return if subscription_rejected?
 
-    @player&.update(connected: true)
+    track_player_subscribed(@player)
     broadcast_presence(true) if @player
 
     stream_from "millionaire_room_#{@room.code}"
@@ -14,7 +15,7 @@ class Games::MillionaireChannel < ApplicationCable::Channel
   def unsubscribed
     return unless @player
 
-    @player.update(connected: false)
+    track_player_unsubscribed(@player)
     broadcast_presence(false)
   end
 

@@ -13,6 +13,7 @@ Rails.application.routes.draw do
     end
   end
 
+  get "join", to: "rooms#find", as: :find_room
   get "join/:code", to: "rooms#join", as: :join_room
   post "join/:code", to: "rooms#player_join", as: :submit_join
 end

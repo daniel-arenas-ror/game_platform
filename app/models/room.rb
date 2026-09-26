@@ -16,6 +16,22 @@ class Room
 
   before_create :generate_code
 
+  # ActionCable stream of each game's in-game channel (the lobby uses "game_<code>").
+  GAME_STREAM_PREFIXES = {
+    "fisherman"              => "fisherman_room_",
+    "how_want_be_billionare" => "millionaire_room_",
+    "battle_city"            => "battle_city_room_",
+    "guess_the_color"        => "guess_the_color_room_",
+    "count_birds"            => "count_birds_room_",
+    "sequence_memory"        => "sequence_memory_room_",
+    "submarine_combat"       => "submarine_combat_room_",
+    "mind_match"             => "mind_match_room_"
+  }.freeze
+
+  def game_stream_name
+    "#{GAME_STREAM_PREFIXES[game.code] || "#{game.code}_room_"}#{code}"
+  end
+
   # Atomically $set nested fields, e.g. atomic_set("game_state.status" => "revealing"), then reload.
   # Mongoid's #set on a Hash field rewrites the *whole* game_state from this in-memory copy, which
   # silently drops writes made meanwhile by other connections (e.g. a player's submitted answer).

@@ -1,6 +1,7 @@
 class RoomsController < ApplicationController
   # Rooms and join links are temporary and private — keep them out of search results.
   before_action { response.set_header("X-Robots-Tag", "noindex, nofollow") }
+  before_action :redirect_removed_player, only: %i[show playing]
 
   def create
     session[:player_id] = nil
@@ -44,6 +45,17 @@ class RoomsController < ApplicationController
       standalone: true,
       use_path: true
     )
+  end
+
+  # Home page "Join a room" form: typed code → that room's join page.
+  def find
+    code = params[:code].to_s.gsub(/[^a-zA-Z0-9]/, "").upcase
+
+    if code.present? && Room.where(code: code).exists?
+      redirect_to join_room_path(code)
+    else
+      redirect_to root_path, alert: code.present? ? "No room found with code #{code}." : "Enter a room code."
+    end
   end
 
   def join
@@ -104,8 +116,7 @@ class RoomsController < ApplicationController
     @room = Room.find_by!(code: params[:id].upcase)
 
     # Broadcast to current game channel so all players redirect to the new lobby
-    stream = game_stream_name(@room.game.code, @room.code)
-    ActionCable.server.broadcast(stream, { action: "game_changed", room_code: @room.code })
+    ActionCable.server.broadcast(@room.game_stream_name, { action: "game_changed", room_code: @room.code })
 
     new_game = Game.find(params[:game_id])
     @room.update!(game: new_game, status: "lobby", game_state: {})
@@ -115,20 +126,13 @@ class RoomsController < ApplicationController
 
   private
 
-  GAME_STREAM_PREFIXES = {
-    "fisherman"              => "fisherman_room_",
-    "how_want_be_billionare" => "millionaire_room_",
-    "battle_city"            => "battle_city_room_",
-    "guess_the_color"        => "guess_the_color_room_",
-    "count_birds"            => "count_birds_room_",
-    "sequence_memory"        => "sequence_memory_room_",
-    "submarine_combat"       => "submarine_combat_room_",
-    "mind_match"             => "mind_match_room_"
-  }.freeze
+  # Players are deleted after staying disconnected too long (see ApplicationCable::Channel), but
+  # their session still holds the old id. Without this they'd be treated as the host.
+  def redirect_removed_player
+    return if session[:player_id].blank? || current_player
 
-  def game_stream_name(game_code, room_code)
-    prefix = GAME_STREAM_PREFIXES[game_code] || "#{game_code}_room_"
-    "#{prefix}#{room_code}"
+    redirect_to join_room_path(params[:id].to_s.upcase),
+                alert: "You were disconnected for too long and removed from the room. Join again to keep playing."
   end
 
   def room_params
