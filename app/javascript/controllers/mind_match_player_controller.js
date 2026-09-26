@@ -1,5 +1,5 @@
 import { Controller } from "@hotwired/stimulus"
-import consumer from "../channels/consumer"
+import consumer from "channels/consumer"
 
 export default class extends Controller {
   static values  = { roomCode: String, playerId: String }
@@ -53,6 +53,7 @@ export default class extends Controller {
       case "reveal":           return this.onReveal(data)
       case "game_over":        return this.onGameOver(data)
       case "game_restarted":   return this.onGameRestarted(data)
+      case "game_changed":      window.location.href = `/rooms/${this.roomCodeValue}`; break
     }
   }
 

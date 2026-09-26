@@ -10,7 +10,7 @@ module GameServices
       @room.update!(status: 'playing')
 
       user_points = @players.each_with_object({}) { |p, h| h[p.id.to_s] = 0 }
-      @room.set(
+      @room.atomic_set(
         'game_state.user_points'        => user_points,
         'game_state.asked_question_ids' => [],
         'game_state.answers_history'    => {}
@@ -18,6 +18,7 @@ module GameServices
 
       update_question!
       broadcast_start
+      true
     end
 
     # Score the current round; returns reveal data for broadcasting.
@@ -37,7 +38,7 @@ module GameServices
       existing = @room.game_state.dig('answers_history', question_id, player_id_str)
       return if !existing.nil?
 
-      @room.set("game_state.answers_history.#{question_id}.#{player_id_str}" => choice.to_i)
+      @room.atomic_set("game_state.answers_history.#{question_id}.#{player_id_str}" => choice.to_i)
     end
 
     private
@@ -59,11 +60,11 @@ module GameServices
 
       if question.nil?
         asked_ids = []
-        @room.set('game_state.asked_question_ids' => [])
+        @room.atomic_set('game_state.asked_question_ids' => [])
         question = ::HowWantBeBillionare::Question.collection.aggregate([{ '$sample' => { size: 1 } }]).first
       end
 
-      @room.set(
+      @room.atomic_set(
         'game_state.question_id'        => question['_id'],
         'game_state.question'           => question['text'],
         'game_state.answers'            => question['answers'],
@@ -92,7 +93,7 @@ module GameServices
         round_scores[player_id] = question.points.to_i
       end
 
-      @room.set('game_state.user_points' => user_points)
+      @room.atomic_set('game_state.user_points' => user_points)
 
       {
         round_scores:           round_scores,

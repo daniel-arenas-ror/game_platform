@@ -92,8 +92,8 @@
         <p data-mind-match-host-target="revealCategory"
            class="text-slate-300 text-lg font-semibold mb-8"></p>
 
-        <div data-mind-match-host-target="groupsList"
-             class="w-full max-w-2xl space-y-3 mb-10">
+        <div data-mind-match-host-target="answersGrid"
+             class="w-full max-w-5xl grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 mb-10">
         </div>
 
         <div class="w-full max-w-sm">
@@ -120,6 +120,7 @@
                        hover:bg-violet-500 transition-colors">
           Play Again
         </button>
+        <%= render partial: "rooms/games/change_game", locals: { room: @room, games: @games } %>
       </div>
     </div>
 

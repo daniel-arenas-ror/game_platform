@@ -44,7 +44,7 @@ module GameServices
       sequence  = @room.game_state["sequence"] || []
       cell      = rand(grid_size * grid_size)
       sequence  = sequence + [cell]
-      @room.set("game_state.sequence" => sequence)
+      @room.atomic_set("game_state.sequence" => sequence)
       sequence
     end
 

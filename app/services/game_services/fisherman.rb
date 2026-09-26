@@ -40,7 +40,7 @@ module GameServices
         end
       end
 
-      @room.set("game_state.points" => points)
+      @room.atomic_set("game_state.points" => points)
     end
 
     def rotate_roles!
@@ -58,16 +58,16 @@ module GameServices
     def update_question!
       question = ::Fisherman::Question.collection.aggregate([{ '$sample': { size: 1 } }]).first
 
-      @room.set("game_state.question" => question['text'])
-      @room.set("game_state.answereds" => question['answerds'])
+      @room.atomic_set("game_state.question" => question['text'])
+      @room.atomic_set("game_state.answereds" => question['answerds'])
     end
 
     def set_rounds!
-      @room.set("game_state.current_round" => @room.game_state["total_rounds"])
+      @room.atomic_set("game_state.current_round" => @room.game_state["total_rounds"])
     end
 
     def update_round!
-      @room.set("game_state.current_round" => @room.game_state["current_round"].to_i - 1)
+      @room.atomic_set("game_state.current_round" => @room.game_state["current_round"].to_i - 1)
       if @room.game_state["current_round"].to_i <= 0
         @room.update!(status: 'finished')
 
@@ -76,7 +76,7 @@ module GameServices
           points_hash[player.id.to_s].to_i
         end.reverse
 
-        @room.set("game_state.sorted_players" => @sorted_players.map { |p| { nickname: p.nickname, points: points_hash[p.id.to_s].to_i } })
+        @room.atomic_set("game_state.sorted_players" => @sorted_players.map { |p| { nickname: p.nickname, points: points_hash[p.id.to_s].to_i } })
       end
     end
   end

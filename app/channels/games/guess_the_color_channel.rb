@@ -45,7 +45,7 @@ class Games::GuessTheColorChannel < ApplicationCable::Channel
 
         # ── 1. Generate & show color ───────────────────────────────────────
         color = service.generate_color
-        @room.set(
+        @room.atomic_set(
           "game_state.current_color" => color,
           "game_state.picks"         => {},
           "game_state.round"         => round,
@@ -61,7 +61,7 @@ class Games::GuessTheColorChannel < ApplicationCable::Channel
         sleep SHOW_DURATION
 
         # ── 2. Picking phase ───────────────────────────────────────────────
-        @room.set("game_state.status" => "picking")
+        @room.atomic_set("game_state.status" => "picking")
         broadcast({
           action:       "start_picking",
           duration:     PICK_DURATION,
@@ -85,7 +85,7 @@ class Games::GuessTheColorChannel < ApplicationCable::Channel
           scores[player_id]       = scores[player_id].to_i + pts
         end
 
-        @room.set(
+        @room.atomic_set(
           "game_state.scores"       => scores,
           "game_state.round_scores" => round_scores,
           "game_state.status"       => "revealing"
@@ -152,7 +152,7 @@ class Games::GuessTheColorChannel < ApplicationCable::Channel
     g = data["g"].to_i.clamp(0, 255)
     b = data["b"].to_i.clamp(0, 255)
 
-    @room.set("game_state.picks.#{@player.id}" => { "r" => r, "g" => g, "b" => b })
+    @room.atomic_set("game_state.picks.#{@player.id}" => { "r" => r, "g" => g, "b" => b })
 
     broadcast({
       action:    "player_submitted",

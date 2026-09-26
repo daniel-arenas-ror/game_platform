@@ -6,7 +6,7 @@ module GameServices
         hash[player.id.to_s] = 0
       end
 
-      @room.set("game_state.points" => points_hash)
+      @room.atomic_set("game_state.points" => points_hash)
     end
 
     def broadcast_start

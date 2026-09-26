@@ -48,7 +48,7 @@ class Games::CountBirdsChannel < ApplicationCable::Channel
         distractor_count = GameServices::CountBirds.distractor_count_for(round)
         count_duration   = GameServices::CountBirds.count_duration_for(round, total_rounds)
 
-        @room.set(
+        @room.atomic_set(
           "game_state.round"       => round,
           "game_state.bird_count"  => bird_count,
           "game_state.picks"       => {},
@@ -82,7 +82,7 @@ class Games::CountBirdsChannel < ApplicationCable::Channel
           scores[player_id]       = scores[player_id].to_i + pts
         end
 
-        @room.set(
+        @room.atomic_set(
           "game_state.scores"       => scores,
           "game_state.round_scores" => round_scores,
           "game_state.status"       => "revealing"
@@ -148,7 +148,7 @@ class Games::CountBirdsChannel < ApplicationCable::Channel
 
     count = data["count"].to_i.clamp(0, 999)
 
-    @room.set("game_state.picks.#{@player.id}" => count)
+    @room.atomic_set("game_state.picks.#{@player.id}" => count)
 
     broadcast({
       action:    "player_submitted",

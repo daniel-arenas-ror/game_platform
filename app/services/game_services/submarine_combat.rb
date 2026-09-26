@@ -38,7 +38,7 @@ module GameServices
         scores[player.id.to_s] = 0
       end
 
-      @room.set(
+      @room.atomic_set(
         "game_state.phase"        => "placement",
         "game_state.round"        => 0,
         "game_state.placements"   => placements,
@@ -49,6 +49,7 @@ module GameServices
       )
 
       broadcast_start
+      true
     end
 
     # Generates a new random fleet for one player (used for shuffle).
@@ -124,7 +125,7 @@ module GameServices
       active = placements.reject { |_, p| p["eliminated"] }
       winner = active.keys.first if active.size == 1
 
-      @room.set(
+      @room.atomic_set(
         "game_state.placements"  => placements,
         "game_state.scores"      => scores,
         "game_state.shots"       => shots,

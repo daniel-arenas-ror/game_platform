@@ -60,7 +60,7 @@ class Games::BattleCityChannel < ApplicationCable::Channel
 
         # Persist full live state every 5 ticks so new subscribers get a fresh snapshot
         if state["tick"] % 5 == 0
-          @room.set(
+          @room.atomic_set(
             "game_state.tanks"   => state["tanks"],
             "game_state.bullets" => state["bullets"],
             "game_state.walls"   => state["walls"],
@@ -116,11 +116,8 @@ class Games::BattleCityChannel < ApplicationCable::Channel
     direction = data["direction"]   # "up" | "down" | "left" | "right" | nil
     firing    = data["firing"] == true
 
-    @room.reload
-    inputs = (@room.game_state["pending_inputs"] || {}).merge(
-      player_id => { "direction" => direction, "firing" => firing }
-    )
-    @room.set("game_state.pending_inputs" => inputs)
+    # Only touch this player's key so simultaneous inputs from other players aren't lost.
+    @room.atomic_set("game_state.pending_inputs.#{player_id}" => { "direction" => direction, "firing" => firing })
   end
 
   private

@@ -1,5 +1,5 @@
 import { Controller } from "@hotwired/stimulus"
-import consumer from "../channels/consumer"
+import consumer from "channels/consumer"
 
 export default class extends Controller {
   static values  = { roomCode: String }
@@ -9,7 +9,7 @@ export default class extends Controller {
     "transitionLabel", "transitionCountdown",
     "roundLabel", "categoryCard", "categoryText", "timerDisplay",
     "submissionsList", "submissionCount", "submissionBar",
-    "revealCategory", "groupsList", "scoresList",
+    "revealCategory", "answersGrid", "scoresList",
     "finalScores",
     "toastContainer"
   ]
@@ -52,6 +52,7 @@ export default class extends Controller {
       case "reveal":            return this.onReveal(data)
       case "game_over":         return this.onGameOver(data)
       case "game_restarted":    return this.onGameRestarted(data)
+      case "game_changed":      window.location.href = `/rooms/${this.roomCodeValue}`; break
     }
   }
 
@@ -135,7 +136,7 @@ export default class extends Controller {
     if (this.revealCategoryTarget)
       this.revealCategoryTarget.textContent = data.category
 
-    this.renderGroupsStaggered(data.groups || [], data.round_scores || {})
+    this.renderPlayerAnswers(data.groups || [], data.answers || {}, data.round_scores || {})
     this.renderScores(data.scores || {})
 
     // Toast: biggest match group
@@ -189,28 +190,47 @@ export default class extends Controller {
       ).join("")
   }
 
-  renderGroupsStaggered(groups, _roundScores) {
-    if (!this.groupsListTarget) return
-    this.groupsListTarget.innerHTML = ""
+  // One card per player with the word exactly as they typed it. Cards are ordered by group
+  // (biggest match first); players in the same match share a color. Non-submitters go last.
+  renderPlayerAnswers(groups, answers, roundScores) {
+    if (!this.answersGridTarget) return
+    this.answersGridTarget.innerHTML = ""
 
-    groups.forEach((g, i) => {
+    const matchColors = [
+      "border-yellow-400 bg-yellow-400/10",
+      "border-violet-400 bg-violet-400/10",
+      "border-cyan-400 bg-cyan-400/10",
+      "border-pink-400 bg-pink-400/10",
+      "border-emerald-400 bg-emerald-400/10"
+    ]
+    const cards = []
+    let matchIndex = 0
+
+    groups.forEach(g => {
       const n     = g.player_ids.length
-      const pts   = n > 1 ? `+${n} pts each` : "No match"
-      const nicks = g.player_ids.map(id => this.esc(this.nicknames[id] || id)).join(", ")
-      let color = "border-slate-600 bg-slate-800"
-      if      (n > 1 && i === 0) color = "border-yellow-400 bg-yellow-400/10"
-      else if (n > 1)            color = "border-violet-400 bg-violet-400/10"
+      const color = n > 1 ? matchColors[matchIndex++ % matchColors.length] : "border-slate-600 bg-slate-800"
+      g.player_ids.forEach(id => cards.push({ id, word: answers[id] || g.word, n, color }))
+    })
+
+    Object.keys(this.nicknames)
+      .filter(id => !cards.some(c => c.id === id))
+      .forEach(id => cards.push({ id, word: null, n: 0, color: "border-slate-700 bg-slate-900 opacity-60" }))
+
+    cards.forEach((c, i) => {
+      const pts   = roundScores[c.id] ?? c.n
+      const label = c.n > 1 ? `${c.n}-way match · +${pts}` : c.n === 1 ? `Unique · +${pts}` : "0 pts"
+      const word  = c.word === null
+        ? `<p class="text-slate-500 italic text-xl">No answer</p>`
+        : `<p class="text-white font-black text-2xl truncate">${this.esc(c.word)}</p>`
 
       const el = document.createElement("div")
-      el.className = `mm-group-in border-2 ${color} rounded-2xl px-5 py-4 flex items-center justify-between gap-4`
-      el.style.animationDelay = `${i * 120}ms`
+      el.className = `mm-group-in border-2 ${c.color} rounded-2xl px-4 py-3 text-left min-w-0`
+      el.style.animationDelay = `${i * 80}ms`
       el.innerHTML = `
-        <div>
-          <p class="text-white font-black text-xl">${this.esc(g.word)}</p>
-          <p class="text-slate-400 text-xs mt-1">${nicks}</p>
-        </div>
-        <p class="text-sm font-bold ${n > 1 ? "text-yellow-400" : "text-slate-600"} whitespace-nowrap">${pts}</p>`
-      this.groupsListTarget.appendChild(el)
+        <p class="text-slate-300 text-sm font-semibold truncate">${this.esc(this.nicknames[c.id] || c.id)}</p>
+        ${word}
+        <p class="text-xs font-bold mt-1 ${c.n > 1 ? "text-yellow-400" : "text-slate-500"}">${label}</p>`
+      this.answersGridTarget.appendChild(el)
     })
   }
 

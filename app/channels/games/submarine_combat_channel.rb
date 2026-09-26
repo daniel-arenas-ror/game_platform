@@ -37,8 +37,8 @@ class Games::SubmarineCombatChannel < ApplicationCable::Channel
     sub_count = @room.game_state["sub_count"].to_i
     new_ships = GameServices::SubmarineCombat.new(@room).generate_placement(grid_size, sub_count)
 
-    @room.set("game_state.placements.#{@player.id}.ships"     => new_ships)
-    @room.set("game_state.placements.#{@player.id}.confirmed" => false)
+    @room.atomic_set("game_state.placements.#{@player.id}.ships"     => new_ships)
+    @room.atomic_set("game_state.placements.#{@player.id}.confirmed" => false)
 
     transmit({ action: "placement_shuffled", ships: new_ships })
   end
@@ -60,7 +60,7 @@ class Games::SubmarineCombatChannel < ApplicationCable::Channel
                                  c[1].between?(0, grid_size - 1) }
     return unless valid && all_cells.uniq.length == all_cells.length
 
-    @room.set(
+    @room.atomic_set(
       "game_state.placements.#{@player.id}.ships"     => ships,
       "game_state.placements.#{@player.id}.confirmed" => true
     )
@@ -88,7 +88,7 @@ class Games::SubmarineCombatChannel < ApplicationCable::Channel
     @room      = Room.find_by(code: params[:room_code])
     stream     = "#{STREAM_PREFIX}#{@room.code}"
 
-    @room.set("game_state.phase" => "battle")
+    @room.atomic_set("game_state.phase" => "battle")
 
     Thread.new do
       loop do
@@ -96,7 +96,7 @@ class Games::SubmarineCombatChannel < ApplicationCable::Channel
 
         @room.reload
         round = @room.game_state["round"].to_i + 1
-        @room.set("game_state.round" => round)
+        @room.atomic_set("game_state.round" => round)
 
         active_ids = active_player_ids
         break if active_ids.empty?
@@ -141,7 +141,7 @@ class Games::SubmarineCombatChannel < ApplicationCable::Channel
         if result[:winner]
           @room.reload
           @room.update!(status: "finished")
-          @room.set("game_state.phase" => "game_over")
+          @room.atomic_set("game_state.phase" => "game_over")
           broadcast({
             action:    "game_over",
             winner_id: result[:winner],
@@ -173,7 +173,7 @@ class Games::SubmarineCombatChannel < ApplicationCable::Channel
     return unless row.between?(0, grid_size - 1) && col.between?(0, grid_size - 1)
     return if @room.game_state["round_picks"][@player.id.to_s]   # already picked
 
-    @room.set("game_state.round_picks.#{@player.id}" => [row, col])
+    @room.atomic_set("game_state.round_picks.#{@player.id}" => [row, col])
 
     broadcast({
       action:    "shot_submitted",

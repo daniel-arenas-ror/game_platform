@@ -1,6 +1,6 @@
 class Games::MindMatchChannel < ApplicationCable::Channel
   STREAM_PREFIX       = "mind_match_room_"
-  REVEAL_DURATION     = 5   # seconds the grouped results are shown
+  REVEAL_DURATION     = 8   # seconds the per-player answers are shown
   TRANSITION_DURATION = 3   # seconds the "round X — get ready" screen shows
 
   def subscribed
@@ -39,7 +39,7 @@ class Games::MindMatchChannel < ApplicationCable::Channel
     @stop_loop = false
     @room      = Room.find_by(code: params[:room_code])
 
-    @room.set("game_state.loop_running" => true)
+    @room.atomic_set("game_state.loop_running" => true)
 
     svc            = GameServices::MindMatch.new(@room)
     total_rounds   = @room.game_state["total_rounds"].to_i
@@ -63,7 +63,7 @@ class Games::MindMatchChannel < ApplicationCable::Channel
 
         # ── 1. Pick a category and broadcast it ───────────────────────────
         category = svc.pick_category!
-        @room.set("game_state.round" => round, "game_state.status" => "collecting")
+        @room.atomic_set("game_state.round" => round, "game_state.status" => "collecting")
 
         broadcast({
           action:        "show_category",
@@ -80,7 +80,7 @@ class Games::MindMatchChannel < ApplicationCable::Channel
         break if @stop_loop
 
         # ── 2. Score and reveal ───────────────────────────────────────────
-        @room.set("game_state.status" => "revealing")
+        @room.atomic_set("game_state.status" => "revealing")
         result = svc.score_round!
 
         broadcast({
@@ -89,6 +89,7 @@ class Games::MindMatchChannel < ApplicationCable::Channel
           total_rounds: total_rounds,
           category:     category,
           groups:       result[:groups],
+          answers:      result[:answers],
           round_scores: result[:round_scores],
           scores:       result[:scores],
           nicknames:    nicknames_map
@@ -125,7 +126,7 @@ class Games::MindMatchChannel < ApplicationCable::Channel
 
     @stop_loop = true
     @room = Room.find_by(code: params[:room_code])
-    @room.set("game_state.loop_running" => false)
+    @room.atomic_set("game_state.loop_running" => false)
     GameServices::MindMatch.new(@room).setup_game!
     broadcast({ action: "game_restarted" })
   end
@@ -135,13 +136,9 @@ class Games::MindMatchChannel < ApplicationCable::Channel
   def submit_word(data)
     return unless @player
 
-    @room.reload
-    return unless @room.game_state["status"] == "collecting"
-
     word = data["word"].to_s.strip
     return if word.empty?
-
-    GameServices::MindMatch.new(@room).add_answer(@player.id, word)
+    return unless GameServices::MindMatch.new(@room).add_answer(@player.id, word)
 
     broadcast({
       action:    "player_submitted",

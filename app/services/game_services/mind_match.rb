@@ -86,7 +86,7 @@ module GameServices
       available = CATEGORIES if available.empty?
 
       category = available.sample
-      @room.set(
+      @room.atomic_set(
         "game_state.used_categories"   => used + [category],
         "game_state.answers"           => {},
         "game_state.current_category"  => category
@@ -94,7 +94,7 @@ module GameServices
       category
     end
 
-    # Groups answers, scores players. Returns { groups, round_scores, scores }.
+    # Groups answers, scores players. Returns { groups, round_scores, scores, answers }.
     # Groups: [ { word: "sand", player_ids: [...] }, ... ] sorted by group size desc.
     def score_round!
       @room.reload
@@ -125,7 +125,7 @@ module GameServices
         round_scores[player_id] ||= 0
       end
 
-      @room.set(
+      @room.atomic_set(
         "game_state.scores"       => scores,
         "game_state.round_scores" => round_scores
       )
@@ -136,15 +136,19 @@ module GameServices
         { "word" => original, "player_ids" => player_ids }
       end.sort_by { |g| -g["player_ids"].size }
 
-      { groups: display_groups, round_scores: round_scores, scores: scores }
+      { groups: display_groups, round_scores: round_scores, scores: scores, answers: answers }
     end
 
+    # Saves the player's word only while the round is collecting and they haven't answered yet.
+    # A single conditional update, so concurrent submissions can't overwrite each other.
+    # Returns true if the answer was stored.
     def add_answer(player_id, word)
-      @room.reload
-      answers = @room.game_state["answers"] || {}
-      return if answers[player_id.to_s]  # already submitted
-
-      @room.set("game_state.answers.#{player_id}" => word.to_s.strip.first(30))
+      key = "game_state.answers.#{player_id}"
+      result = Room.collection.update_one(
+        { "_id" => @room.id, "game_state.status" => "collecting", key => { "$exists" => false } },
+        { "$set" => { key => word.to_s.strip.first(30) } }
+      )
+      result.modified_count == 1
     end
 
     private

@@ -127,7 +127,11 @@ showPhase(name) {
 
 ```ruby
 # Atomic nested-field update — preferred for mid-game partial updates
-@room.set("game_state.scores" => scores, "game_state.status" => "collecting")
+@room.atomic_set("game_state.scores" => scores, "game_state.status" => "collecting")
+
+# ⚠️ Don't use Mongoid's @room.set("game_state.x" => …): on a Hash field it writes the WHOLE
+# game_state from the in-memory copy, wiping writes made by other connections (player answers).
+# For "write only if …" (e.g. one answer per player) use Room.collection.update_one with a filter.
 
 # Full document update — used in setup_game! and status transitions
 @room.update!(status: "playing", game_state: @room.game_state.merge({ ... }))

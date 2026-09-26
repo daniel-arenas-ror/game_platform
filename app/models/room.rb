@@ -16,6 +16,14 @@ class Room
 
   before_create :generate_code
 
+  # Atomically $set nested fields, e.g. atomic_set("game_state.status" => "revealing"), then reload.
+  # Mongoid's #set on a Hash field rewrites the *whole* game_state from this in-memory copy, which
+  # silently drops writes made meanwhile by other connections (e.g. a player's submitted answer).
+  def atomic_set(fields)
+    self.class.collection.update_one({ _id: id }, { "$set" => fields })
+    reload
+  end
+
   private
 
   def generate_code

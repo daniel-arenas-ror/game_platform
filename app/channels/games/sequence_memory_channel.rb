@@ -43,7 +43,7 @@ class Games::SequenceMemoryChannel < ApplicationCable::Channel
         # ── 1. Extend the sequence by one cell ────────────────────────────
         sequence = svc.next_sequence!
 
-        @room.set(
+        @room.atomic_set(
           "game_state.round"       => round,
           "game_state.submissions" => {},
           "game_state.status"      => "watching"
@@ -67,7 +67,7 @@ class Games::SequenceMemoryChannel < ApplicationCable::Channel
         sleep playback_duration
 
         # ── 4. Open input window for players ──────────────────────────────
-        @room.set("game_state.status" => "input")
+        @room.atomic_set("game_state.status" => "input")
 
         broadcast({
           action:         "player_turn",
@@ -93,7 +93,7 @@ class Games::SequenceMemoryChannel < ApplicationCable::Channel
           scores[player_id]       = scores[player_id].to_i + pts
         end
 
-        @room.set(
+        @room.atomic_set(
           "game_state.scores"       => scores,
           "game_state.round_scores" => round_scores,
           "game_state.status"       => "revealing"
@@ -167,7 +167,7 @@ class Games::SequenceMemoryChannel < ApplicationCable::Channel
     seq_length  = (@room.game_state["sequence"] || []).length
     submission  = raw.map { |c| c.to_i.clamp(0, max_cells - 1) }.first(seq_length)
 
-    @room.set("game_state.submissions.#{@player.id}" => submission)
+    @room.atomic_set("game_state.submissions.#{@player.id}" => submission)
 
     broadcast({
       action:    "player_submitted",
