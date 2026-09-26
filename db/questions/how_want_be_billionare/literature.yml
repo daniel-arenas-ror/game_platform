@@ -1,0 +1,91 @@
+# Literature — import with: bin/rails questions:billionaire:import
+
+- text: "Who wrote 'Romeo and Juliet'?"
+  topic: "Literature"
+  points: 100
+  answers:
+    - { text: "William Shakespeare", correct: true }
+    - { text: "Charles Dickens" }
+    - { text: "Jane Austen" }
+    - { text: "Mark Twain" }
+
+- text: "Which author created the detective Sherlock Holmes?"
+  topic: "Literature"
+  points: 200
+  answers:
+    - { text: "Edgar Allan Poe" }
+    - { text: "Arthur Conan Doyle", correct: true }
+    - { text: "Agatha Christie" }
+    - { text: "Charles Dickens" }
+
+- text: "Who wrote 'Pride and Prejudice'?"
+  topic: "Literature"
+  points: 300
+  answers:
+    - { text: "Charlotte Brontë" }
+    - { text: "Emily Brontë" }
+    - { text: "Jane Austen", correct: true }
+    - { text: "Mary Shelley" }
+
+- text: "Which of these novels were written by Charles Dickens?"
+  topic: "Literature"
+  points: 400
+  answers:
+    - { text: "Oliver Twist", correct: true }
+    - { text: "Great Expectations", correct: true }
+    - { text: "Jane Eyre" }
+    - { text: "Moby-Dick" }
+
+- text: "Who wrote 'One Hundred Years of Solitude'?"
+  topic: "Literature"
+  points: 500
+  answers:
+    - { text: "Gabriel García Márquez", correct: true }
+    - { text: "Mario Vargas Llosa" }
+    - { text: "Jorge Luis Borges" }
+    - { text: "Isabel Allende" }
+
+- text: "In which language was 'Don Quixote' originally written?"
+  topic: "Literature"
+  points: 600
+  answers:
+    - { text: "French" }
+    - { text: "Spanish", correct: true }
+    - { text: "Portuguese" }
+    - { text: "Italian" }
+
+- text: "Which ancient Greek poet is credited with 'The Odyssey'?"
+  topic: "Literature"
+  points: 700
+  answers:
+    - { text: "Virgil" }
+    - { text: "Sophocles" }
+    - { text: "Homer", correct: true }
+    - { text: "Ovid" }
+
+- text: "Which novel begins with the line 'Call me Ishmael'?"
+  topic: "Literature"
+  points: 800
+  answers:
+    - { text: "Moby-Dick", correct: true }
+    - { text: "The Old Man and the Sea" }
+    - { text: "Robinson Crusoe" }
+    - { text: "Treasure Island" }
+
+- text: "Who wrote 'Crime and Punishment'?"
+  topic: "Literature"
+  points: 900
+  answers:
+    - { text: "Nikolai Gogol" }
+    - { text: "Fyodor Dostoevsky", correct: true }
+    - { text: "Anton Chekhov" }
+    - { text: "Leo Tolstoy" }
+
+- text: "Which poet wrote 'The Divine Comedy'?"
+  topic: "Literature"
+  points: 1000
+  answers:
+    - { text: "Petrarch" }
+    - { text: "Dante Alighieri", correct: true }
+    - { text: "Giovanni Boccaccio" }
+    - { text: "Virgil" }

@@ -1,0 +1,91 @@
+# Art And Music — import with: bin/rails questions:billionaire:import
+
+- text: "Who painted the Mona Lisa?"
+  topic: "Art History"
+  points: 100
+  answers:
+    - { text: "Michelangelo" }
+    - { text: "Rembrandt" }
+    - { text: "Leonardo da Vinci", correct: true }
+    - { text: "Raphael" }
+
+- text: "How many keys does a standard modern piano have?"
+  topic: "Music"
+  points: 200
+  answers:
+    - { text: "76" }
+    - { text: "88", correct: true }
+    - { text: "92" }
+    - { text: "64" }
+
+- text: "Which composer kept composing after losing his hearing?"
+  topic: "Music"
+  points: 300
+  answers:
+    - { text: "Wolfgang Amadeus Mozart" }
+    - { text: "Johann Sebastian Bach" }
+    - { text: "Frédéric Chopin" }
+    - { text: "Ludwig van Beethoven", correct: true }
+
+- text: "Who carved the marble statue of David displayed in Florence's Galleria dell'Accademia?"
+  topic: "Art History"
+  points: 400
+  answers:
+    - { text: "Auguste Rodin" }
+    - { text: "Michelangelo", correct: true }
+    - { text: "Gian Lorenzo Bernini" }
+    - { text: "Antonio Canova" }
+
+- text: "Which art movement is Salvador Dalí most associated with?"
+  topic: "Art History"
+  points: 500
+  answers:
+    - { text: "Baroque" }
+    - { text: "Surrealism", correct: true }
+    - { text: "Impressionism" }
+    - { text: "Cubism" }
+
+- text: "Which of these are woodwind instruments?"
+  topic: "Music"
+  points: 600
+  answers:
+    - { text: "Flute", correct: true }
+    - { text: "Clarinet", correct: true }
+    - { text: "Violin" }
+    - { text: "Trumpet" }
+
+- text: "In which country was the composer Frédéric Chopin born?"
+  topic: "Music"
+  points: 700
+  answers:
+    - { text: "France" }
+    - { text: "Poland", correct: true }
+    - { text: "Austria" }
+    - { text: "Germany" }
+
+- text: "Who painted 'Guernica'?"
+  topic: "Art History"
+  points: 800
+  answers:
+    - { text: "Francisco Goya" }
+    - { text: "Pablo Picasso", correct: true }
+    - { text: "Diego Velázquez" }
+    - { text: "Joan Miró" }
+
+- text: "Which Mexican painter is famous for her many self-portraits?"
+  topic: "Art History"
+  points: 900
+  answers:
+    - { text: "Tamara de Lempicka" }
+    - { text: "Frida Kahlo", correct: true }
+    - { text: "Remedios Varo" }
+    - { text: "Georgia O'Keeffe" }
+
+- text: "How many symphonies did Beethoven complete?"
+  topic: "Music"
+  points: 1000
+  answers:
+    - { text: "9", correct: true }
+    - { text: "7" }
+    - { text: "12" }
+    - { text: "5" }

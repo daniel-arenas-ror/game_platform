@@ -1,0 +1,91 @@
+# Sports — import with: bin/rails questions:billionaire:import
+
+- text: "How many players does each soccer team have on the field?"
+  topic: "Sports"
+  points: 100
+  answers:
+    - { text: "12" }
+    - { text: "11", correct: true }
+    - { text: "10" }
+    - { text: "9" }
+
+- text: "In which sport is a 'slam dunk' performed?"
+  topic: "Sports"
+  points: 200
+  answers:
+    - { text: "Volleyball" }
+    - { text: "Basketball", correct: true }
+    - { text: "Handball" }
+    - { text: "Tennis" }
+
+- text: "How often are the Summer Olympic Games normally held?"
+  topic: "Sports"
+  points: 300
+  answers:
+    - { text: "Every 5 years" }
+    - { text: "Every 4 years", correct: true }
+    - { text: "Every 2 years" }
+    - { text: "Every 3 years" }
+
+- text: "Which country hosted the first FIFA World Cup in 1930?"
+  topic: "Sports"
+  points: 400
+  answers:
+    - { text: "Italy" }
+    - { text: "Uruguay", correct: true }
+    - { text: "Brazil" }
+    - { text: "Argentina" }
+
+- text: "In tennis, what is a score of zero called?"
+  topic: "Sports"
+  points: 500
+  answers:
+    - { text: "Love", correct: true }
+    - { text: "Blank" }
+    - { text: "Nil" }
+    - { text: "Duck" }
+
+- text: "Which of these are Grand Slam tennis tournaments?"
+  topic: "Sports"
+  points: 600
+  answers:
+    - { text: "Wimbledon", correct: true }
+    - { text: "US Open", correct: true }
+    - { text: "Monte-Carlo Masters" }
+    - { text: "Indian Wells Open" }
+
+- text: "What is the official distance of a marathon?"
+  topic: "Sports"
+  points: 700
+  answers:
+    - { text: "42 km" }
+    - { text: "42.195 km", correct: true }
+    - { text: "40 km" }
+    - { text: "45 km" }
+
+- text: "In which city were the first modern Olympic Games held in 1896?"
+  topic: "Sports"
+  points: 800
+  answers:
+    - { text: "Paris" }
+    - { text: "Rome" }
+    - { text: "London" }
+    - { text: "Athens", correct: true }
+
+- text: "In golf, what is one stroke under par on a hole called?"
+  topic: "Sports"
+  points: 900
+  answers:
+    - { text: "Birdie", correct: true }
+    - { text: "Albatross" }
+    - { text: "Bogey" }
+    - { text: "Eagle" }
+
+- text: "How many points is a touchdown worth in American football, before the extra point?"
+  topic: "Sports"
+  points: 1000
+  answers:
+    - { text: "6", correct: true }
+    - { text: "5" }
+    - { text: "3" }
+    - { text: "7" }

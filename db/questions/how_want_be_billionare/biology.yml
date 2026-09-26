@@ -1,0 +1,91 @@
+# Biology — import with: bin/rails questions:billionaire:import
+
+- text: "How many legs does a spider have?"
+  topic: "Biology"
+  points: 100
+  answers:
+    - { text: "8", correct: true }
+    - { text: "12" }
+    - { text: "6" }
+    - { text: "10" }
+
+- text: "What is the largest mammal on Earth?"
+  topic: "Biology"
+  points: 200
+  answers:
+    - { text: "Blue whale", correct: true }
+    - { text: "Giraffe" }
+    - { text: "Sperm whale" }
+    - { text: "African elephant" }
+
+- text: "Which organ pumps blood through the human body?"
+  topic: "Biology"
+  points: 300
+  answers:
+    - { text: "Lungs" }
+    - { text: "Kidneys" }
+    - { text: "Heart", correct: true }
+    - { text: "Liver" }
+
+- text: "Which of these animals are reptiles?"
+  topic: "Biology"
+  points: 400
+  answers:
+    - { text: "Salamander" }
+    - { text: "Turtle", correct: true }
+    - { text: "Frog" }
+    - { text: "Crocodile", correct: true }
+
+- text: "Which gas do plants absorb from the air for photosynthesis?"
+  topic: "Biology"
+  points: 500
+  answers:
+    - { text: "Oxygen" }
+    - { text: "Nitrogen" }
+    - { text: "Carbon dioxide", correct: true }
+    - { text: "Hydrogen" }
+
+- text: "How many bones are in the adult human body?"
+  topic: "Biology"
+  points: 600
+  answers:
+    - { text: "186" }
+    - { text: "256" }
+    - { text: "226" }
+    - { text: "206", correct: true }
+
+- text: "Which part of the cell is known as its 'powerhouse'?"
+  topic: "Biology"
+  points: 700
+  answers:
+    - { text: "Ribosome" }
+    - { text: "Nucleus" }
+    - { text: "Mitochondria", correct: true }
+    - { text: "Golgi apparatus" }
+
+- text: "Which blood type is known as the universal donor?"
+  topic: "Biology"
+  points: 800
+  answers:
+    - { text: "B negative" }
+    - { text: "AB positive" }
+    - { text: "O negative", correct: true }
+    - { text: "A positive" }
+
+- text: "Which of these animals are marsupials?"
+  topic: "Biology"
+  points: 900
+  answers:
+    - { text: "Koala", correct: true }
+    - { text: "Kangaroo", correct: true }
+    - { text: "Platypus" }
+    - { text: "Sloth" }
+
+- text: "Which scientist is known as the father of genetics for his experiments with pea plants?"
+  topic: "Biology"
+  points: 1000
+  answers:
+    - { text: "Charles Darwin" }
+    - { text: "James Watson" }
+    - { text: "Gregor Mendel", correct: true }
+    - { text: "Louis Pasteur" }

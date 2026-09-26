@@ -1,0 +1,91 @@
+# Mythology And Language — import with: bin/rails questions:billionaire:import
+
+- text: "Who is the king of the gods in Greek mythology?"
+  topic: "Mythology"
+  points: 100
+  answers:
+    - { text: "Apollo" }
+    - { text: "Ares" }
+    - { text: "Zeus", correct: true }
+    - { text: "Hades" }
+
+- text: "Which language has the most native speakers in the world?"
+  topic: "Language"
+  points: 200
+  answers:
+    - { text: "Spanish" }
+    - { text: "Mandarin Chinese", correct: true }
+    - { text: "English" }
+    - { text: "Hindi" }
+
+- text: "In Norse mythology, what is the name of Thor's hammer?"
+  topic: "Mythology"
+  points: 300
+  answers:
+    - { text: "Gungnir" }
+    - { text: "Mjölnir", correct: true }
+    - { text: "Excalibur" }
+    - { text: "Gram" }
+
+- text: "Which of these are Romance languages?"
+  topic: "Language"
+  points: 400
+  answers:
+    - { text: "Italian", correct: true }
+    - { text: "Romanian", correct: true }
+    - { text: "German" }
+    - { text: "Greek" }
+
+- text: "Which Roman god is the equivalent of the Greek god Ares?"
+  topic: "Mythology"
+  points: 500
+  answers:
+    - { text: "Jupiter" }
+    - { text: "Mercury" }
+    - { text: "Mars", correct: true }
+    - { text: "Neptune" }
+
+- text: "Which Greek hero performed the Twelve Labours?"
+  topic: "Mythology"
+  points: 600
+  answers:
+    - { text: "Theseus" }
+    - { text: "Heracles", correct: true }
+    - { text: "Perseus" }
+    - { text: "Achilles" }
+
+- text: "What does the Japanese word 'arigatō' mean?"
+  topic: "Language"
+  points: 700
+  answers:
+    - { text: "Goodbye" }
+    - { text: "Hello" }
+    - { text: "Please" }
+    - { text: "Thank you", correct: true }
+
+- text: "Which alphabet is used to write Russian?"
+  topic: "Language"
+  points: 800
+  answers:
+    - { text: "Greek" }
+    - { text: "Cyrillic", correct: true }
+    - { text: "Arabic" }
+    - { text: "Latin" }
+
+- text: "In Egyptian mythology, which god ruled the dead and the afterlife?"
+  topic: "Mythology"
+  points: 900
+  answers:
+    - { text: "Ra" }
+    - { text: "Osiris", correct: true }
+    - { text: "Set" }
+    - { text: "Horus" }
+
+- text: "Which ancient script was deciphered with the help of the Rosetta Stone?"
+  topic: "Language"
+  points: 1000
+  answers:
+    - { text: "Egyptian hieroglyphs", correct: true }
+    - { text: "Linear B" }
+    - { text: "Maya glyphs" }
+    - { text: "Cuneiform" }

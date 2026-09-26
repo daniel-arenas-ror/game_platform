@@ -1,0 +1,91 @@
+# Geography — import with: bin/rails questions:billionaire:import
+
+- text: "On which continent is Egypt located?"
+  topic: "Geography"
+  points: 100
+  answers:
+    - { text: "South America" }
+    - { text: "Europe" }
+    - { text: "Africa", correct: true }
+    - { text: "Asia" }
+
+- text: "What is the capital of Canada?"
+  topic: "Geography"
+  points: 200
+  answers:
+    - { text: "Toronto" }
+    - { text: "Ottawa", correct: true }
+    - { text: "Vancouver" }
+    - { text: "Montreal" }
+
+- text: "Which of these countries are landlocked?"
+  topic: "Geography"
+  points: 300
+  answers:
+    - { text: "Switzerland", correct: true }
+    - { text: "Portugal" }
+    - { text: "Bolivia", correct: true }
+    - { text: "Chile" }
+
+- text: "What is the smallest country in the world by area?"
+  topic: "Geography"
+  points: 400
+  answers:
+    - { text: "Vatican City", correct: true }
+    - { text: "Monaco" }
+    - { text: "San Marino" }
+    - { text: "Liechtenstein" }
+
+- text: "Which mountain range is traditionally considered part of the boundary between Europe and Asia?"
+  topic: "Geography"
+  points: 500
+  answers:
+    - { text: "Andes" }
+    - { text: "Alps" }
+    - { text: "Ural Mountains", correct: true }
+    - { text: "Pyrenees" }
+
+- text: "What is the largest hot desert in the world?"
+  topic: "Geography"
+  points: 600
+  answers:
+    - { text: "Kalahari" }
+    - { text: "Sahara", correct: true }
+    - { text: "Gobi" }
+    - { text: "Atacama" }
+
+- text: "Which of these countries have a coastline on the Black Sea?"
+  topic: "Geography"
+  points: 700
+  answers:
+    - { text: "Hungary" }
+    - { text: "Turkey", correct: true }
+    - { text: "Greece" }
+    - { text: "Romania", correct: true }
+
+- text: "What is the capital of Morocco?"
+  topic: "Geography"
+  points: 800
+  answers:
+    - { text: "Rabat", correct: true }
+    - { text: "Marrakesh" }
+    - { text: "Casablanca" }
+    - { text: "Fez" }
+
+- text: "Lake Titicaca lies on the border between which countries?"
+  topic: "Geography"
+  points: 900
+  answers:
+    - { text: "Bolivia", correct: true }
+    - { text: "Ecuador" }
+    - { text: "Peru", correct: true }
+    - { text: "Chile" }
+
+- text: "What is the deepest lake in the world?"
+  topic: "Geography"
+  points: 1000
+  answers:
+    - { text: "Lake Superior" }
+    - { text: "Caspian Sea" }
+    - { text: "Lake Tanganyika" }
+    - { text: "Lake Baikal", correct: true }

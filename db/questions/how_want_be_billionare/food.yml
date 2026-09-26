@@ -1,0 +1,91 @@
+# Food — import with: bin/rails questions:billionaire:import
+
+- text: "What is the main ingredient of guacamole?"
+  topic: "Food"
+  points: 100
+  answers:
+    - { text: "Tomato" }
+    - { text: "Avocado", correct: true }
+    - { text: "Cucumber" }
+    - { text: "Mango" }
+
+- text: "Which country is pizza originally from?"
+  topic: "Food"
+  points: 200
+  answers:
+    - { text: "France" }
+    - { text: "Greece" }
+    - { text: "United States" }
+    - { text: "Italy", correct: true }
+
+- text: "Which of these are citrus fruits?"
+  topic: "Food"
+  points: 300
+  answers:
+    - { text: "Banana" }
+    - { text: "Grapefruit", correct: true }
+    - { text: "Apple" }
+    - { text: "Lemon", correct: true }
+
+- text: "What is sushi traditionally wrapped in?"
+  topic: "Food"
+  points: 400
+  answers:
+    - { text: "Nori (seaweed)", correct: true }
+    - { text: "Lettuce" }
+    - { text: "Tofu skin" }
+    - { text: "Rice paper" }
+
+- text: "Which spice is the most expensive by weight?"
+  topic: "Food"
+  points: 500
+  answers:
+    - { text: "Cardamom" }
+    - { text: "Vanilla" }
+    - { text: "Cinnamon" }
+    - { text: "Saffron", correct: true }
+
+- text: "Paella is a traditional dish from which country?"
+  topic: "Food"
+  points: 600
+  answers:
+    - { text: "Italy" }
+    - { text: "Portugal" }
+    - { text: "Mexico" }
+    - { text: "Spain", correct: true }
+
+- text: "What is the main ingredient of hummus?"
+  topic: "Food"
+  points: 700
+  answers:
+    - { text: "Black beans" }
+    - { text: "Chickpeas", correct: true }
+    - { text: "Lentils" }
+    - { text: "Green peas" }
+
+- text: "Which grain is used to brew traditional Japanese sake?"
+  topic: "Food"
+  points: 800
+  answers:
+    - { text: "Rice", correct: true }
+    - { text: "Corn" }
+    - { text: "Barley" }
+    - { text: "Wheat" }
+
+- text: "Which country is the world's largest producer of coffee?"
+  topic: "Food"
+  points: 900
+  answers:
+    - { text: "Colombia" }
+    - { text: "Vietnam" }
+    - { text: "Ethiopia" }
+    - { text: "Brazil", correct: true }
+
+- text: "Which cheese is traditionally used in a classic Greek salad?"
+  topic: "Food"
+  points: 1000
+  answers:
+    - { text: "Ricotta" }
+    - { text: "Mozzarella" }
+    - { text: "Halloumi" }
+    - { text: "Feta", correct: true }

@@ -1,0 +1,91 @@
+# Science — import with: bin/rails questions:billionaire:import
+
+- text: "What is H2O more commonly known as?"
+  topic: "Chemistry"
+  points: 100
+  answers:
+    - { text: "Water", correct: true }
+    - { text: "Salt" }
+    - { text: "Oxygen" }
+    - { text: "Hydrogen peroxide" }
+
+- text: "At sea level, what is the boiling point of water in degrees Celsius?"
+  topic: "Physics"
+  points: 200
+  answers:
+    - { text: "90 °C" }
+    - { text: "100 °C", correct: true }
+    - { text: "212 °C" }
+    - { text: "80 °C" }
+
+- text: "Which of these elements are metals?"
+  topic: "Chemistry"
+  points: 300
+  answers:
+    - { text: "Carbon" }
+    - { text: "Iron", correct: true }
+    - { text: "Sulfur" }
+    - { text: "Copper", correct: true }
+
+- text: "What force keeps the planets in orbit around the Sun?"
+  topic: "Physics"
+  points: 400
+  answers:
+    - { text: "Air pressure" }
+    - { text: "Magnetism" }
+    - { text: "Gravity", correct: true }
+    - { text: "Friction" }
+
+- text: "What is the most abundant gas in Earth's atmosphere?"
+  topic: "Chemistry"
+  points: 500
+  answers:
+    - { text: "Carbon dioxide" }
+    - { text: "Oxygen" }
+    - { text: "Argon" }
+    - { text: "Nitrogen", correct: true }
+
+- text: "What is the hardest naturally occurring substance?"
+  topic: "Chemistry"
+  points: 600
+  answers:
+    - { text: "Topaz" }
+    - { text: "Granite" }
+    - { text: "Quartz" }
+    - { text: "Diamond", correct: true }
+
+- text: "What is the SI unit of electrical resistance?"
+  topic: "Physics"
+  points: 700
+  answers:
+    - { text: "Ampere" }
+    - { text: "Volt" }
+    - { text: "Watt" }
+    - { text: "Ohm", correct: true }
+
+- text: "Which scientist formulated the three laws of motion?"
+  topic: "Physics"
+  points: 800
+  answers:
+    - { text: "Johannes Kepler" }
+    - { text: "Galileo Galilei" }
+    - { text: "Albert Einstein" }
+    - { text: "Isaac Newton", correct: true }
+
+- text: "What is the approximate speed of light in a vacuum?"
+  topic: "Physics"
+  points: 900
+  answers:
+    - { text: "30,000 km/s" }
+    - { text: "3,000,000 km/s" }
+    - { text: "300,000 km/s", correct: true }
+    - { text: "3,000 km/s" }
+
+- text: "What is the approximate value of Avogadro's number?"
+  topic: "Chemistry"
+  points: 1000
+  answers:
+    - { text: "3.00 × 10⁸" }
+    - { text: "1.60 × 10⁻¹⁹" }
+    - { text: "6.022 × 10²³", correct: true }
+    - { text: "9.81 × 10²" }

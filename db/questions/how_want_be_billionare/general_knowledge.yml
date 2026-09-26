@@ -1,0 +1,40 @@
+# How Want Be Billionaire questions. Import with: bin/rails questions:billionaire:import
+# - points: 100–1000 (harder = more points)
+# - answers: 2+ options; mark every correct one with `correct: true` (multiple correct answers are allowed)
+# - Editing a question's answers/points/topic and re-importing updates it; changing its text creates a new one.
+
+- text: "What is the largest planet in our Solar System?"
+  topic: "Astronomy"
+  points: 100
+  answers:
+    - { text: "Jupiter", correct: true }
+    - { text: "Saturn" }
+    - { text: "Neptune" }
+    - { text: "Earth" }
+
+- text: "Who painted 'The Starry Night'?"
+  topic: "Art History"
+  points: 200
+  answers:
+    - { text: "Vincent van Gogh", correct: true }
+    - { text: "Claude Monet" }
+    - { text: "Pablo Picasso" }
+    - { text: "Salvador Dalí" }
+
+- text: "Which of these elements are noble gases?"
+  topic: "Chemistry"
+  points: 300
+  answers:
+    - { text: "Neon", correct: true }
+    - { text: "Argon", correct: true }
+    - { text: "Nitrogen" }
+    - { text: "Chlorine" }
+
+- text: "In which year did the Berlin Wall fall?"
+  topic: "History"
+  points: 400
+  answers:
+    - { text: "1989", correct: true }
+    - { text: "1991" }
+    - { text: "1985" }
+    - { text: "1979" }

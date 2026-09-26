@@ -1,0 +1,91 @@
+# History — import with: bin/rails questions:billionaire:import
+
+- text: "Who was the first person to walk on the Moon?"
+  topic: "History"
+  points: 100
+  answers:
+    - { text: "Buzz Aldrin" }
+    - { text: "Neil Armstrong", correct: true }
+    - { text: "Michael Collins" }
+    - { text: "Yuri Gagarin" }
+
+- text: "In which year did World War II end?"
+  topic: "History"
+  points: 200
+  answers:
+    - { text: "1939" }
+    - { text: "1944" }
+    - { text: "1945", correct: true }
+    - { text: "1950" }
+
+- text: "Which civilization built Machu Picchu?"
+  topic: "History"
+  points: 300
+  answers:
+    - { text: "Inca", correct: true }
+    - { text: "Olmec" }
+    - { text: "Aztec" }
+    - { text: "Maya" }
+
+- text: "Who was the first Emperor of the French?"
+  topic: "History"
+  points: 400
+  answers:
+    - { text: "Louis XVI" }
+    - { text: "Napoleon Bonaparte", correct: true }
+    - { text: "Louis XIV" }
+    - { text: "Charlemagne" }
+
+- text: "Which ship sank on its maiden voyage in April 1912?"
+  topic: "History"
+  points: 500
+  answers:
+    - { text: "Queen Mary" }
+    - { text: "Lusitania" }
+    - { text: "Titanic", correct: true }
+    - { text: "Britannic" }
+
+- text: "Which of these countries were Axis powers in World War II?"
+  topic: "History"
+  points: 600
+  answers:
+    - { text: "Brazil" }
+    - { text: "Germany", correct: true }
+    - { text: "Japan", correct: true }
+    - { text: "Sweden" }
+
+- text: "Who was the first woman to win a Nobel Prize?"
+  topic: "History"
+  points: 700
+  answers:
+    - { text: "Rosalind Franklin" }
+    - { text: "Ada Lovelace" }
+    - { text: "Marie Curie", correct: true }
+    - { text: "Mother Teresa" }
+
+- text: "Most of the Great Wall of China that stands today was built during which dynasty?"
+  topic: "History"
+  points: 800
+  answers:
+    - { text: "Ming", correct: true }
+    - { text: "Tang" }
+    - { text: "Qin" }
+    - { text: "Han" }
+
+- text: "In which year did the Western Roman Empire traditionally fall?"
+  topic: "History"
+  points: 900
+  answers:
+    - { text: "1453 AD" }
+    - { text: "395 AD" }
+    - { text: "476 AD", correct: true }
+    - { text: "410 AD" }
+
+- text: "Which peace settlement ended the Thirty Years' War in 1648?"
+  topic: "History"
+  points: 1000
+  answers:
+    - { text: "Treaty of Versailles" }
+    - { text: "Peace of Westphalia", correct: true }
+    - { text: "Treaty of Utrecht" }
+    - { text: "Treaty of Tordesillas" }
