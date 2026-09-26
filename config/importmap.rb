@@ -7,4 +7,6 @@ pin "@hotwired/stimulus-loading", to: "stimulus-loading.js"
 pin_all_from "app/javascript/controllers", under: "controllers"
 pin "@rails/actioncable", to: "actioncable.esm.js"
 pin_all_from "app/javascript/channels", under: "channels"
-pin "pixi.js", to: "https://esm.sh/pixi.js@8"
+# Vendored single-file build (dist/pixi.min.mjs). esm.sh splits pixi into many modules and
+# breaks its extension registry (app.ticker undefined, "batcher already has a handler").
+pin "pixi.js", to: "pixi.min.js" # @8.21.0

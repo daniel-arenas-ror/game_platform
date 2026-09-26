@@ -26,13 +26,20 @@ export default class extends Controller {
     this.pixiReady  = false
     this.explosions = []   // [{x, y, age, maxAge, color}]
 
-    this.app = new Application()
-    await this.app.init({
+    const app = new Application()
+    this.app  = app
+    await app.init({
       width:      520,
       height:     520,
       background: BG_COLOR,
       antialias:  false
     })
+
+    // Disconnected (e.g. page reload) while pixi was starting — drop this instance.
+    if (this.app !== app) {
+      app.destroy(true)
+      return
+    }
 
     this.element.appendChild(this.app.canvas)
 
@@ -53,7 +60,9 @@ export default class extends Controller {
 
   disconnect() {
     this.channel?.unsubscribe()
-    this.app?.destroy(true)
+    // Before init finishes, destroy() throws; connect() cleans up that instance instead.
+    if (this.pixiReady) this.app.destroy(true)
+    this.app       = null
     this.pixiReady = false
   }
 
