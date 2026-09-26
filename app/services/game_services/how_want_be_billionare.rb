@@ -6,13 +6,15 @@ module GameServices
       @players = room.players.to_a
     end
 
-    def setup_game!
+    # keep_asked_questions: on "Play Again", skip questions already used earlier in this room.
+    def setup_game!(keep_asked_questions: false)
       @room.update!(status: 'playing')
 
+      asked_ids   = keep_asked_questions ? (@room.game_state['asked_question_ids'] || []) : []
       user_points = @players.each_with_object({}) { |p, h| h[p.id.to_s] = 0 }
       @room.atomic_set(
         'game_state.user_points'        => user_points,
-        'game_state.asked_question_ids' => [],
+        'game_state.asked_question_ids' => asked_ids,
         'game_state.answers_history'    => {}
       )
 

@@ -74,6 +74,13 @@ export default class extends Controller {
     this.channel.perform("submit_millionaire_answer", { choice: this.selectedOption })
   }
 
+  // ── Host: Play Again ──────────────────────────────────────────────────────
+
+  restartGame(event) {
+    event.currentTarget.disabled = true
+    this.channel.perform("restart_game", {})
+  }
+
   // ── Subscribe ─────────────────────────────────────────────────────────────
 
   subscribe() {

@@ -99,6 +99,17 @@ class Games::MillionaireChannel < ApplicationCable::Channel
     end
   end
 
+  # Host only: reset scores with the same settings. Everyone reloads, and the host's page
+  # starts a fresh game loop when it reconnects.
+  def restart_game(_data = {})
+    return if @player
+
+    @stop_loop = true
+    @room = Room.find_by(code: params[:room_code])
+    GameServices::HowWantBeBillionare.new(@room).setup_game!(keep_asked_questions: true)
+    ActionCable.server.broadcast("millionaire_room_#{@room.code}", { action: "game_restarted" })
+  end
+
   def submit_millionaire_answer(data)
     return unless @player
 
