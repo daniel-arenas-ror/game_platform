@@ -1,24 +1,6 @@
-<%# Rendered inside the host game-over overlay. Passes room + games as locals.
-    Shows a "Change Game" button that expands a game picker. %>
-<div class="mt-4" data-controller="change-game">
-
-  <button data-action="click->change-game#toggle"
-          class="text-slate-400 hover:text-white text-sm underline underline-offset-4 transition-colors cursor-pointer">
-    Change Game
-  </button>
-
-  <div data-change-game-target="picker"
-       class="hidden mt-4 grid grid-cols-2 gap-3 w-full max-w-sm">
-    <% games.each do |g| %>
-      <%= button_to change_game_room_path(room.code),
-            params: { game_id: g.id },
-            method: :post,
-            class: "bg-slate-800 hover:bg-slate-700 border border-slate-600 hover:border-purple-500
-                    text-white text-sm font-semibold px-4 py-3 rounded-xl transition-colors cursor-pointer
-                    text-center leading-tight" do %>
-        <%= g.name %>
-      <% end %>
-    <% end %>
-  </div>
-
+<%# Rendered inside the host game-over overlay. Sends the host to the home page to pick
+    a new game (or reconfigure this one) for the same room. %>
+<div class="mt-4">
+  <%= link_to "Change Game", root_path(room: room.code),
+        class: "text-slate-400 hover:text-white text-sm underline underline-offset-4 transition-colors" %>
 </div>

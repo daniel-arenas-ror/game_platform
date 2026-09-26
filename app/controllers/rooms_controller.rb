@@ -110,7 +110,7 @@ class RoomsController < ApplicationController
     new_game = Game.find(params[:game_id])
     @room.update!(game: new_game, status: "lobby", game_state: {})
 
-    redirect_to room_path(@room.code)
+    redirect_to edit_room_path(@room.code)
   end
 
   private
