@@ -92,6 +92,7 @@
                        hover:bg-cyan-500 transition-colors">
           Play Again
         </button>
+        <%= render partial: "rooms/games/change_game", locals: { room: @room, games: @games } %>
       </div>
     </div>
 

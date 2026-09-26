@@ -13,6 +13,7 @@ export default class extends Controller {
     "questionMeta",
     "optionA", "optionB", "optionC", "optionD",
     "lockedMessage",
+    "lockLabel",
     // reveal section
     "revealRoundLabel",
     "revealOption",       // array — 4 elements
@@ -68,6 +69,7 @@ export default class extends Controller {
     })
 
     if (this.hasLockedMessageTarget) this.lockedMessageTarget.classList.remove("hidden")
+    if (this.hasLockLabelTarget)     this.lockLabelTarget.classList.add("hidden")
 
     this.channel.perform("submit_millionaire_answer", { choice: this.selectedOption })
   }
@@ -114,6 +116,7 @@ export default class extends Controller {
       btn.classList.add("border-blue-800")
     })
     if (this.hasLockedMessageTarget) this.lockedMessageTarget.classList.add("hidden")
+    if (this.hasLockLabelTarget)     this.lockLabelTarget.classList.remove("hidden")
 
     // Populate question text (targets appear in both host and player sections)
     const roundLabel = `Round ${data.round} / ${data.total}`
