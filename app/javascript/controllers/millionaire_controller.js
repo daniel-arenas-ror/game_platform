@@ -37,6 +37,7 @@ export default class extends Controller {
   }
 
   disconnect() {
+    this.winSound?.pause()
     this.channel?.unsubscribe()
   }
 
@@ -212,6 +213,10 @@ export default class extends Controller {
   }
 
   onShowLeaderboard(data) {
+    if (!this.playerIdValue) {
+      this.winSound = new Audio("/games/sounds/Triumphant_win.mp3")
+      this.winSound.play().catch(() => {}) // ignore autoplay blocks
+    }
     const { leaderboard, nicknames } = data
     const medals = ["🥇", "🥈", "🥉"]
 

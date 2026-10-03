@@ -37,6 +37,7 @@ export default class extends Controller {
   }
 
   disconnect() {
+    this.winSound?.pause()
     this.stopCountdown()
     this.channel?.unsubscribe()
   }
@@ -180,6 +181,8 @@ export default class extends Controller {
   }
 
   onGameOver(data) {
+    this.winSound = new Audio("/games/sounds/Triumphant_win.mp3")
+    this.winSound.play().catch(() => {}) // ignore autoplay blocks
     this.stopCountdown()
     const winnerNick = (data.nicknames || {})[data.winner_id] || "Unknown"
     this.gameOverTitleTarget.textContent = `${winnerNick} wins!`

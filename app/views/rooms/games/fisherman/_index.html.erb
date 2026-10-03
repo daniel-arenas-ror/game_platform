@@ -86,6 +86,9 @@
       <% elsif @room.status == 'finished' %>
         <!-- 5. RESULTS -->
         <div id="section-results">
+          <% if session[:player_id].blank? %>
+            <audio src="/games/sounds/Triumphant_win.mp3" autoplay></audio>
+          <% end %>
           <h2 class="text-4xl font-black text-center mb-10 bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent italic">LEADERBOARD</h2>
           <div class="space-y-4">
             <% @room.game_state['sorted_players'].each_with_index do |player, index| %>

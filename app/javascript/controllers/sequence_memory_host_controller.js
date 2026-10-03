@@ -32,6 +32,7 @@ export default class extends Controller {
   }
 
   disconnect() {
+    this.winSound?.pause()
     this.channel?.unsubscribe()
     clearInterval(this.timerHandle)
   }
@@ -112,6 +113,8 @@ export default class extends Controller {
   }
 
   onGameOver(data) {
+    this.winSound = new Audio("/games/sounds/Triumphant_win.mp3")
+    this.winSound.play().catch(() => {}) // ignore autoplay blocks
     this.finalLeaderboardTarget.innerHTML = this.buildLeaderboard(data)
     this.playAgainTarget.addEventListener("click", () => {
       this.channel.perform("restart_game", {})

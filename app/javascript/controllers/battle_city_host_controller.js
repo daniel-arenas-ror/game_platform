@@ -59,6 +59,7 @@ export default class extends Controller {
   }
 
   disconnect() {
+    this.winSound?.pause()
     this.channel?.unsubscribe()
     // Before init finishes, destroy() throws; connect() cleans up that instance instead.
     if (this.pixiReady) this.app.destroy(true)
@@ -215,6 +216,8 @@ export default class extends Controller {
   // ── Game Over overlay ────────────────────────────────────────────────────
 
   showGameOver(data) {
+    this.winSound = new Audio("/games/sounds/Triumphant_win.mp3")
+    this.winSound.play().catch(() => {}) // ignore autoplay blocks
     const overlay   = document.getElementById("battle-city-game-over")
     const reasonEl  = document.getElementById("battle-city-over-reason")
     const rankEl    = document.getElementById("battle-city-rankings")
