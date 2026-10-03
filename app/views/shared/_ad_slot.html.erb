@@ -1,0 +1,20 @@
+<% if Rails.env.production? %>
+  <% if slot_id.present? %>
+    <aside class="<%= extra_class %>" aria-label="Advertisement">
+      <p class="text-slate-600 text-[10px] uppercase tracking-widest text-center mb-1">Advertisement</p>
+      <ins class="adsbygoogle block min-h-[100px]"
+           style="display:block"
+           data-controller="ad-slot"
+           data-ad-client="<%= AdsHelper::ADSENSE_CLIENT %>"
+           data-ad-slot="<%= slot_id %>"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+    </aside>
+  <% end %>
+<% else %>
+  <aside class="<%= extra_class %>" aria-label="Advertisement">
+    <div class="flex items-center justify-center min-h-[100px] rounded-xl border-2 border-dashed border-slate-700 text-slate-600 text-xs font-mono">
+      Ad: <%= placement %><%= " (no slot ID yet)" if slot_id.blank? %>
+    </div>
+  </aside>
+<% end %>

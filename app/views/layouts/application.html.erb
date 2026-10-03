@@ -22,7 +22,8 @@
     <meta name="twitter:title" content="<%= page_title %>">
     <meta name="twitter:description" content="<%= page_description %>">
     <meta name="twitter:image" content="<%= og_image_url %>">
-    <meta name="google-adsense-account" content="ca-pub-5304803612075721">
+    <meta name="google-adsense-account" content="<%= AdsHelper::ADSENSE_CLIENT %>">
+    <%= adsense_script_tag %>
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
