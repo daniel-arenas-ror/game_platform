@@ -132,16 +132,35 @@
              style="height: 160px; background: rgb(128,128,128);"></div>
 
         <%# RGB Sliders %>
-        <div class="space-y-4">
-          <% [["r", "R", "bg-red-500"], ["g", "G", "bg-green-500"], ["b", "B", "bg-blue-500"]].each do |ch, label, color| %>
+        <style>
+          .gtc-slider { -webkit-appearance: none; appearance: none; height: 2.5rem; border-radius: 9999px; outline: none; }
+          .gtc-slider:disabled { opacity: 0.5; cursor: not-allowed; }
+          .gtc-slider::-webkit-slider-thumb {
+            -webkit-appearance: none; appearance: none;
+            width: 2.75rem; height: 2.75rem; border-radius: 9999px;
+            background: #fff; border: 4px solid var(--gtc-color);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.5); cursor: pointer;
+          }
+          .gtc-slider::-moz-range-thumb {
+            width: 2.75rem; height: 2.75rem; border-radius: 9999px;
+            background: #fff; border: 4px solid var(--gtc-color);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.5); cursor: pointer;
+          }
+          .gtc-slider::-moz-range-track { height: 2.5rem; border-radius: 9999px; background: transparent; }
+        </style>
+        <div class="space-y-6">
+          <% [["r", "R", "text-red-500", "#ef4444", "#ff0000"],
+              ["g", "G", "text-green-500", "#22c55e", "#00ff00"],
+              ["b", "B", "text-blue-500", "#3b82f6", "#0000ff"]].each do |ch, label, text_color, thumb_color, pure| %>
             <div class="flex items-center gap-3">
-              <span class="text-xs font-black w-4 text-slate-400"><%= label %></span>
+              <span class="text-lg font-black w-5 <%= text_color %>"><%= label %></span>
               <input type="range" min="0" max="255" value="128"
                      data-guess-the-color-player-target="slider<%= ch.upcase %>"
                      data-channel="<%= ch %>"
-                     class="flex-1 h-3 rounded-full appearance-none cursor-pointer accent-yellow-400">
+                     class="gtc-slider flex-1 cursor-pointer"
+                     style="--gtc-color: <%= thumb_color %>; background: linear-gradient(to right, #000, <%= pure %>);">
               <span data-guess-the-color-player-target="value<%= ch.upcase %>"
-                    class="text-xs font-mono w-8 text-right text-slate-400">128</span>
+                    class="text-sm font-mono font-bold w-9 text-right <%= text_color %>">128</span>
             </div>
           <% end %>
         </div>
