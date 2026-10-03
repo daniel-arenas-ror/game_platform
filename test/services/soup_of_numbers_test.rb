@@ -37,12 +37,24 @@ class SoupOfNumbersTest < ActiveSupport::TestCase
     end
   end
 
-  test "lines are accepted in either tap order but must be straight and gap-free" do
-    assert_equal [ [ 0, 0 ], [ 0, 1 ] ], Soup.normalize_line([ [ 0, 1 ], [ 0, 0 ] ], 8)
-    assert_equal [ [ 0, 3 ], [ 1, 2 ], [ 2, 1 ] ], Soup.normalize_line([ [ 2, 1 ], [ 1, 2 ], [ 0, 3 ] ], 8)
-    assert_nil Soup.normalize_line([ [ 0, 0 ], [ 0, 2 ] ], 8)
-    assert_nil Soup.normalize_line([ [ 0, 0 ], [ 0, 1 ], [ 1, 1 ] ], 8)
-    assert_nil Soup.normalize_line([ [ 7, 7 ], [ 7, 8 ] ], 8)
+  test "a selection must be a straight, gap-free line inside the grid" do
+    assert_equal [ [ 0, 1 ], [ 0, 0 ] ], Soup.straight_line([ [ 0, 1 ], [ 0, 0 ] ], 8)
+    assert_equal [ [ 2, 1 ], [ 1, 2 ], [ 0, 3 ] ], Soup.straight_line([ [ 2, 1 ], [ 1, 2 ], [ 0, 3 ] ], 8)
+    assert_nil Soup.straight_line([ [ 0, 0 ], [ 0, 2 ] ], 8)
+    assert_nil Soup.straight_line([ [ 0, 0 ], [ 0, 1 ], [ 1, 1 ] ], 8)
+    assert_nil Soup.straight_line([ [ 7, 7 ], [ 7, 8 ] ], 8)
+  end
+
+  test "a copy that reads backwards or upwards counts, whichever end is tapped first" do
+    number = @target["number"]
+    grid   = @room.game_state["grid"].dup
+    # Write the number right-to-left at the start of the last row.
+    grid[7] = number.reverse + grid[7][number.length..]
+    @room.atomic_set("game_state.grid" => grid)
+
+    reading_order = (0...number.length).map { |c| [ 7, c ] }.reverse
+    assert claim(@ana, reading_order.reverse)[:ok]
+    assert_equal reading_order, @room.reload.game_state["found"].last["cells"]
   end
 
   test "the first correct claim wins the round and scores by length" do
@@ -68,7 +80,7 @@ class SoupOfNumbersTest < ActiveSupport::TestCase
 
     grid  = @room.game_state["grid"]
     wrong = (0..7).to_a.product((0..7).to_a).each_cons(cells.length).map(&:to_a).find do |line|
-      Soup.normalize_line(line, 8) && Soup.read(grid, line) != @target["number"]
+      Soup.straight_line(line, 8) && [ line, line.reverse ].none? { |l| Soup.read(grid, l) == @target["number"] }
     end
     assert_not claim(@ana, wrong)[:ok]
     assert_nil @room.reload.game_state["round_winner"]

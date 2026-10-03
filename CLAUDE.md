@@ -57,6 +57,7 @@ A real-time multiplayer game platform. A host creates a **Room**, shares a QR co
 | `sequence_memory` | Sequence Memory | Full |
 | `submarine_combat` | Submarine Combat | Ship placement + battle loop |
 | `mind_match` | Mind Match | Word-matching telepathy game |
+| `soup_of_numbers` | Soup of Numbers | Digit word-search race; first to tap the host's number scores |
 | `impostor` | Impostor | TODO stub in GameFactory |
 
 FIFA World Cup has data models only (no game logic).

@@ -7,7 +7,8 @@ module GameServices
     # Points for finding a number: longer numbers are worth more (2 digits → 100 … 5 digits → 250).
     POINTS_PER_DIGIT = 50
 
-    # Numbers read left→right, top→bottom, and both diagonals going down. Never backwards.
+    # Planted numbers read left→right, top→bottom, or diagonally down — never backwards. Players
+    # may still claim a copy that reads backwards (made by chance), see #claim!.
     DIRECTIONS = [ [ 0, 1 ], [ 1, 0 ], [ 1, 1 ], [ 1, -1 ] ].freeze
 
     # One color per player, assigned in join order (cycles when there are more players).
@@ -55,12 +56,14 @@ module GameServices
       true
     end
 
-    # Opens round `round` (1-based) and returns its target.
+    # Opens round `round` (1-based) and returns its target. round_ends_at (epoch seconds) lets a
+    # reloaded page resume the countdown.
     def start_round!(round)
       @room.atomic_set(
-        "game_state.round"        => round,
-        "game_state.status"       => "searching",
-        "game_state.round_winner" => nil
+        "game_state.round"         => round,
+        "game_state.status"        => "searching",
+        "game_state.round_winner"  => nil,
+        "game_state.round_ends_at" => Time.now.to_f + @room.game_state["round_time"].to_i
       )
       current_target
     end
@@ -77,9 +80,12 @@ module GameServices
       target = current_target
       return { ok: false } unless state["status"] == "searching" && target
 
-      cells = self.class.normalize_line(cells, state["grid_size"].to_i)
+      cells = self.class.straight_line(cells, state["grid_size"].to_i)
       return { ok: false } unless cells && cells.length == target["number"].length
-      return { ok: false } unless self.class.read(state["grid"], cells) == target["number"]
+
+      # Any copy in the soup counts, in any of the 8 directions, whichever end was tapped first.
+      cells = [ cells, cells.reverse ].find { |line| self.class.read(state["grid"], line) == target["number"] }
+      return { ok: false } unless cells
 
       player_id = player_id.to_s
       points    = self.class.points_for(target["number"])
@@ -149,9 +155,8 @@ module GameServices
         [ grid, targets ]
       end
 
-      # Turns a tapped line into the forward reading order, or nil when it isn't a straight,
-      # gap-free line inside the grid.
-      def normalize_line(cells, size)
+      # Returns the tapped cells when they form a straight, gap-free line inside the grid, else nil.
+      def straight_line(cells, size)
         return nil unless cells.is_a?(Array) && cells.length >= 2
 
         cells = cells.map { |c| Array(c).first(2).map { |v| Integer(v, exception: false) } }
@@ -161,7 +166,7 @@ module GameServices
         return nil unless step.all? { |d| d.abs <= 1 } && step != [ 0, 0 ]
         return nil unless cells.each_cons(2).all? { |a, b| [ b[0] - a[0], b[1] - a[1] ] == step }
 
-        DIRECTIONS.include?(step) ? cells : cells.reverse
+        cells
       end
 
       def read(grid, cells)

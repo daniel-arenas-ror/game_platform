@@ -1,0 +1,131 @@
+<% is_host = session[:player_id].blank? %>
+
+<% if is_host %>
+  <%# ================================================================= %>
+  <%# HOST VIEW — big screen / TV                                        %>
+  <%# ================================================================= %>
+  <div data-controller="soup-of-numbers-host"
+       data-soup-of-numbers-host-room-code-value="<%= @room.code %>"
+       class="relative flex flex-col min-h-screen bg-slate-950 text-white overflow-hidden">
+
+    <%# Header %>
+    <div class="flex items-center justify-between px-8 pt-6">
+      <h1 class="text-2xl font-black tracking-widest uppercase text-emerald-400">🔢 Soup of Numbers</h1>
+      <p class="text-slate-500 text-xs font-mono tracking-widest">
+        Room: <span class="text-white font-bold"><%= @room.code %></span>
+        · <span data-soup-of-numbers-host-target="roundLabel"></span>
+      </p>
+    </div>
+
+    <div class="flex-1 flex items-center justify-center gap-10 px-8 py-6">
+      <%# The soup %>
+      <div data-soup-of-numbers-host-target="grid"
+           class="grid gap-1 p-3 bg-slate-900 rounded-3xl border-2 border-slate-700 shadow-2xl"
+           style="width: min(80vh, 60vw);"></div>
+
+      <%# Sidebar %>
+      <div class="w-80 shrink-0 space-y-5">
+        <%# Current target %>
+        <div class="bg-slate-800 rounded-3xl border-2 border-emerald-500/40 p-6 text-center">
+          <p data-soup-of-numbers-host-target="targetTitle"
+             class="text-slate-400 text-xs uppercase tracking-widest font-mono">Get ready…</p>
+          <p data-soup-of-numbers-host-target="targetNumber"
+             class="font-mono font-black text-6xl tracking-[0.2em] text-white my-3 tabular-nums">…</p>
+          <p data-soup-of-numbers-host-target="targetMeta"
+             class="text-emerald-400 text-sm font-bold"></p>
+          <p data-soup-of-numbers-host-target="countdown"
+             class="font-mono font-black text-5xl mt-4 tabular-nums"></p>
+          <div data-soup-of-numbers-host-target="banner"
+               class="hidden mt-4 rounded-2xl px-4 py-3 font-black text-lg"></div>
+        </div>
+
+        <%# Scores %>
+        <div class="bg-slate-800 rounded-3xl border border-slate-700 p-5">
+          <p class="text-slate-400 text-xs uppercase tracking-widest font-mono mb-3">Scores</p>
+          <div data-soup-of-numbers-host-target="scoreboard" class="space-y-2"></div>
+        </div>
+
+        <%# Numbers found so far %>
+        <div class="bg-slate-800 rounded-3xl border border-slate-700 p-5">
+          <p class="text-slate-400 text-xs uppercase tracking-widest font-mono mb-3">Found</p>
+          <div data-soup-of-numbers-host-target="foundList" class="flex flex-wrap gap-2">
+            <p class="text-slate-600 text-sm font-mono">None yet</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <%# Game over overlay %>
+    <div data-soup-of-numbers-host-target="phaseGameOver"
+         class="hidden absolute inset-0 z-30 flex flex-col items-center justify-center bg-slate-950/95">
+      <p class="text-6xl mb-4">🏆</p>
+      <h2 class="text-5xl font-black text-emerald-400 tracking-widest mb-8">GAME OVER</h2>
+      <div data-soup-of-numbers-host-target="finalLeaderboard"
+           class="space-y-3 w-full max-w-sm mb-10"></div>
+      <button data-soup-of-numbers-host-target="playAgain"
+              class="bg-emerald-400 hover:bg-emerald-300 text-slate-950 font-black px-10 py-3
+                     rounded-xl uppercase tracking-widest text-lg transition-colors cursor-pointer">
+        Play Again
+      </button>
+      <%= render partial: "rooms/games/change_game", locals: { room: @room, games: @games } %>
+    </div>
+  </div>
+
+<% else %>
+  <%# ================================================================= %>
+  <%# PLAYER VIEW — mobile phone                                         %>
+  <%# ================================================================= %>
+  <% current_player %>
+  <div data-controller="soup-of-numbers-player"
+       data-soup-of-numbers-player-room-code-value="<%= @room.code %>"
+       data-soup-of-numbers-player-player-id-value="<%= session[:player_id] %>"
+       class="flex flex-col min-h-screen bg-slate-950 text-white select-none">
+
+    <%# Header %>
+    <div class="flex items-center justify-between px-4 pt-5 pb-2">
+      <div class="flex items-center gap-2">
+        <span data-soup-of-numbers-player-target="colorDot" class="w-4 h-4 rounded-full bg-slate-600"></span>
+        <span class="font-black text-lg tracking-wide"><%= session[:nickname] %></span>
+      </div>
+      <div class="text-right">
+        <p class="text-[10px] text-slate-600 uppercase tracking-widest">Points</p>
+        <p data-soup-of-numbers-player-target="score"
+           class="font-mono font-black text-3xl text-emerald-400 leading-none">0</p>
+      </div>
+    </div>
+
+    <%# Status line %>
+    <div class="flex items-center justify-between px-4 pb-3">
+      <p data-soup-of-numbers-player-target="status"
+         class="text-slate-400 text-xs uppercase tracking-widest font-mono">Get ready…</p>
+      <p data-soup-of-numbers-player-target="countdown"
+         class="font-mono font-black text-2xl tabular-nums"></p>
+    </div>
+
+    <%# The soup %>
+    <div class="px-2">
+      <div data-soup-of-numbers-player-target="grid"
+           data-action="pointerdown->soup-of-numbers-player#tap"
+           class="grid gap-[3px] p-1.5 bg-slate-900 rounded-2xl border border-slate-700 mx-auto touch-manipulation"
+           style="width: min(100%, 70vh);"></div>
+    </div>
+
+    <%# Round result / feedback %>
+    <p data-soup-of-numbers-player-target="feedback"
+       class="min-h-8 text-center font-black text-xl mt-4 px-4"></p>
+
+    <%# Game over %>
+    <div data-soup-of-numbers-player-target="phaseGameOver"
+         class="hidden fixed inset-0 z-30 flex flex-col items-center justify-center bg-slate-950/95 text-center px-6">
+      <p class="text-5xl mb-3">🏆</p>
+      <p data-soup-of-numbers-player-target="gameOverTitle"
+         class="font-black text-3xl tracking-wide mb-4"></p>
+      <p data-soup-of-numbers-player-target="finalScore"
+         class="text-emerald-400 font-mono font-black text-5xl"></p>
+      <p class="text-slate-500 text-xs mt-1 font-mono">total points</p>
+      <p class="text-slate-600 text-xs mt-8 font-mono">Waiting for host to restart…</p>
+    </div>
+
+    <p class="text-center text-slate-800 text-[10px] font-mono mt-auto pb-4">Room: <%= @room.code %></p>
+  </div>
+<% end %>
