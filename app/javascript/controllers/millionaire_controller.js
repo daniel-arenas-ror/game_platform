@@ -14,6 +14,7 @@ export default class extends Controller {
     "optionA", "optionB", "optionC", "optionD",
     "lockedMessage",
     "lockLabel",
+    "countdown",          // array — host + player
     // reveal section
     "revealRoundLabel",
     "revealOption",       // array — 4 elements
@@ -32,12 +33,16 @@ export default class extends Controller {
   connect() {
     this.answered       = false
     this.selectedOption = null
+    this.timerHandle    = null
+    this.clickingSound  = new Audio("/games/sounds/clicking.mp3")
+    this.clickingSound.loop = true
     this.updateVisibility()
     this.subscribe()
   }
 
   disconnect() {
     this.winSound?.pause()
+    this.stopCountdown()
     this.channel?.unsubscribe()
   }
 
@@ -136,9 +141,11 @@ export default class extends Controller {
     data.options.forEach((opt, i) => { labels[i].textContent = opt.text })
 
     this.statusValue = this.playerIdValue === "" ? "question" : "input"
+    this.startCountdown(data.duration)
   }
 
   onRevealAnswer(data) {
+    this.stopCountdown()
     const { options, correct_answer_indices, round_scores, user_points, question_points, nicknames, round, total } = data
 
     this.revealRoundLabelTarget.textContent = `Round ${round} / ${total} — Reveal`
@@ -213,6 +220,7 @@ export default class extends Controller {
   }
 
   onShowLeaderboard(data) {
+    this.stopCountdown()
     if (!this.playerIdValue) {
       this.winSound = new Audio("/games/sounds/Triumphant_win.mp3")
       this.winSound.play().catch(() => {}) // ignore autoplay blocks
@@ -244,6 +252,42 @@ export default class extends Controller {
     }).join("")
 
     this.statusValue = "leaderboard"
+  }
+
+  // ── Countdown ─────────────────────────────────────────────────────────────
+
+  startCountdown(seconds) {
+    this.stopCountdown()
+    if (!seconds) return
+
+    let remaining = seconds
+    this.renderCountdown(remaining)
+
+    // Host only: looping tension sound while players answer
+    if (this.playerIdValue === "") {
+      this.clickingSound.currentTime = 0
+      this.clickingSound.play().catch(() => {}) // ignore autoplay blocks
+    }
+
+    this.timerHandle = setInterval(() => {
+      remaining -= 1
+      this.renderCountdown(Math.max(remaining, 0))
+      if (remaining <= 0) this.stopCountdown()
+    }, 1000)
+  }
+
+  stopCountdown() {
+    clearInterval(this.timerHandle)
+    this.timerHandle = null
+    this.clickingSound?.pause()
+  }
+
+  renderCountdown(remaining) {
+    this.countdownTargets.forEach(el => {
+      el.textContent = remaining
+      el.classList.toggle("text-yellow-400", remaining > 5)
+      el.classList.toggle("text-red-500",    remaining <= 5)
+    })
   }
 
   // ── Helpers ───────────────────────────────────────────────────────────────

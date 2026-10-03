@@ -44,11 +44,12 @@ class Games::MillionaireChannel < ApplicationCable::Channel
 
         # ── 1. Broadcast the current question ────────────────────────────
         ActionCable.server.broadcast(stream, {
-          action:  "send_question",
-          round:   index + 1,
-          total:   total_rounds,
-          text:    @room.game_state["question"],
-          options: @room.game_state["answers"]
+          action:   "send_question",
+          round:    index + 1,
+          total:    total_rounds,
+          text:     @room.game_state["question"],
+          options:  @room.game_state["answers"],
+          duration: sleep_time
         })
 
         sleep sleep_time
