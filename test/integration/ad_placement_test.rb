@@ -28,16 +28,23 @@ class AdPlacementTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test "game screens, settings and the join form never show ads" do
+  test "settings and the join form never show ads" do
     get edit_room_path(@room.code)
     assert_select AD, 0
 
     get join_room_path(@room.code)
     assert_select AD, 0
+  end
 
+  test "a game screen only has the host's Game Over ad, and players get none" do
     GameServices::SoupOfNumbers.new(@room).setup_game!
+
+    get playing_room_path(@room.code)
+    assert_select "[data-soup-of-numbers-host-target=phaseGameOver] #{AD}", 1
+    assert_select AD, 1
+
+    post submit_join_path(@room.code), params: { nickname: "Ana" }
     get playing_room_path(@room.code)
     assert_select AD, 0
-    assert_no_match "adsbygoogle", response.body
   end
 end
