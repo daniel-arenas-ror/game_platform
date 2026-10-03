@@ -25,7 +25,8 @@ class Room
     "count_birds"            => "count_birds_room_",
     "sequence_memory"        => "sequence_memory_room_",
     "submarine_combat"       => "submarine_combat_room_",
-    "mind_match"             => "mind_match_room_"
+    "mind_match"             => "mind_match_room_",
+    "soup_of_numbers"        => "soup_of_numbers_room_"
   }.freeze
 
   def game_stream_name

@@ -49,6 +49,12 @@ Game.create!(
   description: "The host shows a category. Everyone types one word — points for every player who thinks the same as you. The more minds you match, the higher your score!"
 )
 
+Game.create!(
+  name: "Soup of Numbers",
+  code: "soup_of_numbers",
+  description: "A grid full of digits hides secret numbers. The host shows which number to hunt — first player to find it in the soup and tap it wins the points. Longer numbers are worth more!"
+)
+
 # ---------------------------------------------------------------------------
 # Battle City — Classic map preset
 # 26×26 grid. Steel border, brick clusters, base at (12, 24).

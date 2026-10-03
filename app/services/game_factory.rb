@@ -17,6 +17,8 @@ class GameFactory
       GameServices::SubmarineCombat.new(room)
     when 'mind_match'
       GameServices::MindMatch.new(room)
+    when 'soup_of_numbers'
+      GameServices::SoupOfNumbers.new(room)
     when 'impostor'
       ## TODO
     else
