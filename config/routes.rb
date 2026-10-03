@@ -3,6 +3,10 @@ Rails.application.routes.draw do
   get "sitemap.xml", to: "home#sitemap", defaults: { format: :xml }, as: :sitemap
   get "robots.txt", to: "home#robots", defaults: { format: :text }, as: :robots
 
+  get "privacy", to: "pages#privacy", as: :privacy
+  get "about",   to: "pages#about",   as: :about
+  get "contact", to: "pages#contact", as: :contact
+
   get "up" => "rails/health#show", as: :rails_health_check
 
   resources :rooms, only: [:create, :show, :edit, :update] do

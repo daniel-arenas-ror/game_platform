@@ -1,0 +1,65 @@
+<% content_for :title, "About" %>
+<% content_for :description, "Grouparty is a free collection of party games you play together: one shared screen, and everyone joins from their own phone. Built for fun by Daniel Arenas." %>
+
+<div class="min-h-screen py-12 px-4 sm:px-6">
+  <article class="max-w-3xl mx-auto text-slate-300 leading-relaxed space-y-6">
+    <%= render "pages/header", title: "About #{SeoHelper::SITE_NAME}", subtitle: "Party games for one big screen and everyone's phones." %>
+
+    <section class="space-y-4">
+      <h2 class="text-2xl font-bold text-white">What is <%= SeoHelper::SITE_NAME %>?</h2>
+      <p>
+        <%= SeoHelper::SITE_NAME %> is a free collection of multiplayer party games made for groups in the same room.
+        One person opens a game on a TV, laptop or tablet: that is the host screen everybody watches.
+        Everyone else scans the QR code with their phone, types a nickname and plays from their own device.
+      </p>
+      <p>
+        There is nothing to install and no account to create. It works in any modern web browser, so a family
+        dinner, a classroom break or a night with friends can turn into a game in less than a minute.
+      </p>
+    </section>
+
+    <section class="space-y-4">
+      <h2 class="text-2xl font-bold text-white">The games</h2>
+      <p>
+        The collection mixes very different kinds of play: timed trivia, social deduction, memory challenges,
+        color guessing, number hunting, word matching, tank battles and submarine combat. Every game is designed so
+        the shared screen tells the story while each phone becomes a private controller, which means you can keep
+        secrets, race against each other and see the results together.
+      </p>
+      <% if (games = Game.order(name: :asc).to_a).any? %>
+        <ul class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <% games.each do |game| %>
+            <li class="bg-slate-800 border border-slate-700 rounded-xl px-4 py-3">
+              <p class="text-white font-bold"><%= game.name %></p>
+              <p class="text-slate-400 text-sm"><%= game.description %></p>
+            </li>
+          <% end %>
+        </ul>
+      <% end %>
+    </section>
+
+    <section class="space-y-4">
+      <h2 class="text-2xl font-bold text-white">Who makes it</h2>
+      <p>
+        Hi, I'm <strong class="text-white">Daniel Arenas</strong>, a software developer. I built
+        <%= SeoHelper::SITE_NAME %> just for fun, because I wanted simple games to play with friends and family
+        where nobody has to download an app. I keep adding new games and improving the existing ones.
+      </p>
+      <p>
+        You can see more of my work on GitHub:
+        <%= link_to "github.com/daniel-arenas-ror", PagesController::GITHUB_URL,
+                    class: "text-purple-400 hover:text-purple-300 underline", target: "_blank", rel: "noopener" %>.
+      </p>
+    </section>
+
+    <section class="space-y-4">
+      <h2 class="text-2xl font-bold text-white">Free to play</h2>
+      <p>
+        <%= SeoHelper::SITE_NAME %> is free. To help pay for the servers, the site may show ads served by Google.
+        You can read how that works in the <%= link_to "Privacy Policy", privacy_path, class: "text-purple-400 hover:text-purple-300 underline" %>.
+        Ideas, bug reports or game suggestions are always welcome on the
+        <%= link_to "Contact page", contact_path, class: "text-purple-400 hover:text-purple-300 underline" %>.
+      </p>
+    </section>
+  </article>
+</div>

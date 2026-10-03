@@ -1,0 +1,114 @@
+<% content_for :title, "Privacy Policy" %>
+<% content_for :description, "How Grouparty handles your data: what we store when you play, the cookies we use, and how Google AdSense shows ads." %>
+<% link = "text-purple-400 hover:text-purple-300 underline" %>
+
+<div class="min-h-screen py-12 px-4 sm:px-6">
+  <article class="max-w-3xl mx-auto text-slate-300 leading-relaxed space-y-8">
+    <%= render "pages/header", title: "Privacy Policy", subtitle: "Last updated: October 2, 2026" %>
+
+    <section class="space-y-4">
+      <p>
+        This Privacy Policy explains what information <%= SeoHelper::SITE_NAME %> (“we”, “us”) collects when you
+        visit or play on this website, how it is used, and the choices you have. <%= SeoHelper::SITE_NAME %> is run
+        by Daniel Arenas. If you have any question, write to
+        <%= mail_to PagesController::CONTACT_EMAIL, nil, class: link %>.
+      </p>
+    </section>
+
+    <section class="space-y-4">
+      <h2 class="text-2xl font-bold text-white">1. Information we collect</h2>
+      <p>You don't need an account to use <%= SeoHelper::SITE_NAME %>. We only store what the games need to work:</p>
+      <ul class="list-disc pl-6 space-y-2">
+        <li><strong class="text-white">Nickname:</strong> the name you type when you join a room. It is shown to the other people in that room. Please don't use your full real name or any sensitive information as a nickname.</li>
+        <li><strong class="text-white">Game data:</strong> the room code, the game settings, and what happens during the game (answers, scores, moves). This is used to run the game and show results.</li>
+        <li><strong class="text-white">Technical data:</strong> like most websites, our servers record basic request logs (IP address, browser type, pages requested, date and time) to keep the service running, fix errors and prevent abuse.</li>
+      </ul>
+      <p>We don't ask for your email, phone number, location or payment details, and we don't sell your personal information.</p>
+    </section>
+
+    <section class="space-y-4">
+      <h2 class="text-2xl font-bold text-white">2. Cookies</h2>
+      <p>We use a small number of cookies:</p>
+      <ul class="list-disc pl-6 space-y-2">
+        <li><strong class="text-white">Essential cookies:</strong> a session cookie remembers which player you are in a room, so you can reload the page or reconnect without losing your place. The game can't work without it.</li>
+        <li><strong class="text-white">Advertising cookies:</strong> set by Google and its partners when ads are shown (see the next section).</li>
+      </ul>
+      <p>You can block or delete cookies in your browser settings. If you block essential cookies, you won't be able to join a game.</p>
+    </section>
+
+    <section class="space-y-4">
+      <h2 class="text-2xl font-bold text-white">3. Advertising (Google AdSense)</h2>
+      <p>
+        To keep <%= SeoHelper::SITE_NAME %> free, we use Google AdSense to show ads. Google and other third-party
+        vendors use cookies to serve ads based on your previous visits to this website and other websites.
+      </p>
+      <ul class="list-disc pl-6 space-y-2">
+        <li>Google's use of advertising cookies enables it and its partners to serve ads to you based on your visits to this and other sites on the Internet.</li>
+        <li>You can opt out of personalized advertising by visiting Google's <%= link_to "Ads Settings", "https://adssettings.google.com", class: link, target: "_blank", rel: "noopener" %>.</li>
+        <li>You can also opt out of some third-party vendors' use of cookies for personalized advertising at <%= link_to "www.aboutads.info", "https://www.aboutads.info/choices/", class: link, target: "_blank", rel: "noopener" %>.</li>
+        <li>Learn more in <%= link_to "How Google uses information from sites or apps that use its services", "https://policies.google.com/technologies/partner-sites", class: link, target: "_blank", rel: "noopener" %>.</li>
+      </ul>
+      <p>
+        Visitors in the European Economic Area, the United Kingdom and Switzerland are asked for consent before
+        personalized ads are shown, and can change their choice at any time.
+      </p>
+    </section>
+
+    <section class="space-y-4">
+      <h2 class="text-2xl font-bold text-white">4. How we use information</h2>
+      <ul class="list-disc pl-6 space-y-2">
+        <li>To create rooms, connect players and run the games in real time.</li>
+        <li>To show scores, results and leaderboards to the people in the same room.</li>
+        <li>To keep the website secure, find bugs and improve the games.</li>
+        <li>To show ads that help pay for the service.</li>
+      </ul>
+    </section>
+
+    <section class="space-y-4">
+      <h2 class="text-2xl font-bold text-white">5. How long we keep it</h2>
+      <p>
+        Players who leave a room are removed from it shortly after they disconnect. Room data (room code,
+        settings, nicknames and scores) stays in our database after the game ends, and is only used to run the
+        service. Server logs are used only for security and troubleshooting. You can ask us to delete data related
+        to a room at any time by writing to
+        <%= mail_to PagesController::CONTACT_EMAIL, nil, class: link %>.
+      </p>
+    </section>
+
+    <section class="space-y-4">
+      <h2 class="text-2xl font-bold text-white">6. Sharing</h2>
+      <p>
+        We don't sell or rent your information. Data is shared only with the service providers that help us run
+        the site (hosting and database providers), with Google for advertising as described above, or when
+        required by law.
+      </p>
+    </section>
+
+    <section class="space-y-4">
+      <h2 class="text-2xl font-bold text-white">7. Children</h2>
+      <p>
+        <%= SeoHelper::SITE_NAME %> is a general-audience website and is not directed at children under 13. We don't
+        knowingly collect personal information from children. Games are often played in family settings; in that
+        case, an adult should host the room. If you believe a child has given us personal information, contact us
+        and we will delete it.
+      </p>
+    </section>
+
+    <section class="space-y-4">
+      <h2 class="text-2xl font-bold text-white">8. Your rights</h2>
+      <p>
+        Depending on where you live (for example under the GDPR in Europe or the CCPA in California), you may have
+        the right to access, correct or delete your personal information, or to object to how it is used. To make a
+        request, email <%= mail_to PagesController::CONTACT_EMAIL, nil, class: link %>.
+      </p>
+    </section>
+
+    <section class="space-y-4">
+      <h2 class="text-2xl font-bold text-white">9. Changes to this policy</h2>
+      <p>
+        We may update this Privacy Policy from time to time. The date at the top of this page shows when it was
+        last changed.
+      </p>
+    </section>
+  </article>
+</div>
