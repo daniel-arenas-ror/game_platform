@@ -2,6 +2,8 @@ class Games::SequenceMemoryChannel < ApplicationCable::Channel
   STREAM_PREFIX    = "sequence_memory_room_"
   GRACE_PERIOD     = 1.5  # extra wait after input timer expires (handles client drift)
   REVEAL_DURATION  = 4    # seconds the reveal is shown before the next round
+  ALL_IN_DURATION  = 3    # seconds left on the clock once every player has submitted
+  POLL_INTERVAL    = 0.25 # how often the input phase checks for submissions
 
   def subscribed
     @room   = Room.find_by(code: params[:room_code])
@@ -78,8 +80,7 @@ class Games::SequenceMemoryChannel < ApplicationCable::Channel
           input_duration: input_duration
         })
 
-        sleep input_duration
-        sleep GRACE_PERIOD  # let in-flight submissions land
+        wait_for_submissions(input_duration)
 
         # ── 5. Score all submissions ───────────────────────────────────────
         @room.reload
@@ -178,6 +179,38 @@ class Games::SequenceMemoryChannel < ApplicationCable::Channel
   end
 
   private
+
+  # Sleeps through the input window. Once every player has submitted, the
+  # clock drops to ALL_IN_DURATION seconds and clients are told to match.
+  def wait_for_submissions(input_duration)
+    deadline  = monotonic_now + input_duration
+    shortened = false
+
+    while (remaining = deadline - monotonic_now) > 0
+      break if @stop_loop
+
+      unless shortened || remaining <= ALL_IN_DURATION
+        state       = Room.where(code: @room.code).only(:game_state).first&.game_state || {}
+        player_ids  = (state["scores"] || {}).keys
+        submissions = state["submissions"] || {}
+
+        if player_ids.any? && player_ids.all? { |id| submissions.key?(id) }
+          shortened = true
+          deadline  = monotonic_now + ALL_IN_DURATION
+          broadcast({ action: "timer_shortened", seconds: ALL_IN_DURATION })
+          next
+        end
+      end
+
+      sleep [ POLL_INTERVAL, remaining ].min
+    end
+
+    sleep GRACE_PERIOD unless shortened  # let in-flight submissions land
+  end
+
+  def monotonic_now
+    Process.clock_gettime(Process::CLOCK_MONOTONIC)
+  end
 
   def host?
     @player.nil?

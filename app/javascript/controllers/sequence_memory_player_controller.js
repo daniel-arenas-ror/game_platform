@@ -26,6 +26,7 @@ export default class extends Controller {
     this.submitted   = false
     this.timerHandle = null
     this.totalScore  = 0
+    this.clickSound  = new Audio("/games/sounds/click.mp3")
     this.subscribe()
   }
 
@@ -53,6 +54,7 @@ export default class extends Controller {
       case "show_sequence":    this.onShowSequence(data);   break
       case "player_turn":      this.onPlayerTurn(data);     break
       case "player_submitted":                              break
+      case "timer_shortened":  this.startCountdown(data.seconds, this.inputDuration); break
       case "reveal":           this.onReveal(data);         break
       case "game_over":        this.onGameOver(data);       break
       case "game_restarted":   window.location.reload();   break
@@ -80,8 +82,9 @@ export default class extends Controller {
     const { round, total_rounds, sequence_length, input_duration } = data
 
     clearInterval(this.timerHandle)
-    this.seqLength = sequence_length
-    this.taps      = []
+    this.seqLength     = sequence_length
+    this.inputDuration = input_duration
+    this.taps          = []
     this.submitted = false
 
     this.submittedLabelTarget.classList.add("hidden")
@@ -193,6 +196,8 @@ export default class extends Controller {
     if (this.taps.length >= this.seqLength) return
 
     this.taps.push(index)
+    this.clickSound.currentTime = 0
+    this.clickSound.play().catch(() => {}) // ignore autoplay blocks
     const tapNumber = this.taps.length
 
     // Flash yellow with tap order number
@@ -239,16 +244,16 @@ export default class extends Controller {
 
   // ── Timer ─────────────────────────────────────────────────────────────────
 
-  startCountdown(seconds) {
+  startCountdown(seconds, total = seconds) {
     clearInterval(this.timerHandle)
     let remaining = seconds
     this.countdownTarget.textContent = remaining
-    this.countdownTarget.style.color = COLOR_GREEN
+    this.countdownTarget.style.color = this.countdownColor(remaining, total)
 
     this.timerHandle = setInterval(() => {
       remaining -= 1
       this.countdownTarget.textContent = remaining
-      this.countdownTarget.style.color = this.countdownColor(remaining, seconds)
+      this.countdownTarget.style.color = this.countdownColor(remaining, total)
 
       if (remaining <= 0) {
         clearInterval(this.timerHandle)

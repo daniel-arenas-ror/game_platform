@@ -28,6 +28,7 @@ export default class extends Controller {
     this.timerHandle    = null
     this.submittedCount = 0
     this.inputDuration  = 0
+    this.clickSound     = new Audio("/games/sounds/click.mp3")
     this.subscribe()
   }
 
@@ -57,6 +58,7 @@ export default class extends Controller {
       case "show_sequence":    this.onShowSequence(data);    break
       case "player_turn":      this.onPlayerTurn(data);      break
       case "player_submitted": this.onPlayerSubmitted(data); break
+      case "timer_shortened":  this.startCountdown(this.countdownTarget, data.seconds, this.inputDuration); break
       case "reveal":           this.onReveal(data);          break
       case "game_over":        this.onGameOver(data);        break
       case "game_restarted":   window.location.reload();     break
@@ -190,6 +192,8 @@ export default class extends Controller {
       setTimeout(() => {
         const cell = this.getCell(container, cellIndex)
         if (!cell) return
+        this.clickSound.currentTime = 0
+        this.clickSound.play().catch(() => {}) // ignore autoplay blocks
         cell.style.backgroundColor = CELL_HIGHLIGHT
         cell.style.transform       = "scale(1.1)"
         cell.style.boxShadow       = `0 0 24px rgba(250,204,21,0.7), inset 0 2px 6px rgba(0,0,0,0.2)`
@@ -215,16 +219,16 @@ export default class extends Controller {
 
   // ── Countdown ─────────────────────────────────────────────────────────────
 
-  startCountdown(el, seconds) {
+  startCountdown(el, seconds, total = seconds) {
     clearInterval(this.timerHandle)
     let remaining = seconds
     el.textContent  = remaining
-    el.style.color  = COLOR_GREEN
+    el.style.color  = this.countdownColor(remaining, total)
 
     this.timerHandle = setInterval(() => {
       remaining -= 1
       el.textContent = remaining
-      el.style.color = this.countdownColor(remaining, seconds)
+      el.style.color = this.countdownColor(remaining, total)
       if (remaining <= 0) clearInterval(this.timerHandle)
     }, 1000)
   }
