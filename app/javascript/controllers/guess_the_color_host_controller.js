@@ -12,12 +12,15 @@ export default class extends Controller {
   connect() {
     this.state       = null
     this.timerHandle = null
+    this.tickSound   = new Audio("/games/sounds/timer_count_down.mp3")
+    this.winSound    = new Audio("/games/sounds/Triumphant_win.mp3")
     this.subscribe()
   }
 
   disconnect() {
     this.channel?.unsubscribe()
-    clearInterval(this.timerHandle)
+    this.stopTimer()
+    this.winSound.pause()
   }
 
   // ── ActionCable ───────────────────────────────────────────────────────────
@@ -142,6 +145,7 @@ export default class extends Controller {
   showGameOver(data) {
     this.stopTimer()
     this.showPhase("phaseGameOver")
+    this.winSound.play().catch(() => {}) // ignore autoplay blocks
 
     if (this.hasFinalLeaderboardTarget) {
       const sorted = Object.entries(data.scores).sort(([, a], [, b]) => b - a)
@@ -185,16 +189,24 @@ export default class extends Controller {
     if (!el) return
     let remaining = seconds
     el.textContent = remaining
+    this.playTick()
     this.timerHandle = setInterval(() => {
       remaining--
       el.textContent = remaining > 0 ? remaining : ""
-      if (remaining <= 0) this.stopTimer()
+      if (remaining > 0) this.playTick()
+      else this.stopTimer()
     }, 1000)
+  }
+
+  playTick() {
+    this.tickSound.currentTime = 0
+    this.tickSound.play().catch(() => {}) // ignore autoplay blocks
   }
 
   stopTimer() {
     clearInterval(this.timerHandle)
     this.timerHandle = null
+    this.tickSound?.pause()
   }
 
   updateRoundCounter(round, total) {
