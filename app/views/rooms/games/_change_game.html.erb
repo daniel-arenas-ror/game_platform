@@ -1,6 +1,6 @@
-<%# Rendered inside the host game-over overlay. Sends the host to the home page to pick
+<%# Rendered inside the host game-over overlay. Sends the host to the games page to pick
     a new game (or reconfigure this one) for the same room. %>
 <div class="mt-4">
-  <%= link_to "Change Game", root_path(room: room.code),
+  <%= link_to "Change Game", games_path(room: room.code),
         class: "text-slate-400 hover:text-white text-sm underline underline-offset-4 transition-colors" %>
 </div>

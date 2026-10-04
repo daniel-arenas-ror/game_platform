@@ -8,16 +8,16 @@
       "description" => SeoHelper::DEFAULT_DESCRIPTION,
       "applicationCategory" => "GameApplication",
       "operatingSystem" => "Any (web browser)",
-      "offers" => { "@type" => "Offer", "price" => "0", "priceCurrency" => "USD" },
-      "hasPart" => @games.map { |g| { "@type" => "VideoGame", "name" => g.name, "description" => g.description } }
+      "offers" => { "@type" => "Offer", "price" => "0", "priceCurrency" => "USD" }
     }.to_json) %>
   </script>
 <% end %>
 
-<div class="bg-slate-900 min-h-screen py-12 px-4 sm:px-6 lg:px-8">
-  <div class="max-w-7xl mx-auto">
-    
-    <header class="text-center mb-16">
+<%# Interim home page: the full marketing page lands in phase 3 of the site restructure. %>
+<div class="bg-slate-900 min-h-screen py-16 sm:py-24 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-5xl mx-auto">
+
+    <header class="text-center">
       <h1 class="text-5xl sm:text-6xl font-extrabold tracking-tight text-white mb-5">
         <%= SeoHelper::SITE_NAME %>
       </h1>
@@ -26,99 +26,22 @@
         Put the host screen on a TV or laptop, friends scan the QR code and join from their phones.
         No app to install, no sign-up — just pick a game and play together.
       </p>
+      <div class="mt-10 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3">
+        <%= link_to "Start a game", games_path,
+              class: "bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-black px-8 py-4 rounded-xl text-center transition-transform active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-400" %>
+        <%= link_to "Join a game", find_room_path,
+              class: "bg-purple-500/15 hover:bg-purple-600 border border-purple-500/30 hover:border-purple-600 text-purple-100 hover:text-white font-semibold px-8 py-4 rounded-xl text-center transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-400" %>
+      </div>
     </header>
 
-    <% unless @room %>
-      <div class="max-w-md mx-auto mb-16 bg-slate-800 border border-slate-700 rounded-2xl p-5">
-        <%= form_with url: find_room_path, method: :get, class: "flex gap-3" do |f| %>
-          <%= f.label :code, "Room code", class: "sr-only" %>
-          <%= f.text_field :code,
-                placeholder: "ROOM CODE",
-                maxlength: 4,
-                required: true,
-                autocomplete: "off",
-                autocapitalize: "characters",
-                spellcheck: false,
-                aria: { describedby: "room-code-hint", invalid: flash[:alert].present? },
-                class: "min-w-0 flex-1 bg-slate-900 border-2 #{flash[:alert] ? "border-red-400/70" : "border-slate-700"} rounded-xl px-4 py-3 text-white text-center font-mono font-black text-xl uppercase tracking-[0.4em] placeholder:text-slate-400 placeholder:font-semibold placeholder:tracking-widest focus:border-purple-500 focus:outline-none transition-colors" %>
-          <%= f.button "Join", name: nil,
-                class: "shrink-0 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-black px-6 rounded-xl transition-transform active:scale-95 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-400" %>
-        <% end %>
-        <% if flash[:alert] %>
-          <p id="room-code-hint" role="alert" class="text-red-400 text-sm text-center mt-3"><%= flash[:alert] %></p>
-        <% else %>
-          <p id="room-code-hint" class="text-slate-400 text-sm text-center mt-3">Got a code from the host's screen? Enter it to join.</p>
-        <% end %>
-      </div>
-    <% end %>
+    <%= ad_slot :home, css: "mt-20 max-w-3xl mx-auto" %>
 
-    <% if @room %>
-      <div class="mb-10 bg-slate-800 border border-purple-500/60 rounded-2xl p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <p class="text-white font-bold text-lg">
-            Changing game for room <span class="text-purple-400 font-black tracking-widest"><%= @room.code %></span>
-          </p>
-          <p class="text-slate-400 text-sm">Pick a new game, or configure <%= @room.game.name %> again. Players stay in the room.</p>
-        </div>
-        <%= link_to "Cancel", playing_room_path(@room.code),
-              class: "text-slate-400 hover:text-white text-sm underline underline-offset-4 transition-colors shrink-0 rounded focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-purple-400" %>
-      </div>
-    <% end %>
-
-    <h2 class="sr-only">Games</h2>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <% @games.each do |game| %>
-        <% current_game = @room&.game_id == game.id %>
-        <article class="bg-slate-800 rounded-2xl overflow-hidden border <%= current_game ? "border-purple-500" : "border-slate-700 hover:border-purple-500/70" %> transition-colors group">
-          <div class="relative h-48 bg-slate-700 flex items-center justify-center overflow-hidden">
-            <% if File.exist?(Rails.public_path.join("games", game.code, "instructions.png")) %>
-              <%= image_tag "/games/#{game.code}/instructions.png", alt: "#{game.name} — how to play", loading: "lazy",
-                    class: "w-full h-full object-cover object-top group-hover:scale-[1.03] transition-transform duration-500 ease-out" %>
-            <% else %>
-              <svg class="size-14 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path d="M6 11h4M8 9v4M15 12h.01M18 10h.01"/>
-                <path d="M17.32 5H6.68a4 4 0 0 0-3.978 3.59l-.9 8.06A2.12 2.12 0 0 0 3.91 19c.6 0 1.17-.26 1.57-.71L8 15.5h8l2.52 2.79c.4.45.97.71 1.57.71a2.12 2.12 0 0 0 2.11-2.35l-.9-8.06A4 4 0 0 0 17.32 5Z"/>
-              </svg>
-            <% end %>
-            <% if current_game %>
-              <span class="absolute top-3 right-3 bg-purple-600 text-white text-xs font-bold px-3 py-1 rounded-full">Current game</span>
-            <% end %>
-          </div>
-          
-          <div class="p-6">
-            <h3 class="text-xl font-bold text-white mb-2 text-balance"><%= game.name %></h3>
-            <p class="text-slate-400 mb-6 line-clamp-2"><%= game.description %></p>
-            
-            <% if @room %>
-              <%= button_to change_game_room_path(@room.code), params: { game_id: game.id }, method: :post, class: "w-full bg-purple-500/15 hover:bg-purple-600 border border-purple-500/30 hover:border-purple-600 text-purple-100 hover:text-white font-semibold py-3 px-4 rounded-xl transition-colors text-center cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-400" do %>
-                <%= current_game ? "Configure" : "Switch to this game" %>
-              <% end %>
-            <% else %>
-              <%= button_to rooms_path(game_id: game.id), method: :post, class: "w-full bg-purple-500/15 hover:bg-purple-600 border border-purple-500/30 hover:border-purple-600 text-purple-100 hover:text-white font-semibold py-3 px-4 rounded-xl transition-colors text-center cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-400" do %>
-                Play Now
-              <% end %>
-            <% end %>
-          </div>
-        </article>
-      <% end %>
-
-      <!-- Empty State / Add Seed Data Prompt -->
-      <% if @games.empty? %>
-        <div class="col-span-full text-center py-20 border-2 border-dashed border-slate-700 rounded-3xl">
-          <p class="text-slate-400">No games yet. Run <code class="font-mono text-slate-300">bin/rails db:seed</code> to add them.</p>
-        </div>
-      <% end %>
-    </div>
-
-    <%# Below the game cards with a wide gap, so it is never next to a Play button %>
-    <%= ad_slot :home, css: "mt-16 max-w-3xl mx-auto" %>
-
-    <section class="mt-24 max-w-5xl mx-auto" aria-labelledby="how-it-works">
+    <section class="mt-20" aria-labelledby="how-it-works">
       <h2 id="how-it-works" class="text-2xl font-bold text-white mb-8">How it works</h2>
       <ol class="grid grid-cols-1 md:grid-cols-3 gap-x-10 gap-y-8">
         <li class="border-t border-slate-700 pt-6">
           <h3 class="text-lg font-bold text-white mb-2"><span class="text-purple-400 tabular-nums mr-2">1</span>Create a room</h3>
-          <p class="text-slate-400">Choose a game above. The host screen shows a room code and a QR code — put it on the biggest screen you have.</p>
+          <p class="text-slate-400">Pick a game. The host screen shows a room code and a QR code — put it on the biggest screen you have.</p>
         </li>
         <li class="border-t border-slate-700 pt-6">
           <h3 class="text-lg font-bold text-white mb-2"><span class="text-purple-400 tabular-nums mr-2">2</span>Join from your phone</h3>
@@ -130,8 +53,6 @@
         </li>
       </ol>
     </section>
-
-    <%= ad_slot :home, css: "mt-16 max-w-3xl mx-auto" %>
 
   </div>
 </div>

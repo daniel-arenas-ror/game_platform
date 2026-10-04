@@ -47,17 +47,6 @@ class RoomsController < ApplicationController
     )
   end
 
-  # Home page "Join a room" form: typed code → that room's join page.
-  def find
-    code = params[:code].to_s.gsub(/[^a-zA-Z0-9]/, "").upcase
-
-    if code.present? && Room.where(code: code).exists?
-      redirect_to join_room_path(code)
-    else
-      redirect_to root_path, alert: code.present? ? "No room found with code #{code}." : "Enter a room code."
-    end
-  end
-
   def join
     @room = Room.find_by!(code: params[:code].upcase)
     @game = @room.game

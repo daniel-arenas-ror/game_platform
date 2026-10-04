@@ -42,6 +42,7 @@
   </head>
 
   <body class="bg-slate-900 min-h-screen">
+    <%= render "shared/site_header" if site_header? %>
     <main>
       <%= yield %>
     </main>

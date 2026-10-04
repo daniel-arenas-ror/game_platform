@@ -1,0 +1,94 @@
+<% content_for :title, "Games" %>
+<% content_for :description, "Pick a free party game — trivia, social deduction, memory, color matching, tank battles and more. Open a room on the big screen and everyone plays from their phone." %>
+<% content_for :head do %>
+  <script type="application/ld+json">
+    <%= raw json_escape({
+      "@context" => "https://schema.org",
+      "@type" => "WebApplication",
+      "name" => SeoHelper::SITE_NAME,
+      "url" => root_url,
+      "description" => SeoHelper::DEFAULT_DESCRIPTION,
+      "applicationCategory" => "GameApplication",
+      "operatingSystem" => "Any (web browser)",
+      "offers" => { "@type" => "Offer", "price" => "0", "priceCurrency" => "USD" },
+      "hasPart" => @games.map { |g| { "@type" => "VideoGame", "name" => g.name, "description" => g.description } }
+    }.to_json) %>
+  </script>
+<% end %>
+
+<div class="bg-slate-900 min-h-screen py-10 sm:py-12 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-7xl mx-auto">
+    
+    <header class="mb-10 max-w-2xl">
+      <% if @room %>
+        <h1 class="text-4xl font-extrabold tracking-tight text-white mb-3">Pick the next game</h1>
+      <% else %>
+        <h1 class="text-4xl font-extrabold tracking-tight text-white mb-3">Pick a game</h1>
+        <p class="text-slate-400 text-lg text-pretty">
+          Choose a game to open a room. Put this screen where everyone can see it, and players join from their phones.
+        </p>
+      <% end %>
+    </header>
+
+    <% if @room %>
+      <div class="mb-10 bg-slate-800 border border-purple-500/60 rounded-2xl p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <p class="text-white font-bold text-lg">
+            Changing game for room <span class="text-purple-400 font-black tracking-widest"><%= @room.code %></span>
+          </p>
+          <p class="text-slate-400 text-sm">Pick a new game, or configure <%= @room.game.name %> again. Players stay in the room.</p>
+        </div>
+        <%= link_to "Cancel", playing_room_path(@room.code),
+              class: "text-slate-400 hover:text-white text-sm underline underline-offset-4 transition-colors shrink-0 rounded focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-purple-400" %>
+      </div>
+    <% end %>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <% @games.each do |game| %>
+        <% current_game = @room&.game_id == game.id %>
+        <article class="bg-slate-800 rounded-2xl overflow-hidden border <%= current_game ? "border-purple-500" : "border-slate-700 hover:border-purple-500/70" %> transition-colors group">
+          <div class="relative h-48 bg-slate-700 flex items-center justify-center overflow-hidden">
+            <% if File.exist?(Rails.public_path.join("games", game.code, "instructions.png")) %>
+              <%= image_tag "/games/#{game.code}/instructions.png", alt: "#{game.name} — how to play", loading: "lazy",
+                    class: "w-full h-full object-cover object-top group-hover:scale-[1.03] transition-transform duration-500 ease-out" %>
+            <% else %>
+              <svg class="size-14 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M6 11h4M8 9v4M15 12h.01M18 10h.01"/>
+                <path d="M17.32 5H6.68a4 4 0 0 0-3.978 3.59l-.9 8.06A2.12 2.12 0 0 0 3.91 19c.6 0 1.17-.26 1.57-.71L8 15.5h8l2.52 2.79c.4.45.97.71 1.57.71a2.12 2.12 0 0 0 2.11-2.35l-.9-8.06A4 4 0 0 0 17.32 5Z"/>
+              </svg>
+            <% end %>
+            <% if current_game %>
+              <span class="absolute top-3 right-3 bg-purple-600 text-white text-xs font-bold px-3 py-1 rounded-full">Current game</span>
+            <% end %>
+          </div>
+          
+          <div class="p-6">
+            <h2 class="text-xl font-bold text-white mb-2 text-balance"><%= game.name %></h2>
+            <p class="text-slate-400 mb-6 line-clamp-2"><%= game.description %></p>
+            
+            <% if @room %>
+              <%= button_to change_game_room_path(@room.code), params: { game_id: game.id }, method: :post, class: "w-full bg-purple-500/15 hover:bg-purple-600 border border-purple-500/30 hover:border-purple-600 text-purple-100 hover:text-white font-semibold py-3 px-4 rounded-xl transition-colors text-center cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-400" do %>
+                <%= current_game ? "Configure" : "Switch to this game" %>
+              <% end %>
+            <% else %>
+              <%= button_to rooms_path(game_id: game.id), method: :post, class: "w-full bg-purple-500/15 hover:bg-purple-600 border border-purple-500/30 hover:border-purple-600 text-purple-100 hover:text-white font-semibold py-3 px-4 rounded-xl transition-colors text-center cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-400" do %>
+                Play Now
+              <% end %>
+            <% end %>
+          </div>
+        </article>
+      <% end %>
+
+      <!-- Empty State / Add Seed Data Prompt -->
+      <% if @games.empty? %>
+        <div class="col-span-full text-center py-20 border-2 border-dashed border-slate-700 rounded-3xl">
+          <p class="text-slate-400">No games yet. Run <code class="font-mono text-slate-300">bin/rails db:seed</code> to add them.</p>
+        </div>
+      <% end %>
+    </div>
+
+    <%# Below the game cards with a wide gap, so it is never next to a Play button %>
+    <%= ad_slot :games, css: "mt-16 max-w-3xl mx-auto" %>
+
+  </div>
+</div>

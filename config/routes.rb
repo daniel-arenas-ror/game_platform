@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
   root "home#index"
+  get "games", to: "games#index", as: :games
   get "sitemap.xml", to: "home#sitemap", defaults: { format: :xml }, as: :sitemap
   get "robots.txt", to: "home#robots", defaults: { format: :text }, as: :robots
 
@@ -17,7 +18,7 @@ Rails.application.routes.draw do
     end
   end
 
-  get "join", to: "rooms#find", as: :find_room
+  get "join", to: "join#show", as: :find_room
   get "join/:code", to: "rooms#join", as: :join_room
   post "join/:code", to: "rooms#player_join", as: :submit_join
 end

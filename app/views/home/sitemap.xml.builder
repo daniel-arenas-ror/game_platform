@@ -6,6 +6,14 @@ xml.urlset xmlns: "http://www.sitemaps.org/schemas/sitemap/0.9" do
     xml.priority "1.0"
   end
 
+  [ games_url, find_room_url ].each do |url|
+    xml.url do
+      xml.loc url
+      xml.changefreq "weekly"
+      xml.priority "0.8"
+    end
+  end
+
   [ about_url, contact_url, privacy_url ].each do |url|
     xml.url do
       xml.loc url

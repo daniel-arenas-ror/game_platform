@@ -1,0 +1,33 @@
+<% content_for :title, "Join a game" %>
+<% content_for :description, "Got a room code from the host's screen? Enter it here to join the game from your phone — no app, no sign-up." %>
+
+<%# Interim join page: the full design lands in phase 2 of the site restructure. %>
+<div class="bg-slate-900 min-h-[70vh] flex items-center justify-center px-4 py-16">
+  <div class="w-full max-w-md text-center">
+    <h1 class="text-4xl font-extrabold tracking-tight text-white mb-3">Join a game</h1>
+    <p class="text-slate-400 text-lg mb-8 text-pretty">Enter the room code shown on the host's screen.</p>
+
+    <div class="bg-slate-800 border border-slate-700 rounded-2xl p-5">
+      <%= form_with url: find_room_path, method: :get, class: "flex gap-3" do |f| %>
+        <%= f.label :code, "Room code", class: "sr-only" %>
+        <%= f.text_field :code,
+              placeholder: "ROOM CODE",
+              maxlength: 4,
+              required: true,
+              autofocus: true,
+              autocomplete: "off",
+              autocapitalize: "characters",
+              spellcheck: false,
+              aria: { describedby: "room-code-hint", invalid: flash[:alert].present? },
+              class: "min-w-0 flex-1 bg-slate-900 border-2 #{flash[:alert] ? "border-red-400/70" : "border-slate-700"} rounded-xl px-4 py-3 text-white text-center font-mono font-black text-xl uppercase tracking-[0.4em] placeholder:text-slate-400 placeholder:font-semibold placeholder:tracking-widest focus:border-purple-500 focus:outline-none transition-colors" %>
+        <%= f.button "Join", name: nil,
+              class: "shrink-0 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-black px-6 rounded-xl transition-transform active:scale-95 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-400" %>
+      <% end %>
+      <% if flash[:alert] %>
+        <p id="room-code-hint" role="alert" class="text-red-400 text-sm mt-3"><%= flash[:alert] %></p>
+      <% else %>
+        <p id="room-code-hint" class="text-slate-400 text-sm mt-3">The code is 4 letters or numbers.</p>
+      <% end %>
+    </div>
+  </div>
+</div>
