@@ -1,0 +1,580 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-04T01:58:03+00:00",
+  "title": "Design System: Grouparty",
+  "extensions": {
+    "colorMeta": {
+      "studio-black": {
+        "role": "neutral",
+        "displayName": "Studio Black",
+        "canonical": "oklch(12.9% .042 264.695)",
+        "tonalRamp": [
+          "oklch(12.9% .042 264.695)",
+          "oklch(20.8% .042 265.755)",
+          "oklch(27.9% .041 260.031)",
+          "oklch(37.2% .044 257.287)",
+          "oklch(44.6% .043 257.281)",
+          "oklch(55.4% .046 257.417)",
+          "oklch(70.4% .04 256.788)",
+          "oklch(86.9% .022 252.894)"
+        ]
+      },
+      "stage-floor": {
+        "role": "neutral",
+        "displayName": "Stage Floor",
+        "canonical": "oklch(20.8% .042 265.755)",
+        "tonalRamp": [
+          "oklch(12.9% .042 264.695)",
+          "oklch(20.8% .042 265.755)",
+          "oklch(27.9% .041 260.031)",
+          "oklch(37.2% .044 257.287)",
+          "oklch(44.6% .043 257.281)",
+          "oklch(55.4% .046 257.417)",
+          "oklch(70.4% .04 256.788)",
+          "oklch(86.9% .022 252.894)"
+        ]
+      },
+      "set-panel": {
+        "role": "neutral",
+        "displayName": "Set Panel",
+        "canonical": "oklch(27.9% .041 260.031)",
+        "tonalRamp": [
+          "oklch(12.9% .042 264.695)",
+          "oklch(20.8% .042 265.755)",
+          "oklch(27.9% .041 260.031)",
+          "oklch(37.2% .044 257.287)",
+          "oklch(44.6% .043 257.281)",
+          "oklch(55.4% .046 257.417)",
+          "oklch(70.4% .04 256.788)",
+          "oklch(86.9% .022 252.894)"
+        ]
+      },
+      "set-panel-raised": {
+        "role": "neutral",
+        "displayName": "Set Panel Raised",
+        "canonical": "oklch(37.2% .044 257.287)",
+        "tonalRamp": [
+          "oklch(12.9% .042 264.695)",
+          "oklch(20.8% .042 265.755)",
+          "oklch(27.9% .041 260.031)",
+          "oklch(37.2% .044 257.287)",
+          "oklch(44.6% .043 257.281)",
+          "oklch(55.4% .046 257.417)",
+          "oklch(70.4% .04 256.788)",
+          "oklch(86.9% .022 252.894)"
+        ]
+      },
+      "rig-line": {
+        "role": "neutral",
+        "displayName": "Rig Line",
+        "canonical": "oklch(37.2% .044 257.287)",
+        "tonalRamp": [
+          "oklch(12.9% .042 264.695)",
+          "oklch(20.8% .042 265.755)",
+          "oklch(27.9% .041 260.031)",
+          "oklch(37.2% .044 257.287)",
+          "oklch(44.6% .043 257.281)",
+          "oklch(55.4% .046 257.417)",
+          "oklch(70.4% .04 256.788)",
+          "oklch(86.9% .022 252.894)"
+        ]
+      },
+      "rig-line-strong": {
+        "role": "neutral",
+        "displayName": "Rig Line Strong",
+        "canonical": "oklch(44.6% .043 257.281)",
+        "tonalRamp": [
+          "oklch(12.9% .042 264.695)",
+          "oklch(20.8% .042 265.755)",
+          "oklch(27.9% .041 260.031)",
+          "oklch(37.2% .044 257.287)",
+          "oklch(44.6% .043 257.281)",
+          "oklch(55.4% .046 257.417)",
+          "oklch(70.4% .04 256.788)",
+          "oklch(86.9% .022 252.894)"
+        ]
+      },
+      "ink-bright": {
+        "role": "neutral",
+        "displayName": "Ink Bright",
+        "canonical": "oklch(100% 0 0)",
+        "tonalRamp": [
+          "oklch(12.9% .042 264.695)",
+          "oklch(20.8% .042 265.755)",
+          "oklch(27.9% .041 260.031)",
+          "oklch(37.2% .044 257.287)",
+          "oklch(44.6% .043 257.281)",
+          "oklch(55.4% .046 257.417)",
+          "oklch(70.4% .04 256.788)",
+          "oklch(86.9% .022 252.894)"
+        ]
+      },
+      "ink-soft": {
+        "role": "neutral",
+        "displayName": "Ink Soft",
+        "canonical": "oklch(86.9% .022 252.894)",
+        "tonalRamp": [
+          "oklch(12.9% .042 264.695)",
+          "oklch(20.8% .042 265.755)",
+          "oklch(27.9% .041 260.031)",
+          "oklch(37.2% .044 257.287)",
+          "oklch(44.6% .043 257.281)",
+          "oklch(55.4% .046 257.417)",
+          "oklch(70.4% .04 256.788)",
+          "oklch(86.9% .022 252.894)"
+        ]
+      },
+      "ink-muted": {
+        "role": "neutral",
+        "displayName": "Ink Muted",
+        "canonical": "oklch(70.4% .04 256.788)",
+        "tonalRamp": [
+          "oklch(12.9% .042 264.695)",
+          "oklch(20.8% .042 265.755)",
+          "oklch(27.9% .041 260.031)",
+          "oklch(37.2% .044 257.287)",
+          "oklch(44.6% .043 257.281)",
+          "oklch(55.4% .046 257.417)",
+          "oklch(70.4% .04 256.788)",
+          "oklch(86.9% .022 252.894)"
+        ]
+      },
+      "ink-faint": {
+        "role": "neutral",
+        "displayName": "Ink Faint",
+        "canonical": "oklch(55.4% .046 257.417)",
+        "tonalRamp": [
+          "oklch(12.9% .042 264.695)",
+          "oklch(20.8% .042 265.755)",
+          "oklch(27.9% .041 260.031)",
+          "oklch(37.2% .044 257.287)",
+          "oklch(44.6% .043 257.281)",
+          "oklch(55.4% .046 257.417)",
+          "oklch(70.4% .04 256.788)",
+          "oklch(86.9% .022 252.894)"
+        ]
+      },
+      "house-purple": {
+        "role": "primary",
+        "displayName": "House Purple",
+        "canonical": "oklch(55.8% .288 302.321)",
+        "tonalRamp": [
+          "oklch(15% .288 302.321)",
+          "oklch(25% .288 302.321)",
+          "oklch(35% .288 302.321)",
+          "oklch(45% .288 302.321)",
+          "oklch(55% .288 302.321)",
+          "oklch(65% .288 302.321)",
+          "oklch(80% .288 302.321)",
+          "oklch(95% .288 302.321)"
+        ]
+      },
+      "house-purple-lit": {
+        "role": "primary",
+        "displayName": "House Purple Lit",
+        "canonical": "oklch(62.7% .265 303.9)",
+        "tonalRamp": [
+          "oklch(15% .265 303.9)",
+          "oklch(25% .265 303.9)",
+          "oklch(35% .265 303.9)",
+          "oklch(45% .265 303.9)",
+          "oklch(55% .265 303.9)",
+          "oklch(65% .265 303.9)",
+          "oklch(80% .265 303.9)",
+          "oklch(95% .265 303.9)"
+        ]
+      },
+      "house-purple-glow": {
+        "role": "primary",
+        "displayName": "House Purple Glow",
+        "canonical": "oklch(71.4% .203 305.504)",
+        "tonalRamp": [
+          "oklch(15% .203 305.504)",
+          "oklch(25% .203 305.504)",
+          "oklch(35% .203 305.504)",
+          "oklch(45% .203 305.504)",
+          "oklch(55% .203 305.504)",
+          "oklch(65% .203 305.504)",
+          "oklch(80% .203 305.504)",
+          "oklch(95% .203 305.504)"
+        ]
+      },
+      "house-pink": {
+        "role": "primary",
+        "displayName": "House Pink",
+        "canonical": "oklch(59.2% .249 .584)",
+        "tonalRamp": [
+          "oklch(15% .249 .584)",
+          "oklch(25% .249 .584)",
+          "oklch(35% .249 .584)",
+          "oklch(45% .249 .584)",
+          "oklch(55% .249 .584)",
+          "oklch(65% .249 .584)",
+          "oklch(80% .249 .584)",
+          "oklch(95% .249 .584)"
+        ]
+      },
+      "spotlight-gold": {
+        "role": "secondary",
+        "displayName": "Spotlight Gold",
+        "canonical": "oklch(85.2% .199 91.936)",
+        "tonalRamp": [
+          "oklch(15% .199 91.936)",
+          "oklch(25% .199 91.936)",
+          "oklch(35% .199 91.936)",
+          "oklch(45% .199 91.936)",
+          "oklch(55% .199 91.936)",
+          "oklch(65% .199 91.936)",
+          "oklch(80% .199 91.936)",
+          "oklch(95% .199 91.936)"
+        ]
+      },
+      "spotlight-gold-deep": {
+        "role": "secondary",
+        "displayName": "Spotlight Gold Deep",
+        "canonical": "oklch(79.5% .184 86.047)",
+        "tonalRamp": [
+          "oklch(15% .184 86.047)",
+          "oklch(25% .184 86.047)",
+          "oklch(35% .184 86.047)",
+          "oklch(45% .184 86.047)",
+          "oklch(55% .184 86.047)",
+          "oklch(65% .184 86.047)",
+          "oklch(80% .184 86.047)",
+          "oklch(95% .184 86.047)"
+        ]
+      },
+      "go-green": {
+        "role": "tertiary",
+        "displayName": "Go Green",
+        "canonical": "oklch(72.3% .219 149.579)",
+        "tonalRamp": [
+          "oklch(15% .219 149.579)",
+          "oklch(25% .219 149.579)",
+          "oklch(35% .219 149.579)",
+          "oklch(45% .219 149.579)",
+          "oklch(55% .219 149.579)",
+          "oklch(65% .219 149.579)",
+          "oklch(80% .219 149.579)",
+          "oklch(95% .219 149.579)"
+        ]
+      },
+      "correct-green": {
+        "role": "tertiary",
+        "displayName": "Correct Green",
+        "canonical": "oklch(79.2% .209 151.711)",
+        "tonalRamp": [
+          "oklch(15% .209 151.711)",
+          "oklch(25% .209 151.711)",
+          "oklch(35% .209 151.711)",
+          "oklch(45% .209 151.711)",
+          "oklch(55% .209 151.711)",
+          "oklch(65% .209 151.711)",
+          "oklch(80% .209 151.711)",
+          "oklch(95% .209 151.711)"
+        ]
+      },
+      "miss-red": {
+        "role": "tertiary",
+        "displayName": "Miss Red",
+        "canonical": "oklch(70.4% .191 22.216)",
+        "tonalRamp": [
+          "oklch(15% .191 22.216)",
+          "oklch(25% .191 22.216)",
+          "oklch(35% .191 22.216)",
+          "oklch(45% .191 22.216)",
+          "oklch(55% .191 22.216)",
+          "oklch(65% .191 22.216)",
+          "oklch(80% .191 22.216)",
+          "oklch(95% .191 22.216)"
+        ]
+      },
+      "set-violet": {
+        "role": "tertiary",
+        "displayName": "Set Violet (Mind Match)",
+        "canonical": "oklch(60.6% .25 292.717)",
+        "tonalRamp": [
+          "oklch(15% .25 292.717)",
+          "oklch(25% .25 292.717)",
+          "oklch(35% .25 292.717)",
+          "oklch(45% .25 292.717)",
+          "oklch(55% .25 292.717)",
+          "oklch(65% .25 292.717)",
+          "oklch(80% .25 292.717)",
+          "oklch(95% .25 292.717)"
+        ]
+      },
+      "set-cyan": {
+        "role": "tertiary",
+        "displayName": "Set Cyan (Submarine Combat)",
+        "canonical": "oklch(78.9% .154 211.53)",
+        "tonalRamp": [
+          "oklch(15% .154 211.53)",
+          "oklch(25% .154 211.53)",
+          "oklch(35% .154 211.53)",
+          "oklch(45% .154 211.53)",
+          "oklch(55% .154 211.53)",
+          "oklch(65% .154 211.53)",
+          "oklch(80% .154 211.53)",
+          "oklch(95% .154 211.53)"
+        ]
+      },
+      "set-emerald": {
+        "role": "tertiary",
+        "displayName": "Set Emerald (Soup of Numbers)",
+        "canonical": "oklch(76.5% .177 163.223)",
+        "tonalRamp": [
+          "oklch(15% .177 163.223)",
+          "oklch(25% .177 163.223)",
+          "oklch(35% .177 163.223)",
+          "oklch(45% .177 163.223)",
+          "oklch(55% .177 163.223)",
+          "oklch(65% .177 163.223)",
+          "oklch(80% .177 163.223)",
+          "oklch(95% .177 163.223)"
+        ]
+      },
+      "set-blue": {
+        "role": "tertiary",
+        "displayName": "Set Blue (Billionaire)",
+        "canonical": "oklch(37.9% .146 265.522)",
+        "tonalRamp": [
+          "oklch(15% .146 265.522)",
+          "oklch(25% .146 265.522)",
+          "oklch(35% .146 265.522)",
+          "oklch(45% .146 265.522)",
+          "oklch(55% .146 265.522)",
+          "oklch(65% .146 265.522)",
+          "oklch(80% .146 265.522)",
+          "oklch(95% .146 265.522)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Home wordmark and big host-screen numbers; host scales to 3.75–6rem."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Page titles, lobby game name."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Game-card names, panel headings."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Descriptions in Ink Muted; reading pages cap ~65ch."
+      },
+      "body-lead": {
+        "displayName": "Body Lead",
+        "purpose": "Hero sub-lines in Ink Soft."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Uppercase field labels, picker headers, host-critical button labels."
+      },
+      "room-code": {
+        "displayName": "Room Code",
+        "purpose": "4-char room codes in inputs, lobby and join screen."
+      },
+      "score": {
+        "displayName": "Score",
+        "purpose": "Scores, timers, coordinates, grid digits."
+      }
+    },
+    "shadows": [
+      {
+        "name": "panel-lift",
+        "value": "0 20px 25px -5px rgb(0 0 0 / .1), 0 8px 10px -6px rgb(0 0 0 / .1)",
+        "purpose": "Lobby players panel (shadow-xl). Catalog cards are flat."
+      },
+      {
+        "name": "spotlight-lift",
+        "value": "0 25px 50px -12px rgb(0 0 0 / .25)",
+        "purpose": "Join card and QR plate — the single focal object (shadow-2xl)."
+      },
+      {
+        "name": "button-glow",
+        "value": "0 10px 15px -3px oklch(38.1% .176 304.987 / .2)",
+        "purpose": "Purple primary buttons (shadow-lg shadow-purple-900/20)."
+      }
+    ],
+    "motion": [
+      {
+        "name": "chrome-color",
+        "value": "150ms cubic-bezier(.4, 0, .2, 1)",
+        "purpose": "Default color/border transitions on links, inputs, buttons."
+      },
+      {
+        "name": "press",
+        "value": "transform: scale(.95) on :active",
+        "purpose": "Press-down on primary CTAs."
+      },
+      {
+        "name": "media-zoom",
+        "value": "300ms, scale(1.05)",
+        "purpose": "Game-card image on hover."
+      },
+      {
+        "name": "spring-pop",
+        "value": "cubic-bezier(0.34, 1.56, 0.64, 1)",
+        "purpose": "In-game badges, pop-ins and reveals only."
+      },
+      {
+        "name": "toast-exit",
+        "value": "cubic-bezier(.8, 0, 1, 1)",
+        "purpose": "In-game toasts sliding out."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "sm",
+        "value": "640px"
+      },
+      {
+        "name": "md",
+        "value": "768px"
+      },
+      {
+        "name": "lg",
+        "value": "1024px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-solid",
+      "description": "Tonal house-purple action on game cards (Play Now / Switch to this game); fills solid on hover.",
+      "html": "<button class=\"ds-btn-primary\">Play Now</button>",
+      "css": ".ds-btn-primary{width:100%;background:oklch(62.7% .265 303.9/.15);color:oklch(97.7% .014 308.299);font:600 1rem/1.5 ui-sans-serif,system-ui,sans-serif;padding:12px 16px;border:1px solid oklch(62.7% .265 303.9/.3);border-radius:.75rem;cursor:pointer;transition:background-color .15s,color .15s,border-color .15s}.ds-btn-primary:hover{background:oklch(55.8% .288 302.321);border-color:oklch(55.8% .288 302.321);color:#fff}.ds-btn-primary:focus-visible{outline:2px solid oklch(71.4% .203 305.504);outline-offset:2px}"
+    },
+    {
+      "name": "Primary Sweep Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Purple→pink gradient CTA, reserved for Join / Enter Lobby.",
+      "html": "<button class=\"ds-btn-sweep\">ENTER LOBBY</button>",
+      "css": ".ds-btn-sweep{width:100%;background:linear-gradient(to right,oklch(55.8% .288 302.321),oklch(59.2% .249 .584));color:#fff;font:900 1rem/1.5 ui-sans-serif,system-ui,sans-serif;padding:16px 24px;border:none;border-radius:.75rem;box-shadow:0 10px 15px -3px rgb(0 0 0/.1);cursor:pointer;transition:transform .15s}.ds-btn-sweep:hover{background:linear-gradient(to right,oklch(62.7% .265 303.9),oklch(65.6% .241 354.308))}.ds-btn-sweep:focus-visible{outline:2px solid oklch(71.4% .203 305.504);outline-offset:2px}.ds-btn-sweep:active{transform:scale(.95)}"
+    },
+    {
+      "name": "Go Button",
+      "kind": "button",
+      "refersTo": "button-go",
+      "description": "Host's Start Game action.",
+      "html": "<button class=\"ds-btn-go\">Start Game</button>",
+      "css": ".ds-btn-go{width:100%;background:oklch(72.3% .219 149.579);color:oklch(20.8% .042 265.755);font:900 1rem/1.5 ui-sans-serif,system-ui,sans-serif;text-transform:uppercase;letter-spacing:.1em;padding:16px 0;border:none;border-radius:.75rem;cursor:pointer;transition:background-color .15s}.ds-btn-go:hover{background:oklch(79.2% .209 151.711)}.ds-btn-go:focus-visible{outline:2px solid #fff;outline-offset:2px}"
+    },
+    {
+      "name": "Room Code Input",
+      "kind": "input",
+      "refersTo": "input-room-code",
+      "description": "4-character room code field with Join button (home page).",
+      "html": "<form class=\"ds-code-form\"><input class=\"ds-input-code\" maxlength=\"4\" placeholder=\"ROOM CODE\"><button type=\"button\" class=\"ds-code-join\">Join</button></form>",
+      "css": ".ds-code-form{display:flex;gap:12px;background:oklch(27.9% .041 260.031);border:1px solid oklch(37.2% .044 257.287);border-radius:1rem;padding:20px;max-width:28rem}.ds-input-code{min-width:0;flex:1;background:oklch(20.8% .042 265.755);border:2px solid oklch(37.2% .044 257.287);border-radius:.75rem;padding:12px 16px;color:#fff;text-align:center;font:900 1.25rem ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.4em;text-transform:uppercase;outline:none;transition:border-color .15s}.ds-input-code::placeholder{color:oklch(44.6% .043 257.281);letter-spacing:.1em}.ds-input-code:focus{border-color:oklch(62.7% .265 303.9)}.ds-code-join{background:linear-gradient(to right,oklch(55.8% .288 302.321),oklch(59.2% .249 .584));color:#fff;font:900 1rem ui-sans-serif,system-ui,sans-serif;padding:0 24px;border:none;border-radius:.75rem;cursor:pointer}.ds-code-join:active{transform:scale(.95)}"
+    },
+    {
+      "name": "Nickname Field",
+      "kind": "input",
+      "refersTo": "input-field",
+      "description": "Labelled text field on the phone join screen.",
+      "html": "<label class=\"ds-field\"><span class=\"ds-label\">YOUR NICKNAME</span><input class=\"ds-input\" placeholder=\"e.g. Player 1\"></label>",
+      "css": ".ds-field{display:block;max-width:20rem}.ds-label{display:block;font:900 .75rem/1.33 ui-sans-serif,system-ui,sans-serif;letter-spacing:.1em;color:oklch(55.4% .046 257.417);margin-bottom:8px;text-align:center}.ds-input{width:100%;box-sizing:border-box;background:oklch(20.8% .042 265.755);border:2px solid oklch(37.2% .044 257.287);border-radius:.75rem;padding:12px 16px;color:#fff;text-align:center;font:700 1.125rem ui-sans-serif,system-ui,sans-serif;outline:none;transition:border-color .15s}.ds-input:focus{border-color:oklch(62.7% .265 303.9)}"
+    },
+    {
+      "name": "Game Card",
+      "kind": "card",
+      "refersTo": "card-game",
+      "description": "Catalog entry: instruction-image well, title, two-line description, action.",
+      "html": "<article class=\"ds-card\"><div class=\"ds-card-media\"><span class=\"ds-pill\">Current game</span></div><div class=\"ds-card-body\"><h3>Mind Match</h3><p>The host shows a category. Everyone types one word — points for every mind you match.</p><button>Play Now</button></div></article>",
+      "css": ".ds-card{max-width:22rem;background:oklch(27.9% .041 260.031);border:1px solid oklch(37.2% .044 257.287);border-radius:1rem;overflow:hidden;transition:border-color .15s;font-family:ui-sans-serif,system-ui,sans-serif}.ds-card:hover{border-color:oklch(62.7% .265 303.9/.7)}.ds-card-media{position:relative;height:192px;background:oklch(37.2% .044 257.287)}.ds-pill{position:absolute;top:12px;right:12px;background:oklch(55.8% .288 302.321);color:#fff;font:700 .75rem/1 ui-sans-serif,system-ui,sans-serif;padding:6px 12px;border-radius:9999px}.ds-card-body{padding:24px}.ds-card-body h3{margin:0 0 8px;color:#fff;font:700 1.5rem/1.33 ui-sans-serif,system-ui,sans-serif}.ds-card-body p{margin:0 0 24px;color:oklch(70.4% .04 256.788);line-height:1.5}.ds-card-body button{width:100%;background:oklch(62.7% .265 303.9/.15);color:oklch(97.7% .014 308.299);font-weight:600;padding:12px 16px;border:1px solid oklch(62.7% .265 303.9/.3);border-radius:.75rem;cursor:pointer}.ds-card-body button:hover{background:oklch(62.7% .265 303.9)}"
+    },
+    {
+      "name": "Option Picker",
+      "kind": "custom",
+      "refersTo": "picker-option",
+      "description": "Pre-game radio tiles; selected tile takes the game's set accent (violet shown).",
+      "html": "<fieldset class=\"ds-picker\"><legend>NUMBER OF ROUNDS</legend><label><input type=\"radio\" name=\"r\"><span><b>3</b><small>Quick</small></span></label><label><input type=\"radio\" name=\"r\" checked><span><b>5</b><small>Standard</small></span></label><label><input type=\"radio\" name=\"r\"><span><b>10</b><small>Marathon</small></span></label></fieldset>",
+      "css": ".ds-picker{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:26rem;background:oklch(20.8% .042 265.755/.5);border:1px solid oklch(37.2% .044 257.287);border-radius:1rem;padding:24px;margin:0;font-family:ui-sans-serif,system-ui,sans-serif}.ds-picker legend{float:left;grid-column:1/-1;font:700 .75rem ui-sans-serif,system-ui,sans-serif;letter-spacing:.1em;color:oklch(70.4% .04 256.788);margin-bottom:4px}.ds-picker input{position:absolute;opacity:0}.ds-picker span{display:block;text-align:center;padding:16px 0;background:oklch(27.9% .041 260.031);border:2px solid oklch(37.2% .044 257.287);border-radius:.75rem;cursor:pointer;transition:all .15s}.ds-picker b{display:block;color:#fff;font-weight:900;font-size:1.5rem}.ds-picker small{display:block;color:oklch(55.4% .046 257.417);font-size:.75rem;margin-top:4px}.ds-picker input:checked+span{border-color:oklch(60.6% .25 292.717);background:oklch(60.6% .25 292.717/.1)}.ds-picker input:focus-visible+span{outline:2px solid oklch(60.6% .25 292.717);outline-offset:2px}"
+    },
+    {
+      "name": "Player Row",
+      "kind": "custom",
+      "refersTo": "player-row",
+      "description": "Lobby roster entry with initial avatar disc.",
+      "html": "<div class=\"ds-player\"><span class=\"ds-avatar\">D</span><span class=\"ds-nick\">Daniel</span></div>",
+      "css": ".ds-player{display:flex;align-items:center;gap:16px;max-width:22rem;background:oklch(37.2% .044 257.287);border:1px solid oklch(44.6% .043 257.281);border-radius:.75rem;padding:16px;font-family:ui-sans-serif,system-ui,sans-serif}.ds-avatar{width:40px;height:40px;border-radius:9999px;background:oklch(62.7% .265 303.9);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center}.ds-nick{color:#fff;font-weight:700}"
+    },
+    {
+      "name": "Footer Nav",
+      "kind": "nav",
+      "description": "Site footer with legal links on Studio Black.",
+      "html": "<footer class=\"ds-footer\"><p>© 2026 Grouparty · Free party games</p><nav><a href=\"#\">About</a><a href=\"#\">Contact</a><a href=\"#\">Privacy Policy</a></nav></footer>",
+      "css": ".ds-footer{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;background:oklch(12.9% .042 264.695);border-top:1px solid oklch(27.9% .041 260.031);padding:32px 16px;font:.875rem/1.43 ui-sans-serif,system-ui,sans-serif}.ds-footer p{margin:0;color:oklch(55.4% .046 257.417)}.ds-footer nav{display:flex;gap:24px}.ds-footer a{color:oklch(70.4% .04 256.788);text-decoration:none;transition:color .15s}.ds-footer a:hover,.ds-footer a:focus-visible{color:#fff}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Game-Show Studio",
+    "overview": "Grouparty is a studio with the lights down. The host screen is the set, seen by the whole room from the sofa, the back of a classroom or the end of a meeting table. Every phone is a contestant's buzzer. The building is permanently dark: a deep slate floor, panels one step lighter, and thin rigging lines between them. The house lights are purple, with a purple-to-pink sweep on the main call to action. The Grouparty wordmark is solid white type. When something matters, like a score, a winner or a correct answer, the gold spotlight hits it.\n\nEach game is its own set on the same stage. Mind Match is lit violet, Submarine Combat cyan, Soup of Numbers emerald, and the billionaire quiz deep studio blue. The studio itself stays constant, so moving between games feels like a scene change rather than leaving the show. The chrome is clean and calm: quiet panels, plain system type and restrained borders. The game moments are what's allowed to shout.\n\nThe studio is family-show TV, not a casino and not a kids' channel. It should look right in front of a class, a team or a family. That rules out flashing slot-machine glare, wall-to-wall neon and cartoon mascots.",
+    "keyCharacteristics": [
+      "Permanently dark, built from tonal slate layers (950 → 900 → 800 → 700).",
+      "One house accent (purple) for site chrome, and one set accent per game.",
+      "Gold is reserved for scores, highlights and winners.",
+      "Heavy black-weight system sans, with monospace for codes and numbers.",
+      "Softly rounded panels (16–24px) with 1px rig lines and no hard edges.",
+      "Large, readable-at-a-distance type on the host screen, and thumb-sized controls on the phone."
+    ],
+    "rules": [
+      {
+        "name": "The Spotlight Rule",
+        "body": "Gold means \"this is the thing that just happened or matters most\": a score, a leader, a correct pick. It never decorates chrome, and it never appears on more than one focal element per moment.",
+        "section": "colors"
+      },
+      {
+        "name": "The One Set Light Rule",
+        "body": "Each game view uses its own set accent plus the shared gold and green/red feedback colors. Never borrow another game's accent, and never use house purple for in-game selection inside a game that has its own set light.",
+        "section": "colors"
+      },
+      {
+        "name": "The Gradient Is a Signature Rule",
+        "body": "The purple→pink sweep is reserved for the main \"get into a room\" CTAs (Join, Enter Lobby). It isn't a general fill, and it never colors text.",
+        "section": "colors"
+      },
+      {
+        "name": "The Readable-From-The-Sofa Rule",
+        "body": "Anything the room must read on the host screen, like a prompt, a number or a winner, is 1.5rem or larger and set at weight 700–900. Small type (0.75rem) is only for phone-side helper text and labels.",
+        "section": "typography"
+      },
+      {
+        "name": "The Monospace Means Machine Rule",
+        "body": "Use mono for anything that is a code, count, coordinate or score, and never for prose.",
+        "section": "typography"
+      },
+      {
+        "name": "The Lighter-Means-Closer Rule",
+        "body": "To bring a surface forward, raise it one slate step and give it a border. Don't stack shadows inside shadows.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** build every surface from the slate stack. Stage Floor is the page, Set Panel the card, and Set Panel Raised the nested row, each with a 1px Rig Line.",
+      "**Do** give each game exactly one set accent and use it for selection, key borders and emphasis inside that game.",
+      "**Do** reserve Spotlight Gold for scores, winners and correct or current highlights (The Spotlight Rule).",
+      "**Do** set codes, scores, timers and grid digits in black-weight monospace.",
+      "**Do** keep host-screen text at 1.5rem or larger and weight 700–900 so it can be read across a room.",
+      "**Do** use the Label style (0.75rem, weight 900, widest tracking, uppercase) for field labels and picker headers.",
+      "**Do** keep site chrome calm, using color transitions and a 95% press-down. Save springy motion for game moments."
+    ],
+    "donts": [
+      "**Don't** introduce a light theme or white surfaces. The only white surface is the QR code plate.",
+      "**Don't** look like a casino: no flashing lights, slot-machine glare, stacked neon glows or everything-animating-at-once.",
+      "**Don't** go childish or cartoonish: no mascots, bubbly comic fonts or toy-like chrome. The studio has to suit colleagues and classrooms as well as families.",
+      "**Don't** use the purple→pink gradient beyond the main join/enter CTAs, and never as gradient text.",
+      "**Don't** let two set accents, or house purple plus a set accent, compete inside one game view.",
+      "**Don't** use type smaller than 0.75rem, or put Ink Faint text on Set Panel Raised, where contrast drops too low."
+    ]
+  }
+}
