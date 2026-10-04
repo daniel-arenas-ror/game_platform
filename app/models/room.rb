@@ -16,6 +16,9 @@ class Room
 
   before_create :generate_code
 
+  # Shown in the join page's "where's the code?" illustration, so it must never be a real room.
+  EXAMPLE_CODE = "K7QX".freeze
+
   # ActionCable stream of each game's in-game channel (the lobby uses "game_<code>").
   GAME_STREAM_PREFIXES = {
     "fisherman"              => "fisherman_room_",
@@ -45,8 +48,12 @@ class Room
 
   def generate_code
     loop do
-      self.code = SecureRandom.alphanumeric(4).upcase
-      break unless Room.where(code: self.code).exists?
+      self.code = random_code
+      break unless code == EXAMPLE_CODE || Room.where(code: code).exists?
     end
+  end
+
+  def random_code
+    SecureRandom.alphanumeric(4).upcase
   end
 end

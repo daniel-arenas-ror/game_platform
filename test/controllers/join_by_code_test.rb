@@ -14,7 +14,8 @@ class JoinByCodeTest < ActionDispatch::IntegrationTest
   test "join page shows the room code form" do
     get find_room_url
     assert_response :success
-    assert_select "h1", "Join a game"
+    assert_select "h1", "Got a room code?"
+    assert_select "a[href=?]", games_path, text: "Pick a game"
     assert_select "form[action='#{find_room_path}'] input[name=code]"
   end
 
@@ -33,6 +34,7 @@ class JoinByCodeTest < ActionDispatch::IntegrationTest
     assert_redirected_to find_room_path
     follow_redirect!
     assert_includes response.body, "No room found with code ZZZZ."
+    assert_select "input[name=code][value=ZZZZ][aria-invalid=true]"
   end
 
   test "a blank code asks for one" do
@@ -40,5 +42,15 @@ class JoinByCodeTest < ActionDispatch::IntegrationTest
     assert_redirected_to find_room_path
     follow_redirect!
     assert_includes response.body, "Enter a room code."
+  end
+
+  test "the illustration's example code is never handed out to a real room" do
+    codes = [ Room::EXAMPLE_CODE, "AB12" ]
+    room = Room.new(game: @game)
+    room.define_singleton_method(:random_code) { codes.shift }
+    room.save!
+    assert_equal "AB12", room.code
+  ensure
+    room&.delete
   end
 end

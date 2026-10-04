@@ -1,33 +1,102 @@
 <% content_for :title, "Join a game" %>
 <% content_for :description, "Got a room code from the host's screen? Enter it here to join the game from your phone — no app, no sign-up." %>
 
-<%# Interim join page: the full design lands in phase 2 of the site restructure. %>
-<div class="bg-slate-900 min-h-[70vh] flex items-center justify-center px-4 py-16">
-  <div class="w-full max-w-md text-center">
-    <h1 class="text-4xl font-extrabold tracking-tight text-white mb-3">Join a game</h1>
-    <p class="text-slate-400 text-lg mb-8 text-pretty">Enter the room code shown on the host's screen.</p>
+<div class="bg-slate-900 min-h-[calc(100svh-4rem)] px-4 sm:px-6 lg:px-8 py-10 sm:py-16 flex items-center">
+  <div class="w-full max-w-5xl mx-auto grid lg:grid-cols-[minmax(0,28rem)_minmax(0,1fr)] gap-12 lg:gap-20 items-center">
 
-    <div class="bg-slate-800 border border-slate-700 rounded-2xl p-5">
-      <%= form_with url: find_room_path, method: :get, class: "flex gap-3" do |f| %>
+    <section aria-labelledby="join-title" class="w-full max-w-md mx-auto lg:mx-0">
+      <h1 id="join-title" class="text-4xl sm:text-5xl font-extrabold tracking-tight text-white text-balance">Got a room code?</h1>
+      <p class="mt-3 text-slate-400 text-lg text-pretty">Type the 4 characters from the host's screen and you're in.</p>
+
+      <%= form_with url: find_room_path, method: :get,
+            class: "group mt-8",
+            data: { controller: "room-code", action: "submit->room-code#submit", error: (flash[:alert].present? ? "" : nil) } do |f| %>
         <%= f.label :code, "Room code", class: "sr-only" %>
-        <%= f.text_field :code,
-              placeholder: "ROOM CODE",
-              maxlength: 4,
-              required: true,
-              autofocus: true,
-              autocomplete: "off",
-              autocapitalize: "characters",
-              spellcheck: false,
-              aria: { describedby: "room-code-hint", invalid: flash[:alert].present? },
-              class: "min-w-0 flex-1 bg-slate-900 border-2 #{flash[:alert] ? "border-red-400/70" : "border-slate-700"} rounded-xl px-4 py-3 text-white text-center font-mono font-black text-xl uppercase tracking-[0.4em] placeholder:text-slate-400 placeholder:font-semibold placeholder:tracking-widest focus:border-purple-500 focus:outline-none transition-colors" %>
-        <%= f.button "Join", name: nil,
-              class: "shrink-0 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-black px-6 rounded-xl transition-transform active:scale-95 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-400" %>
+        <div class="relative">
+          <%= f.text_field :code,
+                value: @code,
+                placeholder: "ROOM CODE",
+                maxlength: 4,
+                minlength: 4,
+                required: true,
+                autofocus: true,
+                autocomplete: "off",
+                autocapitalize: "characters",
+                autocorrect: "off",
+                spellcheck: false,
+                enterkeyhint: "go",
+                aria: { describedby: "room-code-hint", invalid: flash[:alert].present? },
+                data: { room_code_target: "input", action: "input->room-code#type focus->room-code#focus blur->room-code#blur" },
+                class: "w-full h-20 bg-slate-950 border-2 rounded-2xl px-4 text-white text-center font-mono font-black text-3xl uppercase tracking-[0.5em] placeholder:text-slate-400 placeholder:text-xl placeholder:font-semibold placeholder:tracking-widest focus:border-purple-500 focus:outline-none transition-colors
+                        #{flash[:alert] ? "border-red-400/70" : "border-slate-700"}
+                        group-data-[enhanced]:absolute group-data-[enhanced]:inset-0 group-data-[enhanced]:h-full group-data-[enhanced]:opacity-0 group-data-[enhanced]:cursor-text" %>
+
+          <%# Visual slots, driven by room_code_controller. Screen readers use the real input above. %>
+          <div class="hidden group-data-[enhanced]:grid grid-cols-4 gap-3 pointer-events-none" aria-hidden="true">
+            <% 4.times do %>
+              <div data-room-code-target="slot" data-state="empty"
+                   class="h-20 sm:h-24 flex items-center justify-center rounded-2xl border-2 bg-slate-950 font-mono font-black text-4xl sm:text-5xl text-white transition-colors duration-150
+                          border-slate-700 data-[state=filled]:border-slate-500 data-[state=active]:border-purple-400 data-[state=active]:bg-purple-500/10
+                          group-data-[error]:border-red-400/70"></div>
+            <% end %>
+          </div>
+        </div>
+
+        <% if flash[:alert] %>
+          <p id="room-code-hint" role="alert" class="mt-3 text-red-400 text-sm"><%= flash[:alert] %></p>
+        <% else %>
+          <p id="room-code-hint" class="mt-3 text-slate-400 text-sm">Letters and numbers only — it joins as soon as you type the 4th.</p>
+        <% end %>
+
+        <%= f.button "Join game", name: nil,
+              data: { room_code_target: "submit", label: "Join game" },
+              class: "mt-6 w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 disabled:opacity-70 disabled:cursor-wait text-white text-lg font-black py-4 rounded-xl transition-transform active:scale-[0.98] cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-400" %>
       <% end %>
-      <% if flash[:alert] %>
-        <p id="room-code-hint" role="alert" class="text-red-400 text-sm mt-3"><%= flash[:alert] %></p>
-      <% else %>
-        <p id="room-code-hint" class="text-slate-400 text-sm mt-3">The code is 4 letters or numbers.</p>
-      <% end %>
-    </div>
+
+      <ul class="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm text-slate-300">
+        <% ["No app to install", "No sign-up", "Free"].each do |perk| %>
+          <li class="flex items-center gap-2">
+            <svg class="size-4 text-purple-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+            <%= perk %>
+          </li>
+        <% end %>
+      </ul>
+    </section>
+
+    <aside aria-labelledby="where-title" class="w-full max-w-md mx-auto lg:max-w-none">
+      <h2 id="where-title" class="text-lg font-bold text-white">Where's the code?</h2>
+      <p class="mt-2 text-slate-400 text-pretty">On the shared screen — the TV, the projector or the video call. It sits right under the game name.</p>
+
+      <%# A miniature of the host lobby, with the room code called out %>
+      <figure class="mt-6">
+        <div class="rounded-2xl border border-slate-700 bg-slate-800 p-2 shadow-2xl">
+          <div class="aspect-video rounded-xl bg-slate-950 p-4 sm:p-6 flex items-center gap-4 sm:gap-6 overflow-hidden">
+            <div class="flex-1 min-w-0">
+              <p class="text-white font-black text-sm sm:text-xl truncate">Mind Match</p>
+              <p class="mt-1 sm:mt-2 inline-block font-mono font-bold text-purple-400 text-sm sm:text-xl rounded-md ring-2 ring-purple-400/70 ring-offset-4 ring-offset-slate-950 px-1">ROOM: <%= Room::EXAMPLE_CODE %></p>
+              <div class="mt-4 sm:mt-6 space-y-1.5" aria-hidden="true">
+                <div class="h-2 w-3/4 rounded-full bg-slate-800"></div>
+                <div class="h-2 w-1/2 rounded-full bg-slate-800"></div>
+              </div>
+            </div>
+            <div class="shrink-0 rounded-lg bg-white p-1.5 sm:p-2.5">
+              <svg class="size-16 sm:size-24 text-slate-950" viewBox="0 0 21 21" fill="currentColor" shape-rendering="crispEdges" aria-hidden="true">
+                <path d="M0 0h7v7H0zM1 1v5h5V1zM2 2h3v3H2zM14 0h7v7h-7zm1 1v5h5V1zm1 1h3v3h-3zM0 14h7v7H0zm1 1v5h5v-5zm1 1h3v3H2z"/>
+                <path d="M8 0h1v2H8zM10 1h2v1h-2zM9 3h2v2H9zM12 4h1v3h-1zM8 6h2v1H8zM8 8h3v1H8zM0 8h2v1H0zM3 9h3v1H3zM12 8h2v2h-2zM16 8h2v1h-2zM19 9h2v2h-2zM1 11h2v2H1zM5 11h3v1H5zM9 10h2v3H9zM13 11h3v1h-3zM17 12h2v2h-2zM8 14h2v2H8zM11 14h1v3h-1zM13 13h1v2h-1zM15 15h3v1h-3zM19 15h2v3h-2zM8 17h2v1H8zM13 17h2v2h-2zM16 18h2v3h-2zM9 19h3v2H9zM19 19h1v2h-1z"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+        <figcaption class="mt-4 text-sm text-slate-400 text-pretty">
+          <span class="text-slate-300 font-semibold">Faster:</span> point your phone camera at the QR code and skip typing.
+        </figcaption>
+      </figure>
+
+      <p class="mt-10 text-sm text-slate-400">
+        Hosting instead?
+        <%= link_to games_path, class: "text-purple-300 hover:text-white font-semibold underline underline-offset-4 decoration-purple-500/50 hover:decoration-white rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-400" do %>Pick a game<% end %>
+      </p>
+    </aside>
+
   </div>
 </div>

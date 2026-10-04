@@ -298,6 +298,9 @@ There is no app bar. Public pages use a "← Back to games" text link in House P
 ### Option Picker (signature component)
 This is the pre-game config control. A grid of three radio tiles uses Set Panel fill and a 2px Rig Line border at 12px radius. Each tile has a big black-weight value (1.5rem) with a small Ink Faint caption ("Quick", "Standard", "Marathon"). The selected tile's border takes the game's set accent, and the tile gets a 10% tint of that accent as its fill.
 
+### Room-Code Slots (signature component)
+This is the Join page's code entry. Four 80–96px Studio Black slots with 2px Rig Line borders and 16px radius show the code in black-weight 2.25–3rem monospace. They sit over one real, invisible text input that keeps paste, autofill and screen readers working. The next slot to fill gets a `purple-400` border and a 10% purple tint, filled slots get `slate-500`, and every slot turns 70% Miss Red on an error. The form submits on its own at the 4th character, and without JS the plain input shows instead.
+
 ### Player Row (signature component)
 This is the lobby roster entry. It's a Set Panel Raised row with a 1px Rig Line Strong border, 12px radius and 16px padding. A 40px House Purple Lit avatar disc shows the nickname's initial in bold, followed by the nickname in white bold. While players are joining, a pulsing skeleton row sits at the end of the list.
 
