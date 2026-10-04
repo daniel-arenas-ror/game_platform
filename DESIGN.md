@@ -173,7 +173,7 @@ The palette is a dark studio floor with one house light, a gold spotlight, and a
 - **House Purple** (`purple-600`): The brand's voice. Status pills, the hover fill of the catalog's "Play Now" / "Switch to this game" buttons, and player avatar discs (in its lighter step, `purple-500`). It also starts the purple→pink CTA sweep.
 - **House Purple Lit** (`purple-500`): Hover state for purple buttons, focus borders on inputs (`focus:border-purple-500`), and the active game-card border.
 - **House Purple Glow** (`purple-400`): Accent text on dark backgrounds, such as room codes, "← Back to games" links, step numbers and inline links.
-- **House Pink** (`pink-600`): Only appears as the end of the purple→pink gradient on the Join/Enter Lobby CTAs. It never appears on its own.
+- **House Pink** (`pink-600`): Only appears as the end of the purple→pink gradient on the primary CTAs (Start a game, Join, Join game, Enter Lobby). It never appears on its own.
 
 ### Secondary
 - **Spotlight Gold** (`yellow-400`): The most-used accent inside games. It marks scores, point gains, the current round, winners, highlighted cells and leaderboard leaders. `yellow-500` is its deeper fill.
@@ -203,7 +203,7 @@ These are the set accents, one per game. A game's accent owns its selected-picke
 
 **The One Set Light Rule.** Each game view uses its own set accent plus the shared gold and green/red feedback colors. Never borrow another game's accent, and never use house purple for in-game selection inside a game that has its own set light.
 
-**The Gradient Is a Signature Rule.** The purple→pink sweep is reserved for the main "get into a room" CTAs (Join, Enter Lobby). It isn't a general fill, and it never colors text.
+**The Gradient Is a Signature Rule.** The purple→pink sweep is reserved for the one primary "get into a room" CTA in each view (Start a game, Join game, Enter Lobby). It isn't a general fill, and it never colors text. The secondary CTA beside it is always the tonal button.
 
 ## Typography
 
@@ -230,12 +230,13 @@ These are the set accents, one per game. A game's accent owns its selected-picke
 
 ## Layout
 
-The page shell is a full-height Stage Floor background with no persistent nav. Public pages center their content in a container (`max-w-7xl` for the catalog, `max-w-2xl`–`max-w-4xl` for reading pages and the lobby) with horizontal padding of 16–32px (`px-4 sm:px-6 lg:px-8`). A slim footer on Studio Black closes every page except the in-game screen. Game screens fill the display edge to edge with no footer.
+The page shell is a full-height Stage Floor background. Public pages (Home, Games, Join, About, Contact, Privacy) open with the 64px site header, while room, lobby and game screens never show it. Public pages center their content in a container (`max-w-6xl` for Home sections and the Join page, `max-w-7xl` for the catalog, `max-w-2xl`–`max-w-4xl` for reading pages and the lobby) with horizontal padding of 16–32px (`px-4 sm:px-6 lg:px-8`). A slim footer on Studio Black closes every page except the in-game screen. Game screens fill the display edge to edge with no footer.
 
-Spacing follows Tailwind's 4px scale. The common steps are 12px (`py-3`, `gap-3`), 16px, 24px (`p-6`, card padding) and 32px (`p-8`, panel padding, `gap-8` grid gutters). Big sections are separated by 48–96px (`mb-16`, `mt-24`).
+Spacing follows Tailwind's 4px scale. The common steps are 12px (`py-3`, `gap-3`), 16px, 24px (`p-6`, card padding) and 32px (`p-8`, panel padding, `gap-8` grid gutters). Big sections are separated by 48–96px (`mb-16`, `mt-24`). Home sections use 80–112px vertical padding (`py-20 sm:py-28`), divided by 1px `slate-800` rules. One band, "More than a game", sits on a 60% Studio Black wash for rhythm.
 
 Responsive behavior:
 - The game catalog grid goes from 1 column, to 2 at `md`, to 3 at `lg`.
+- Home's hero and the Join page are two columns at `lg` (copy left, product mock right) and stack below that, with copy first.
 - The lobby splits into two columns at `md`: game info and QR on the left, players on the right.
 - Phone views are a single centered column at `max-w-sm`/`max-w-xs`.
 - Host views assume a landscape TV or laptop.
@@ -268,7 +269,7 @@ The chrome is clean and calm. Controls are clear and unadorned so the game momen
 ### Buttons
 - **Shape:** Gently rounded (12px).
 - **Primary (tonal):** The catalog's repeated action ("Play Now", "Switch to this game"). At rest it's a 15% House Purple Lit tint with a 30% purple border and `purple-100` semibold label. On hover it fills solid House Purple with white text. Nine of these sit on one page, so they stay quiet until pointed at. 12px × 16px padding, full width inside cards.
-- **Primary sweep:** A purple→pink gradient with a white black-weight label, used only for the "get in the room" actions (Join, Enter Lobby). On hover each end steps one shade lighter.
+- **Primary sweep:** A purple→pink gradient with a white black-weight label, used only for the primary "get in the room" action (Start a game, Join game, Enter Lobby). On hover each end steps one shade lighter. On Home it pairs with a tonal "Join a game" at the same size (18px label, 16px × 32px padding).
 - **Go (host start):** Go Green fill, Stage Floor text, black-weight uppercase label at `tracking-widest`, 16px vertical padding, full width.
 - **Hover / Press:** Color transitions at 150–200ms. Primary CTAs press down to 95% scale on `:active`.
 - **Text links:** House Purple Glow, brightening to `purple-300` on hover. Footer links go from Ink Muted to white.
@@ -293,7 +294,19 @@ The chrome is clean and calm. Controls are clear and unadorned so the game momen
 The document declares `color-scheme: dark`, so scrollbars and native controls stay dark. `accent-color` is `purple-500`, text selection is a 45% `purple-500` wash with white text, and the input caret is `purple-400`. A game without an instruction image shows a drawn 1.5px-stroke gamepad icon in Ink Faint, never an emoji.
 
 ### Navigation
-There is no app bar. Public pages use a "← Back to games" text link in House Purple Glow above the page title. The footer row on Studio Black has the copyright in Ink Faint and About / Contact / Privacy Policy links (Ink Muted → white). It stacks vertically on mobile.
+- **Site header:** a 64px Stage Floor bar with a 1px `slate-800` bottom rule. The left side has the white extrabold "Grouparty" wordmark, linking Home. The right side has Home and Games as 14px semibold text links (Ink Muted → white, white with `aria-current="page"` when active). Join is a tonal button that fills solid House Purple on the Join page. It stays one row down to 390px.
+- **Skip link:** the first Tab stop on every page is a "Skip to content" pill in House Purple.
+- **Info pages:** a "← Back to games" text link in House Purple Glow above the page title.
+- **Footer:** a Studio Black row with the copyright in Ink Faint and About / Contact / Privacy Policy links (Ink Muted → white, padded to about 36px tap height). It stacks vertically on mobile.
+
+### Product Mock (signature component)
+These are miniatures of the real host screen, built in HTML instead of images: a Set Panel bezel around a Studio Black 16:9 screen with the game name, `ROOM: K7QX` in House Purple Glow mono, a white QR plate and a players list. Home overlaps a tilted phone showing the 4-slot code and "You're in!". The Join page circles the room code with a `purple-400` ring. The sample code is always `Room::EXAMPLE_CODE`, which can never be a real room. Mocks are `aria-hidden` or `role="img"` with a plain description.
+
+### Use-Case Row
+On Home, each setting (Classrooms, Work teams, Family & friends) is a row. On the left is a `purple-300` label, a 24–30px bold headline and Ink Muted copy. On the right are three 2:3 instruction-image thumbnails of games that suit it, from `HomeController::USE_CASE_GAMES`, each linking to Games. Rows are separated by 1px `slate-800` dividers. It isn't a card grid.
+
+### Benefit List
+This is a definition list in two columns. Each item has a 1px Rig Line top rule, an 18px bold white title and one line of Ink Muted copy. No icons and no cards. A sticky heading column sits beside it on desktop.
 
 ### Option Picker (signature component)
 This is the pre-game config control. A grid of three radio tiles uses Set Panel fill and a 2px Rig Line border at 12px radius. Each tile has a big black-weight value (1.5rem) with a small Ink Faint caption ("Quick", "Standard", "Marathon"). The selected tile's border takes the game's set accent, and the tile gets a 10% tint of that accent as its fill.
@@ -322,6 +335,6 @@ In-game feedback is injected per game. Toasts slide in and out, badges pop in on
 - **Don't** introduce a light theme or white surfaces. The only white surface is the QR code plate.
 - **Don't** look like a casino: no flashing lights, slot-machine glare, stacked neon glows or everything-animating-at-once.
 - **Don't** go childish or cartoonish: no mascots, bubbly comic fonts or toy-like chrome. The studio has to suit colleagues and classrooms as well as families.
-- **Don't** use the purple→pink gradient beyond the main join/enter CTAs, and never as gradient text.
+- **Don't** use the purple→pink gradient beyond the primary start/join CTA, never twice side by side, and never as gradient text.
 - **Don't** let two set accents, or house purple plus a set accent, compete inside one game view.
 - **Don't** use type smaller than 0.75rem, or put Ink Faint text on Set Panel Raised, where contrast drops too low.

@@ -13,46 +13,223 @@
   </script>
 <% end %>
 
-<%# Interim home page: the full marketing page lands in phase 3 of the site restructure. %>
-<div class="bg-slate-900 min-h-screen py-16 sm:py-24 px-4 sm:px-6 lg:px-8">
-  <div class="max-w-5xl mx-auto">
+<%
+  primary_cta = "inline-flex items-center justify-center bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white text-lg font-black px-8 py-4 rounded-xl transition-transform active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-400"
+  secondary_cta = "inline-flex items-center justify-center bg-purple-500/15 hover:bg-purple-600 border border-purple-500/30 hover:border-purple-600 text-purple-100 hover:text-white text-lg font-semibold px-8 py-4 rounded-xl transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-400"
+  check_icon = '<svg class="size-4 text-purple-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>'.html_safe
+%>
 
-    <header class="text-center">
-      <h1 class="text-5xl sm:text-6xl font-extrabold tracking-tight text-white mb-5">
-        <%= SeoHelper::SITE_NAME %>
-      </h1>
-      <p class="text-purple-300 text-xl font-semibold mb-3 text-balance">Free party games you play from your phone</p>
-      <p class="text-slate-400 text-lg max-w-2xl mx-auto text-pretty">
-        Put the host screen on a TV or laptop, friends scan the QR code and join from their phones.
-        No app to install, no sign-up — just pick a game and play together.
-      </p>
-      <div class="mt-10 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3">
-        <%= link_to "Start a game", games_path,
-              class: "bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-black px-8 py-4 rounded-xl text-center transition-transform active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-400" %>
-        <%= link_to "Join a game", find_room_path,
-              class: "bg-purple-500/15 hover:bg-purple-600 border border-purple-500/30 hover:border-purple-600 text-purple-100 hover:text-white font-semibold px-8 py-4 rounded-xl text-center transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-400" %>
+<div class="bg-slate-900 overflow-x-clip">
+
+  <%# ── Hero ─────────────────────────────────────────────────────────────── %>
+  <section class="px-4 sm:px-6 lg:px-8 pt-12 pb-20 sm:pt-20 lg:pt-24 lg:pb-28">
+    <div class="max-w-6xl mx-auto grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] gap-14 lg:gap-16 items-center">
+      <div class="max-w-xl">
+        <h1 class="text-5xl sm:text-6xl font-extrabold tracking-tight text-white text-balance leading-[1.02]">
+          Give any gathering a fun touch.
+        </h1>
+        <p class="mt-6 text-lg sm:text-xl text-slate-400 text-pretty">
+          Free party games for classrooms, work teams and family get-togethers.
+          Put one screen where everyone can see it — players join from their phones in seconds.
+        </p>
+        <div class="mt-9 flex flex-col sm:flex-row gap-3">
+          <%= link_to "Start a game", games_path, class: primary_cta %>
+          <%= link_to "Join a game", find_room_path, class: secondary_cta %>
+        </div>
+        <ul class="mt-7 flex flex-wrap gap-x-6 gap-y-2 text-sm text-slate-300">
+          <% ["No registration needed", "No app to install", "Free"].each do |perk| %>
+            <li class="flex items-center gap-2"><%= check_icon %><%= perk %></li>
+          <% end %>
+        </ul>
       </div>
-    </header>
 
-    <%= ad_slot :home, css: "mt-20 max-w-3xl mx-auto" %>
+      <%# A miniature of the real thing: the host lobby on a TV, and a phone that just joined %>
+      <figure role="img" class="relative mx-auto w-full max-w-xl lg:max-w-none pb-16 sm:pb-12" aria-label="The host screen shows a room code and QR code; players join from their phones.">
+        <div class="rounded-2xl border border-slate-700 bg-slate-800 p-2 sm:p-2.5 shadow-2xl">
+          <div class="aspect-video rounded-xl bg-slate-950 p-4 sm:p-7 flex gap-4 sm:gap-7 overflow-hidden" aria-hidden="true">
+            <div class="flex-1 min-w-0 flex flex-col">
+              <p class="text-white font-black text-base sm:text-2xl truncate">Mind Match</p>
+              <p class="mt-1 font-mono font-bold text-purple-400 text-xs sm:text-lg">ROOM: <%= Room::EXAMPLE_CODE %></p>
+              <div class="mt-auto shrink-0 self-start rounded-md bg-white p-1 sm:p-2">
+                <svg class="size-12 sm:size-20 text-slate-950" viewBox="0 0 21 21" fill="currentColor" shape-rendering="crispEdges">
+                  <path d="M0 0h7v7H0zM1 1v5h5V1zM2 2h3v3H2zM14 0h7v7h-7zm1 1v5h5V1zm1 1h3v3h-3zM0 14h7v7H0zm1 1v5h5v-5zm1 1h3v3H2z"/>
+                  <path d="M8 0h1v2H8zM10 1h2v1h-2zM9 3h2v2H9zM12 4h1v3h-1zM8 6h2v1H8zM8 8h3v1H8zM0 8h2v1H0zM3 9h3v1H3zM12 8h2v2h-2zM16 8h2v1h-2zM19 9h2v2h-2zM1 11h2v2H1zM5 11h3v1H5zM9 10h2v3H9zM13 11h3v1h-3zM17 12h2v2h-2zM8 14h2v2H8zM11 14h1v3h-1zM13 13h1v2h-1zM15 15h3v1h-3zM19 15h2v3h-2zM8 17h2v1H8zM13 17h2v2h-2zM16 18h2v3h-2zM9 19h3v2H9zM19 19h1v2h-1z"/>
+                </svg>
+              </div>
+            </div>
+            <div class="w-[46%] rounded-lg sm:rounded-xl bg-slate-800/80 border border-slate-700 p-2.5 sm:p-4 flex flex-col gap-1.5 sm:gap-2.5">
+              <p class="text-[0.6rem] sm:text-xs font-black tracking-widest text-slate-400">PLAYERS</p>
+              <% [["Ana", "bg-purple-500"], ["Leo", "bg-pink-500"], ["Mía", "bg-violet-500"], ["Sam", "bg-purple-400"]].each do |name, color| %>
+                <div class="flex items-center gap-2 rounded-md sm:rounded-lg bg-slate-700/70 px-1.5 py-1 sm:px-2.5 sm:py-1.5">
+                  <span class="size-4 sm:size-6 rounded-full <%= color %> text-[0.5rem] sm:text-xs font-bold text-white flex items-center justify-center"><%= name[0] %></span>
+                  <span class="text-[0.65rem] sm:text-sm font-bold text-white"><%= name %></span>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
 
-    <section class="mt-20" aria-labelledby="how-it-works">
-      <h2 id="how-it-works" class="text-2xl font-bold text-white mb-8">How it works</h2>
+        <div class="absolute bottom-0 right-3 sm:right-8 w-28 sm:w-40 rotate-3 rounded-[1.4rem] sm:rounded-[1.75rem] border-[5px] sm:border-[6px] border-slate-700 bg-slate-950 shadow-2xl shadow-black/60 px-2.5 py-4 sm:px-3.5 sm:py-6" aria-hidden="true">
+          <p class="text-[0.55rem] sm:text-[0.7rem] font-black tracking-widest text-slate-400 text-center">ROOM CODE</p>
+          <div class="mt-2 grid grid-cols-4 gap-1">
+            <% Room::EXAMPLE_CODE.each_char do |ch| %>
+              <span class="aspect-square rounded-md border border-slate-600 bg-slate-900 font-mono font-black text-[0.7rem] sm:text-sm text-white flex items-center justify-center"><%= ch %></span>
+            <% end %>
+          </div>
+          <p class="mt-3 rounded-md bg-gradient-to-r from-purple-600 to-pink-600 py-1 sm:py-1.5 text-center text-[0.6rem] sm:text-xs font-black text-white">You're in!</p>
+        </div>
+      </figure>
+    </div>
+  </section>
+
+  <%# ── Who it's for ─────────────────────────────────────────────────────── %>
+  <section class="px-4 sm:px-6 lg:px-8 py-20 sm:py-28 border-t border-slate-800" aria-labelledby="any-room">
+    <div class="max-w-6xl mx-auto">
+      <h2 id="any-room" class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white text-balance">Made for any room</h2>
+      <p class="mt-4 max-w-2xl text-lg text-slate-400 text-pretty">
+        Everyone holds their own controller, so nobody waits for a turn and nobody is left just watching.
+      </p>
+
+      <%
+        use_cases = [
+          [:classroom, "Classrooms", "A brain break that works.",
+           "Wake the class up between lessons. Every student plays at once from their phone, and the big screen keeps the whole room together."],
+          [:work, "Work teams", "Warm up any meeting.",
+           "Start with five minutes of play. People loosen up, talk more and get to know each other — in the office or on a video call."],
+          [:family, "Family & friends", "Quality time around the TV.",
+           "From kids to grandparents, everyone is in the same game. No controllers to share and nothing to set up."]
+        ]
+      %>
+      <div class="mt-14 divide-y divide-slate-800">
+        <% use_cases.each do |key, label, headline, body| %>
+          <article class="py-10 first:pt-0 last:pb-0 grid md:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] gap-8 md:gap-14 items-center">
+            <div>
+              <p class="text-purple-300 font-semibold"><%= label %></p>
+              <h3 class="mt-2 text-2xl sm:text-3xl font-bold text-white text-balance"><%= headline %></h3>
+              <p class="mt-3 text-slate-400 text-pretty max-w-md"><%= body %></p>
+            </div>
+            <% games = @use_case_games[key].select { |g| File.exist?(Rails.public_path.join("games", g.code, "instructions.png")) } %>
+            <% if games.any? %>
+              <div>
+                <p class="text-sm text-slate-400 mb-3">Try:</p>
+                <ul class="grid grid-cols-3 gap-3 sm:gap-4">
+                  <% games.each do |game| %>
+                    <li>
+                      <%= link_to games_path, class: "group block rounded-xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-purple-400" do %>
+                        <div class="aspect-[2/3] overflow-hidden rounded-xl border border-slate-700 group-hover:border-purple-500/70 bg-slate-800 transition-colors">
+                          <%= image_tag "/games/#{game.code}/instructions.png", alt: "", loading: "lazy", width: 640, height: 960,
+                                class: "w-full h-full object-cover object-top group-hover:scale-[1.03] transition-transform duration-500 ease-out" %>
+                        </div>
+                        <p class="mt-2 text-sm font-semibold text-slate-200 group-hover:text-white leading-snug"><%= game.name %></p>
+                      <% end %>
+                    </li>
+                  <% end %>
+                </ul>
+              </div>
+            <% end %>
+          </article>
+        <% end %>
+      </div>
+    </div>
+  </section>
+
+  <%# ── Why play together ────────────────────────────────────────────────── %>
+  <section class="px-4 sm:px-6 lg:px-8 py-20 sm:py-28 bg-slate-950/60 border-y border-slate-800" aria-labelledby="why-play">
+    <div class="max-w-6xl mx-auto grid lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] gap-12 lg:gap-20">
+      <div class="lg:sticky lg:top-12 self-start">
+        <h2 id="why-play" class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white text-balance">More than a game</h2>
+        <p class="mt-4 text-lg text-slate-400 text-pretty">
+          A few rounds together change the mood of a room. Here's what people get out of it.
+        </p>
+      </div>
+      <dl class="grid sm:grid-cols-2 gap-x-10 gap-y-10">
+        <%
+          benefits = [
+            ["Take a break from stress", "Laughing together is the quickest reset after a long day or a heavy meeting."],
+            ["Wake up your brain", "Memory, focus and quick thinking — every game gives your head a workout."],
+            ["Encourage teamwork", "Some games reward thinking alike, others make you read the people around you."],
+            ["Get to know your team", "See how your colleagues think when there's no agenda on the table."],
+            ["Quality time with family", "Phones become controllers, so everyone is in the same game, together."]
+          ]
+        %>
+        <% benefits.each do |title, body| %>
+          <div class="border-t border-slate-700 pt-5">
+            <dt class="text-lg font-bold text-white"><%= title %></dt>
+            <dd class="mt-2 text-slate-400 text-pretty"><%= body %></dd>
+          </div>
+        <% end %>
+      </dl>
+    </div>
+  </section>
+
+  <%= ad_slot :home, css: "px-4 mt-16 max-w-3xl mx-auto" %>
+
+  <%# ── Simple: in the room or on a call ─────────────────────────────────── %>
+  <section class="px-4 sm:px-6 lg:px-8 py-20 sm:py-28" aria-labelledby="simple">
+    <div class="max-w-6xl mx-auto">
+      <h2 id="simple" class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white text-balance max-w-2xl">Nothing to install. Play wherever you meet.</h2>
+      <ul class="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-slate-300">
+        <% ["No downloads", "No accounts", "Works in any browser"].each do |perk| %>
+          <li class="flex items-center gap-2"><%= check_icon %><%= perk %></li>
+        <% end %>
+      </ul>
+
+      <div class="mt-14 grid md:grid-cols-2 rounded-2xl border border-slate-700 bg-slate-800 divide-y md:divide-y-0 md:divide-x divide-slate-700">
+        <div class="p-7 sm:p-10">
+          <svg class="size-9 text-purple-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4"/>
+          </svg>
+          <h3 class="mt-5 text-xl font-bold text-white">In the same room</h3>
+          <p class="mt-2 text-slate-400 text-pretty">
+            Open a game on a TV, projector or laptop. Everyone scans the QR code with their phone camera and they're in.
+          </p>
+        </div>
+        <div class="p-7 sm:p-10">
+          <svg class="size-9 text-purple-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="m16 13 5.2 3.5a.5.5 0 0 0 .8-.4V7.9a.5.5 0 0 0-.8-.4L16 11"/><rect x="2" y="6" width="14" height="12" rx="2"/>
+          </svg>
+          <h3 class="mt-5 text-xl font-bold text-white">On a video call</h3>
+          <p class="mt-2 text-slate-400 text-pretty">
+            Share your screen on Zoom, Google Meet or Microsoft Teams. Players scan the code from the call — or type it at
+            <%= link_to "#{request.host}/join", find_room_path, class: "text-purple-300 hover:text-white underline underline-offset-4 decoration-purple-500/50" %> — and start playing.
+          </p>
+          <p class="mt-3 text-sm text-slate-400">Fast-reaction games play best in the same room.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <%# ── How it works ─────────────────────────────────────────────────────── %>
+  <section class="px-4 sm:px-6 lg:px-8 pb-20 sm:pb-28" aria-labelledby="how-it-works">
+    <div class="max-w-6xl mx-auto">
+      <h2 id="how-it-works" class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white mb-10">How it works</h2>
       <ol class="grid grid-cols-1 md:grid-cols-3 gap-x-10 gap-y-8">
         <li class="border-t border-slate-700 pt-6">
-          <h3 class="text-lg font-bold text-white mb-2"><span class="text-purple-400 tabular-nums mr-2">1</span>Create a room</h3>
-          <p class="text-slate-400">Pick a game. The host screen shows a room code and a QR code — put it on the biggest screen you have.</p>
+          <h3 class="text-lg font-bold text-white mb-2"><span class="text-purple-400 tabular-nums mr-2">1</span>Pick a game</h3>
+          <p class="text-slate-400 text-pretty">The host screen shows a room code and a QR code. Put it on the biggest screen you have, or share it on your call.</p>
         </li>
         <li class="border-t border-slate-700 pt-6">
           <h3 class="text-lg font-bold text-white mb-2"><span class="text-purple-400 tabular-nums mr-2">2</span>Join from your phone</h3>
-          <p class="text-slate-400">Players scan the QR code, type a nickname and they're in. Works in any mobile browser.</p>
+          <p class="text-slate-400 text-pretty">Players scan the QR code or type the room code, pick a nickname and they're in.</p>
         </li>
         <li class="border-t border-slate-700 pt-6">
           <h3 class="text-lg font-bold text-white mb-2"><span class="text-purple-400 tabular-nums mr-2">3</span>Play together</h3>
-          <p class="text-slate-400">Trivia, social deduction, memory, tank battles and more — everyone plays live on their own phone.</p>
+          <p class="text-slate-400 text-pretty">Trivia, social deduction, memory, color matching and more — <%= @games_count %> games, everyone playing live.</p>
         </li>
       </ol>
-    </section>
+    </div>
+  </section>
 
-  </div>
+  <%# ── Closing call to action ───────────────────────────────────────────── %>
+  <section class="px-4 sm:px-6 lg:px-8 pb-24 sm:pb-32" aria-labelledby="ready">
+    <div class="max-w-6xl mx-auto rounded-3xl border border-purple-500/30 bg-gradient-to-br from-purple-950/70 via-slate-900 to-slate-900 px-6 py-14 sm:px-14 sm:py-16 text-center">
+      <h2 id="ready" class="text-3xl sm:text-5xl font-extrabold tracking-tight text-white text-balance">Ready when your group is.</h2>
+      <p class="mt-4 text-lg text-slate-400 text-pretty">Open a room in a few seconds. No registration needed.</p>
+      <div class="mt-9 flex flex-col sm:flex-row gap-3 justify-center">
+        <%= link_to "Start a game", games_path, class: primary_cta %>
+        <%= link_to "Join a game", find_room_path, class: secondary_cta %>
+      </div>
+    </div>
+  </section>
+
 </div>

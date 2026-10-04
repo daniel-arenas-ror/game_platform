@@ -1,6 +1,8 @@
 <% content_for :title, "Games" %>
 <% content_for :description, "Pick a free party game — trivia, social deduction, memory, color matching, tank battles and more. Open a room on the big screen and everyone plays from their phone." %>
 <% content_for :head do %>
+  <%# Change-game mode belongs to one private room %>
+  <% if @room %><meta name="robots" content="noindex, nofollow"><% end %>
   <script type="application/ld+json">
     <%= raw json_escape({
       "@context" => "https://schema.org",

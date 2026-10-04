@@ -1,10 +1,10 @@
 <footer class="border-t border-slate-800 bg-slate-950 px-4 py-8">
   <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm">
     <p class="text-slate-500">© <%= Date.current.year %> <%= SeoHelper::SITE_NAME %> · Free party games</p>
-    <nav aria-label="Footer" class="flex gap-6">
-      <%= link_to "About",          about_path,   class: "text-slate-400 hover:text-white" %>
-      <%= link_to "Contact",        contact_path, class: "text-slate-400 hover:text-white" %>
-      <%= link_to "Privacy Policy", privacy_path, class: "text-slate-400 hover:text-white" %>
+    <nav aria-label="Footer" class="flex gap-2 sm:gap-4">
+      <%= link_to "About",          about_path,   class: "inline-block px-2 py-2 rounded text-slate-400 hover:text-white focus-visible:outline-2 focus-visible:outline-purple-400" %>
+      <%= link_to "Contact",        contact_path, class: "inline-block px-2 py-2 rounded text-slate-400 hover:text-white focus-visible:outline-2 focus-visible:outline-purple-400" %>
+      <%= link_to "Privacy Policy", privacy_path, class: "inline-block px-2 py-2 rounded text-slate-400 hover:text-white focus-visible:outline-2 focus-visible:outline-purple-400" %>
     </nav>
   </div>
 </footer>

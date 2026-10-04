@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-04T01:58:03+00:00",
+  "generatedAt": "2026-10-04T19:00:31+00:00",
   "title": "Design System: Grouparty",
   "extensions": {
     "colorMeta": {
@@ -445,6 +445,13 @@
   },
   "components": [
     {
+      "name": "Site Header",
+      "kind": "nav",
+      "description": "Public-site navigation: wordmark, Home / Games text links, Join as a tonal button.",
+      "html": "<header class=\"ds-header\"><a class=\"ds-brand\" href=\"#\">Grouparty</a><nav><a href=\"#\" aria-current=\"page\">Home</a><a href=\"#\">Games</a><a class=\"ds-join\" href=\"#\">Join</a></nav></header>",
+      "css": ".ds-header{display:flex;align-items:center;justify-content:space-between;height:64px;padding:0 24px;background:oklch(20.8% .042 265.755);border-bottom:1px solid oklch(27.9% .041 260.031);font-family:ui-sans-serif,system-ui,sans-serif}.ds-brand{color:#fff;font-weight:800;font-size:1.25rem;letter-spacing:-.025em;text-decoration:none}.ds-header nav{display:flex;align-items:center;gap:8px;font-size:.875rem;font-weight:600}.ds-header nav a{padding:8px 12px;border-radius:.5rem;color:oklch(70.4% .04 256.788);text-decoration:none;transition:color .15s,background-color .15s}.ds-header nav a:hover,.ds-header nav a[aria-current=page]{color:#fff}.ds-header nav a:focus-visible{outline:2px solid oklch(71.4% .203 305.504);outline-offset:2px}.ds-header nav a.ds-join{margin-left:4px;padding:8px 16px;background:oklch(62.7% .265 303.9/.15);border:1px solid oklch(62.7% .265 303.9/.3);color:oklch(97.7% .014 308.299)}.ds-header nav a.ds-join:hover{background:oklch(55.8% .288 302.321);border-color:oklch(55.8% .288 302.321);color:#fff}"
+    },
+    {
       "name": "Primary Button",
       "kind": "button",
       "refersTo": "button-solid",
@@ -456,7 +463,7 @@
       "name": "Primary Sweep Button",
       "kind": "button",
       "refersTo": "button-primary",
-      "description": "Purple→pink gradient CTA, reserved for Join / Enter Lobby.",
+      "description": "Purple→pink gradient CTA, reserved for the one primary start/join action per view.",
       "html": "<button class=\"ds-btn-sweep\">ENTER LOBBY</button>",
       "css": ".ds-btn-sweep{width:100%;background:linear-gradient(to right,oklch(55.8% .288 302.321),oklch(59.2% .249 .584));color:#fff;font:900 1rem/1.5 ui-sans-serif,system-ui,sans-serif;padding:16px 24px;border:none;border-radius:.75rem;box-shadow:0 10px 15px -3px rgb(0 0 0/.1);cursor:pointer;transition:transform .15s}.ds-btn-sweep:hover{background:linear-gradient(to right,oklch(62.7% .265 303.9),oklch(65.6% .241 354.308))}.ds-btn-sweep:focus-visible{outline:2px solid oklch(71.4% .203 305.504);outline-offset:2px}.ds-btn-sweep:active{transform:scale(.95)}"
     },
@@ -540,7 +547,7 @@
       },
       {
         "name": "The Gradient Is a Signature Rule",
-        "body": "The purple→pink sweep is reserved for the main \"get into a room\" CTAs (Join, Enter Lobby). It isn't a general fill, and it never colors text.",
+        "body": "The purple→pink sweep is reserved for the one primary \"get into a room\" CTA in each view (Start a game, Join game, Enter Lobby). It isn't a general fill, and it never colors text. The secondary CTA beside it is always the tonal button.",
         "section": "colors"
       },
       {
@@ -572,7 +579,7 @@
       "**Don't** introduce a light theme or white surfaces. The only white surface is the QR code plate.",
       "**Don't** look like a casino: no flashing lights, slot-machine glare, stacked neon glows or everything-animating-at-once.",
       "**Don't** go childish or cartoonish: no mascots, bubbly comic fonts or toy-like chrome. The studio has to suit colleagues and classrooms as well as families.",
-      "**Don't** use the purple→pink gradient beyond the main join/enter CTAs, and never as gradient text.",
+      "**Don't** use the purple→pink gradient beyond the primary start/join CTA, never twice side by side, and never as gradient text.",
       "**Don't** let two set accents, or house purple plus a set accent, compete inside one game view.",
       "**Don't** use type smaller than 0.75rem, or put Ink Faint text on Set Panel Raised, where contrast drops too low."
     ]

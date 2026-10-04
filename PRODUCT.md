@@ -31,9 +31,10 @@ There is nothing to install and no account to create. It works in any modern bro
 
 ## Operating Context
 
-- **Two screens per session.** The host view is seen from across a room, on a TV, projector or laptop. The player view is a phone held in the hand, often on mobile data, sometimes as a spectator.
-- **The flow is home → create room → lobby with QR and room code → configure → playing → finished.** The host can change games while players stay in the room.
-- **Players join via the QR code, `/join/:code`, or the code field on the home page.** Identity is per session, so there are no accounts.
+- **Two screens per session.** The host view is seen from across a room, on a TV, projector or laptop, or shared on a video call (Zoom, Google Meet, Microsoft Teams). The player view is a phone held in the hand, often on mobile data, sometimes as a spectator.
+- **Remote play is supported but secondary.** Players on a call scan the code from the shared screen or type it at `/join`. Fast-reaction games play best in the same room, and copy must say so rather than promise that every game works well over screen share.
+- **The host flow is Home (`/`) → Games (`/games`) → create room → configure → lobby with QR and room code → playing → finished.** The host can change games while players stay in the room, via `/games?room=CODE`.
+- **Players join via the QR code (straight to `/join/:code`) or by typing the code on the Join page (`/join`).** Identity is per session, so there are no accounts.
 - **Everything happens in real time over WebSockets.** Players who disconnect are removed after a 30-second grace period.
 - **The rules are usually explained out loud by the host.** In-game instruction images and the game descriptions support that.
 
@@ -41,8 +42,8 @@ There is nothing to install and no account to create. It works in any modern bro
 
 - **Stack.** Rails 8, MongoDB (Mongoid), ActionCable, Stimulus, Tailwind via `tailwindcss-rails`, and importmap with no Node bundler. It is deployed to AWS via `script/aws_deploy.sh`.
 - **Games.** Nine are playable: `fisherman`, `how_want_be_billionare`, `battle_city`, `guess_the_color`, `count_birds`, `sequence_memory`, `submarine_combat`, `mind_match` and `soup_of_numbers`. `impostor` is pending.
-- **Public pages.** These are the home page with its game catalog, join-by-code field and "How it works" section, plus About, Contact and Privacy. SEO is set up with JSON-LD, OG tags, a sitemap and robots.txt.
-- **Ads.** Google AdSense is shown in a limited set of places. An ad must never sit next to a Play or Join control, and game screens stay free of ads and footers.
+- **Public pages.** There are three main pages, linked from a shared site header. **Home** explains the idea: use cases, benefits, in-room and video-call play, and how it works. **Games** is the catalog. **Join** is room-code entry. About, Contact and Privacy hang off the footer. SEO is set up with JSON-LD, OG tags, a sitemap and robots.txt. Change-game pages (`/games?room=`) and room pages are noindex.
+- **Ads.** Google AdSense is shown in a limited set of places: Home, Games, the lobby, the info pages and the host's Game Over screen. The Join page never shows ads. An ad must never sit next to a Play or Join control, and game screens stay free of ads and footers.
 - **Language.** Copy is English today and Spanish is the planned second locale. New copy should be written so it can be translated, without hard-coded string concatenation in places where translation would break it.
 - **Undecided.** Premium features and their pricing don't exist yet.
 
@@ -59,6 +60,8 @@ There is nothing to install and no account to create. It works in any modern bro
 - **Site copy.** This is in the About, Contact and Privacy pages under `app/views/pages/`.
 - **Sounds.** Sound assets are in `public/games/sounds/`.
 - **Not available.** There are no testimonials, user counts, press, ratings or case studies. Future work must not invent them.
+- **Claims.** Benefit copy stays modest: "Wake up your brain" and "take a break from stress". Never claim IQ gains or other measurable health or cognitive outcomes.
+- **Home illustrations.** These are planned but not made yet. They were held back by image-generation credits.
 
 ## Product Principles
 

@@ -25,6 +25,7 @@ class ChangeGameFlowTest < ActionDispatch::IntegrationTest
     assert_select "form[action=?]", change_game_room_path(@room.code), minimum: 2
     assert_select "button", text: /Configure/, count: 1
     assert_select "a[href=?]", playing_room_path(@room.code), text: "Cancel"
+    assert_select "meta[name=robots][content=?]", "noindex, nofollow"
   end
 
   test "games page ignores an unknown room code" do

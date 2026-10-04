@@ -18,6 +18,19 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     assert_select "nav[aria-label=Main] a[aria-current=page]", "Home"
   end
 
+  test "home explains the idea and suggests games per setting" do
+    game = Game.create!(name: "Mind Match", code: "mind_match", description: "Words")
+    get root_url
+    assert_select "h1", /fun touch/
+    assert_select "h2", "Made for any room"
+    assert_select "dt", "Wake up your brain"
+    assert_select "a[href=?]", games_path, text: "Start a game", count: 2
+    assert_select "a[href=?]", find_room_path, text: "Join a game", count: 2
+    assert_select "img[src=?]", "/games/mind_match/instructions.png"
+  ensure
+    game&.delete
+  end
+
   test "should get the games page" do
     get games_url
     assert_response :success
