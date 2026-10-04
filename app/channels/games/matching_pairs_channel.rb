@@ -1,7 +1,7 @@
 class Games::MatchingPairsChannel < ApplicationCable::Channel
   STREAM_PREFIX = "matching_pairs_room_"
   START_DELAY   = 3    # seconds before the first memorize phase
-  ROUND_PAUSE   = 5    # seconds the round results stay up before the next board
+  ROUND_PAUSE   = 5    # seconds the round results stay up before the next board (or game over)
   GRACE_PERIOD  = 1    # extra time after the round timer for in-flight flips
   POLL_INTERVAL = 0.25 # how often a round checks whether everyone has cleared their board
 
@@ -94,7 +94,7 @@ class Games::MatchingPairsChannel < ApplicationCable::Channel
           nicknames:    nicknames_map
         })
 
-        sleep ROUND_PAUSE if round < total_rounds
+        sleep ROUND_PAUSE # also after the last round, so the final board and celebrations stay up
       end
 
       if loop_id == @loop_id

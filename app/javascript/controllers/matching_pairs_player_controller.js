@@ -1,13 +1,15 @@
 import { Controller } from "@hotwired/stimulus"
 import consumer from "channels/consumer"
-import { buildBoard, cardAt, showBack, showFace, preload, ranked, MEDALS } from "controllers/matching_pairs/cards"
+import {
+  buildBoard, cardAt, showBack, showFace, preload, ranked, restartAnimation, confetti, injectStyles, FLIP_MS, MEDALS
+} from "controllers/matching_pairs/cards"
 
 // Countdown colour thresholds
 const COLOR_GREEN  = "#4ade80"
 const COLOR_YELLOW = "#facc15"
 const COLOR_RED    = "#f87171"
 
-// How long a wrong pair stays face up before both cards turn back
+// How long a wrong pair stays face up (after the flip) before both cards turn back
 const MISS_DELAY = 500
 
 export default class extends Controller {
@@ -30,7 +32,9 @@ export default class extends Controller {
     this.active    = false // the round is being played
     this.pending   = false // a flip is waiting for the server's answer
     this.resolving = false // a wrong pair is showing before it turns back
-    this.clickSound = new Audio("/games/sounds/click.mp3")
+    this.flipSound   = new Audio("/games/sounds/flip.mp3")
+    this.revealSound = new Audio("/games/sounds/reveal.mp3")
+    injectStyles()
     this.subscribe()
   }
 
@@ -38,7 +42,7 @@ export default class extends Controller {
     this.channel?.unsubscribe()
     clearInterval(this.timerHandle)
     clearTimeout(this.missHandle)
-    this.audioCtx?.close()
+    this.revealSound.pause()
   }
 
   subscribe() {
@@ -127,13 +131,15 @@ export default class extends Controller {
     if (result === "match") {
       showFace(card, item, "matched")
       showFace(otherCard, this.items[other], "matched")
+      ;[ card, otherCard ].forEach(c => restartAnimation(c, "mp-pulse"))
       this.setMatches(matches)
-      this.playChime()
+      this.playSound(this.revealSound)
       this.vibrate(60)
       if (cleared) {
         this.active = false
         this.setFeedback("🎉 Board cleared!", COLOR_GREEN)
         this.setStatus("All pairs found — wait for the others")
+        setTimeout(() => { confetti(); this.vibrate([ 60, 40, 60, 40, 160 ]) }, FLIP_MS)
       } else {
         this.setFeedback("+100", COLOR_GREEN)
       }
@@ -143,13 +149,14 @@ export default class extends Controller {
     // A miss: both cards stay up briefly, then turn back.
     showFace(card, item, "miss")
     showFace(otherCard, this.items[other], "miss")
+    ;[ card, otherCard ].forEach(c => restartAnimation(c, "mp-shake"))
     this.setFeedback("−10", COLOR_RED)
     this.vibrate(120)
     this.resolving = true
     this.missHandle = setTimeout(() => {
       [ card, otherCard ].forEach(c => { if (c.dataset.state === "miss") showBack(c) })
       this.resolving = false
-    }, MISS_DELAY)
+    }, FLIP_MS + MISS_DELAY)
   }
 
   onRoundOver({ deck, scores, round, total_rounds }) {
@@ -161,11 +168,11 @@ export default class extends Controller {
 
     // Show the whole board; the pairs this player missed are dimmed.
     clearTimeout(this.missHandle)
+    this.resolving = false
     ;(deck || []).forEach((item, i) => {
       const card = cardAt(this.boardTarget, i)
       if (!card || card.dataset.state === "matched") return
-      showFace(card, item)
-      card.style.opacity = "0.45"
+      setTimeout(() => { showFace(card, item); card.classList.add("mp-dim") }, i * 25)
     })
 
     this.setStatus(round < total_rounds ? "Round over · next board soon" : "Round over")
@@ -185,6 +192,8 @@ export default class extends Controller {
       `${tied ? "Tied for" : "You finished"} #${place}`
     this.finalScoreTarget.textContent = me?.pts ?? 0
     this.phaseGameOverTarget.classList.remove("hidden")
+    restartAnimation(this.gameOverIconTarget, "mp-pop")
+    if (place === 1) confetti(60)
   }
 
   // ── Board ─────────────────────────────────────────────────────────────────
@@ -196,7 +205,7 @@ export default class extends Controller {
 
     event.preventDefault()
     this.pending = true
-    this.playClick()
+    this.playSound(this.flipSound)
     this.channel.perform("flip", { index: Number(card.dataset.index) })
   }
 
@@ -243,6 +252,7 @@ export default class extends Controller {
     this.coverTitleTarget.textContent = title
     this.coverHintTarget.textContent  = hint
     this.coverTarget.classList.remove("hidden")
+    restartAnimation(this.coverTarget, "mp-slide")
   }
 
   hideCover() {
@@ -265,6 +275,7 @@ export default class extends Controller {
   setFeedback(text, color = "#fff") {
     this.feedbackTarget.textContent = text
     this.feedbackTarget.style.color = color
+    if (text) restartAnimation(this.feedbackTarget, "mp-pop")
   }
 
   // ── Countdown ─────────────────────────────────────────────────────────────
@@ -294,30 +305,10 @@ export default class extends Controller {
 
   // ── Feedback ──────────────────────────────────────────────────────────────
 
-  playClick() {
-    this.clickSound.currentTime = 0
-    this.clickSound.play().catch(() => {}) // ignore autoplay blocks
-  }
-
-  // Short rising two-note chime, synthesized so no extra sound file is needed.
-  playChime() {
-    try {
-      this.audioCtx ??= new AudioContext()
-      const ctx = this.audioCtx
-      ;[ 880, 1320 ].forEach((freq, i) => {
-        const osc  = ctx.createOscillator()
-        const gain = ctx.createGain()
-        const at   = ctx.currentTime + i * 0.1
-        osc.type = "triangle"
-        osc.frequency.value = freq
-        gain.gain.setValueAtTime(0.0001, at)
-        gain.gain.exponentialRampToValueAtTime(0.3, at + 0.02)
-        gain.gain.exponentialRampToValueAtTime(0.0001, at + 0.3)
-        osc.connect(gain).connect(ctx.destination)
-        osc.start(at)
-        osc.stop(at + 0.35)
-      })
-    } catch (_) { /* audio unavailable */ }
+  // Restarts the sound so quick taps each get their own play.
+  playSound(audio) {
+    audio.currentTime = 0
+    audio.play().catch(() => {}) // ignore autoplay blocks
   }
 
   vibrate(pattern) {

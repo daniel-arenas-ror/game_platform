@@ -1,10 +1,59 @@
 // Card rendering shared by the Matching Pairs host and player controllers.
 // A card item is { key, label, kind: "image" | "text", src }.
+//
+// Each card is a 3D flip card:  [data-index] (perspective, pulse/shake)
+//                                 └ .mp-inner (rotates 180° when face up)
+//                                     ├ .mp-back  (rose, "?")
+//                                     └ .mp-face  (the item)
 
 export const BACK_COLOR  = "linear-gradient(135deg, #e11d48, #9f1239)"
 export const FACE_COLOR  = "#f1f5f9"
 export const MATCH_RING  = "0 0 0 3px #fb7185"
 export const MISS_COLOR  = "#fecaca"
+
+export const FLIP_MS = 250
+
+const STYLE_ID = "matching-pairs-styles"
+const STYLES = `
+  .mp-card  { perspective: 600px; aspect-ratio: 1; user-select: none; -webkit-user-select: none; }
+  .mp-inner { position: relative; width: 100%; height: 100%; transform-style: preserve-3d;
+              transition: transform ${FLIP_MS}ms ease-out; }
+  .mp-card[data-state="up"] .mp-inner, .mp-card[data-state="matched"] .mp-inner,
+  .mp-card[data-state="miss"] .mp-inner { transform: rotateY(180deg); }
+  .mp-back, .mp-face { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+                       border-radius: 12px; overflow: hidden; backface-visibility: hidden; -webkit-backface-visibility: hidden;
+                       transition: background 0.2s ease, box-shadow 0.2s ease; }
+  .mp-back { background: ${BACK_COLOR}; }
+  .mp-face { background: ${FACE_COLOR}; transform: rotateY(180deg); }
+  .mp-card[data-state="matched"] .mp-face { box-shadow: inset ${MATCH_RING}; }
+  .mp-card[data-state="miss"] .mp-face    { background: ${MISS_COLOR}; }
+  .mp-card.mp-dim { opacity: 0.45; transition: opacity 0.3s ease; }
+
+  @keyframes mp-pulse { 0%, 100% { transform: scale(1) } 50% { transform: scale(1.12) } }
+  @keyframes mp-shake { 0%, 100% { transform: translateX(0) } 20%, 60% { transform: translateX(-5px) } 40%, 80% { transform: translateX(5px) } }
+  @keyframes mp-pop   { 0% { transform: scale(0.5); opacity: 0 } 60% { transform: scale(1.2); opacity: 1 } 100% { transform: scale(1) } }
+  @keyframes mp-slide { from { transform: translateY(16px); opacity: 0 } to { transform: translateY(0); opacity: 1 } }
+  @keyframes mp-fall  { from { transform: translate(0, -10vh) rotate(0) } to { transform: translate(var(--drift), 110vh) rotate(var(--spin)) } }
+  .mp-pulse { animation: mp-pulse 0.35s ease-out ${FLIP_MS}ms }
+  .mp-shake { animation: mp-shake 0.3s ease-in-out ${FLIP_MS}ms }
+  .mp-pop   { animation: mp-pop 0.4s ease-out }
+  .mp-slide { animation: mp-slide 0.3s ease-out }
+  .mp-confetti { position: fixed; top: 0; z-index: 50; pointer-events: none; animation: mp-fall linear forwards; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mp-inner { transition: none; }
+    .mp-pulse, .mp-shake, .mp-pop, .mp-slide { animation: none; }
+    .mp-confetti { display: none; }
+  }
+`
+
+export function injectStyles() {
+  if (document.getElementById(STYLE_ID)) return
+  const style = document.createElement("style")
+  style.id = STYLE_ID
+  style.textContent = STYLES
+  document.head.appendChild(style)
+}
 
 export function esc(str) {
   return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;")
@@ -26,25 +75,23 @@ export function faceHtml(item) {
                        color:${numberColor(item.label)}">${esc(item.label)}</span>`
 }
 
-export function backHtml() {
-  return `<span style="font-weight:900;font-size:var(--card-font);color:rgba(255,255,255,.35)">?</span>`
-}
-
 // Builds `cols × rows` face-down cards inside `el`. `fontSize` is a CSS length for faces and backs.
 export function buildBoard(el, cols, rows, fontSize) {
+  injectStyles()
   el.style.gridTemplateColumns = `repeat(${cols}, minmax(0, 1fr))`
   el.style.setProperty("--card-font", fontSize)
   el.innerHTML = ""
 
   for (let i = 0; i < cols * rows; i++) {
     const card = document.createElement("div")
+    card.className = "mp-card"
     card.dataset.index = i
-    card.style.cssText = `
-      aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
-      border-radius: 12px; overflow: hidden; user-select: none;
-      transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease, opacity 0.3s ease;
-    `
-    showBack(card)
+    card.dataset.state = "down"
+    card.innerHTML = `
+      <div class="mp-inner">
+        <div class="mp-back"><span style="font-weight:900;font-size:var(--card-font);color:rgba(255,255,255,.35)">?</span></div>
+        <div class="mp-face"></div>
+      </div>`
     el.appendChild(card)
   }
 }
@@ -53,19 +100,55 @@ export function cardAt(el, index) {
   return el.querySelector(`[data-index="${index}"]`)
 }
 
+// Turns a card face down. The face is cleared once it's hidden, so it can't be peeked at.
 export function showBack(card) {
+  if (!card) return
   card.dataset.state = "down"
-  card.style.background = BACK_COLOR
-  card.style.boxShadow  = "none"
-  card.style.opacity    = "1"
-  card.innerHTML = backHtml()
+  card.classList.remove("mp-dim")
+  setTimeout(() => { if (card.dataset.state === "down") card.querySelector(".mp-face").innerHTML = "" }, FLIP_MS)
 }
 
+// state: "up" | "matched" | "miss". Only rewrites the face when the item changes, so an
+// already-visible image doesn't reload.
 export function showFace(card, item, state = "up") {
+  if (!card || !item) return
+  const face = card.querySelector(".mp-face")
+  if (face.dataset.key !== item.key || !face.innerHTML) {
+    face.innerHTML  = faceHtml(item)
+    face.dataset.key = item.key
+  }
   card.dataset.state = state
-  card.style.background = state === "miss" ? MISS_COLOR : FACE_COLOR
-  card.style.boxShadow  = state === "matched" ? MATCH_RING : "none"
-  card.innerHTML = faceHtml(item)
+}
+
+// Turns every card over one after another, `stepMs` apart.
+export function cascade(el, fn, stepMs = 25) {
+  el.querySelectorAll("[data-index]").forEach((card, i) => setTimeout(() => fn(card, i), i * stepMs))
+}
+
+export function restartAnimation(el, className) {
+  if (!el) return
+  el.classList.remove(className)
+  void el.offsetWidth // force reflow so the animation plays again
+  el.classList.add(className)
+}
+
+// A short burst of falling confetti across the whole screen.
+export function confetti(count = 40) {
+  injectStyles()
+  const colors = [ "#fb7185", "#f43f5e", "#facc15", "#4ade80", "#38bdf8", "#c084fc" ]
+  for (let i = 0; i < count; i++) {
+    const bit = document.createElement("div")
+    const size = 6 + Math.random() * 6
+    bit.className = "mp-confetti"
+    bit.style.cssText = `
+      left: ${Math.random() * 100}vw; width: ${size}px; height: ${size * 1.6}px;
+      background: ${colors[i % colors.length]}; border-radius: 2px;
+      animation-duration: ${1.6 + Math.random() * 1.4}s; animation-delay: ${Math.random() * 0.4}s;
+      --drift: ${(Math.random() - 0.5) * 30}vw; --spin: ${(Math.random() - 0.5) * 1080}deg;
+    `
+    document.body.appendChild(bit)
+    setTimeout(() => bit.remove(), 3500)
+  }
 }
 
 // Loads images ahead of time so a flipped card shows instantly.

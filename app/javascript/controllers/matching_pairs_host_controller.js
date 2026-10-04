@@ -1,6 +1,8 @@
 import { Controller } from "@hotwired/stimulus"
 import consumer from "channels/consumer"
-import { buildBoard, cardAt, showBack, showFace, ranked, esc, MEDALS } from "controllers/matching_pairs/cards"
+import {
+  buildBoard, cardAt, showBack, showFace, ranked, esc, cascade, restartAnimation, confetti, injectStyles, MEDALS
+} from "controllers/matching_pairs/cards"
 
 // Countdown colour thresholds
 const COLOR_GREEN  = "#4ade80"
@@ -14,7 +16,7 @@ export default class extends Controller {
   static values  = { roomCode: String }
   static targets = [
     "board", "roundLabel", "phaseTitle", "phaseHint", "countdown",
-    "scoreboard", "pairsLabel",
+    "scoreboard", "pairsLabel", "toasts",
     "phaseGameOver", "finalLeaderboard", "playAgain"
   ]
 
@@ -27,6 +29,7 @@ export default class extends Controller {
     this.progress  = {} // { pid => { matches, wrong } } for the current round
     this.nicknames = {}
     this.tickSound = new Audio("/games/sounds/timer_count_down.mp3")
+    injectStyles()
     this.subscribe()
   }
 
@@ -102,21 +105,23 @@ export default class extends Controller {
     Object.keys(this.scores).forEach(id => { this.progress[id] = { matches: 0, wrong: 0 } })
     this.renderScoreboard()
 
-    this.revealAll(deck)
+    this.revealAll(deck, true)
     this.setPhase("Memorize the board!", "Remember where every card is — then find the pairs on your phone.")
     this.startCountdown(duration)
   }
 
   onPlay({ duration }) {
-    this.hideAll()
+    this.hideAll(true)
     this.setPhase("Find the pairs!", `+100 per pair · −10 per wrong pair`)
     this.startCountdown(duration)
   }
 
-  onProgress({ player_id, score, matches, cleared }) {
+  onProgress({ player_id, score, matches, cleared, match }) {
     this.scores[player_id] = score
     this.progress[player_id] = { ...(this.progress[player_id] || {}), matches, cleared }
     this.renderScoreboard()
+    if (match) restartAnimation(this.scoreboardTarget.querySelector(`[data-score="${player_id}"]`), "mp-pop")
+    if (cleared) this.toast(`🎉 ${esc(this.nicknames[player_id] || "Someone")} cleared the board!`)
   }
 
   onRoundOver({ round, total_rounds, deck, scores, progress, nicknames }) {
@@ -124,7 +129,7 @@ export default class extends Controller {
     this.scores    = scores || this.scores
     this.progress  = progress || this.progress
     this.nicknames = nicknames || this.nicknames
-    this.revealAll(deck)
+    this.revealAll(deck, true)
     this.renderScoreboard()
     this.countdownTarget.textContent = ""
     this.setPhase(`Round ${round} over`, round < total_rounds ? "Next board coming up…" : "Final results…")
@@ -145,6 +150,7 @@ export default class extends Controller {
       this.channel.perform("restart_game", {})
     }, { once: true })
     this.phaseGameOverTarget.classList.remove("hidden")
+    confetti(80)
   }
 
   // ── Board ─────────────────────────────────────────────────────────────────
@@ -162,22 +168,32 @@ export default class extends Controller {
     buildBoard(this.boardTarget, cols, rows, `calc(${width} / ${cols} * 0.45)`)
   }
 
-  revealAll(deck) {
-    (deck || []).forEach((item, i) => {
-      const card = cardAt(this.boardTarget, i)
-      if (card) showFace(card, item)
-    })
+  // `animate` turns the cards over one after another instead of all at once.
+  revealAll(deck, animate = false) {
+    if (!deck) return
+    if (animate) cascade(this.boardTarget, (card, i) => showFace(card, deck[i]))
+    else deck.forEach((item, i) => showFace(cardAt(this.boardTarget, i), item))
   }
 
-  hideAll() {
-    this.boardTarget.querySelectorAll("[data-index]").forEach(card => showBack(card))
+  hideAll(animate = false) {
+    if (animate) cascade(this.boardTarget, card => showBack(card))
+    else this.boardTarget.querySelectorAll("[data-index]").forEach(card => showBack(card))
   }
 
   // ── Sidebar ───────────────────────────────────────────────────────────────
 
   setPhase(title, hint = "") {
+    if (this.phaseTitleTarget.textContent !== title) restartAnimation(this.phaseTitleTarget, "mp-slide")
     this.phaseTitleTarget.textContent = title
     this.phaseHintTarget.textContent  = hint
+  }
+
+  toast(html) {
+    const el = document.createElement("div")
+    el.className = "mp-slide bg-rose-500 text-white font-black text-xl px-6 py-3 rounded-2xl shadow-2xl"
+    el.innerHTML = html
+    this.toastsTarget.appendChild(el)
+    setTimeout(() => el.remove(), 3000)
   }
 
   setRoundLabel(round, total) {
@@ -194,7 +210,7 @@ export default class extends Controller {
           <div class="flex items-center gap-2">
             <span class="flex-1 font-bold truncate">${done ? "✅ " : ""}${esc(this.nicknames[id] || "?")}</span>
             <span class="text-slate-500 text-xs font-mono">${matches}/${this.pairs}</span>
-            <span class="font-mono font-black text-rose-400 w-14 text-right">${pts}</span>
+            <span data-score="${id}" class="inline-block font-mono font-black text-rose-400 w-14 text-right">${pts}</span>
           </div>
           <div class="h-1.5 bg-slate-700 rounded-full mt-1 overflow-hidden">
             <div class="h-full bg-rose-500 rounded-full transition-all duration-300" style="width:${pct}%"></div>
