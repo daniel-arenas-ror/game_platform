@@ -278,15 +278,19 @@ The chrome is clean and calm. Controls are clear and unadorned so the game momen
 - **Badge on media:** The same pill, absolutely positioned top-right on a game card ("Current game").
 
 ### Cards / Containers
-- **Game card:** Set Panel background, 16px radius, 1px Rig Line border, no shadow, 192px media well (Set Panel Raised) holding the game's instruction image, 24px body padding, 24px grid gap. On hover the border turns 70% House Purple Lit and the image eases to 103% over 500ms.
+- **Game card:** An `<article>` with a Set Panel background, 16px radius, 1px Rig Line border, no shadow, 192px media well (Set Panel Raised) holding the game's instruction image, 24px body padding, 24px grid gap. On hover the border turns 70% House Purple Lit and the image eases to 103% over 500ms.
 - **Lobby panel:** Set Panel background, 24px radius, 32px padding, 1px Rig Line border, at least 400px tall.
 - **Config section:** A translucent Stage Floor (`slate-900/50`) well with 16px radius and 24px padding that groups each picker.
 
 ### Inputs / Fields
 - **Style:** A Stage Floor well with a 2px Rig Line border, 12px radius, 12px × 16px padding, white bold text, centered.
 - **Room-code input:** The same well, with monospace black-weight uppercase text tracked to 0.4em and a placeholder in `slate-600`.
-- **Focus:** The border shifts to House Purple Lit with no outline ring, over a 150ms color transition.
+- **Focus:** The border shifts to House Purple Lit with no outline ring, over a 150ms color transition. Buttons and links get a 2px `purple-400` focus-visible outline, offset 2px.
+- **Error:** The border turns 70% Miss Red, and the hint line below swaps to a Miss Red message (`role="alert"`, linked via `aria-describedby`). Placeholders use Ink Muted (`slate-400`) at semibold so they stay readable.
 - **Labels:** Label style (0.75rem, black weight, widest tracking) in Ink Faint, above the field.
+
+### Browser Surfaces
+The document declares `color-scheme: dark`, so scrollbars and native controls stay dark. `accent-color` is `purple-500`, text selection is a 45% `purple-500` wash with white text, and the input caret is `purple-400`. A game without an instruction image shows a drawn 1.5px-stroke gamepad icon in Ink Faint, never an emoji.
 
 ### Navigation
 There is no app bar. Public pages use a "← Back to games" text link in House Purple Glow above the page title. The footer row on Studio Black has the copyright in Ink Faint and About / Contact / Privacy Policy links (Ink Muted → white). It stacks vertically on mobile.

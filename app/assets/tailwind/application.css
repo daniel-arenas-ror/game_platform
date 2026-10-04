@@ -1,1 +1,19 @@
 @import "tailwindcss";
+
+/* Browser surfaces follow the always-dark studio (see DESIGN.md) */
+@layer base {
+  html {
+    color-scheme: dark;
+    accent-color: var(--color-purple-500);
+  }
+
+  ::selection {
+    background-color: color-mix(in oklab, var(--color-purple-500) 45%, transparent);
+    color: var(--color-white);
+  }
+
+  input,
+  textarea {
+    caret-color: var(--color-purple-400);
+  }
+}

@@ -21,7 +21,7 @@
       <h1 class="text-5xl sm:text-6xl font-extrabold tracking-tight text-white mb-5">
         <%= SeoHelper::SITE_NAME %>
       </h1>
-      <p class="text-purple-300 text-xl font-semibold mb-3">Free party games you play from your phone</p>
+      <p class="text-purple-300 text-xl font-semibold mb-3 text-balance">Free party games you play from your phone</p>
       <p class="text-slate-400 text-lg max-w-2xl mx-auto text-pretty">
         Put the host screen on a TV or laptop, friends scan the QR code and join from their phones.
         No app to install, no sign-up — just pick a game and play together.
@@ -39,14 +39,15 @@
                 autocomplete: "off",
                 autocapitalize: "characters",
                 spellcheck: false,
-                class: "min-w-0 flex-1 bg-slate-900 border-2 border-slate-700 rounded-xl px-4 py-3 text-white text-center font-mono font-black text-xl uppercase tracking-[0.4em] placeholder:text-slate-600 placeholder:tracking-widest focus:border-purple-500 focus:outline-none transition-colors" %>
+                aria: { describedby: "room-code-hint", invalid: flash[:alert].present? },
+                class: "min-w-0 flex-1 bg-slate-900 border-2 #{flash[:alert] ? "border-red-400/70" : "border-slate-700"} rounded-xl px-4 py-3 text-white text-center font-mono font-black text-xl uppercase tracking-[0.4em] placeholder:text-slate-400 placeholder:font-semibold placeholder:tracking-widest focus:border-purple-500 focus:outline-none transition-colors" %>
           <%= f.button "Join", name: nil,
-                class: "shrink-0 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-black px-6 rounded-xl transition-transform active:scale-95 cursor-pointer" %>
+                class: "shrink-0 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-black px-6 rounded-xl transition-transform active:scale-95 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-400" %>
         <% end %>
         <% if flash[:alert] %>
-          <p class="text-red-400 text-sm text-center mt-3"><%= flash[:alert] %></p>
+          <p id="room-code-hint" role="alert" class="text-red-400 text-sm text-center mt-3"><%= flash[:alert] %></p>
         <% else %>
-          <p class="text-slate-400 text-sm text-center mt-3">Got a code from the host's screen? Enter it to join.</p>
+          <p id="room-code-hint" class="text-slate-400 text-sm text-center mt-3">Got a code from the host's screen? Enter it to join.</p>
         <% end %>
       </div>
     <% end %>
@@ -60,20 +61,24 @@
           <p class="text-slate-400 text-sm">Pick a new game, or configure <%= @room.game.name %> again. Players stay in the room.</p>
         </div>
         <%= link_to "Cancel", playing_room_path(@room.code),
-              class: "text-slate-400 hover:text-white text-sm underline underline-offset-4 transition-colors shrink-0" %>
+              class: "text-slate-400 hover:text-white text-sm underline underline-offset-4 transition-colors shrink-0 rounded focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-purple-400" %>
       </div>
     <% end %>
 
+    <h2 class="sr-only">Games</h2>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <% @games.each do |game| %>
         <% current_game = @room&.game_id == game.id %>
-        <div class="bg-slate-800 rounded-2xl overflow-hidden border <%= current_game ? "border-purple-500" : "border-slate-700" %> hover:border-purple-500/70 transition-colors group">
+        <article class="bg-slate-800 rounded-2xl overflow-hidden border <%= current_game ? "border-purple-500" : "border-slate-700 hover:border-purple-500/70" %> transition-colors group">
           <div class="relative h-48 bg-slate-700 flex items-center justify-center overflow-hidden">
             <% if File.exist?(Rails.public_path.join("games", game.code, "instructions.png")) %>
               <%= image_tag "/games/#{game.code}/instructions.png", alt: "#{game.name} — how to play", loading: "lazy",
                     class: "w-full h-full object-cover object-top group-hover:scale-[1.03] transition-transform duration-500 ease-out" %>
             <% else %>
-              <span class="text-slate-500 text-5xl">🎮</span>
+              <svg class="size-14 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M6 11h4M8 9v4M15 12h.01M18 10h.01"/>
+                <path d="M17.32 5H6.68a4 4 0 0 0-3.978 3.59l-.9 8.06A2.12 2.12 0 0 0 3.91 19c.6 0 1.17-.26 1.57-.71L8 15.5h8l2.52 2.79c.4.45.97.71 1.57.71a2.12 2.12 0 0 0 2.11-2.35l-.9-8.06A4 4 0 0 0 17.32 5Z"/>
+              </svg>
             <% end %>
             <% if current_game %>
               <span class="absolute top-3 right-3 bg-purple-600 text-white text-xs font-bold px-3 py-1 rounded-full">Current game</span>
@@ -81,7 +86,7 @@
           </div>
           
           <div class="p-6">
-            <h2 class="text-xl font-bold text-white mb-2"><%= game.name %></h2>
+            <h3 class="text-xl font-bold text-white mb-2 text-balance"><%= game.name %></h3>
             <p class="text-slate-400 mb-6 line-clamp-2"><%= game.description %></p>
             
             <% if @room %>
@@ -94,13 +99,13 @@
               <% end %>
             <% end %>
           </div>
-        </div>
+        </article>
       <% end %>
 
       <!-- Empty State / Add Seed Data Prompt -->
       <% if @games.empty? %>
         <div class="col-span-full text-center py-20 border-2 border-dashed border-slate-700 rounded-3xl">
-          <p class="text-slate-500">No games found in the database. Run the seed command!</p>
+          <p class="text-slate-400">No games yet. Run <code class="font-mono text-slate-300">bin/rails db:seed</code> to add them.</p>
         </div>
       <% end %>
     </div>
