@@ -55,6 +55,12 @@ Game.create!(
   description: "A grid full of digits hides secret numbers. The host shows which number to hunt — first player to find it in the soup and tap it wins the points. Longer numbers are worth more!"
 )
 
+Game.create!(
+  name: "Matching Pairs",
+  code: "matching_pairs",
+  description: "Memorize the board on the big screen, then find every matching pair on your phone before time runs out. Each match scores, every wrong pair costs a few points!"
+)
+
 # ---------------------------------------------------------------------------
 # Battle City — Classic map preset
 # 26×26 grid. Steel border, brick clusters, base at (12, 24).

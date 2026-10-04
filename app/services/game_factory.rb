@@ -19,6 +19,8 @@ class GameFactory
       GameServices::MindMatch.new(room)
     when 'soup_of_numbers'
       GameServices::SoupOfNumbers.new(room)
+    when 'matching_pairs'
+      GameServices::MatchingPairs.new(room)
     when 'impostor'
       ## TODO
     else
