@@ -1,0 +1,36 @@
+<% pickers = [
+     ["BOARD SIZE",     "grid",         "4x5",    [["4x4", "4×4"], ["4x5", "4×5"], ["5x6", "5×6"], ["6x6", "6×6"]]],
+     ["CARDS",          "category",     "random", [["animals", "🐶 Animals"], ["objects", "🎈 Objects"], ["flags", "🚩 Flags"],
+                                                   ["numbers", "🔢 Numbers"], ["random", "🎲 Random"]]],
+     ["TIME PER ROUND", "round_time",   "120",    [["60", "60s"], ["90", "90s"], ["120", "120s"], ["180", "180s"]]],
+     ["ROUNDS",         "total_rounds", "1",      [["1", "1 round"], ["2", "2 rounds"], ["3", "3 rounds"], ["5", "5 rounds"]]]
+   ] %>
+
+<% pickers.each_with_index do |(title, key, default, options), i| %>
+  <div class="space-y-4 bg-slate-900/50 p-6 rounded-2xl border border-slate-700 <%= 'mt-2' if i > 0 %>">
+    <label class="block text-xs font-bold text-slate-400 mb-3 tracking-widest"><%= title %></label>
+    <div class="grid <%= options.length == 5 ? "grid-cols-2 sm:grid-cols-5" : "grid-cols-4" %> gap-3">
+      <% options.each do |value, label| %>
+        <label class="relative cursor-pointer">
+          <input type="radio"
+                 name="room[game_state][<%= key %>]"
+                 value="<%= value %>"
+                 class="peer hidden"
+                 <%= 'checked' if (@room.game_state[key]&.to_s || default) == value %>>
+          <div class="text-center py-3 px-2 bg-slate-800 border-2 border-slate-700 rounded-xl text-white font-bold
+                      peer-checked:border-rose-500 peer-checked:bg-rose-500/10 transition-all">
+            <% if key == "category" %>
+              <% icon, text = label.split(" ", 2) %>
+              <span class="block text-2xl leading-none mb-1"><%= icon %></span><%= text %>
+            <% else %>
+              <%= label %>
+            <% end %>
+          </div>
+        </label>
+      <% end %>
+    </div>
+    <% if key == "grid" %>
+      <p class="text-slate-500 text-xs">Bigger boards have more pairs and a longer look on the TV (8s → 20s).</p>
+    <% end %>
+  </div>
+<% end %>

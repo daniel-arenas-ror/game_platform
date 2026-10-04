@@ -144,4 +144,10 @@ class MatchingPairsTest < ActiveSupport::TestCase
     @host_svc.end_round!
     assert_equal @deck, Pairs.new(@room.reload).public_state["deck"]
   end
+
+  test "phones get the round's images to preload, but not where they are" do
+    @room.atomic_set("game_state.status" => "memorize")
+    urls = Pairs.new(@room).public_state["preload"]
+    assert_equal @deck.map { |c| c["src"] }.uniq.sort, urls.sort
+  end
 end

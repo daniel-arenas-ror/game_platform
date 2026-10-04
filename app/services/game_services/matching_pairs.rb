@@ -59,12 +59,13 @@ module GameServices
       deck  = (cards + cards).shuffle
 
       @room.atomic_set(
-        "game_state.round"         => round,
-        "game_state.status"        => "memorize",
-        "game_state.deck"          => deck,
-        "game_state.boards"        => @players.to_h { |p| [ p.id.to_s, empty_board ] },
-        "game_state.scores"        => @players.to_h { |p| [ p.id.to_s, 0 ] }.merge(state["scores"] || {}),
-        "game_state.round_ends_at" => nil
+        "game_state.round"            => round,
+        "game_state.status"           => "memorize",
+        "game_state.deck"             => deck,
+        "game_state.boards"           => @players.to_h { |p| [ p.id.to_s, empty_board ] },
+        "game_state.scores"           => @players.to_h { |p| [ p.id.to_s, 0 ] }.merge(state["scores"] || {}),
+        "game_state.memorize_ends_at" => Time.now.to_f + state["memorize_time"].to_i,
+        "game_state.round_ends_at"    => nil
       )
       deck
     end
@@ -157,8 +158,14 @@ module GameServices
       state = @room.game_state.except("deck", "boards", "loop_running")
       state["pairs"]    = state["cols"].to_i * state["rows"].to_i / 2
       state["progress"] = progress
+      state["preload"]  = preload_urls if %w[memorize playing].include?(state["status"])
       state["deck"]     = @room.game_state["deck"] if %w[round_over game_over].include?(state["status"])
       state
+    end
+
+    # The round's images, without positions, so phones can load them while the host shows the board.
+    def preload_urls
+      @room.game_state["deck"].to_a.filter_map { |card| card["src"] }.uniq.shuffle
     end
 
     # The host sees the layout during the memorize phase (and after the round).

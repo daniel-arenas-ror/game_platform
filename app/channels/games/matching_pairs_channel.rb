@@ -66,7 +66,7 @@ class Games::MatchingPairsChannel < ApplicationCable::Channel
           rows:         state["rows"],
           duration:     state["memorize_time"]
         }
-        broadcast({ action: "memorize", **round_info })
+        broadcast({ action: "memorize", **round_info, preload: svc.preload_urls })
         ActionCable.server.broadcast(host_stream, { action: "memorize_board", **round_info, deck: deck })
 
         sleep state["memorize_time"].to_i
