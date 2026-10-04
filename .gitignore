@@ -31,3 +31,4 @@
 !/app/assets/builds/.keep
 .DS_Store
 
+/node_modules
