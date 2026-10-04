@@ -1,5 +1,6 @@
 import { Controller } from "@hotwired/stimulus"
 import consumer from "channels/consumer"
+import { celebrateWin, isTopScore } from "controllers/shared/celebration"
 
 const CELL_NEUTRAL  = "#1e3a5f"
 const CELL_TAPPED   = "#facc15"
@@ -143,6 +144,7 @@ export default class extends Controller {
     this.finalScoreTarget.textContent    = total
 
     this.showPhase("phaseGameOver")
+    if (isTopScore(scores, myId)) celebrateWin(this.gameOverTitleTarget)
   }
 
   // ── Grid building ─────────────────────────────────────────────────────────

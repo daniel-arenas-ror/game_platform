@@ -1,5 +1,6 @@
 import { Controller } from "@hotwired/stimulus"
 import consumer from "channels/consumer"
+import { celebrateWin, isTopScore } from "controllers/shared/celebration"
 
 export default class extends Controller {
   static values  = { roomCode: String, playerId: String }
@@ -154,6 +155,7 @@ export default class extends Controller {
     } else if (myRank >= 0) {
       this.showToast(`You finished #${myRank + 1}`, "info")
     }
+    if (isTopScore(data.scores, this.playerIdValue)) celebrateWin()
   }
 
   onGameRestarted(_data) {

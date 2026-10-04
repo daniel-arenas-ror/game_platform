@@ -1,8 +1,9 @@
 import { Controller } from "@hotwired/stimulus"
 import consumer from "channels/consumer"
 import {
-  buildBoard, cardAt, showBack, showFace, ranked, esc, cascade, restartAnimation, confetti, injectStyles, MEDALS
+  buildBoard, cardAt, showBack, showFace, ranked, esc, cascade, restartAnimation, injectStyles, MEDALS
 } from "controllers/matching_pairs/cards"
+import { confetti } from "controllers/shared/celebration"
 
 // Countdown colour thresholds
 const COLOR_GREEN  = "#4ade80"

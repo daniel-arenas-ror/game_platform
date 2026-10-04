@@ -1,5 +1,6 @@
 import { Controller } from "@hotwired/stimulus"
 import consumer from "channels/consumer"
+import { celebrateWin } from "controllers/shared/celebration"
 
 const COLOR_HEX = {
   yellow: "#f1c40f",
@@ -138,6 +139,7 @@ export default class extends Controller {
 
     if (this.hasGameOverOverlayTarget)
       this.gameOverOverlayTarget.classList.remove("hidden")
+    if (isWinner) celebrateWin(this.hasGameOverTitleTarget ? this.gameOverTitleTarget : null)
   }
 
   // ── D-pad — Pointer Events (works on touch + mouse) ───────────────────────

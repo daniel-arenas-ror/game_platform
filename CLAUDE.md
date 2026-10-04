@@ -88,6 +88,7 @@ Each game service implements at minimum:
 6. **`app/javascript/controllers/{code}_host_controller.js`** + **`{code}_player_controller.js`**
 7. *(Optional)* **`app/views/rooms/games/{code}/_edit.html.erb`** — Pre-game config pickers.
 8. **`db/seeds.rb`** — Add `Game.find_or_create_by!(code: '{code}')`.
+9. **Winner celebration (required)** — the player controller's game-over handler must call the shared celebration for the winner(s). See *Winner Celebration* below.
 
 ### ActionCable — Two-Layer Model
 
@@ -125,6 +126,26 @@ showPhase(name) {
 - **Player** = `player_id` from `session[:player_id]`.
 - Always `unsubscribe()` and `clearInterval()` in `disconnect()`.
 - Inject CSS animations once via `<style id="...">` — check for existing tag before inserting.
+
+### Winner Celebration (every game)
+
+Every game plays the same celebration on the winning player's phone at game over: confetti plus a
+pop-in on the game-over title. It lives in `app/javascript/controllers/shared/celebration.js`. Don't
+write a game-specific version.
+
+```javascript
+import { celebrateWin, isTopScore } from "controllers/shared/celebration"
+
+onGameOver(data) {
+  // … fill in the game-over screen, show the phase …
+  if (isTopScore(data.scores, this.playerIdValue)) celebrateWin(this.gameOverTitleTarget)
+}
+```
+
+- Call it **after** the game-over phase is visible, so the pop on the title shows.
+- `isTopScore` counts tied players as winners. Games with an explicit winner (e.g. `data.winner_id`) use that instead.
+- `celebrateWin()` without an element still plays the confetti.
+- `confetti(count)` and `pop(el)` are also exported for other moments (board cleared, host game over).
 
 ### Mongoid `game_state` Patterns
 

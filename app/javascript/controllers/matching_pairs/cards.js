@@ -33,17 +33,14 @@ const STYLES = `
   @keyframes mp-shake { 0%, 100% { transform: translateX(0) } 20%, 60% { transform: translateX(-5px) } 40%, 80% { transform: translateX(5px) } }
   @keyframes mp-pop   { 0% { transform: scale(0.5); opacity: 0 } 60% { transform: scale(1.2); opacity: 1 } 100% { transform: scale(1) } }
   @keyframes mp-slide { from { transform: translateY(16px); opacity: 0 } to { transform: translateY(0); opacity: 1 } }
-  @keyframes mp-fall  { from { transform: translate(0, -10vh) rotate(0) } to { transform: translate(var(--drift), 110vh) rotate(var(--spin)) } }
   .mp-pulse { animation: mp-pulse 0.35s ease-out ${FLIP_MS}ms }
   .mp-shake { animation: mp-shake 0.3s ease-in-out ${FLIP_MS}ms }
   .mp-pop   { animation: mp-pop 0.4s ease-out }
   .mp-slide { animation: mp-slide 0.3s ease-out }
-  .mp-confetti { position: fixed; top: 0; z-index: 50; pointer-events: none; animation: mp-fall linear forwards; }
 
   @media (prefers-reduced-motion: reduce) {
     .mp-inner { transition: none; }
     .mp-pulse, .mp-shake, .mp-pop, .mp-slide { animation: none; }
-    .mp-confetti { display: none; }
   }
 `
 
@@ -130,25 +127,6 @@ export function restartAnimation(el, className) {
   el.classList.remove(className)
   void el.offsetWidth // force reflow so the animation plays again
   el.classList.add(className)
-}
-
-// A short burst of falling confetti across the whole screen.
-export function confetti(count = 40) {
-  injectStyles()
-  const colors = [ "#fb7185", "#f43f5e", "#facc15", "#4ade80", "#38bdf8", "#c084fc" ]
-  for (let i = 0; i < count; i++) {
-    const bit = document.createElement("div")
-    const size = 6 + Math.random() * 6
-    bit.className = "mp-confetti"
-    bit.style.cssText = `
-      left: ${Math.random() * 100}vw; width: ${size}px; height: ${size * 1.6}px;
-      background: ${colors[i % colors.length]}; border-radius: 2px;
-      animation-duration: ${1.6 + Math.random() * 1.4}s; animation-delay: ${Math.random() * 0.4}s;
-      --drift: ${(Math.random() - 0.5) * 30}vw; --spin: ${(Math.random() - 0.5) * 1080}deg;
-    `
-    document.body.appendChild(bit)
-    setTimeout(() => bit.remove(), 3500)
-  }
 }
 
 // Loads images ahead of time so a flipped card shows instantly.

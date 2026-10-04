@@ -1,5 +1,6 @@
 import { Controller } from "@hotwired/stimulus"
 import consumer from "channels/consumer"
+import { celebrateWin } from "controllers/shared/celebration"
 
 const SHIP_COLORS = [
   { fill: "#06b6d4", border: "#0891b2" },  // cyan
@@ -261,6 +262,7 @@ export default class extends Controller {
 
     this.renderFinalScores(data.scores, data.nicknames, this.finalScoresTarget)
     this.showPhase("gameOver")
+    if (isWinner) celebrateWin(this.gameOverTitleTarget)
   }
 
   // ── Placement grid ───────────────────────────────────────────────────────

@@ -1,5 +1,6 @@
 import { Controller } from "@hotwired/stimulus"
 import consumer from "channels/consumer"
+import { celebrateWin, isTopScore } from "controllers/shared/celebration"
 
 export default class extends Controller {
   static targets = [
@@ -252,6 +253,7 @@ export default class extends Controller {
     }).join("")
 
     this.statusValue = "leaderboard"
+    if (this.playerIdValue && isTopScore(leaderboard, this.playerIdValue)) celebrateWin()
   }
 
   // ── Countdown ─────────────────────────────────────────────────────────────

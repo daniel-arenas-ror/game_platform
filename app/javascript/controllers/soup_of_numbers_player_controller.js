@@ -1,5 +1,6 @@
 import { Controller } from "@hotwired/stimulus"
 import consumer from "channels/consumer"
+import { celebrateWin, isTopScore } from "controllers/shared/celebration"
 
 const CELL_EMPTY  = "#1e293b"
 const CELL_MISSED = "#475569"
@@ -133,6 +134,7 @@ export default class extends Controller {
     this.gameOverTitleTarget.textContent = place === 1 ? "🥇 You won!" : place > 0 ? `#${place} place` : "Game over"
     this.finalScoreTarget.textContent    = myScore
     this.phaseGameOverTarget.classList.remove("hidden")
+    if (isTopScore(scores, this.playerIdValue)) celebrateWin(this.gameOverTitleTarget)
   }
 
   openRound(round, totalRounds, length) {

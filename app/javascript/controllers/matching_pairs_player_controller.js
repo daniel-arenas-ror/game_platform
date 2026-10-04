@@ -1,8 +1,9 @@
 import { Controller } from "@hotwired/stimulus"
 import consumer from "channels/consumer"
 import {
-  buildBoard, cardAt, showBack, showFace, preload, ranked, restartAnimation, confetti, injectStyles, FLIP_MS, MEDALS
+  buildBoard, cardAt, showBack, showFace, preload, ranked, restartAnimation, injectStyles, FLIP_MS, MEDALS
 } from "controllers/matching_pairs/cards"
+import { celebrateWin, confetti, pop } from "controllers/shared/celebration"
 
 // Countdown colour thresholds
 const COLOR_GREEN  = "#4ade80"
@@ -192,8 +193,8 @@ export default class extends Controller {
       `${tied ? "Tied for" : "You finished"} #${place}`
     this.finalScoreTarget.textContent = me?.pts ?? 0
     this.phaseGameOverTarget.classList.remove("hidden")
-    restartAnimation(this.gameOverIconTarget, "mp-pop")
-    if (place === 1) confetti(60)
+    if (place === 1) celebrateWin(this.gameOverIconTarget)
+    else pop(this.gameOverIconTarget)
   }
 
   // ── Board ─────────────────────────────────────────────────────────────────
