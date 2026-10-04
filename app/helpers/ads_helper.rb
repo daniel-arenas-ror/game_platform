@@ -8,6 +8,7 @@ module AdsHelper
   # A placement whose ID is blank renders nothing in production.
   AD_SLOTS = {
     home:      nil,
+    games:     nil,
     lobby:     nil,
     page:      nil,
     game_over: nil
@@ -16,6 +17,7 @@ module AdsHelper
   # controller => actions that may show ads
   ADS_ALLOWED = {
     "home"  => %w[index],
+    "games" => %w[index],
     "rooms" => %w[show],
     "pages" => %w[about contact privacy]
   }.freeze

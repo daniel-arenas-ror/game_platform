@@ -15,9 +15,12 @@ class AdPlacementTest < ActionDispatch::IntegrationTest
     @game.delete
   end
 
-  test "home, lobby and info pages show ads" do
+  test "home, games, lobby and info pages show ads" do
     get root_path
-    assert_select AD, 2
+    assert_select AD, 1
+
+    get games_path
+    assert_select AD, 1
 
     get room_path(@room.code)
     assert_select AD, 1
@@ -28,7 +31,10 @@ class AdPlacementTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test "settings and the join form never show ads" do
+  test "settings and the join pages never show ads" do
+    get find_room_path
+    assert_select AD, 0
+
     get edit_room_path(@room.code)
     assert_select AD, 0
 

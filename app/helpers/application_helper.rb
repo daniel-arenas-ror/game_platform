@@ -1,4 +1,11 @@
 module ApplicationHelper
+  SITE_HEADER_CONTROLLERS = %w[home games join pages].freeze
+
+  # The public site (home, games, join, info pages) gets the top navigation; rooms and games don't.
+  def site_header?
+    SITE_HEADER_CONTROLLERS.include?(controller_name)
+  end
+
   # Renders a tiny SVG thumbnail of a BattleCity::MapPreset.
   # Used in the map picker on the room edit/lobby page.
   def battle_city_map_preview(preset, size: 60)

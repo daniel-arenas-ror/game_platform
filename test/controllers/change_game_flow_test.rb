@@ -8,28 +8,39 @@ class ChangeGameFlowTest < ActionDispatch::IntegrationTest
   end
 
   teardown do
-    Room.delete_all
+    # Only this test's room: tests run in parallel against one database.
+    Room.where(id: @room.id).delete_all
     Game.where(:id.in => [ @trivia.id, @color.id ]).delete_all
   end
 
-  test "home without a room creates new rooms" do
-    get root_url
+  test "games page without a room creates new rooms" do
+    get games_url
     assert_select "form[action=?]", rooms_path(game_id: @color.id)
     assert_select "form[action=?]", change_game_room_path(@room.code), count: 0
   end
 
-  test "home with a room offers to switch or configure that room" do
-    get root_url(room: @room.code.downcase)
+  test "games page with a room offers to switch or configure that room" do
+    get games_url(room: @room.code.downcase)
     assert_response :success
     assert_select "form[action=?]", change_game_room_path(@room.code), minimum: 2
     assert_select "button", text: /Configure/, count: 1
     assert_select "a[href=?]", playing_room_path(@room.code), text: "Cancel"
   end
 
-  test "home ignores an unknown room code" do
-    get root_url(room: "ZZZZ")
+  test "games page ignores an unknown room code" do
+    get games_url(room: "ZZZZ")
     assert_response :success
     assert_select "form[action=?]", rooms_path(game_id: @color.id)
+  end
+
+  test "old home change-game links redirect to the games page" do
+    get root_url(room: @room.code)
+    assert_redirected_to games_path(room: @room.code)
+  end
+
+  test "game over Change Game link points to the games page" do
+    html = ApplicationController.render(partial: "rooms/games/change_game", locals: { room: @room, games: [] })
+    assert_includes html, games_path(room: @room.code)
   end
 
   test "changing game resets the room and goes to configuration" do
