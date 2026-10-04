@@ -133,6 +133,12 @@
       "skillPath": "skills/pick-ui-library/SKILL.md",
       "computedHash": "5d2a77bf0ecafbda85aa95fb49999b6d77945d9066ec83d970b62e5b388cd686"
     },
+    "ponytail": {
+      "source": "DietrichGebert/ponytail",
+      "sourceType": "github",
+      "skillPath": "skills/ponytail/SKILL.md",
+      "computedHash": "210fa0831f649ce9f8a305f7b7c8cf2a0dd09ac4dd53067109941b96e7811d4e"
+    },
     "prototype": {
       "source": "emilkowalski/skills",
       "sourceType": "github",
