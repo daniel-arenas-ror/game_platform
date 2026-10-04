@@ -40,6 +40,13 @@
 # Ignore development files
 /.devcontainer
 
+# Ignore infrastructure: ~800 MB of local provider binaries, plus state and tfvars with secrets
+/terraform/
+
+# Ignore AI agent / tooling files
+/.agents/
+/.claude/
+
 # Ignore Docker-related files
 /.dockerignore
 /Dockerfile*

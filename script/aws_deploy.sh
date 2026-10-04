@@ -18,4 +18,8 @@ docker push "$REPO:$TAG"
 docker push "$REPO:latest"
 
 echo "==> Deploying on $INSTANCE_ID"
+# Every deploy leaves a ~1.4 GB image tagged with its commit, which bin/deploy's `docker image prune -f`
+# (untagged only) never removes. Drop every image not used by a running container before pulling;
+# older tags stay in ECR for rollbacks.
+script/aws_run.sh "docker image prune -a -f"
 script/aws_run.sh "/opt/game_platform/bin/deploy $TAG"
