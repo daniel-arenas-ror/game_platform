@@ -14,6 +14,15 @@ xml.urlset xmlns: "http://www.sitemaps.org/schemas/sitemap/0.9" do
     end
   end
 
+  Game.where(:slug.nin => [ nil, "" ]).each do |game|
+    xml.url do
+      xml.loc game_url(game)
+      xml.lastmod game.updated_at.to_date.iso8601 if game.updated_at
+      xml.changefreq "monthly"
+      xml.priority "0.8"
+    end
+  end
+
   [ about_url, contact_url, privacy_url ].each do |url|
     xml.url do
       xml.loc url

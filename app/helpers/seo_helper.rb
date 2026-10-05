@@ -17,7 +17,8 @@ module SeoHelper
     "#{request.base_url}#{request.path}"
   end
 
+  # Views can swap the 1200×630 share image with `content_for :og_image, "/games/<code>/og.png"`.
   def og_image_url
-    "#{request.base_url}/og-image.png"
+    "#{request.base_url}#{content_for?(:og_image) ? content_for(:og_image) : "/og-image.png"}"
   end
 end

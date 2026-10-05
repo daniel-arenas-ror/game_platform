@@ -41,6 +41,39 @@ class GamesControllerTest < ActionDispatch::IntegrationTest
     other&.delete
   end
 
+  test "game page has its share image and structured data" do
+    @game.update!(min_players: 1, max_players: 12, duration_minutes: 10, how_to_play: %w[One Two],
+                  faq: [ { "q" => "How many points?", "a" => "50 per digit" } ])
+    get game_path(@game)
+
+    assert_select "meta[property='og:image'][content=?]", "http://www.example.com/games/soup_of_numbers/og.png"
+    assert_select "link[rel=canonical][href=?]", game_url(@game)
+
+    graph = JSON.parse(css_select("script[type='application/ld+json']").first.text).fetch("@graph")
+    assert_equal %w[VideoGame HowTo FAQPage BreadcrumbList], graph.map { |node| node["@type"] }
+
+    game, how_to, faq, breadcrumb = graph
+    assert_equal game_url(@game), game["url"]
+    assert_equal({ "@type" => "QuantitativeValue", "minValue" => 1, "maxValue" => 12 }, game["numberOfPlayers"])
+    assert_equal "PT10M", game["timeRequired"]
+    assert_equal %w[One Two], how_to["step"].map { |s| s["text"] }
+    assert_includes faq["mainEntity"].map { |q| q["name"] }, "How many points?"
+    assert_equal [ "Home", "Games", "Soup of Numbers" ], breadcrumb["itemListElement"].map { |i| i["name"] }
+  end
+
+  test "sitemap lists the game pages" do
+    get sitemap_path
+    assert_includes response.body, "<loc>#{game_url(@game)}</loc>"
+  end
+
+  test "every seeded game has a 1200x630 share image" do
+    Dir[Rails.root.join("db/seeds/games/*.yml")].each do |file|
+      png = Rails.public_path.join("games", File.basename(file, ".yml"), "og.png")
+      assert File.exist?(png), "missing #{png.relative_path_from(Rails.root)} — run bin/rails games:og_images"
+      assert_equal [ 1200, 630 ], File.binread(png, 24, 16).unpack("NN"), png.to_s
+    end
+  end
+
   test "unknown slug is a 404" do
     get game_path("no-such-game")
     assert_response :not_found

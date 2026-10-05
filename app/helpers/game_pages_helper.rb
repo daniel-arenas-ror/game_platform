@@ -1,17 +1,18 @@
 # The public game pages (/games/:slug). Each game page is lit with its game's set accent.
 module GamePagesHelper
-  # Full class names, so Tailwind finds them when it scans this file.
+  # Full class names, so Tailwind finds them when it scans this file. hex (the 300 step) is for
+  # the share images made by `bin/rails games:og_images`.
   ACCENTS = {
-    "fisherman"              => { text: "text-purple-400",  soft: "text-purple-300",  tint: "bg-purple-500/10",  border: "border-purple-500/40",  dot: "bg-purple-400" },
-    "how_want_be_billionare" => { text: "text-blue-400",    soft: "text-blue-300",    tint: "bg-blue-500/10",    border: "border-blue-500/40",    dot: "bg-blue-400" },
-    "battle_city"            => { text: "text-amber-400",   soft: "text-amber-300",   tint: "bg-amber-500/10",   border: "border-amber-500/40",   dot: "bg-amber-400" },
-    "guess_the_color"        => { text: "text-orange-400",  soft: "text-orange-300",  tint: "bg-orange-500/10",  border: "border-orange-500/40",  dot: "bg-orange-400" },
-    "count_birds"            => { text: "text-sky-400",     soft: "text-sky-300",     tint: "bg-sky-500/10",     border: "border-sky-500/40",     dot: "bg-sky-400" },
-    "sequence_memory"        => { text: "text-indigo-400",  soft: "text-indigo-300",  tint: "bg-indigo-500/10",  border: "border-indigo-500/40",  dot: "bg-indigo-400" },
-    "submarine_combat"       => { text: "text-cyan-400",    soft: "text-cyan-300",    tint: "bg-cyan-500/10",    border: "border-cyan-500/40",    dot: "bg-cyan-400" },
-    "mind_match"             => { text: "text-violet-400",  soft: "text-violet-300",  tint: "bg-violet-500/10",  border: "border-violet-500/40",  dot: "bg-violet-400" },
-    "soup_of_numbers"        => { text: "text-emerald-400", soft: "text-emerald-300", tint: "bg-emerald-500/10", border: "border-emerald-500/40", dot: "bg-emerald-400" },
-    "matching_pairs"         => { text: "text-rose-400",    soft: "text-rose-300",    tint: "bg-rose-500/10",    border: "border-rose-500/40",    dot: "bg-rose-400" }
+    "fisherman"              => { text: "text-purple-400",  soft: "text-purple-300",  tint: "bg-purple-500/10",  border: "border-purple-500/40",  dot: "bg-purple-400", hex: "#d8b4fe" },
+    "how_want_be_billionare" => { text: "text-blue-400",    soft: "text-blue-300",    tint: "bg-blue-500/10",    border: "border-blue-500/40",    dot: "bg-blue-400", hex: "#93c5fd" },
+    "battle_city"            => { text: "text-amber-400",   soft: "text-amber-300",   tint: "bg-amber-500/10",   border: "border-amber-500/40",   dot: "bg-amber-400", hex: "#fcd34d" },
+    "guess_the_color"        => { text: "text-orange-400",  soft: "text-orange-300",  tint: "bg-orange-500/10",  border: "border-orange-500/40",  dot: "bg-orange-400", hex: "#fdba74" },
+    "count_birds"            => { text: "text-sky-400",     soft: "text-sky-300",     tint: "bg-sky-500/10",     border: "border-sky-500/40",     dot: "bg-sky-400", hex: "#7dd3fc" },
+    "sequence_memory"        => { text: "text-indigo-400",  soft: "text-indigo-300",  tint: "bg-indigo-500/10",  border: "border-indigo-500/40",  dot: "bg-indigo-400", hex: "#a5b4fc" },
+    "submarine_combat"       => { text: "text-cyan-400",    soft: "text-cyan-300",    tint: "bg-cyan-500/10",    border: "border-cyan-500/40",    dot: "bg-cyan-400", hex: "#67e8f9" },
+    "mind_match"             => { text: "text-violet-400",  soft: "text-violet-300",  tint: "bg-violet-500/10",  border: "border-violet-500/40",  dot: "bg-violet-400", hex: "#c4b5fd" },
+    "soup_of_numbers"        => { text: "text-emerald-400", soft: "text-emerald-300", tint: "bg-emerald-500/10", border: "border-emerald-500/40", dot: "bg-emerald-400", hex: "#6ee7b7" },
+    "matching_pairs"         => { text: "text-rose-400",    soft: "text-rose-300",    tint: "bg-rose-500/10",    border: "border-rose-500/40",    dot: "bg-rose-400", hex: "#fda4af" }
   }.freeze
 
   CATEGORY_LABELS = {
@@ -75,6 +76,54 @@ module GamePagesHelper
 
   def game_faq(game)
     game.faq + GENERAL_FAQ.map { |f| f.merge("a" => format(f["a"], site: SeoHelper::SITE_NAME)) }
+  end
+
+  # schema.org JSON-LD for a game page: the game, its rules, its FAQ and the breadcrumb.
+  def game_structured_data(game)
+    url    = game_url(game)
+    images = [ "/games/#{game.code}/og.png", "/games/#{game.code}/instructions.png" ]
+             .select { |path| File.exist?(Rails.public_path.join(path.delete_prefix("/"))) }
+             .map { |path| "#{request.base_url}#{path}" }
+
+    video_game = {
+      "@type" => "VideoGame", "@id" => "#{url}#game", "name" => game.name, "url" => url,
+      "description" => game.long_description.presence || game.description,
+      "image" => images.presence,
+      "genre" => game_category_label(game).delete_suffix(" game"),
+      "gamePlatform" => "Web browser", "operatingSystem" => "Any (web browser)",
+      "applicationCategory" => "GameApplication", "inLanguage" => "en",
+      "playMode" => game.max_players.to_i > 1 ? "MultiPlayer" : "SinglePlayer",
+      "numberOfPlayers" => ({ "@type" => "QuantitativeValue", "minValue" => game.min_players,
+                              "maxValue" => game.max_players } if game.min_players && game.max_players),
+      "typicalAgeRange" => ("#{game.age}-" if game.age),
+      "timeRequired" => ("PT#{game.duration_minutes}M" if game.duration_minutes),
+      "offers" => { "@type" => "Offer", "price" => "0", "priceCurrency" => "USD" },
+      "publisher" => { "@type" => "Organization", "name" => SeoHelper::SITE_NAME, "url" => root_url }
+    }.compact
+
+    how_to = if game.how_to_play.any?
+      { "@type" => "HowTo", "@id" => "#{url}#how-to-play", "name" => "How to play #{game.name}",
+        "totalTime" => video_game["timeRequired"],
+        "step" => game.how_to_play.each_with_index.map { |text, i|
+          { "@type" => "HowToStep", "position" => i + 1, "text" => text, "url" => "#{url}#how-to-play" }
+        } }.compact
+    end
+
+    faq = {
+      "@type" => "FAQPage", "@id" => "#{url}#faq",
+      "mainEntity" => game_faq(game).map { |f|
+        { "@type" => "Question", "name" => f["q"], "acceptedAnswer" => { "@type" => "Answer", "text" => f["a"] } }
+      }
+    }
+
+    breadcrumb = {
+      "@type" => "BreadcrumbList",
+      "itemListElement" => [ [ "Home", root_url ], [ "Games", games_url ], [ game.name, url ] ].each_with_index.map { |(name, item), i|
+        { "@type" => "ListItem", "position" => i + 1, "name" => name, "item" => item }
+      }
+    }
+
+    { "@context" => "https://schema.org", "@graph" => [ video_game, how_to, faq, breadcrumb ].compact }
   end
 
   def game_instruction_image?(game)

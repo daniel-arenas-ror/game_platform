@@ -64,7 +64,7 @@ FIFA World Cup has data models only (no game logic).
 
 ### Key Models (Mongoid — no ActiveRecord migrations)
 
-- **Game** — Static game definitions (name, `code`, description). Seeded. `code` drives routing + GameFactory.
+- **Game** — Static game definitions (name, `code`, description) plus the public game page content. Seeded from `db/seeds/games/*.yml`; the seeds upsert by `code`, so game IDs stay stable. `code` drives GameFactory; `slug` is the public URL (`to_param`).
 - **Room** — A live session. Unique 4-char `code`. `status`: `lobby` → `playing` → `finished`. `game_state` Hash stores all transient runtime state — shape varies by game.
 - **Player** — Belongs to a Room. `nickname`, `role`, `connected` (Boolean). Identity tracked via `session[:player_id]`.
 
@@ -87,8 +87,9 @@ Each game service implements at minimum:
 5. **`app/views/rooms/games/{code}/_index.html.erb`** — In-game view. Rendered dynamically by `rooms#playing`. Root element needs `data-controller`, `data-{ctrl}-room-code-value`, `data-{ctrl}-player-id-value`.
 6. **`app/javascript/controllers/{code}_host_controller.js`** + **`{code}_player_controller.js`**
 7. *(Optional)* **`app/views/rooms/games/{code}/_edit.html.erb`** — Pre-game config pickers.
-8. **`db/seeds.rb`** — Add `Game.find_or_create_by!(code: '{code}')`.
+8. **`db/seeds/games/{code}.yml`** + add `{code}` to `GAME_CODES` in `db/seeds.rb` — name, `slug` (public URL `/games/{slug}`, never change it once live), description and the game page content (tagline, long_description, min/max_players, players_note, duration_minutes, age, category, how_to_play, tips, perfect_for, faq). Write it from the real rules in the service/channel. `games_controller_test.rb` checks every file is complete.
 9. **Winner celebration (required)** — the player controller's game-over handler must call the shared celebration for the winner(s). See *Winner Celebration* below.
+10. **Game page assets** — add the game's accent to `GamePagesHelper::ACCENTS`, then run `bin/rails games:og_images` to build `public/games/{code}/og.png` (1200×630 share image, made from `instructions.png`; needs ImageMagick + pngquant).
 
 ### ActionCable — Two-Layer Model
 
@@ -168,6 +169,8 @@ onGameOver(data) {
 
 ```
 GET   /                        → home#index
+GET   /games                   → games#index (catalog; ?room=CODE = change-game mode)
+GET   /games/:slug             → games#show (public SEO game page + Start game)
 POST  /rooms                   → rooms#create
 GET   /rooms/:id               → rooms#show (lobby + QR)
 PATCH /rooms/:id               → rooms#update (config)

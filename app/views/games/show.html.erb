@@ -1,5 +1,9 @@
 <% content_for :title, "#{@game.name} – Free Party Game" %>
 <% content_for :description, @game.description %>
+<% content_for :og_image, "/games/#{@game.code}/og.png" if File.exist?(Rails.public_path.join("games", @game.code, "og.png")) %>
+<% content_for :head do %>
+  <script type="application/ld+json"><%= raw json_escape(game_structured_data(@game).to_json) %></script>
+<% end %>
 
 <%
   accent = game_accent(@game)
@@ -166,7 +170,7 @@
   </section>
 
   <%# ── FAQ ──────────────────────────────────────────────────────────────── %>
-  <section class="px-4 sm:px-6 lg:px-8 py-16 sm:py-20 border-t border-slate-800" aria-labelledby="faq-title">
+  <section id="faq" class="scroll-mt-20 px-4 sm:px-6 lg:px-8 py-16 sm:py-20 border-t border-slate-800" aria-labelledby="faq-title">
     <div class="max-w-3xl mx-auto">
       <p class="<%= section_label %>">Questions</p>
       <h2 id="faq-title" class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white text-balance mb-10"><%= @game.name %> FAQ</h2>

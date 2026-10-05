@@ -13,7 +13,7 @@
       "applicationCategory" => "GameApplication",
       "operatingSystem" => "Any (web browser)",
       "offers" => { "@type" => "Offer", "price" => "0", "priceCurrency" => "USD" },
-      "hasPart" => @games.map { |g| { "@type" => "VideoGame", "name" => g.name, "description" => g.description } }
+      "hasPart" => @games.map { |g| { "@type" => "VideoGame", "name" => g.name, "description" => g.description, "url" => (game_url(g) if g.slug.present?) }.compact }
     }.to_json) %>
   </script>
 <% end %>
