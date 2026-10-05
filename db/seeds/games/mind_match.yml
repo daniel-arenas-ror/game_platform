@@ -1,0 +1,5 @@
+# Slug is a public URL (/games/mind-match) — never change it once live.
+name: Mind Match
+slug: mind-match
+description: The host shows a category. Everyone types one word — points for every
+  player who thinks the same as you. The more minds you match, the higher your score!

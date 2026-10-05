@@ -1,0 +1,5 @@
+# Slug is a public URL (/games/guess-the-color) — never change it once live.
+name: Guess the Color
+slug: guess-the-color
+description: The host screen shows a color for 5 seconds. Match it on your phone with
+  RGB sliders before time runs out!

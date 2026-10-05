@@ -1,0 +1,5 @@
+# Slug is a public URL (/games/submarine-combat) — never change it once live.
+name: Submarine Combat
+slug: submarine-combat
+description: Place your submarines on the grid, then fire coordinates every round.
+  Your shot hits every opponent hiding a ship there. Last fleet standing wins!

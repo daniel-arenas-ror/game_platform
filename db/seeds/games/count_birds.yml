@@ -1,0 +1,5 @@
+# Slug is a public URL (/games/count-birds) — never change it once live.
+name: Count Birds
+slug: count-birds
+description: Count the black birds on screen! Rounds get harder — birds move, change
+  color, and distractors appear.

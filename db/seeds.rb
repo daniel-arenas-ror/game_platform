@@ -1,65 +1,17 @@
-Game.destroy_all
 BattleCity::MapPreset.destroy_all
 
-Game.create!(
-  name: "The Fisherman",
-  code: "fisherman",
-  description: "A social deduction game. The fisherman must find the impostor before they blend in with the knowers."
-)
+# One YAML file per game in db/seeds/games/<code>.yml (catalog order below). Upserts by code, so
+# re-running the seeds updates the content without changing game IDs that live rooms point to.
+GAME_CODES = %w[
+  fisherman how_want_be_billionare battle_city guess_the_color count_birds
+  sequence_memory submarine_combat mind_match soup_of_numbers matching_pairs
+].freeze
 
-Game.create!(
-  name: "How Want to Be a Billionaire",
-  code: "how_want_be_billionare",
-  description: "A trivia game. Answer questions correctly to earn points and become a billionaire!"
-)
-
-Game.create!(
-  name: "Battle City",
-  code: "battle_city",
-  description: "Multiplayer tank battle! Drive your tank from your phone, destroy enemies and protect the base."
-)
-
-Game.create!(
-  name: "Guess the Color",
-  code: "guess_the_color",
-  description: "The host screen shows a color for 5 seconds. Match it on your phone with RGB sliders before time runs out!"
-)
-
-Game.create!(
-  name: "Count Birds",
-  code: "count_birds",
-  description: "Count the black birds on screen! Rounds get harder — birds move, change color, and distractors appear."
-)
-
-Game.create!(
-  name: "Sequence Memory",
-  code: "sequence_memory",
-  description: "Watch the grid light up in sequence, then repeat it on your phone! Each round adds one more step — how far can your memory take you?"
-)
-
-Game.create!(
-  name: "Submarine Combat",
-  code: "submarine_combat",
-  description: "Place your submarines on the grid, then fire coordinates every round. Your shot hits every opponent hiding a ship there. Last fleet standing wins!"
-)
-
-Game.create!(
-  name: "Mind Match",
-  code: "mind_match",
-  description: "The host shows a category. Everyone types one word — points for every player who thinks the same as you. The more minds you match, the higher your score!"
-)
-
-Game.create!(
-  name: "Soup of Numbers",
-  code: "soup_of_numbers",
-  description: "A grid full of digits hides secret numbers. The host shows which number to hunt — first player to find it in the soup and tap it wins the points. Longer numbers are worth more!"
-)
-
-Game.create!(
-  name: "Matching Pairs",
-  code: "matching_pairs",
-  description: "Memorize the board on the big screen, then find every matching pair on your phone before time runs out. Each match scores, every wrong pair costs a few points!"
-)
+Game.not_in(code: GAME_CODES).destroy_all
+GAME_CODES.each do |code|
+  attrs = YAML.load_file(Rails.root.join("db/seeds/games/#{code}.yml"))
+  Game.find_or_initialize_by(code: code).update!(attrs)
+end
 
 # ---------------------------------------------------------------------------
 # Battle City — Classic map preset

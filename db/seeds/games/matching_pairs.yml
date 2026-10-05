@@ -1,0 +1,6 @@
+# Slug is a public URL (/games/matching-pairs) — never change it once live.
+name: Matching Pairs
+slug: matching-pairs
+description: Memorize the board on the big screen, then find every matching pair on
+  your phone before time runs out. Each match scores, every wrong pair costs a few
+  points!

@@ -1,0 +1,6 @@
+# Slug is a public URL (/games/soup-of-numbers) — never change it once live.
+name: Soup of Numbers
+slug: soup-of-numbers
+description: A grid full of digits hides secret numbers. The host shows which number
+  to hunt — first player to find it in the soup and tap it wins the points. Longer
+  numbers are worth more!

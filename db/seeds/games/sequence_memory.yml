@@ -1,0 +1,5 @@
+# Slug is a public URL (/games/sequence-memory) — never change it once live.
+name: Sequence Memory
+slug: sequence-memory
+description: Watch the grid light up in sequence, then repeat it on your phone! Each
+  round adds one more step — how far can your memory take you?
