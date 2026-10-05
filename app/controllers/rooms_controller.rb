@@ -125,6 +125,6 @@ class RoomsController < ApplicationController
   end
 
   def room_params
-    params.require(:room).permit(:name, game_state: {})
+    params.require(:room).permit(game_state: {})
   end
 end

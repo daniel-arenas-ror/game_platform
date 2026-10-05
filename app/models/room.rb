@@ -2,7 +2,6 @@ class Room
   include Mongoid::Document
   include Mongoid::Timestamps
 
-  field :name, type: String
   field :code, type: String       # The unique room code for the QR
   field :status, type: String, default: 'lobby'     # 'lobby', 'playing', 'finished'
   
