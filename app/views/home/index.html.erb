@@ -115,7 +115,7 @@
                 <ul class="grid grid-cols-3 gap-3 sm:gap-4">
                   <% games.each do |game| %>
                     <li>
-                      <%= link_to games_path, class: "group block rounded-xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-purple-400" do %>
+                      <%= link_to (game.slug.present? ? game_path(game) : games_path), class: "group block rounded-xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-purple-400" do %>
                         <div class="aspect-[2/3] overflow-hidden rounded-xl border border-slate-700 group-hover:border-purple-500/70 bg-slate-800 transition-colors">
                           <%= image_tag "/games/#{game.code}/instructions.png", alt: "", loading: "lazy", width: 640, height: 960,
                                 class: "w-full h-full object-cover object-top group-hover:scale-[1.03] transition-transform duration-500 ease-out" %>

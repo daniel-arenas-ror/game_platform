@@ -48,7 +48,7 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <% @games.each do |game| %>
         <% current_game = @room&.game_id == game.id %>
-        <article class="bg-slate-800 rounded-2xl overflow-hidden border <%= current_game ? "border-purple-500" : "border-slate-700 hover:border-purple-500/70" %> transition-colors group">
+        <article class="relative bg-slate-800 rounded-2xl overflow-hidden border <%= current_game ? "border-purple-500" : "border-slate-700 hover:border-purple-500/70" %> transition-colors group">
           <div class="relative h-48 bg-slate-700 flex items-center justify-center overflow-hidden">
             <% if File.exist?(Rails.public_path.join("games", game.code, "instructions.png")) %>
               <%= image_tag "/games/#{game.code}/instructions.png", alt: "#{game.name} — how to play", loading: "lazy",
@@ -65,7 +65,14 @@
           </div>
           
           <div class="p-6">
-            <h2 class="text-xl font-bold text-white mb-2 text-balance"><%= game.name %></h2>
+            <h2 class="text-xl font-bold text-white mb-2 text-balance">
+              <% if @room || game.slug.blank? %>
+                <%= game.name %>
+              <% else %>
+                <%# Stretched link: the whole card opens the game page; the Play Now button sits above it %>
+                <%= link_to game.name, game_path(game), class: "after:absolute after:inset-0 hover:text-purple-300 transition-colors rounded focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-purple-400" %>
+              <% end %>
+            </h2>
             <p class="text-slate-400 mb-6 line-clamp-2"><%= game.description %></p>
             
             <% if @room %>
@@ -73,7 +80,7 @@
                 <%= current_game ? "Configure" : "Switch to this game" %>
               <% end %>
             <% else %>
-              <%= button_to rooms_path(game_id: game.id), method: :post, class: "w-full bg-purple-500/15 hover:bg-purple-600 border border-purple-500/30 hover:border-purple-600 text-purple-100 hover:text-white font-semibold py-3 px-4 rounded-xl transition-colors text-center cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-400" do %>
+              <%= button_to rooms_path(game_id: game.id), method: :post, form_class: "relative z-10", class: "w-full bg-purple-500/15 hover:bg-purple-600 border border-purple-500/30 hover:border-purple-600 text-purple-100 hover:text-white font-semibold py-3 px-4 rounded-xl transition-colors text-center cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-400" do %>
                 Play Now
               <% end %>
             <% end %>

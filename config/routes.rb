@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   root "home#index"
   get "games", to: "games#index", as: :games
+  get "games/:slug", to: "games#show", as: :game
   get "sitemap.xml", to: "home#sitemap", defaults: { format: :xml }, as: :sitemap
   get "robots.txt", to: "home#robots", defaults: { format: :text }, as: :robots
 

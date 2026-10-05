@@ -1,0 +1,40 @@
+<% content_for :title, "#{@game.name} – Free Party Game" %>
+<% content_for :description, @game.description %>
+
+<div class="bg-slate-900 min-h-screen py-10 sm:py-12 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-5xl mx-auto">
+
+    <nav aria-label="Breadcrumb" class="mb-8 text-sm text-slate-400">
+      <ol class="flex flex-wrap items-center gap-2">
+        <li><%= link_to "Home", root_path, class: "hover:text-white transition-colors rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-400" %></li>
+        <li aria-hidden="true">›</li>
+        <li><%= link_to "Games", games_path, class: "hover:text-white transition-colors rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-400" %></li>
+        <li aria-hidden="true">›</li>
+        <li aria-current="page" class="text-slate-200"><%= @game.name %></li>
+      </ol>
+    </nav>
+
+    <section class="grid gap-10 md:grid-cols-[1fr_320px] md:items-start">
+      <div>
+        <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight text-white mb-4 text-balance"><%= @game.name %></h1>
+        <% if @game.tagline.present? %>
+          <p class="text-xl text-purple-300 font-semibold mb-4 text-pretty"><%= @game.tagline %></p>
+        <% end %>
+        <p class="text-slate-400 text-lg mb-8 text-pretty"><%= @game.description %></p>
+
+        <%= button_to rooms_path(game_id: @game.id), method: :post, class: "w-full sm:w-auto bg-purple-600 hover:bg-purple-500 text-white font-bold text-lg py-4 px-10 rounded-xl transition-colors cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-400" do %>
+          Start game
+        <% end %>
+        <p class="mt-3 text-sm text-slate-500">Free, no sign-up. Players join from their phones.</p>
+      </div>
+
+      <% if File.exist?(Rails.public_path.join("games", @game.code, "instructions.png")) %>
+        <%= image_tag "/games/#{@game.code}/instructions.png", alt: "#{@game.name} — how to play", width: 640, height: 960,
+              class: "w-full max-w-xs mx-auto rounded-2xl border border-slate-700" %>
+      <% end %>
+    </section>
+
+    <%= ad_slot :games, css: "mt-16 max-w-3xl mx-auto" %>
+
+  </div>
+</div>

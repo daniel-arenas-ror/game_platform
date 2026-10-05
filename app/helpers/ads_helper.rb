@@ -17,7 +17,7 @@ module AdsHelper
   # controller => actions that may show ads
   ADS_ALLOWED = {
     "home"  => %w[index],
-    "games" => %w[index],
+    "games" => %w[index show],
     "rooms" => %w[show],
     "pages" => %w[about contact privacy]
   }.freeze
