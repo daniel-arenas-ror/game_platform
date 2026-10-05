@@ -16,7 +16,29 @@ class GamesControllerTest < ActionDispatch::IntegrationTest
     assert_select "title", /Soup of Numbers/
     assert_select "nav[aria-label=Breadcrumb] a[href=?]", games_path
     assert_select "form[action=?] button", rooms_path(game_id: @game.id), text: "Start game"
-    assert_select "aside[aria-label=Advertisement]", 1
+    assert_select "aside[aria-label=Advertisement]", 2
+  end
+
+  test "game page shows the game's content and related games" do
+    @game.update!(tagline: "Race for numbers", min_players: 1, max_players: 12, players_note: "Best with 2 to 8",
+                  duration_minutes: 10, age: 7, category: "puzzle", how_to_play: %w[One Two Three Four],
+                  tips: [ "Look for rare digits" ], perfect_for: %w[classroom], long_description: "A word search with digits",
+                  faq: [ { "q" => "How many points?", "a" => "50 per digit" } ])
+    other = Game.create!(name: "Sequence Memory", code: "sequence_memory", description: "Remember",
+                         slug: "sequence-memory-#{SecureRandom.hex(3)}", tagline: "One more light", category: "puzzle")
+
+    get game_path(@game)
+    assert_select "ul[aria-label='At a glance'] li", text: /1–12 players/
+    assert_select "#how-to-play ol li", 4
+    assert_select "h2", "How to win at Soup of Numbers"
+    assert_select "details summary", text: /How many points\?/
+    assert_select "details summary", text: /Do players need to download an app\?/
+    assert_select "li", text: /Classrooms\s*Great fit/
+    assert_select "li", text: /Video calls\s*Best in the same room/
+    assert_select "a[href=?]", game_path(other), text: /One more light/
+    assert_select "button", text: "Start game", count: 2
+  ensure
+    other&.delete
   end
 
   test "unknown slug is a 404" do

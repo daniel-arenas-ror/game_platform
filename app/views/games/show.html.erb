@@ -1,40 +1,228 @@
 <% content_for :title, "#{@game.name} – Free Party Game" %>
 <% content_for :description, @game.description %>
 
-<div class="bg-slate-900 min-h-screen py-10 sm:py-12 px-4 sm:px-6 lg:px-8">
-  <div class="max-w-5xl mx-auto">
+<%
+  accent = game_accent(@game)
+  start_cta = "inline-flex items-center justify-center w-full sm:w-auto bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white text-lg font-black px-10 py-4 rounded-xl shadow-lg shadow-purple-900/20 transition-transform active:scale-95 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-400"
+  link_css = "rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-400"
+  section_label = "text-xs font-black uppercase tracking-widest #{accent[:text]} mb-3"
+  meter_size = [ @game.max_players.to_i, 12 ].min
+%>
 
-    <nav aria-label="Breadcrumb" class="mb-8 text-sm text-slate-400">
-      <ol class="flex flex-wrap items-center gap-2">
-        <li><%= link_to "Home", root_path, class: "hover:text-white transition-colors rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-400" %></li>
-        <li aria-hidden="true">›</li>
-        <li><%= link_to "Games", games_path, class: "hover:text-white transition-colors rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-400" %></li>
-        <li aria-hidden="true">›</li>
-        <li aria-current="page" class="text-slate-200"><%= @game.name %></li>
-      </ol>
-    </nav>
+<div class="bg-slate-900 overflow-x-clip" data-controller="reveal">
 
-    <section class="grid gap-10 md:grid-cols-[1fr_320px] md:items-start">
-      <div>
-        <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight text-white mb-4 text-balance"><%= @game.name %></h1>
-        <% if @game.tagline.present? %>
-          <p class="text-xl text-purple-300 font-semibold mb-4 text-pretty"><%= @game.tagline %></p>
+  <%# ── Hero ─────────────────────────────────────────────────────────────── %>
+  <section class="px-4 sm:px-6 lg:px-8 pt-8 pb-16 sm:pb-24">
+    <div class="max-w-6xl mx-auto">
+      <nav aria-label="Breadcrumb" class="mb-10 text-sm text-slate-400">
+        <ol class="flex flex-wrap items-center gap-2">
+          <li><%= link_to "Home", root_path, class: "hover:text-white transition-colors #{link_css}" %></li>
+          <li aria-hidden="true" class="text-slate-600">/</li>
+          <li><%= link_to "Games", games_path, class: "hover:text-white transition-colors #{link_css}" %></li>
+          <li aria-hidden="true" class="text-slate-600">/</li>
+          <li aria-current="page" class="text-slate-200"><%= @game.name %></li>
+        </ol>
+      </nav>
+
+      <div class="grid lg:grid-cols-[minmax(0,1fr)_340px] gap-12 lg:gap-16 items-center">
+        <div class="max-w-2xl">
+          <p class="<%= section_label %>"><%= game_category_label(@game) %></p>
+          <h1 class="text-5xl sm:text-6xl font-extrabold tracking-tight text-white text-balance leading-[1.02] mb-5"><%= @game.name %></h1>
+          <% if @game.tagline.present? %>
+            <p class="text-xl sm:text-2xl font-semibold <%= accent[:soft] %> text-pretty mb-5"><%= @game.tagline %></p>
+          <% end %>
+          <p class="text-lg text-slate-400 text-pretty mb-8"><%= @game.description %></p>
+
+          <ul class="flex flex-wrap gap-2 mb-10" aria-label="At a glance">
+            <% [
+                 [ :users, game_players_label(@game) ],
+                 ([ :clock, "About #{@game.duration_minutes} min" ] if @game.duration_minutes),
+                 ([ :cake, "Ages #{@game.age}+" ] if @game.age),
+                 [ :phone, "Play on your phone" ]
+               ].compact.each do |icon, label| %>
+              <li class="inline-flex items-center gap-2 bg-slate-800 border border-slate-700 rounded-full px-4 py-2 text-sm font-semibold text-slate-200">
+                <%= game_page_icon(icon, css: "size-4 #{accent[:text]}") %><%= label %>
+              </li>
+            <% end %>
+          </ul>
+
+          <div class="flex flex-col sm:flex-row sm:items-center gap-4">
+            <%= button_to "Start game", rooms_path(game_id: @game.id), method: :post, class: start_cta %>
+            <a href="#how-to-play" class="text-center text-purple-400 hover:text-purple-300 font-semibold px-4 py-3 transition-colors <%= link_css %>">How to play ↓</a>
+          </div>
+          <p class="mt-4 text-sm text-slate-500">Free, no sign-up. Open it on a TV or laptop and everyone joins from their phone.</p>
+        </div>
+
+        <% if game_instruction_image?(@game) %>
+          <figure class="max-w-[300px] w-full mx-auto lg:mx-0">
+            <%= image_tag "/games/#{@game.code}/instructions.png", alt: "#{@game.name} — how to play, illustrated", width: 640, height: 960,
+                  class: "w-full rounded-3xl border border-slate-700 shadow-2xl rotate-2 hover:rotate-0 transition-transform duration-500 ease-out motion-reduce:rotate-0" %>
+          </figure>
         <% end %>
-        <p class="text-slate-400 text-lg mb-8 text-pretty"><%= @game.description %></p>
-
-        <%= button_to rooms_path(game_id: @game.id), method: :post, class: "w-full sm:w-auto bg-purple-600 hover:bg-purple-500 text-white font-bold text-lg py-4 px-10 rounded-xl transition-colors cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-400" do %>
-          Start game
-        <% end %>
-        <p class="mt-3 text-sm text-slate-500">Free, no sign-up. Players join from their phones.</p>
       </div>
+    </div>
+  </section>
 
-      <% if File.exist?(Rails.public_path.join("games", @game.code, "instructions.png")) %>
-        <%= image_tag "/games/#{@game.code}/instructions.png", alt: "#{@game.name} — how to play", width: 640, height: 960,
-              class: "w-full max-w-xs mx-auto rounded-2xl border border-slate-700" %>
-      <% end %>
+  <%# Below the hero image, so on phones it is never right under the Start game button %>
+  <%= ad_slot :games, css: "px-4 sm:px-6 lg:px-8 pb-12 max-w-3xl mx-auto" %>
+
+  <%# ── About ────────────────────────────────────────────────────────────── %>
+  <% if @game.long_description.present? %>
+    <section class="px-4 sm:px-6 lg:px-8 py-16 sm:py-20 border-t border-slate-800" aria-labelledby="about-game">
+      <div class="max-w-3xl mx-auto" data-reveal>
+        <p class="<%= section_label %>">The idea</p>
+        <h2 id="about-game" class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white text-balance mb-6">What is <%= @game.name %>?</h2>
+        <p class="text-lg text-slate-300 leading-relaxed text-pretty"><%= @game.long_description %></p>
+      </div>
     </section>
+  <% end %>
 
-    <%= ad_slot :games, css: "mt-16 max-w-3xl mx-auto" %>
+  <%# ── How to play ──────────────────────────────────────────────────────── %>
+  <% if @game.how_to_play.any? %>
+    <section id="how-to-play" class="scroll-mt-20 px-4 sm:px-6 lg:px-8 py-16 sm:py-20 border-t border-slate-800 bg-slate-950/60" aria-labelledby="how-to-play-title">
+      <div class="max-w-3xl mx-auto">
+        <p class="<%= section_label %>">Step by step</p>
+        <h2 id="how-to-play-title" class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white text-balance mb-10">How to play <%= @game.name %></h2>
+        <ol class="space-y-4">
+          <% @game.how_to_play.each_with_index do |step, i| %>
+            <li class="flex gap-5 items-start bg-slate-800 border border-slate-700 rounded-2xl p-5 sm:p-6" data-reveal style="--reveal-delay: <%= i * 80 %>ms">
+              <span class="shrink-0 grid place-items-center size-11 rounded-xl <%= accent[:tint] %> border <%= accent[:border] %> <%= accent[:text] %> font-mono font-black text-xl tabular-nums" aria-hidden="true"><%= i + 1 %></span>
+              <p class="text-slate-200 text-lg text-pretty pt-1.5"><%= step %></p>
+            </li>
+          <% end %>
+        </ol>
+      </div>
+    </section>
+  <% end %>
 
-  </div>
+  <%# ── Players ──────────────────────────────────────────────────────────── %>
+  <% if @game.min_players && @game.max_players %>
+    <section class="px-4 sm:px-6 lg:px-8 py-16 sm:py-20 border-t border-slate-800" aria-labelledby="players-title">
+      <div class="max-w-3xl mx-auto grid sm:grid-cols-[auto_1fr] gap-8 sm:gap-12 items-center" data-reveal>
+        <div>
+          <p class="<%= section_label %>">How many players?</p>
+          <h2 id="players-title" class="font-mono font-black text-5xl sm:text-6xl text-white tabular-nums">
+            <%= @game.min_players == @game.max_players ? @game.min_players : "#{@game.min_players}–#{@game.max_players}" %>
+          </h2>
+          <p class="text-slate-400 font-semibold mt-1">players</p>
+        </div>
+        <div>
+          <div class="flex flex-wrap gap-1.5 mb-5" role="img" aria-label="<%= game_players_label(@game) %>">
+            <% (1..meter_size).each do |n| %>
+              <span class="size-6 rounded-full <%= n >= @game.min_players ? accent[:dot] : "bg-slate-700" %>"></span>
+            <% end %>
+            <% if @game.max_players > meter_size %>
+              <span class="h-6 px-2 rounded-full bg-slate-800 border border-slate-700 text-xs font-mono font-black text-slate-300 grid place-items-center">+<%= @game.max_players - meter_size %></span>
+            <% end %>
+          </div>
+          <p class="text-slate-300 text-lg text-pretty"><%= @game.players_note %></p>
+        </div>
+      </div>
+    </section>
+  <% end %>
+
+  <%# ── Tips ─────────────────────────────────────────────────────────────── %>
+  <% if @game.tips.any? %>
+    <section class="px-4 sm:px-6 lg:px-8 py-16 sm:py-20 border-t border-slate-800" aria-labelledby="tips-title">
+      <div class="max-w-6xl mx-auto">
+        <p class="<%= section_label %>">Tips &amp; tricks</p>
+        <h2 id="tips-title" class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white text-balance mb-10">How to win at <%= @game.name %></h2>
+        <ul class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <% @game.tips.each_with_index do |tip, i| %>
+            <li class="bg-slate-800 border border-slate-700 rounded-2xl p-6" data-reveal style="--reveal-delay: <%= (i % 3) * 80 %>ms">
+              <%= game_page_icon(:bulb, css: "size-6 #{accent[:text]} mb-4") %>
+              <p class="text-slate-200 text-pretty"><%= tip %></p>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+    </section>
+  <% end %>
+
+  <%# ── Perfect for ──────────────────────────────────────────────────────── %>
+  <section class="px-4 sm:px-6 lg:px-8 py-16 sm:py-20 border-t border-slate-800 bg-slate-950/60" aria-labelledby="perfect-for-title">
+    <div class="max-w-6xl mx-auto">
+      <p class="<%= section_label %>">Where it shines</p>
+      <h2 id="perfect-for-title" class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white text-balance mb-10">Perfect for…</h2>
+      <ul class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+        <% GamePagesHelper::SETTINGS.each do |key, (label, icon)| %>
+          <% fits = @game.perfect_for.include?(key) %>
+          <li class="rounded-2xl border p-5 <%= fits ? "bg-slate-800 border-slate-700" : "border-slate-800 border-dashed" %>" data-reveal>
+            <%= game_page_icon(icon, css: "size-7 mb-3 #{fits ? accent[:text] : "text-slate-600"}") %>
+            <p class="font-bold <%= fits ? "text-white" : "text-slate-500" %>"><%= label %></p>
+            <p class="text-sm mt-1 <%= fits ? "text-slate-400" : "text-slate-500" %>">
+              <% if fits %>
+                <span class="inline-flex items-center gap-1"><%= game_page_icon(:check, css: "size-3.5 #{accent[:text]}") %>Great fit</span>
+              <% elsif key == "video_call" %>
+                Best in the same room
+              <% else %>
+                Not the best pick
+              <% end %>
+            </p>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  </section>
+
+  <%# ── FAQ ──────────────────────────────────────────────────────────────── %>
+  <section class="px-4 sm:px-6 lg:px-8 py-16 sm:py-20 border-t border-slate-800" aria-labelledby="faq-title">
+    <div class="max-w-3xl mx-auto">
+      <p class="<%= section_label %>">Questions</p>
+      <h2 id="faq-title" class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white text-balance mb-10"><%= @game.name %> FAQ</h2>
+      <div class="space-y-3">
+        <% game_faq(@game).each do |item| %>
+          <details class="group bg-slate-800 border border-slate-700 rounded-2xl open:border-slate-600">
+            <summary class="flex items-center justify-between gap-4 cursor-pointer list-none p-5 sm:p-6 font-bold text-white text-lg rounded-2xl [&::-webkit-details-marker]:hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-400">
+              <%= item["q"] %>
+              <%= game_page_icon(:chevron, css: "size-5 shrink-0 text-slate-400 transition-transform group-open:rotate-180") %>
+            </summary>
+            <p class="px-5 sm:px-6 pb-6 -mt-1 text-slate-400 text-pretty"><%= item["a"] %></p>
+          </details>
+        <% end %>
+      </div>
+    </div>
+  </section>
+
+  <%= ad_slot :games, css: "px-4 sm:px-6 lg:px-8 py-12 max-w-3xl mx-auto" %>
+
+  <%# ── More games ───────────────────────────────────────────────────────── %>
+  <% if @related_games.any? %>
+    <section class="px-4 sm:px-6 lg:px-8 py-16 sm:py-20 border-t border-slate-800" aria-labelledby="more-games-title">
+      <div class="max-w-6xl mx-auto">
+        <div class="flex flex-wrap items-end justify-between gap-4 mb-10">
+          <h2 id="more-games-title" class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white text-balance">You might also like</h2>
+          <%= link_to "All games →", games_path, class: "text-purple-400 hover:text-purple-300 font-semibold transition-colors #{link_css}" %>
+        </div>
+        <ul class="grid sm:grid-cols-3 gap-6">
+          <% @related_games.each do |game| %>
+            <li data-reveal>
+              <%= link_to game_path(game), class: "group block bg-slate-800 border border-slate-700 hover:border-purple-500/70 rounded-2xl overflow-hidden transition-colors h-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-400" do %>
+                <div class="h-40 bg-slate-700 overflow-hidden">
+                  <% if game_instruction_image?(game) %>
+                    <%= image_tag "/games/#{game.code}/instructions.png", alt: "", loading: "lazy", width: 640, height: 960,
+                          class: "w-full h-full object-cover object-top group-hover:scale-[1.03] transition-transform duration-500 ease-out" %>
+                  <% end %>
+                </div>
+                <div class="p-5">
+                  <p class="text-lg font-bold text-white text-balance mb-1"><%= game.name %></p>
+                  <p class="text-sm text-slate-400 line-clamp-2"><%= game.tagline.presence || game.description %></p>
+                </div>
+              <% end %>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+    </section>
+  <% end %>
+
+  <%# ── Closing CTA ──────────────────────────────────────────────────────── %>
+  <section class="px-4 sm:px-6 lg:px-8 py-20 sm:py-24 border-t border-slate-800 bg-slate-950/60">
+    <div class="max-w-2xl mx-auto text-center" data-reveal>
+      <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white text-balance mb-4">Ready to play <%= @game.name %>?</h2>
+      <p class="text-lg text-slate-400 text-pretty mb-8">Open a room, put it on the big screen and share the QR code. You'll be playing in under a minute.</p>
+      <%= button_to "Start game", rooms_path(game_id: @game.id), method: :post, class: start_cta, form_class: "flex justify-center" %>
+    </div>
+  </section>
+
 </div>

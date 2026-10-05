@@ -8,5 +8,14 @@ class GamesController < ApplicationController
 
   def show
     @game = Game.find_by!(slug: params[:slug])
+    @related_games = related_games(@game)
+  end
+
+  private
+
+  # Same-category games first, then the rest of the catalog, in catalog order.
+  def related_games(game, count = 3)
+    others = Game.where(:id.ne => game.id, :slug.nin => [ nil, "" ]).to_a
+    others.partition { |g| g.category == game.category }.flatten.first(count)
   end
 end
