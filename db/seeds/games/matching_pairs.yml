@@ -1,6 +1,39 @@
 # Slug is a public URL (/games/matching-pairs) — never change it once live.
 name: Matching Pairs
 slug: matching-pairs
-description: Memorize the board on the big screen, then find every matching pair on
-  your phone before time runs out. Each match scores, every wrong pair costs a few
-  points!
+description: Memorize the board on the big screen, then find every matching pair on your
+  phone before time runs out. Each match scores, every wrong pair costs a few points!
+tagline: Look closely. In a few seconds, every card flips face down.
+category: memory
+min_players: 1
+max_players: 30
+players_note: >-
+  Everyone plays their own board on their own phone at the same time, so it works for any group
+  size, from a solo practice to a full classroom.
+duration_minutes: 5
+age: 5
+long_description: >-
+  The classic memory card game, played by everyone at once. The big screen shows the whole board
+  face up for a few seconds. Then the cards flip over, and everyone has to find the pairs on their
+  own phone, using only what they remember. Each match scores 100 points, but every wrong pair
+  costs 10, so guessing has a price. Pick animals, objects, flags, numbers or a random mix.
+how_to_play:
+  - The host picks the board size (4×4 up to 6×6), the card set, the time per round and the number of rounds.
+  - The whole board appears face up on the big screen for 8 to 20 seconds, depending on its size. Memorize it!
+  - The cards flip over. Tap two cards on your phone to turn them face up.
+  - A match scores 100 points and stays open. A wrong pair costs 10 points and flips back.
+  - Clear your board before the timer runs out. The highest score wins.
+tips:
+  - Don't try to remember everything. Pick one row or one corner and remember it well.
+  - Say the pairs in your head, like "dog top left, dog bottom right".
+  - Wrong guesses cost points, so if you have no idea, tap a card you remember first.
+  - A wrong pair still tells you two cards. Use that for your next turn.
+  - Start with 4×4 to warm up. 6×6 with flags is a real challenge.
+perfect_for: [classroom, family, party]
+faq:
+  - q: How is Matching Pairs scored?
+    a: Each match is worth 100 points and each wrong pair costs 10 points. Your score never drops below 0.
+  - q: What cards can we play with?
+    a: Animals, objects, country flags, numbers, or a random mix.
+  - q: Is Matching Pairs good for young kids?
+    a: Yes. A 4×4 board with animals is perfect for little ones, and bigger boards challenge older players.

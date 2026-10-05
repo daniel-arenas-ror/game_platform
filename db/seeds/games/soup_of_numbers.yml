@@ -1,6 +1,41 @@
 # Slug is a public URL (/games/soup-of-numbers) — never change it once live.
 name: Soup of Numbers
 slug: soup-of-numbers
-description: A grid full of digits hides secret numbers. The host shows which number
-  to hunt — first player to find it in the soup and tap it wins the points. Longer
-  numbers are worth more!
+description: A grid full of digits hides secret numbers. The host shows which number to
+  hunt — first player to find it in the soup and tap it wins the points. Longer numbers
+  are worth more!
+tagline: A word search, but with numbers. And everyone's racing.
+category: puzzle
+min_players: 1
+max_players: 12
+players_note: >-
+  Only the fastest player scores each round, so it's best with 2 to 8 people racing each other.
+  Playing alone is a fun warm-up too.
+duration_minutes: 10
+age: 7
+long_description: >-
+  Everyone gets the same grid of digits on their phone, a soup full of numbers. Each round the big
+  screen shows one number hidden somewhere in that soup. Find it, tap its digits in a straight line,
+  and if you're first, the points are yours. Longer numbers are worth more, so a 5-digit find is
+  worth 250 points. Every number you find is painted in your color, so you can see who's winning
+  the race just by looking at the soup.
+how_to_play:
+  - The host picks the soup size, the biggest number length (2 to 5 digits), the rounds and the time per round.
+  - Everyone gets the same grid of digits on their phone.
+  - The big screen shows the number to find. It reads in a straight line, across, down or diagonally.
+  - Tap its digits in order. The first player to find it wins 50 points per digit.
+  - If nobody finds it in time, it's revealed and the next round starts. The highest total wins.
+tips:
+  - Look for the first digit first, then check the cells around it for the second one.
+  - Numbers can run across, down or diagonally, so check every direction.
+  - Rare digits are easier to spot. If the number has a 7 and the soup has few 7s, start there.
+  - Any copy of the number counts, even one that appeared by chance.
+  - Small soup (8×8) for quick games, 15×15 for real number hunters.
+perfect_for: [classroom, family, party]
+faq:
+  - q: How do you play Soup of Numbers?
+    a: It's like a word search with digits. The host shows a number, and the first player to find it in the grid and tap its digits scores.
+  - q: How many points is each number worth?
+    a: 50 points per digit, so a 2-digit number is worth 100 and a 5-digit number is worth 250.
+  - q: Is Soup of Numbers good for the classroom?
+    a: Yes. It practices reading and recognizing numbers, and every player races on their own phone.

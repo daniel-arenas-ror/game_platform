@@ -3,3 +3,38 @@ name: The Fisherman
 slug: the-fisherman
 description: A social deduction game. The fisherman must find the impostor before
   they blend in with the knowers.
+tagline: One of you is bluffing. The Fisherman has one cast to catch them.
+category: social
+min_players: 4
+max_players: 12
+players_note: >-
+  Each round needs a Fisherman, an Impostor and at least one Knower, so 3 players can technically
+  play. With 4 to 8 the Impostor has a crowd to hide in, and the bluffing gets really good.
+duration_minutes: 15
+age: 10
+long_description: >-
+  The Fisherman is a bluffing game you play out loud. Every round the host screen asks a strange
+  question, like what people used before toilet paper. The Knowers see the secret answer on their
+  phones. The Impostor sees only question marks and has to invent something believable on the spot.
+  The Fisherman listens to everyone and then casts the net. Catch the Impostor and the Fisherman
+  scores. Accuse an innocent Knower and that Knower scores instead.
+how_to_play:
+  - Every round, the phones deal secret roles. One Fisherman, one Impostor, and everyone else is a Knower.
+  - The Fisherman reads the question out loud. Knowers see the secret answer on their phone. The Impostor sees only "???".
+  - Going around the group, everyone says their answer out loud. The Impostor has to make one up and sound convincing.
+  - The Fisherman picks who they think the Impostor is and locks in the guess.
+  - Catch the Impostor and the Fisherman gets a point. Every innocent player accused gets a point. Roles rotate, and the most points after the last round wins.
+tips:
+  - "Knowers: don't make it too obvious. If the Impostor hears the answer first, they can copy it."
+  - "Impostor: listen to the others before you answer. Their answers are your best clues."
+  - "Fisherman: each innocent player you accuse earns them a point, so cast carefully."
+  - Answers that are a little odd but not crazy are the Impostor's best friend.
+  - Watch faces, not just words. Laughing too early gives a lot away.
+perfect_for: [party, family, work, video_call]
+faq:
+  - q: How many players do you need for The Fisherman?
+    a: At least 3 (a Fisherman, an Impostor and one Knower), but it's best with 4 to 8 players so the Impostor has people to hide behind.
+  - q: Can we play The Fisherman over a video call?
+    a: Yes. Everything is said out loud, so it works well on Zoom, Meet or Teams. Share the host screen and everyone joins from their phone.
+  - q: Does the Impostor score points?
+    a: The Impostor wins by not getting caught. Every time the Fisherman accuses someone innocent, that player scores instead, so a good bluff hands points to the others.

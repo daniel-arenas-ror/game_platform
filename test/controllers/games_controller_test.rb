@@ -50,4 +50,21 @@ class GamesControllerTest < ActionDispatch::IntegrationTest
     assert(slugs.all? { |s| s.match?(/\A[a-z0-9]+(?:-[a-z0-9]+)*\z/) })
     assert_includes slugs, "how-to-be-a-billionaire"
   end
+
+  test "every seeded game has the full game page content" do
+    Dir[Rails.root.join("db/seeds/games/*.yml")].each do |file|
+      data = YAML.load_file(file)
+      name = File.basename(file)
+
+      %w[name description tagline long_description players_note category].each do |key|
+        assert data[key].present?, "#{name}: missing #{key}"
+      end
+      assert_operator data["min_players"], :<=, data["max_players"], name
+      assert data["duration_minutes"].positive? && data["age"].positive?, name
+      assert_operator data["how_to_play"].size, :>=, 4, name
+      assert_operator data["tips"].size, :>=, 4, name
+      assert_empty data["perfect_for"] - Game::PERFECT_FOR, name
+      assert(data["faq"].size >= 3 && data["faq"].all? { |f| f["q"].present? && f["a"].present? }, name)
+    end
+  end
 end

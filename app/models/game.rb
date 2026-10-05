@@ -12,13 +12,17 @@ class Game
   field :long_description, type: String
   field :min_players, type: Integer
   field :max_players, type: Integer
+  field :players_note, type: String # why this player count works best
   field :duration_minutes, type: Integer
   field :age, type: Integer
   field :category, type: String
   field :how_to_play, type: Array, default: []
   field :tips, type: Array, default: []
-  field :perfect_for, type: Array, default: []
+  field :perfect_for, type: Array, default: [] # keys of PERFECT_FOR
   field :faq, type: Array, default: [] # [{ "q" => "...", "a" => "..." }]
+
+  # Settings a game page can recommend it for.
+  PERFECT_FOR = %w[party family classroom work video_call].freeze
 
   index({ slug: 1 }, { unique: true, sparse: true })
 

@@ -3,3 +3,37 @@ name: Guess the Color
 slug: guess-the-color
 description: The host screen shows a color for 5 seconds. Match it on your phone with
   RGB sliders before time runs out!
+tagline: You saw it for 5 seconds. Now mix it from memory.
+category: perception
+min_players: 1
+max_players: 30
+players_note: >-
+  Everyone mixes their color at the same time, so any group size works. With 3 or more the
+  reveal, where everyone's colors appear next to the real one, gets the biggest laughs.
+duration_minutes: 5
+age: 6
+long_description: >-
+  Think you have a good eye for color? The host screen flashes a color for 5 seconds, then it's
+  gone. Everyone has 10 seconds to recreate it on their phone with red, green and blue sliders. The
+  closer your mix, the more points you get, up to 1,000 per round. Then comes the reveal, with
+  everyone's colors next to the real one, and that's where the laughing starts.
+how_to_play:
+  - The host picks the number of rounds and the difficulty. Easy uses bright, vivid colors. Hard can be any color at all.
+  - A color fills the host screen for 5 seconds. Look closely and remember it.
+  - The color disappears. You get 10 seconds to mix it on your phone with the red, green and blue sliders.
+  - The closer your color is to the real one, the more points you get, up to 1,000 per round.
+  - After each round, everyone's colors are shown next to the real one. The highest total after the last round wins.
+tips:
+  - Find the strongest channel first. Is it mostly red, green or blue? Set that slider, then adjust the others.
+  - All three sliders high makes light colors. All three low makes dark ones.
+  - Yellow is red plus green. Purple is red plus blue. Cyan is green plus blue.
+  - Don't trust the screen's glow. Most colors look a little brighter on a TV than they really are.
+  - Start with Easy and switch to Hard once everyone gets the hang of the sliders.
+perfect_for: [family, classroom, party]
+faq:
+  - q: How is Guess the Color scored?
+    a: Each round is worth up to 1,000 points. The closer your color is to the target, the more you get.
+  - q: What's the difference between Easy and Hard?
+    a: Easy uses 12 bright, fully saturated colors. Hard can be any color, including muddy and pastel tones.
+  - q: Can we play Guess the Color over a video call?
+    a: You can, but video calls change colors a little when they compress the screen. It's fairest in the same room as the TV.

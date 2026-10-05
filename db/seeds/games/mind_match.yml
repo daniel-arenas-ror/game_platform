@@ -1,5 +1,40 @@
 # Slug is a public URL (/games/mind-match) — never change it once live.
 name: Mind Match
 slug: mind-match
-description: The host shows a category. Everyone types one word — points for every
-  player who thinks the same as you. The more minds you match, the higher your score!
+description: The host shows a category. Everyone types one word — points for every player
+  who thinks the same as you. The more minds you match, the higher your score!
+tagline: Don't be original. Be predictable. Think like the group!
+category: social
+min_players: 3
+max_players: 20
+players_note: >-
+  You score by matching other players, so you need at least 3. With 5 to 10 the reveal is at its
+  best, with big groups of the same word and one lonely answer nobody expected.
+duration_minutes: 5
+age: 8
+long_description: >-
+  The host screen shows a category like "Things you find at the beach" or "Famous duos". Everyone
+  secretly types one word on their phone. Then the answers are revealed, and you score one point for
+  every player, you included, who wrote the same word. The goal is not to be clever. It's to guess
+  what everyone else will think. Expect cheering when five people all write "sand", and groans for
+  the one person who wrote "jellyfish".
+how_to_play:
+  - The host picks the number of rounds and how many seconds everyone gets to type.
+  - A category appears on the big screen, like "Things that are yellow".
+  - Type one word on your phone before time runs out. No talking!
+  - Answers are grouped. If 4 people wrote the same word, each of them gets 4 points.
+  - A new category each round. The highest total at the end wins.
+tips:
+  - Go for the first, most obvious word. That's what everyone else is thinking too.
+  - Think about who's in the room. A group of kids and a group of chefs will answer "Things in a kitchen" differently.
+  - Plurals are matched for you, so "cats" and "cat" count as the same word.
+  - Keep it to one simple word. "Banana" will match far more people than "ripe banana".
+  - Try it as an icebreaker at work. You'll learn a lot about how your team thinks.
+perfect_for: [party, work, family, classroom, video_call]
+faq:
+  - q: How does scoring work in Mind Match?
+    a: Every player in a group of matching words scores the size of the group. If 3 people wrote "sand", each of them gets 3 points.
+  - q: Does spelling matter?
+    a: Answers are compared without caps, extra spaces or punctuation, and common plurals are folded, so "Cats" and "cat" match.
+  - q: Can we play Mind Match over a video call?
+    a: Yes. You have 10 to 20 seconds to type each word, so it plays great on Zoom, Meet or Teams.

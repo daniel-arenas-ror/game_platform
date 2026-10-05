@@ -3,3 +3,38 @@ name: How Want to Be a Billionaire
 slug: how-to-be-a-billionaire
 description: A trivia game. Answer questions correctly to earn points and become a
   billionaire!
+tagline: Four answers, one is right, and the clock is ticking.
+category: trivia
+min_players: 1
+max_players: 30
+players_note: >-
+  Everyone answers at the same time on their own phone, so it works for 1 player or a whole
+  class. With 5 or more the leaderboard turns into a real race.
+duration_minutes: 10
+age: 10
+long_description: >-
+  A quiz show for your living room. The host screen shows a question and four possible answers,
+  everyone picks one on their phone before the timer runs out, and then the right answer is
+  revealed. Questions cover history, science, geography, sports, food, literature, mythology and
+  more. Harder questions are worth more, from 100 up to 1,000 points, so one brave answer can turn
+  the whole leaderboard around.
+how_to_play:
+  - The host picks the number of questions and how many seconds everyone gets for each one.
+  - A question and four answers appear on the big screen.
+  - Tap your answer on your phone before time runs out. You only get one tap, so choose well.
+  - The correct answer is revealed and everyone who got it right wins the question's points.
+  - Harder questions are worth more. The highest total after the last question wins.
+tips:
+  - Read all four answers before you tap. The first one that looks right isn't always right.
+  - If you're not sure, rule out the answers that are clearly wrong and guess between the rest.
+  - Keep an eye on the points. A 1,000-point question late in the game can change everything.
+  - "Hosts: shorter timers (5 or 10 seconds) make it loud and frantic. 20 or 30 seconds is great for kids."
+  - Playing again in the same room skips questions you already saw.
+perfect_for: [classroom, family, party, work, video_call]
+faq:
+  - q: What topics are the trivia questions about?
+    a: History, science, biology, geography, sports, food, literature, math and technology, mythology and language, and general knowledge.
+  - q: How many people can play the trivia game?
+    a: Any number from 1 up. Everyone answers on their own phone at the same time, so it works for a family, a team or a full classroom.
+  - q: Do we see the same questions every time?
+    a: Questions are picked at random, and when you play again in the same room the game skips the ones you've already answered.

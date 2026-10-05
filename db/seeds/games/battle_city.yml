@@ -3,3 +3,37 @@ name: Battle City
 slug: battle-city
 description: Multiplayer tank battle! Drive your tank from your phone, destroy enemies
   and protect the base.
+tagline: Your phone is the joystick. The TV is the battlefield. Guard the base!
+category: action
+min_players: 1
+max_players: 4
+players_note: >-
+  Up to 4 players drive a tank each. Playing alone or with only 2? The host can add up to 3 computer
+  bots so the arena never feels empty.
+duration_minutes: 10
+age: 7
+long_description: >-
+  A retro arcade tank game for the whole room. Everyone drives their own colored tank from their
+  phone while the map plays out live on the big screen. Blast through brick walls, hide in the
+  trees, dodge the steel and tag the other tanks to score. But watch the base: if anyone's shot
+  hits it, the game is over for everyone. Pick a map, add a few bots, and see who rules the arena.
+how_to_play:
+  - The host picks a map (Classic, Open, Siege or Forest), how many tags it takes to win, and up to 3 bots.
+  - Your phone becomes a controller. Steer with the arrow pad and press Fire to shoot.
+  - Hit another tank to score a point. Tagged tanks come back after 3 seconds.
+  - Brick walls break when you shoot them, steel walls don't, and trees hide you as you drive through.
+  - The first player to reach the target wins, or the last tank standing. If the base is hit, the game ends right away.
+tips:
+  - Trees are the best hiding spot. Wait inside and surprise anyone who drives past.
+  - Shoot through brick to open new paths, or leave it standing as cover.
+  - Keep your shots away from the base. One stray bullet ends the game for everyone.
+  - Bots aim for the base, so someone has to stay back and defend it.
+  - '"Base only" mode (0 tags to win) turns it into a survival game: last tank standing wins.'
+perfect_for: [party, family]
+faq:
+  - q: How many players can play Battle City?
+    a: Up to 4 players, each driving their own tank from their phone. The host can add up to 3 computer bots on top.
+  - q: Can I play Battle City alone?
+    a: Yes. Start a game with just yourself and add bots for opponents.
+  - q: Does Battle City work over a video call?
+    a: It's a fast real-time game, so it plays best in the same room as the screen. Over a video call the delay makes steering hard.

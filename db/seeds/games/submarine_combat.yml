@@ -1,5 +1,39 @@
 # Slug is a public URL (/games/submarine-combat) — never change it once live.
 name: Submarine Combat
 slug: submarine-combat
-description: Place your submarines on the grid, then fire coordinates every round.
-  Your shot hits every opponent hiding a ship there. Last fleet standing wins!
+description: Place your submarines on the grid, then fire coordinates every round. Your
+  shot hits every opponent hiding a ship there. Last fleet standing wins!
+tagline: Like the classic board game, but everyone plays at once and every shot hits all opponents.
+category: strategy
+min_players: 2
+max_players: 10
+players_note: >-
+  You need at least 2 fleets. With 4 or more it gets wild, because each shot checks every
+  opponent's grid at once.
+duration_minutes: 15
+age: 8
+long_description: >-
+  The classic hide-and-seek at sea, rebuilt for a group. Everyone hides their submarines on a
+  secret grid on their phone. Then, every round, each player picks one coordinate to fire at, and
+  that shot checks every opponent's grid at once. A hit scores a point, sinking a whole submarine
+  feels great, and a player whose whole fleet is sunk is out. The last fleet still afloat wins.
+how_to_play:
+  - The host picks the grid size (6×6, 8×8 or 10×10) and how many submarines each player gets.
+  - Your phone places your fleet at random. Tap a submarine to move it, rotate it or shuffle them all, then confirm.
+  - Every round you have 20 seconds to pick one coordinate to fire at.
+  - Your shot is checked against every opponent's grid. Each hit scores 1 point.
+  - When all of a player's submarines are sunk, they're out. The last fleet still afloat wins.
+tips:
+  - The host screen shows where everyone has already fired, so don't waste a shot on an empty spot.
+  - After a hit, aim at the cells next to it. Submarines are in a straight line.
+  - Spread your first shots out like a checkerboard. It finds big submarines faster.
+  - Move your fleet away from the middle. Everyone aims there first.
+  - Bigger grid + more submarines = a longer, more tactical game.
+perfect_for: [party, family, work, video_call]
+faq:
+  - q: How is this different from the classic Battleship board game?
+    a: Everyone plays at the same time, and each shot is checked against every opponent's grid at once, so you can hit several players with one shot.
+  - q: How many players can play Submarine Combat?
+    a: At least 2. There's no strict limit, and it gets more chaotic and more fun with 4 or more.
+  - q: Can we play Submarine Combat over a video call?
+    a: Yes. Each round gives you 20 seconds to choose, so a small video delay doesn't matter.

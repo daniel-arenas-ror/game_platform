@@ -3,3 +3,37 @@ name: Count Birds
 slug: count-birds
 description: Count the black birds on screen! Rounds get harder — birds move, change
   color, and distractors appear.
+tagline: Easy, it's just counting birds. Until they start moving.
+category: perception
+min_players: 1
+max_players: 30
+players_note: >-
+  Everyone counts at the same time on their own phone, so it works for any group, from 1 player
+  to a full classroom.
+duration_minutes: 5
+age: 5
+long_description: >-
+  A flock of black birds lands on the big screen, and you have a few seconds to count them. Sounds
+  easy, right? Each round adds more birds. Then they start to fly around, then colored birds and
+  other shapes show up to trick you, and in the last rounds it's total chaos. Enter your count on
+  your phone: exact answers get 100 points, and being off by one still gets 50.
+how_to_play:
+  - The host picks how many rounds to play (5, 10 or 15) and how crowded the sky gets (Normal or Dense).
+  - Black birds appear on the big screen. Count only the black ones!
+  - Set your count on your phone with the + and − buttons before time runs out. You get 5 seconds in the first round and up to 15 in the last.
+  - An exact count gets 100 points and being off by one gets 50. Anything else gets nothing.
+  - Rounds get harder as the birds start moving and distractors appear. The highest total wins.
+tips:
+  - Count in groups of 2 or 3 instead of one by one. It's much faster.
+  - Split the screen in your head (left half, then right half) and add them together.
+  - Ignore the colored birds and shapes. They're there to trick you.
+  - Close is still good. If time is running out, enter your best guess, since off by one still scores 50.
+  - Kids love Normal, and Dense is a real challenge for adults.
+perfect_for: [classroom, family, party]
+faq:
+  - q: Is Count Birds good for kids?
+    a: Yes. The early rounds are simple counting, which is great for young players, and later rounds challenge older kids and adults.
+  - q: How long does a round of Count Birds take?
+    a: The counting time grows from 5 seconds in the first round to 15 seconds in the last, and a full 10-round game takes about 5 minutes.
+  - q: What makes the later rounds harder?
+    a: From round 6 the birds move and distractors appear (colored birds and shapes you shouldn't count). From round 12 it's full chaos.

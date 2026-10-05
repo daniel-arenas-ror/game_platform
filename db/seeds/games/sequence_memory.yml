@@ -3,3 +3,37 @@ name: Sequence Memory
 slug: sequence-memory
 description: Watch the grid light up in sequence, then repeat it on your phone! Each
   round adds one more step — how far can your memory take you?
+tagline: One more light every round. How long can your brain keep up?
+category: memory
+min_players: 1
+max_players: 30
+players_note: >-
+  Everyone repeats the sequence on their own phone at the same time, so it's just as fun alone
+  as with a big group.
+duration_minutes: 10
+age: 6
+long_description: >-
+  Watch the grid on the big screen light up one cell at a time, then tap the same cells in the same
+  order on your phone. Every round adds one more step to the sequence, and it's always the same
+  sequence plus one, so the challenge is keeping it all in your head. You score 10 points for every
+  step you get right from the start, which means even a slip near the end still pays off.
+how_to_play:
+  - The host picks the grid size (3×3, 4×4 or 6×6) and how many rounds to play.
+  - Cells on the big screen light up one at a time. Watch the order carefully.
+  - Tap the same cells in the same order on your phone.
+  - You get 10 points for each correct step from the start, until your first mistake.
+  - Each round adds one more step. The highest total after the last round wins.
+tips:
+  - Say the positions out loud in your head, like "top left, middle, bottom right".
+  - Group the sequence into chunks of three. It's much easier to remember.
+  - Only the last step is new each round. Focus on it while you replay the rest.
+  - The time to answer grows every round, so there's no need to rush.
+  - 3×3 is perfect for kids. 6×6 is brutal, so try it once everyone has warmed up.
+perfect_for: [classroom, family, work]
+faq:
+  - q: How does scoring work in Sequence Memory?
+    a: You get 10 points for every step you repeat correctly from the beginning. Counting stops at your first wrong tap.
+  - q: Does the sequence change every round?
+    a: No. It's the same sequence with one new step added at the end, so it gets longer each round.
+  - q: Which grid size should we pick?
+    a: 3×3 is great for kids and warm-ups, 4×4 is the classic, and 6×6 is for memory champions.
