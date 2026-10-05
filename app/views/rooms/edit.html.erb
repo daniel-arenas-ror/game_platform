@@ -1,4 +1,13 @@
 <!-- app/views/rooms/edit.html.erb -->
+<div class="max-w-2xl mx-auto pt-6 mb-4">
+  <%# Players already in the room (came from "Change Game"): go back to picking a game for this room %>
+  <% if @room.players.exists? %>
+    <%= link_to "← Pick another game", games_path(room: @room.code), class: "inline-block py-2 text-purple-400 hover:text-purple-300 text-sm font-semibold transition-colors rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-400" %>
+  <% else %>
+    <%= link_to "← Back to games", games_path, class: "inline-block py-2 text-purple-400 hover:text-purple-300 text-sm font-semibold transition-colors rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-400" %>
+  <% end %>
+</div>
+
 <div class="max-w-2xl mx-auto bg-slate-800 p-8 rounded-3xl border border-slate-700 shadow-2xl">
   <h1 class="text-3xl font-black text-white mb-6 uppercase italic">Room Settings</h1>
 

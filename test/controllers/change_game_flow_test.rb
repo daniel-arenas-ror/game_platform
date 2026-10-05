@@ -34,6 +34,19 @@ class ChangeGameFlowTest < ActionDispatch::IntegrationTest
     assert_select "form[action=?]", rooms_path(game_id: @color.id)
   end
 
+  test "settings page of a new room links back to the games" do
+    get edit_room_path(@room.code)
+    assert_select "a[href=?]", games_path, text: "← Back to games"
+  end
+
+  test "settings page after Change Game links back to picking a game for the room" do
+    player = @room.players.create!(nickname: "Ana")
+    get edit_room_path(@room.code)
+    assert_select "a[href=?]", games_path(room: @room.code), text: "← Pick another game"
+  ensure
+    player&.delete
+  end
+
   test "old home change-game links redirect to the games page" do
     get root_url(room: @room.code)
     assert_redirected_to games_path(room: @room.code)
