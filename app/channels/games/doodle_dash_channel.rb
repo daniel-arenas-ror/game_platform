@@ -21,6 +21,13 @@ class Games::DoodleDashChannel < ApplicationCable::Channel
     # The artist's word choices are pushed here by the game loop.
     stream_from player_stream(@player.id) if @player
 
+    sync
+  end
+
+  # Sends this screen everything it may see right now. Also asked for by the artist's phone when
+  # its words didn't arrive: a private stream can finish subscribing after the room stream.
+  def sync(_data = nil)
+    @room.reload
     svc = service
     transmit({
       action:    "state_snapshot",

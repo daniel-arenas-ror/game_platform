@@ -1,3 +1,18 @@
 {
-  "buildPath": "code"
+  "buildPath": "code",
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "gray-on-color",
+        "value": "*",
+        "files": [
+          "app/javascript/controllers/doodle_dash_host_controller.js"
+        ],
+        "createdAt": "2026-10-06T02:19:12.306Z",
+        "reason": "Claude: text-slate-950 (near-black) on bg-lime-400 toast is ~11:1 contrast, not gray-on-color"
+      }
+    ]
+  }
 }

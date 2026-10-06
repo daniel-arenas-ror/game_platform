@@ -48,6 +48,18 @@ class Games::DoodleDashChannelTest < ActionCable::Channel::TestCase
     assert_equal @word, transmissions.last["state"]["word"]
   end
 
+  test "sync re-sends the artist's words from the current state" do
+    subscribe(room_code: @room.code, player_id: @artist.id.to_s)
+    assert_equal "drawing", transmissions.last["state"]["status"]
+    # The state moves on after subscribing: the same artist gets new words.
+    choices = GameServices::DoodleDash.new(Room.find(@room.id)).start_turn!(0)[:choices]
+
+    perform :sync
+    state = transmissions.last["state"]
+    assert_equal "choosing", state["status"]
+    assert_equal choices, state["choices"]
+  end
+
   test "the artist's strokes go to the TV, and finished strokes are kept" do
     subscribe(room_code: @room.code, player_id: @artist.id.to_s)
 

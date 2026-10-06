@@ -1,0 +1,32 @@
+<% pickers = [
+     ["DRAWING TIME",      "draw_time",        "80",    [["60", "60s", "Quick"], ["80", "80s", "Normal"], ["100", "100s", "Relaxed"]]],
+     ["TURNS",             "turns_per_player", "1",     [["1", "1×", "Everyone draws once"], ["2", "2×", "Twice each"], ["3", "3×", "Three times"]]],
+     ["WORDS",             "difficulty",       "mixed", [["easy", "Easy", "cat, sun"], ["medium", "Medium", "volcano"],
+                                                         ["hard", "Hard", "jet lag"], ["mixed", "Mixed", "pick 1 of each"]]],
+     ["GUESSES ON THE TV", "show_guesses",     "true",  [["true", "Show", "funny wrong guesses"], ["false", "Hide", "only who got it"]]]
+   ] %>
+
+<% pickers.each_with_index do |(title, key, default, options), i| %>
+  <div class="space-y-4 bg-slate-900/50 p-6 rounded-2xl border border-slate-700 <%= 'mt-2' if i > 0 %>">
+    <label class="block text-xs font-bold text-slate-400 mb-3 tracking-widest"><%= title %></label>
+    <div class="grid <%= { 2 => "grid-cols-2", 3 => "grid-cols-3", 4 => "grid-cols-2 sm:grid-cols-4" }[options.length] %> gap-3">
+      <% options.each do |value, label, caption| %>
+        <label class="relative cursor-pointer">
+          <input type="radio"
+                 name="room[game_state][<%= key %>]"
+                 value="<%= value %>"
+                 class="peer hidden"
+                 <%= 'checked' if (@room.game_state[key].nil? ? default : @room.game_state[key].to_s) == value %>>
+          <div class="text-center py-4 px-2 bg-slate-800 border-2 border-slate-700 rounded-xl transition-all
+                      peer-checked:border-lime-500 peer-checked:bg-lime-500/10">
+            <p class="text-white font-black text-xl"><%= label %></p>
+            <p class="text-slate-500 text-xs mt-1"><%= caption %></p>
+          </div>
+        </label>
+      <% end %>
+    </div>
+    <% if key == "show_guesses" %>
+      <p class="text-slate-500 text-xs">When shown, rude words are hidden automatically.</p>
+    <% end %>
+  </div>
+<% end %>
