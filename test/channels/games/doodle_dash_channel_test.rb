@@ -63,21 +63,49 @@ class Games::DoodleDashChannelTest < ActionCable::Channel::TestCase
   test "the artist's strokes go to the TV, and finished strokes are kept" do
     subscribe(room_code: @room.code, player_id: @artist.id.to_s)
 
-    assert_broadcast_on(host_stream, action: "draw", start: true, points: [ [ 0.1, 0.2 ] ], color: "#111827", size: 10) do
-      perform :draw, points: [ [ 0.1, 0.2 ] ], color: "#111827", size: 10, start: true
+    style = { color: "#111827", size: 10 }
+    assert_broadcast_on(host_stream, action: "draw", id: 1, points: [ [ 0.1, 0.2 ] ], **style) do
+      perform :draw, id: 1, points: [ [ 0.1, 0.2 ] ], **style
     end
-    perform :draw, points: [ [ 0.3, 0.4 ] ], color: "#111827", size: 10
-    perform :stroke_end
+    perform :draw, id: 1, points: [ [ 0.3, 0.4 ] ], **style
 
+    stroke = { "color" => "#111827", "size" => 10, "id" => 1, "points" => [ [ 0.1, 0.2 ], [ 0.3, 0.4 ] ] }
+    assert_broadcast_on(host_stream, action: "stroke_end", stroke: stroke) do
+      perform :stroke_end, id: 1, points: [ [ 0.1, 0.2 ], [ 0.3, 0.4 ] ], **style
+    end
+    assert_equal [ stroke ], @room.reload.game_state["strokes"]
+
+    assert_broadcast_on(host_stream, action: "undo", id: 1) { perform :undo, id: 1 }
+    assert_empty @room.reload.game_state["strokes"]
+    perform :stroke_end, id: 2, points: [ [ 0.5, 0.5 ] ], **style
     stroke = @room.reload.game_state["strokes"].first
-    assert_equal [ [ 0.1, 0.2 ], [ 0.3, 0.4 ] ], stroke["points"]
+
+    # After a reload the artist gets their drawing back.
+    unsubscribe
+    subscribe(room_code: @room.code, player_id: @artist.id.to_s)
+    assert_equal [ stroke ], transmissions.last["state"]["strokes"]
+  end
+
+  test "one phone can't flood the TV with drawing messages" do
+    subscribe(room_code: @room.code, player_id: @artist.id.to_s)
+    limit = Games::DoodleDashChannel::DRAW_RATE_LIMIT
+
+    assert_broadcasts(host_stream, limit) do
+      (limit + 15).times { perform :draw, id: 1, points: [ [ 0.5, 0.5 ] ], color: "#111827", size: 10 }
+    end
+  end
+
+  test "a phone joining is announced, so the TV can show it back online" do
+    assert_broadcast_on(room_stream, action: "player_presence", player_id: @guesser.id.to_s, connected: true) do
+      subscribe(room_code: @room.code, player_id: @guesser.id.to_s)
+    end
   end
 
   test "a guesser can't draw" do
     subscribe(room_code: @room.code, player_id: @guesser.id.to_s)
 
     assert_no_broadcasts(host_stream) do
-      perform :draw, points: [ [ 0.1, 0.2 ] ], color: "#111827", size: 10, start: true
+      perform :draw, id: 1, points: [ [ 0.1, 0.2 ] ], color: "#111827", size: 10
     end
   end
 

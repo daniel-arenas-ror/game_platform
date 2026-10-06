@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* A phone turned sideways: little height, so layouts go side by side (Doodle Dash drawing) */
+@custom-variant short-landscape (@media (orientation: landscape) and (max-height: 500px));
+
 /* Browser surfaces follow the always-dark studio (see DESIGN.md) */
 @layer base {
   html {

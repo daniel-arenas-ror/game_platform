@@ -170,18 +170,46 @@ class DoodleDashTest < ActiveSupport::TestCase
     assert_equal word, Doodle.new(Room.find(@room.id)).public_state["word"]
   end
 
+  def stroke(id) = { "id" => id, "color" => "#111827", "size" => 10, "points" => [ [ 0.1, 0.2 ], [ 0.3, 0.4 ] ] }
+  def saved_ids = @room.reload.game_state["strokes"].map { |s| s["id"] }
+
   test "only the drawing artist can save, undo and clear strokes" do
     artist, _word, (guesser, _) = start_drawing
-    stroke = { "color" => "#111827", "size" => 10, "points" => [ [ 0.1, 0.2 ], [ 0.3, 0.4 ] ] }
 
-    assert_not svc.save_stroke!(guesser.id, stroke)
-    assert svc.save_stroke!(artist.id, stroke)
-    assert svc.save_stroke!(artist.id, stroke.merge("color" => "#ef4444"))
-    assert svc.undo!(artist.id)
-    assert_equal [ stroke ], @room.reload.game_state["strokes"]
+    assert_not svc.save_stroke!(guesser.id, stroke(1))
+    assert svc.save_stroke!(artist.id, stroke(1))
+    assert svc.save_stroke!(artist.id, stroke(2))
+    assert_not svc.save_stroke!(artist.id, stroke(2)) # saved once
+    assert_not svc.undo!(guesser.id, 2)
+    assert svc.undo!(artist.id, 2)
+    assert_equal [ 1 ], saved_ids
 
-    assert svc.clear!(artist.id)
-    assert_empty @room.reload.game_state["strokes"]
+    assert svc.clear!(artist.id, 1)
+    assert_empty saved_ids
+  end
+
+  # Phone messages can be handled in any order: the drawing must end up the same.
+  test "a stroke undone or cleared before it is saved is never saved" do
+    artist, = start_drawing
+
+    svc.undo!(artist.id, 3)
+    assert_not svc.save_stroke!(artist.id, stroke(3))
+
+    svc.clear!(artist.id, 5)
+    assert_not svc.save_stroke!(artist.id, stroke(4))
+    assert svc.save_stroke!(artist.id, stroke(6))
+    assert_equal [ 6 ], saved_ids
+  end
+
+  test "a new turn starts with a blank drawing and fresh stroke ids" do
+    artist, = start_drawing
+    svc.save_stroke!(artist.id, stroke(1))
+    svc.undo!(artist.id, 2)
+    svc.clear!(artist.id, 1)
+
+    @svc.start_turn!(1)
+    state = @room.reload.game_state
+    assert_equal [ [], [], 0 ], state.values_at("strokes", "removed_strokes", "cleared_upto")
   end
 
   test "points and styles from the phone are cleaned" do

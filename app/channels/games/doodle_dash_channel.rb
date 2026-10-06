@@ -7,6 +7,7 @@ class Games::DoodleDashChannel < ApplicationCable::Channel
   HINTS_AT        = [ 0.5, 0.75 ].freeze # share of the drawing time when a letter is revealed
   ARTIST_CHECK    = 1.0  # seconds a "this player is drawing" check is trusted before asking again
   GUESS_COOLDOWN  = 0.4  # seconds between two guesses from the same phone
+  DRAW_RATE_LIMIT = 40   # draw messages per second from one phone (the phone sends about 20)
 
   def subscribed
     @room   = Room.find_by(code: params[:room_code])
@@ -20,6 +21,7 @@ class Games::DoodleDashChannel < ApplicationCable::Channel
     stream_from host_stream if host?
     # The artist's word choices are pushed here by the game loop.
     stream_from player_stream(@player.id) if @player
+    broadcast({ action: "player_presence", player_id: @player.id.to_s, connected: true }) if @player
 
     sync
   end
@@ -108,41 +110,47 @@ class Games::DoodleDashChannel < ApplicationCable::Channel
     transmit({ action: "your_word", word: word }) if word
   end
 
-  # A batch of points of the stroke being drawn. data: { points: [[x, y], …], color:, size:, start: }
+  # A batch of points of the stroke being drawn, relayed live to the TV.
+  # data: { id:, points: [[x, y], …], color:, size: }
   def draw(data)
-    return unless drawing_artist?
+    return unless drawing_artist? && within_draw_rate?
 
+    id     = GameServices::DoodleDash.clean_stroke_id(data["id"])
     points = GameServices::DoodleDash.clean_points(data["points"])
     style  = GameServices::DoodleDash.clean_style(data["color"], data["size"])
-    return unless points && style
+    return unless id && points && style
 
-    start = data["start"] || @stroke.nil?
-    @stroke = style.merge("points" => []) if start
-    @stroke["points"].concat(points) if @stroke["points"].length < 2000
-
-    ActionCable.server.broadcast(host_stream, { action: "draw", start: start, points: points, **style.symbolize_keys })
+    ActionCable.server.broadcast(host_stream, { action: "draw", id: id, points: points, **style.symbolize_keys })
   end
 
-  # The stroke is finished: keep it, so a TV that reloads can redraw it.
-  def stroke_end(_data)
-    return unless @player && @stroke
+  # The whole stroke, once the finger lifts. The live batches can arrive in any order, so the TV
+  # redraws from this one, and it's what is kept for a reload. data: { id:, points:, color:, size: }
+  def stroke_end(data)
+    return unless @player
 
-    service.save_stroke!(@player.id, @stroke)
-    @stroke = nil
+    id     = GameServices::DoodleDash.clean_stroke_id(data["id"])
+    points = GameServices::DoodleDash.clean_points(data["points"], GameServices::DoodleDash::MAX_STROKE_POINTS)
+    style  = GameServices::DoodleDash.clean_style(data["color"], data["size"])
+    return unless id && points && style
+
+    stroke = style.merge("id" => id, "points" => points)
+    return unless service.save_stroke!(@player.id, stroke)
+
+    ActionCable.server.broadcast(host_stream, { action: "stroke_end", stroke: stroke })
   end
 
-  def undo(_data)
-    return unless @player && service.undo!(@player.id)
+  def undo(data)
+    id = GameServices::DoodleDash.clean_stroke_id(data["id"])
+    return unless @player && id && service.undo!(@player.id, id)
 
-    @stroke = nil
-    ActionCable.server.broadcast(host_stream, { action: "undo" })
+    ActionCable.server.broadcast(host_stream, { action: "undo", id: id })
   end
 
-  def clear(_data)
-    return unless @player && service.clear!(@player.id)
+  def clear(data)
+    upto = GameServices::DoodleDash.clean_stroke_id(data["upto"])
+    return unless @player && upto && service.clear!(@player.id, upto)
 
-    @stroke = nil
-    ActionCable.server.broadcast(host_stream, { action: "clear" })
+    ActionCable.server.broadcast(host_stream, { action: "clear", upto: upto })
   end
 
   # ── Guesser actions ───────────────────────────────────────────────────────
@@ -234,6 +242,16 @@ class Games::DoodleDashChannel < ApplicationCable::Channel
       @is_artist = service.drawing_artist?(@player.id)
     end
     @is_artist
+  end
+
+  # At most DRAW_RATE_LIMIT draw messages per one-second window, so one phone can't flood the TV.
+  def within_draw_rate?
+    now = monotonic_now
+    if @draw_window_at.nil? || now - @draw_window_at >= 1
+      @draw_window_at = now
+      @draw_count = 0
+    end
+    (@draw_count += 1) <= DRAW_RATE_LIMIT
   end
 
   def monotonic_now

@@ -26,50 +26,78 @@ export function clearCanvas(canvas) {
   ctx.fillRect(0, 0, canvas.width, canvas.height)
 }
 
-// Draws part of a stroke. `from` is the stroke's previous point (null when the stroke starts),
-// so a stroke that arrives in several batches still joins up. Returns the last point drawn.
-export function drawPoints(canvas, points, color, size, from = null) {
-  const ctx   = canvas.getContext("2d")
-  const width = canvas.width
-  const height = canvas.height
-  ctx.strokeStyle = color
-  ctx.fillStyle   = color
-  ctx.lineWidth   = Math.max(size * width / 1000, 1)
-  ctx.lineCap     = "round"
-  ctx.lineJoin    = "round"
+// A pen draws one stroke as smooth curves: each piece is a quadratic curve between the midpoints of
+// two moves, bent through the point between them. Points can arrive in batches (live, from the
+// phone); call end() when the stroke is finished to draw its last half-piece.
+export function createPen(canvas, color, size) {
+  let last = null // last point added
+  let mid  = null // where the previous curve ended
 
-  let last = from
-  points.forEach(([ x, y ]) => {
-    if (last) {
+  const setup = () => {
+    const ctx = canvas.getContext("2d")
+    ctx.strokeStyle = color
+    ctx.fillStyle   = color
+    ctx.lineWidth   = Math.max(size * canvas.width / 1000, 1)
+    ctx.lineCap     = "round"
+    ctx.lineJoin    = "round"
+    return ctx
+  }
+  const px = ([ x, y ]) => [ x * canvas.width, y * canvas.height ]
+
+  return {
+    add(points) {
+      const ctx = setup()
+      points.forEach(point => {
+        if (!last) {
+          // A tap with no movement is a dot.
+          const [ x, y ] = px(point)
+          ctx.beginPath()
+          ctx.arc(x, y, ctx.lineWidth / 2, 0, Math.PI * 2)
+          ctx.fill()
+          last = mid = point
+          return
+        }
+        const next = [ (last[0] + point[0]) / 2, (last[1] + point[1]) / 2 ]
+        ctx.beginPath()
+        ctx.moveTo(...px(mid))
+        ctx.quadraticCurveTo(...px(last), ...px(next))
+        ctx.stroke()
+        last = point
+        mid  = next
+      })
+    },
+    end() {
+      if (!last || last === mid) return
+      const ctx = setup()
       ctx.beginPath()
-      ctx.moveTo(last[0] * width, last[1] * height)
-      ctx.lineTo(x * width, y * height)
+      ctx.moveTo(...px(mid))
+      ctx.lineTo(...px(last))
       ctx.stroke()
-    } else {
-      // A tap with no movement is a dot.
-      ctx.beginPath()
-      ctx.arc(x * width, y * height, ctx.lineWidth / 2, 0, Math.PI * 2)
-      ctx.fill()
+      mid = last
     }
-    last = [ x, y ]
-  })
-  return last
+  }
 }
 
 // strokes: [{ color, size, points }]
 export function redraw(canvas, strokes) {
   clearCanvas(canvas)
-  strokes.forEach(s => drawPoints(canvas, s.points, s.color, s.size))
+  strokes.forEach(s => {
+    const pen = createPen(canvas, s.color, s.size)
+    pen.add(s.points)
+    pen.end()
+  })
 }
 
 // "c _ _ " pattern for the word: nil letters are hidden, spaces and punctuation are shown.
-export function patternHtml(pattern, big = true) {
+// `cascade`: the letters pop in one after another (the reveal).
+export function patternHtml(pattern, big = true, cascade = false) {
   if (!pattern) return ""
   const box = big ? "w-[0.9em] border-b-4" : "w-[0.8em] border-b-2"
-  return pattern.map(ch => {
+  return pattern.map((ch, i) => {
     if (ch === " ") return `<span class="inline-block w-[0.6em]"></span>`
     if (ch === null) return `<span class="inline-block ${box} border-current mx-[0.08em] opacity-70">&nbsp;</span>`
-    return `<span class="inline-block ${box} border-transparent mx-[0.08em] text-center">${esc(ch.toUpperCase())}</span>`
+    const pop = cascade ? ` dd-pop" style="animation-delay:${i * 70}ms;animation-fill-mode:backwards` : ""
+    return `<span class="inline-block ${box} border-transparent mx-[0.08em] text-center${pop}">${esc(ch.toUpperCase())}</span>`
   }).join("")
 }
 
@@ -99,10 +127,12 @@ const STYLES = `
   @keyframes dd-pop   { 0% { transform: scale(0.6); opacity: 0 } 60% { transform: scale(1.12); opacity: 1 } 100% { transform: scale(1) } }
   @keyframes dd-slide { from { transform: translateY(12px); opacity: 0 } to { transform: none; opacity: 1 } }
   @keyframes dd-shake { 0%, 100% { transform: translateX(0) } 20%, 60% { transform: translateX(-8px) } 40%, 80% { transform: translateX(8px) } }
+  @keyframes dd-pulse { 0% { transform: scale(1) } 30% { transform: scale(1.18) } 100% { transform: scale(1) } }
   .dd-pop   { animation: dd-pop 0.35s ease-out; }
   .dd-slide { animation: dd-slide 0.3s cubic-bezier(0.22, 1, 0.36, 1); }
   .dd-shake { animation: dd-shake 0.4s ease-in-out; }
-  @media (prefers-reduced-motion: reduce) { .dd-pop, .dd-slide, .dd-shake { animation: none; } }
+  .dd-pulse { animation: dd-pulse 0.5s ease-out; }
+  @media (prefers-reduced-motion: reduce) { .dd-pop, .dd-slide, .dd-shake, .dd-pulse { animation: none; } }
 `
 
 export function injectStyles() {

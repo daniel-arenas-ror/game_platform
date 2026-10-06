@@ -19,8 +19,10 @@ module GameServices
     # Drawing. Points are fractions of the canvas (0–1); brush sizes are per 1000 px of canvas width.
     PALETTE     = %w[#111827 #ef4444 #f97316 #facc15 #22c55e #3b82f6 #a855f7 #92400e #ffffff].freeze
     BRUSH_SIZES = [ 4, 10, 24 ].freeze
-    MAX_POINTS_PER_MESSAGE = 120
-    MAX_STROKES = 1500
+    MAX_POINTS_PER_MESSAGE = 120  # one live batch
+    MAX_STROKE_POINTS      = 2000 # one whole stroke
+    MAX_STROKES            = 1500
+    MAX_STROKE_ID          = 100_000
 
     WORDS   = YAML.load_file(Rails.root.join("config/doodle_dash/words.yml")).transform_values(&:freeze).freeze
     BLOCKED = YAML.load_file(Rails.root.join("config/doodle_dash/blocked_words.yml")).freeze
@@ -58,6 +60,8 @@ module GameServices
           "used_words"       => [],
           "guessed"          => {},
           "strokes"          => [],
+          "removed_strokes"  => [],
+          "cleared_upto"     => 0,
           "pattern"          => nil,
           "artist_left"      => false,
           "scores"           => @players.to_h { |p| [ p.id.to_s, 0 ] }
@@ -89,6 +93,8 @@ module GameServices
         "game_state.pattern"        => nil,
         "game_state.guessed"        => {},
         "game_state.strokes"        => [],
+        "game_state.removed_strokes" => [],
+        "game_state.cleared_upto"   => 0,
         "game_state.artist_left"    => false,
         "game_state.choose_ends_at" => Time.now.to_f + CHOOSE_TIME,
         "game_state.turn_ends_at"   => nil
@@ -207,25 +213,42 @@ module GameServices
       state["status"] == "drawing" && state["artist_id"] == player_id.to_s
     end
 
-    # Saves a finished stroke, so a TV that reloads mid-turn can redraw everything.
+    # Phone messages can be handled out of order (ActionCable runs them on a thread pool), so every
+    # stroke has an id from the phone, and saving, undo and clear each work whatever came first:
+    # a stroke that was undone or cleared before it was saved is never saved.
+
+    # Saves a finished stroke ({ "id", "color", "size", "points" }), so a reloaded TV or artist
+    # phone can redraw everything. Saving the same stroke twice does nothing.
     def save_stroke!(player_id, stroke)
       return false unless stroke
 
-      apply(artist_filter(player_id),
-            "$push" => { "game_state.strokes" => { "$each" => [ stroke ], "$slice" => -MAX_STROKES } })
+      id     = stroke["id"]
+      filter = artist_filter(player_id).merge(
+        "game_state.strokes.id"         => { "$ne" => id },
+        "game_state.removed_strokes"    => { "$ne" => id },
+        "game_state.cleared_upto"       => { "$lt" => id }
+      )
+      apply(filter, "$push" => { "game_state.strokes" => { "$each" => [ stroke ], "$slice" => -MAX_STROKES } })
     end
 
-    def undo!(player_id)
-      apply(artist_filter(player_id), "$pop" => { "game_state.strokes" => 1 })
+    def undo!(player_id, id)
+      apply(artist_filter(player_id), "$pull" => { "game_state.strokes" => { "id" => id } },
+                                      "$addToSet" => { "game_state.removed_strokes" => id })
     end
 
-    def clear!(player_id)
-      apply(artist_filter(player_id), "$set" => { "game_state.strokes" => [] })
+    # Removes every stroke up to id `upto`, the last one the artist saw when they tapped Clear.
+    def clear!(player_id, upto)
+      apply(artist_filter(player_id), "$pull" => { "game_state.strokes" => { "id" => { "$lte" => upto } } },
+                                      "$max" => { "game_state.cleared_upto" => upto })
     end
 
-    # Cleans a batch of points from the phone: [[x, y], …] clamped to the canvas, or nil if invalid.
-    def self.clean_points(points)
-      return nil unless points.is_a?(Array) && points.length.between?(1, MAX_POINTS_PER_MESSAGE)
+    def self.clean_stroke_id(id)
+      id.is_a?(Integer) && id.between?(0, MAX_STROKE_ID) ? id : nil
+    end
+
+    # Cleans points from the phone: [[x, y], …] clamped to the canvas, or nil if invalid.
+    def self.clean_points(points, max = MAX_POINTS_PER_MESSAGE)
+      return nil unless points.is_a?(Array) && points.length.between?(1, max)
 
       points.map do |point|
         return nil unless point.is_a?(Array) && point.length == 2 && point.all?(Numeric)
@@ -315,13 +338,16 @@ module GameServices
       public_state.merge("strokes" => @room.game_state["strokes"].to_a)
     end
 
-    # The artist's phone also gets their word choices or their word.
+    # The artist's phone also gets their word choices, or their word and their own drawing so far
+    # (to carry on after a reload).
     def player_state(player_id)
       shown = public_state
       return shown unless player_id.to_s == @room.game_state["artist_id"]
 
-      shown["choices"] = @room.game_state["choices"] if @room.game_state["status"] == "choosing"
-      shown["word"]    = @room.game_state["word"] if @room.game_state["status"] == "drawing"
+      case @room.game_state["status"]
+      when "choosing" then shown["choices"] = @room.game_state["choices"]
+      when "drawing"  then shown.merge!("word" => @room.game_state["word"], "strokes" => @room.game_state["strokes"].to_a)
+      end
       shown
     end
 

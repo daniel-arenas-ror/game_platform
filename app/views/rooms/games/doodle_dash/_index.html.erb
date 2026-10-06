@@ -93,7 +93,7 @@
        class="flex flex-col min-h-dvh bg-slate-950 text-white">
 
     <%# Header %>
-    <div class="flex items-center justify-between px-4 pt-5 pb-2">
+    <div class="flex items-center justify-between px-4 pt-5 short-landscape:pt-2 pb-2 short-landscape:pb-0">
       <p class="font-black text-lg tracking-wide leading-tight truncate"><%= session[:nickname] %></p>
       <div class="text-right">
         <p class="text-[10px] text-slate-500 uppercase tracking-widest">Points</p>
@@ -102,7 +102,7 @@
     </div>
 
     <%# Status line %>
-    <div class="flex items-center justify-between px-4 pb-3">
+    <div class="flex items-center justify-between px-4 pb-3 short-landscape:pb-1">
       <p data-doodle-dash-player-target="status" class="text-slate-400 text-xs uppercase tracking-widest font-mono">Get ready…</p>
       <p data-doodle-dash-player-target="countdown" class="font-mono font-black text-2xl tabular-nums"></p>
     </div>
@@ -123,25 +123,35 @@
       </div>
 
       <%# Artist: draw %>
-      <div data-doodle-dash-player-target="panelDraw" class="hidden flex-1 flex flex-col">
-        <p class="text-center text-slate-400 text-xs uppercase tracking-widest font-mono">Draw</p>
-        <p data-doodle-dash-player-target="word" class="text-center font-black text-3xl text-lime-400 mb-3"></p>
+      <%# No text selection or long-press menu while drawing %>
+      <%# Sideways phones (short-landscape): canvas on the left, tools on the right %>
+      <div data-doodle-dash-player-target="panelDraw"
+           class="hidden flex-1 flex flex-col short-landscape:flex-row short-landscape:items-center short-landscape:justify-center short-landscape:gap-6 select-none [-webkit-touch-callout:none]">
+        <div class="flex flex-col">
+          <p class="text-center text-slate-400 text-xs uppercase tracking-widest font-mono short-landscape:hidden">Draw</p>
+          <p data-doodle-dash-player-target="word" class="text-center font-black text-3xl short-landscape:text-xl text-lime-400 mb-3 short-landscape:mb-1"></p>
 
-        <div class="w-full rounded-2xl overflow-hidden border-2 border-slate-700 bg-white" style="aspect-ratio: 4 / 3;">
-          <canvas data-doodle-dash-player-target="canvas"
-                  data-action="pointerdown->doodle-dash-player#penDown pointermove->doodle-dash-player#penMove pointerup->doodle-dash-player#penUp pointercancel->doodle-dash-player#penUp"
-                  class="block w-full h-full touch-none select-none"></canvas>
+          <%# Sized so the tools always fit on screen %>
+          <div class="mx-auto rounded-2xl overflow-hidden border-2 border-slate-700 bg-white
+                      w-[min(100%,calc((100dvh-15rem)*4/3))] short-landscape:w-[calc((100dvh-9rem)*4/3)]"
+               style="aspect-ratio: 4 / 3;">
+            <canvas data-doodle-dash-player-target="canvas"
+                    data-action="pointerdown->doodle-dash-player#penDown pointermove->doodle-dash-player#penMove pointerup->doodle-dash-player#penUp pointercancel->doodle-dash-player#penUp"
+                    class="block w-full h-full touch-none select-none"></canvas>
+          </div>
+          <p class="text-center text-slate-500 text-xs mt-2 short-landscape:hidden">Your drawing shows on the TV. No letters!</p>
         </div>
-        <p class="text-center text-slate-500 text-xs mt-2">Your drawing shows on the TV. No letters!</p>
 
         <%# Tools %>
-        <div data-doodle-dash-player-target="colors" class="flex flex-wrap justify-center gap-2 mt-4"></div>
-        <div class="flex items-center justify-center gap-3 mt-3">
-          <div data-doodle-dash-player-target="sizes" class="flex gap-2"></div>
-          <button type="button" data-action="doodle-dash-player#undo"
-                  class="h-12 px-4 rounded-xl bg-slate-800 border border-slate-700 font-bold cursor-pointer active:scale-95 transition-transform">↶ Undo</button>
-          <button type="button" data-action="doodle-dash-player#clear"
-                  class="h-12 px-4 rounded-xl bg-slate-800 border border-slate-700 font-bold cursor-pointer active:scale-95 transition-transform">Clear</button>
+        <div class="short-landscape:max-w-[15rem]">
+          <div data-doodle-dash-player-target="colors" class="flex flex-wrap justify-center gap-2 mt-4 short-landscape:mt-0"></div>
+          <div class="flex flex-wrap items-center justify-center gap-3 mt-3">
+            <div data-doodle-dash-player-target="sizes" class="flex gap-2"></div>
+            <button type="button" data-action="doodle-dash-player#undo"
+                    class="h-12 px-4 rounded-xl bg-slate-800 border border-slate-700 font-bold cursor-pointer active:scale-95 transition-transform">↶ Undo</button>
+            <button type="button" data-action="doodle-dash-player#clear"
+                    class="h-12 px-4 rounded-xl bg-slate-800 border border-slate-700 font-bold cursor-pointer active:scale-95 transition-transform">Clear</button>
+          </div>
         </div>
       </div>
 

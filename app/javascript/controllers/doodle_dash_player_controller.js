@@ -1,10 +1,10 @@
 import { Controller } from "@hotwired/stimulus"
 import consumer from "channels/consumer"
 import {
-  PALETTE, ERASER, BRUSH_SIZES, fitCanvas, clearCanvas, drawPoints, redraw, patternHtml, ranked, esc,
+  PALETTE, ERASER, BRUSH_SIZES, fitCanvas, clearCanvas, createPen, redraw, patternHtml, ranked, esc,
   secondsUntil, restartAnimation, injectStyles, MEDALS
 } from "controllers/doodle_dash/drawing"
-import { celebrateWin, isTopScore, pop } from "controllers/shared/celebration"
+import { celebrateWin, confetti, isTopScore, pop } from "controllers/shared/celebration"
 
 // Countdown colour thresholds
 const COLOR_GREEN  = "#4ade80"
@@ -14,8 +14,10 @@ const COLOR_RED    = "#f87171"
 const SEND_EVERY   = 50     // ms between two batches of points while drawing
 const BATCH_LIMIT  = 100    // points: send early when a batch gets this big (server max is 120)
 const MIN_STEP     = 0.002  // canvas fractions: smaller moves are skipped
+const STROKE_LIMIT = 2000   // points per stroke (the server's max); longer lines continue as a new stroke
 
 const SYNC_AFTER   = 1000   // ms: the artist asks again for their words if they haven't arrived
+const GUESS_PAUSE  = 400    // ms the Send button rests after a guess (the server's cooldown)
 
 const PANELS = [ "panelWaiting", "panelChoose", "panelDraw", "panelGuess", "panelReveal" ]
 
@@ -39,11 +41,13 @@ export default class extends Controller {
     this.color       = PALETTE[0]
     this.size        = BRUSH_SIZES[1]
     this.strokes     = []   // the artist's own drawing this turn, to redraw after undo or a resize
+    this.lastId      = 0    // stroke ids count up from 1 each turn (the server keys strokes by id)
     this.pointerId   = null // the finger that is drawing; other fingers are ignored
     this.dingSound   = new Audio("/games/sounds/reveal.mp3")
 
     injectStyles()
     this.renderTools()
+    this.keepAwake()
     this.onResize = () => {
       if (this.panelDrawTarget.classList.contains("hidden")) return
       fitCanvas(this.canvasTarget)
@@ -58,6 +62,8 @@ export default class extends Controller {
     clearInterval(this.timerHandle)
     clearInterval(this.flushHandle)
     clearTimeout(this.syncHandle)
+    document.removeEventListener("visibilitychange", this.onVisible)
+    this.wakeLock?.release().catch(() => {})
     this.channel?.unsubscribe()
   }
 
@@ -107,6 +113,11 @@ export default class extends Controller {
       case "drawing":
         this.hasGuessed = this.playerIdValue in (state.guessed || {})
         if (this.isArtist && state.word) this.word = state.word
+        if (this.isArtist && state.strokes) {
+          // Carry on after a reload, with ids after the ones already used.
+          this.strokes = state.strokes
+          this.lastId  = Math.max(state.cleared_upto || 0, ...(state.removed_strokes || []), ...state.strokes.map(s => s.id))
+        }
         this.onDrawing({ artist_id: state.artist_id, pattern: state.pattern, turn_ends_at: state.turn_ends_at,
                          duration: state.draw_time })
         break
@@ -125,6 +136,7 @@ export default class extends Controller {
     this.word       = null
     this.hasGuessed = false
     this.strokes    = []
+    this.lastId     = 0
     this.setStatus(turn ? `Turn ${turn}/${total_turns}` : "")
     this.startCountdown(duration)
 
@@ -193,12 +205,14 @@ export default class extends Controller {
       this.setGuessing(false)
       this.setFeedback(`You got it! +${points}`, COLOR_GREEN)
       this.playSound(this.dingSound)
+      confetti(30)
       navigator.vibrate?.([ 60, 40, 120 ])
     } else if (result === "close") {
       this.setFeedback("So close!", COLOR_YELLOW, "dd-shake")
       navigator.vibrate?.(60)
     } else {
-      this.setFeedback("Not it. Keep trying!", "#94a3b8", "dd-shake")
+      const said = this.lastGuess ? `“${this.lastGuess}” isn't it` : "Not it"
+      this.setFeedback(`${said}. Keep trying!`, "#94a3b8", "dd-shake")
     }
   }
 
@@ -254,12 +268,16 @@ export default class extends Controller {
     this.canvasTarget.setPointerCapture(event.pointerId)
     this.pointerId = event.pointerId
 
-    const point = this.pointFrom(event)
-    this.stroke = { color: this.color, size: this.size, points: [ point ] }
-    this.last   = drawPoints(this.canvasTarget, [ point ], this.color, this.size)
+    this.startStroke(this.pointFrom(event))
+    this.flushHandle = setInterval(() => this.flush(), SEND_EVERY)
+  }
+
+  startStroke(point) {
+    this.stroke = { id: ++this.lastId, color: this.color, size: this.size, points: [ point ] }
+    this.pen    = createPen(this.canvasTarget, this.color, this.size)
+    this.pen.add([ point ])
+    this.last   = point
     this.buffer = [ point ]
-    this.startPending = true
-    this.flushHandle  = setInterval(() => this.flush(), SEND_EVERY)
   }
 
   penMove(event) {
@@ -270,9 +288,11 @@ export default class extends Controller {
     events.forEach(e => {
       const point = this.pointFrom(e)
       if (Math.hypot(point[0] - this.last[0], point[1] - this.last[1]) < MIN_STEP) return
-      this.last = drawPoints(this.canvasTarget, [ point ], this.color, this.size, this.last)
+      this.pen.add([ point ])
+      this.last = point
       this.stroke.points.push(point)
       this.buffer.push(point)
+      if (this.stroke.points.length >= STROKE_LIMIT) { this.finishStroke(); this.startStroke(point) }
     })
     if (this.buffer.length >= BATCH_LIMIT) this.flush()
   }
@@ -284,18 +304,23 @@ export default class extends Controller {
 
   endStroke() {
     if (this.pointerId === null) return
-    this.flush()
     clearInterval(this.flushHandle)
-    this.channel.perform("stroke_end", {})
-    this.strokes.push(this.stroke)
+    this.finishStroke()
     this.pointerId = null
     this.stroke = null
   }
 
+  // Sends the rest of the live points, then the whole stroke to keep.
+  finishStroke() {
+    this.flush()
+    this.pen.end()
+    this.channel.perform("stroke_end", this.stroke)
+    this.strokes.push(this.stroke)
+  }
+
   flush() {
     if (!this.buffer?.length) return
-    this.channel.perform("draw", { points: this.buffer, color: this.stroke.color, size: this.stroke.size, start: this.startPending })
-    this.startPending = false
+    this.channel.perform("draw", { id: this.stroke.id, points: this.buffer, color: this.stroke.color, size: this.stroke.size })
     this.buffer = []
   }
 
@@ -308,16 +333,16 @@ export default class extends Controller {
 
   undo() {
     if (!this.isArtist || !this.strokes.length) return
-    this.strokes.pop()
+    const { id } = this.strokes.pop()
     redraw(this.canvasTarget, this.strokes)
-    this.channel.perform("undo", {})
+    this.channel.perform("undo", { id })
   }
 
   clear() {
     if (!this.isArtist || !this.strokes.length) return
     this.strokes = []
     clearCanvas(this.canvasTarget)
-    this.channel.perform("clear", {})
+    this.channel.perform("clear", { upto: this.lastId })
   }
 
   // ── Tools ─────────────────────────────────────────────────────────────────
@@ -365,10 +390,17 @@ export default class extends Controller {
   sendGuess(event) {
     event.preventDefault()
     const text = this.guessInputTarget.value.trim()
-    if (!text || this.hasGuessed) return
+    if (!text || this.hasGuessed || this.guessResting) return
     this.channel.perform("guess", { text })
+    this.lastGuess = text
     this.guessInputTarget.value = ""
     this.guessInputTarget.focus()
+
+    // Matches the server's cooldown, so a quick second tap isn't silently dropped.
+    this.guessResting = true
+    const button = this.guessFormTarget.querySelector("button")
+    button.disabled = true
+    setTimeout(() => { this.guessResting = false; button.disabled = this.hasGuessed }, GUESS_PAUSE)
   }
 
   setGuessing(on) {
@@ -386,6 +418,15 @@ export default class extends Controller {
     this.feedbackTarget.textContent = text
     this.feedbackTarget.style.color = color
     if (text) restartAnimation(this.feedbackTarget, animation)
+  }
+
+  // Keeps the screen on while the game runs: a phone that dims mid-drawing loses its turn.
+  keepAwake() {
+    if (!("wakeLock" in navigator)) return
+    const request = () => navigator.wakeLock.request("screen").then(lock => { this.wakeLock = lock }).catch(() => {})
+    this.onVisible = () => { if (document.visibilityState === "visible") request() }
+    document.addEventListener("visibilitychange", this.onVisible)
+    request()
   }
 
   // Asks the server for this phone's state again unless `received()` turns true in time.

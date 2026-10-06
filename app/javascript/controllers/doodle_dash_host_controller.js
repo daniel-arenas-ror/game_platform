@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 import consumer from "channels/consumer"
 import {
-  fitCanvas, clearCanvas, drawPoints, redraw, patternHtml, ranked, esc, secondsUntil,
+  fitCanvas, clearCanvas, createPen, patternHtml, ranked, esc, secondsUntil,
   restartAnimation, injectStyles, MEDALS
 } from "controllers/doodle_dash/drawing"
 import { confetti } from "controllers/shared/celebration"
@@ -12,6 +12,7 @@ const COLOR_YELLOW = "#facc15"
 const COLOR_RED    = "#f87171"
 
 const TICK_FROM  = 5  // seconds: a tick plays every second at the end of a drawing
+const PULSE_FROM = 10 // seconds: the countdown pulses every second at the end of a drawing
 const FEED_LIMIT = 7  // guesses kept in the sidebar
 
 export default class extends Controller {
@@ -28,14 +29,17 @@ export default class extends Controller {
     this.nicknames = {}
     this.guessed   = {}   // this turn: { pid => points }
     this.artistId  = null
-    this.strokes   = []   // this turn's drawing, to redraw after undo or a resize
-    this.current   = null // the stroke being drawn: { color, size, points, last }
+    this.strokes   = []   // this turn's drawing in stroke-id order: { id, color, size, points, pen? }
+    this.gone      = new Set() // ids undone this turn: late messages for them are ignored
+    this.clearedUpto = 0       // ids up to this were cleared this turn
+    this.offline   = new Set()
     this.tickSound = new Audio("/games/sounds/timer_count_down.mp3")
     this.dingSound = new Audio("/games/sounds/reveal.mp3")
+    this.goSound   = new Audio("/games/sounds/click.mp3")
 
     injectStyles()
     fitCanvas(this.canvasTarget)
-    this.onResize = () => { fitCanvas(this.canvasTarget); redraw(this.canvasTarget, this.strokes) }
+    this.onResize = () => { fitCanvas(this.canvasTarget); this.repaint() }
     window.addEventListener("resize", this.onResize)
     this.subscribe()
   }
@@ -64,13 +68,15 @@ export default class extends Controller {
       case "choosing":        this.onChoosing(data);   break
       case "drawing":         this.onDrawing(data);    break
       case "draw":            this.onDraw(data);       break
-      case "undo":            this.onUndo();           break
-      case "clear":           this.onClear();          break
+      case "stroke_end":      this.onStrokeEnd(data);  break
+      case "undo":            this.onUndo(data);       break
+      case "clear":           this.onClear(data);      break
       case "hint":            this.setPattern(data.pattern, true); break
       case "guessed":         this.onGuessed(data);    break
       case "feed":            this.onFeed(data);       break
       case "turn_over":       this.onTurnOver(data);   break
       case "player_left":     this.onPlayerLeft(data); break
+      case "player_presence": this.onPresence(data);   break
       case "game_over":       this.onGameOver(data);   break
       case "game_error":      this.showOverlay("⚠️", "Something went wrong", "Start a new game."); break
       case "game_restarted":  window.location.reload(); break
@@ -94,13 +100,15 @@ export default class extends Controller {
         break
       case "drawing":
         this.strokes = (state.strokes || []).map(s => ({ ...s }))
-        redraw(this.canvasTarget, this.strokes)
+        this.gone = new Set(state.removed_strokes || [])
+        this.clearedUpto = state.cleared_upto || 0
+        this.repaint()
         this.onDrawing({ artist_id: state.artist_id, pattern: state.pattern, turn_ends_at: state.turn_ends_at,
                          duration: state.draw_time }, false)
         break
       case "reveal":
         this.strokes = state.strokes || []
-        redraw(this.canvasTarget, this.strokes)
+        this.repaint()
         this.onTurnOver({ word: state.word, artist_id: state.artist_id, guessed: this.guessed, scores: this.scores })
         break
       case "game_over":
@@ -128,7 +136,7 @@ export default class extends Controller {
   // `fresh` is false when restoring a turn after a reload: keep the strokes already drawn.
   onDrawing({ artist_id, pattern, duration, turn_ends_at }, fresh = true) {
     this.artistId = artist_id
-    if (fresh) this.resetDrawing()
+    if (fresh) { this.resetDrawing(); this.playSound(this.goSound) }
     this.hideOverlay()
     this.setPattern(pattern)
     this.setSidebar(`✏️ ${this.name(artist_id)} is drawing`, "Guess the word on your phone!")
@@ -136,23 +144,58 @@ export default class extends Controller {
     this.startCountdown(turn_ends_at ? secondsUntil(turn_ends_at) : duration, duration, true)
   }
 
-  onDraw({ start, points, color, size }) {
-    if (start || !this.current) {
-      this.current = { color, size, points: [], last: null }
-      this.strokes.push(this.current)
+  // Live points of stroke `id`. Batches can arrive out of order; stroke_end puts it right.
+  onDraw({ id, points, color, size }) {
+    if (this.isGone(id)) return
+    let stroke = this.strokes.find(s => s.id === id)
+    if (!stroke) {
+      stroke = { id, color, size, points: [], pen: createPen(this.canvasTarget, color, size) }
+      this.insertStroke(stroke)
     }
-    this.current.last = drawPoints(this.canvasTarget, points, color, size, this.current.last)
-    this.current.points.push(...points)
+    if (!stroke.pen) return // already finished
+    stroke.pen.add(points)
+    stroke.points.push(...points)
   }
 
-  onUndo() {
-    this.strokes.pop()
-    this.current = null
-    redraw(this.canvasTarget, this.strokes)
+  // The finished stroke, exactly as the artist drew it: replaces the live copy and redraws.
+  onStrokeEnd({ stroke }) {
+    if (this.isGone(stroke.id)) return
+    this.strokes = this.strokes.filter(s => s.id !== stroke.id)
+    this.insertStroke({ ...stroke })
+    this.repaint()
   }
 
-  onClear() {
-    this.resetDrawing()
+  onUndo({ id }) {
+    this.gone.add(id)
+    this.strokes = this.strokes.filter(s => s.id !== id)
+    this.repaint()
+  }
+
+  onClear({ upto }) {
+    this.clearedUpto = Math.max(this.clearedUpto, upto)
+    this.strokes = this.strokes.filter(s => s.id > upto)
+    this.repaint()
+  }
+
+  // Redraws everything: finished strokes whole, live ones with a fresh pen that carries on.
+  repaint() {
+    clearCanvas(this.canvasTarget)
+    this.strokes.forEach(s => {
+      const pen = createPen(this.canvasTarget, s.color, s.size)
+      pen.add(s.points)
+      if (s.pen) s.pen = pen
+      else pen.end()
+    })
+  }
+
+  isGone(id) {
+    return id <= this.clearedUpto || this.gone.has(id)
+  }
+
+  insertStroke(stroke) {
+    const at = this.strokes.findIndex(s => s.id > stroke.id)
+    if (at === -1) this.strokes.push(stroke)
+    else this.strokes.splice(at, 0, stroke)
   }
 
   onGuessed({ player_id, points, scores }) {
@@ -178,8 +221,7 @@ export default class extends Controller {
     if (nicknames) this.nicknames = nicknames
     if (scores) this.scores = scores
     this.guessed = guessed || {}
-    this.current = null
-    this.setPattern(word ? word.split("") : null)
+    this.patternTarget.innerHTML = patternHtml(word ? word.split("") : null, true, true)
     this.renderScoreboard()
 
     const count = Object.keys(this.guessed).length
@@ -194,6 +236,13 @@ export default class extends Controller {
   onPlayerLeft({ player_id }) {
     delete this.scores[player_id]
     delete this.guessed[player_id]
+    this.offline.delete(player_id)
+    this.renderScoreboard()
+  }
+
+  onPresence({ player_id, connected }) {
+    if (connected) this.offline.delete(player_id)
+    else this.offline.add(player_id)
     this.renderScoreboard()
   }
 
@@ -213,7 +262,8 @@ export default class extends Controller {
 
   resetDrawing() {
     this.strokes = []
-    this.current = null
+    this.gone = new Set()
+    this.clearedUpto = 0
     clearCanvas(this.canvasTarget)
   }
 
@@ -274,8 +324,9 @@ export default class extends Controller {
   renderScoreboard() {
     this.scoreboardTarget.innerHTML = ranked(this.scores).map(({ id, pts }) => {
       const mark = id === this.artistId ? "✏️ " : id in this.guessed ? "✅ " : ""
+      const away = this.offline.has(id)
       return `
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-2 ${away ? "opacity-40" : ""}" ${away ? `title="Offline"` : ""}>
           <span class="flex-1 font-bold truncate">${mark}${esc(this.name(id))}</span>
           <span data-score="${id}" class="inline-block font-mono font-black text-lime-400 w-14 text-right">${pts}</span>
         </div>`
@@ -318,6 +369,7 @@ export default class extends Controller {
   renderCountdown(remaining, total, ticks) {
     const ratio = total ? remaining / total : 0
     if (ticks && remaining > 0 && remaining <= TICK_FROM) this.playSound(this.tickSound)
+    if (ticks && remaining > 0 && remaining <= PULSE_FROM) restartAnimation(this.countdownTarget, "dd-pulse")
     this.countdownTarget.textContent = remaining
     this.countdownTarget.style.color = ratio > 0.5 ? COLOR_GREEN : ratio > 0.25 ? COLOR_YELLOW : COLOR_RED
   }
