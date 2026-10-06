@@ -14,7 +14,8 @@
           <% if current_player.nil? %>
             <%= @svg.html_safe %>
           <% elsif game_instruction_image?(@game) %>
-            <%= image_tag("/games/#{@game.code}/instructions.png")  %>
+            <%= game_image_tag @game, alt: "#{@game.name} — how to play", priority: true, sizes: "(min-width: 768px) 360px, 90vw",
+                  class: "w-full h-auto max-w-sm" %>
           <% else %>
             <%# No instruction image yet: the game's steps instead %>
             <ol class="list-decimal list-inside space-y-2 text-left text-slate-800 text-sm max-w-xs p-2">

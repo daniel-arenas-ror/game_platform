@@ -26,7 +26,7 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     assert_select "dt", "Wake up your brain"
     assert_select "a[href=?]", games_path, text: "Start a game", count: 2
     assert_select "a[href=?]", find_room_path, text: "Join a game", count: 2
-    assert_select "img[src=?]", "/games/mind_match/instructions.png"
+    assert_select "img[src^=?][srcset]", "/games/mind_match/instructions-640.webp?v="
   ensure
     game&.delete
   end

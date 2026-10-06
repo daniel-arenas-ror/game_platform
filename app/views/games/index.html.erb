@@ -46,12 +46,14 @@
     <% end %>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <% @games.each do |game| %>
+      <% @games.each_with_index do |game, index| %>
         <% current_game = @room&.game_id == game.id %>
         <article class="relative bg-slate-800 rounded-2xl overflow-hidden border <%= current_game ? "border-purple-500" : "border-slate-700 hover:border-purple-500/70" %> transition-colors group">
           <div class="relative h-48 bg-slate-700 flex items-center justify-center overflow-hidden">
-            <% if File.exist?(Rails.public_path.join("games", game.code, "instructions.png")) %>
-              <%= image_tag "/games/#{game.code}/instructions.png", alt: "#{game.name} — how to play", loading: "lazy",
+            <% if game_instruction_image?(game) %>
+              <%# The first row is on screen at once: those load first, the rest when scrolled to %>
+              <%= game_image_tag game, alt: "#{game.name} — how to play", card: true, priority: index < 3,
+                    sizes: "(min-width: 1280px) 400px, (min-width: 1024px) 32vw, (min-width: 768px) 48vw, 100vw",
                     class: "w-full h-full object-cover object-top group-hover:scale-[1.03] transition-transform duration-500 ease-out" %>
             <% else %>
               <svg class="size-14 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">

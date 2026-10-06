@@ -90,7 +90,7 @@ Each game service implements at minimum:
 7. *(Optional)* **`app/views/rooms/games/{code}/_edit.html.erb`** — Pre-game config pickers.
 8. **`db/seeds/games/{code}.yml`** + add `{code}` to `GAME_CODES` in `db/seeds.rb` — name, `slug` (public URL `/games/{slug}`, never change it once live), description and the game page content (tagline, long_description, min/max_players, players_note, duration_minutes, age, category, how_to_play, tips, perfect_for, faq). Write it from the real rules in the service/channel. `games_controller_test.rb` checks every file is complete.
 9. **Winner celebration (required)** — the player controller's game-over handler must call the shared celebration for the winner(s). See *Winner Celebration* below.
-10. **Game page assets** — add the game's accent to `GamePagesHelper::ACCENTS`, then run `bin/rails games:og_images ONLY={code}` to build `public/games/{code}/og.png` (1200×630 share image, made from `instructions.png`; needs ImageMagick + pngquant).
+10. **Game page assets** — add the game's accent to `GamePagesHelper::ACCENTS`, then run `bin/rails games:webp ONLY={code}` (the WebP copies pages actually show: 400/640 px, full and top-cropped "card"; needs libvips) and `bin/rails games:og_images ONLY={code}` (`og.png`, the 1200×630 share image; needs ImageMagick + pngquant). Both are made from `instructions.png`. Show game images with `game_image_tag` (srcset + `?v=` digest, since public files are cached for a year), never `image_tag` on the PNG.
 
 ### ActionCable — Two-Layer Model
 

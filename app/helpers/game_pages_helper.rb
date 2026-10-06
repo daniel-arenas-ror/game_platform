@@ -127,7 +127,50 @@ module GamePagesHelper
     { "@context" => "https://schema.org", "@graph" => [ video_game, how_to, faq, breadcrumb ].compact }
   end
 
+  # WebP copies of instructions.png, made by `bin/rails games:webp`.
+  IMAGE_WIDTHS = [ 400, 640 ].freeze
+  # The card copies keep the top of the image, height = width × this. Cards must be at least this
+  # wide for their height (all are about 2:1), so object-cover never needs more of the image.
+  CARD_RATIO = 0.6
+  IMAGE_VERSIONS = Concurrent::Map.new # public path => short content digest
+
+  # The game's instruction image, as small as the layout allows: the browser picks the 400 or
+  # 640 px WebP from `sizes`. `card: true` sends only the top part, for cards that show only that.
+  # `priority` is for images seen without scrolling: they load first, the rest when scrolled near.
+  def game_image_tag(game, sizes:, card: false, priority: false, **options)
+    base   = "/games/#{game.code}/instructions#{'-card' if card}"
+    webps  = IMAGE_WIDTHS.map { |w| [ "#{base}-#{w}.webp", w ] }.select { |path, _| public_file?(path) }
+    src    = webps.any? ? versioned_public_path(webps.last.first) : versioned_public_path("/games/#{game.code}/instructions.png")
+    srcset = webps.map { |path, w| "#{versioned_public_path(path)} #{w}w" }.join(", ").presence
+    height = card && webps.any? ? (640 * CARD_RATIO).round : 960
+
+    image_tag src, srcset: srcset, sizes: (sizes if srcset), width: 640, height: height, decoding: "async",
+                   loading: (priority ? "eager" : "lazy"), fetchpriority: ("high" if priority), **options
+  end
+
+  # Public files are cached for a year, so the URL carries a digest of the file: a new image
+  # gets a new URL instead of the old one staying in browsers and the proxy.
+  # Digests are kept per process in production only, where public files don't change while it runs.
+  def versioned_public_path(path)
+    file = public_root.join(path.delete_prefix("/"))
+    return path unless File.exist?(file)
+
+    digest  = -> { Digest::MD5.file(file).hexdigest[0, 10] }
+    version = Rails.env.production? ? IMAGE_VERSIONS.compute_if_absent(path, &digest) : digest.call
+    "#{path}?v=#{version}"
+  end
+
   def game_instruction_image?(game)
     File.exist?(Rails.public_path.join("games", game.code, "instructions.png"))
+  end
+
+  private
+
+  def public_file?(path)
+    File.exist?(public_root.join(path.delete_prefix("/")))
+  end
+
+  def public_root
+    Rails.public_path
   end
 end

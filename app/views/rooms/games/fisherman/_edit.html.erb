@@ -16,5 +16,5 @@
 
 <div class="space-y-6 bg-slate-900/50 p-6 rounded-2xl border border-slate-700 mt-2">
   <label class="block text-xs font-bold text-slate-400 mb-3 tracking-widest">INSTRUCTIONS</label>
-  <%= image_tag("/games/fisherman/instructions.png") %>
+  <%= game_image_tag @room.game, alt: "The Fisherman — how to play", sizes: "(min-width: 672px) 560px, 90vw", class: "w-full h-auto" %>
 </div>

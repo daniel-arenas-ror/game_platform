@@ -13,6 +13,34 @@ namespace :games do
     end
   end
 
+  # The PNG stays the source (the share images are made from it); pages show these WebP copies,
+  # about a third of the size, at 400 and 640 px wide: the whole image, and a "card" one cut to
+  # its top part for the cards that only show that (catalog, related games).
+  desc "Build the WebP copies of each instructions.png. ONLY=code builds one. Needs libvips."
+  task webp: :environment do
+    Dir[Rails.public_path.join("games", "*", "instructions.png")].sort.each do |png|
+      dir  = File.dirname(png)
+      code = File.basename(dir)
+      next if ENV["ONLY"].present? && ENV["ONLY"] != code
+
+      built = GamePagesHelper::IMAGE_WIDTHS.flat_map do |width|
+        # thumbnail fits inside width × height: a huge height means "this width, keep the shape";
+        # the card one is cut to CARD_RATIO of the width, keeping the top ("low").
+        card_height = (width * GamePagesHelper::CARD_RATIO).round
+        {
+          "instructions-#{width}.webp"      => [ "--height", "100000" ],
+          "instructions-card-#{width}.webp" => [ "--height", card_height.to_s, "--crop", "low" ]
+        }.map do |name, args|
+          out = File.join(dir, name)
+          _out, err, status = Open3.capture3("vips", "thumbnail", png, "#{out}[Q=75,effort=6,strip]", width.to_s, *args)
+          abort "vips failed for #{code}: #{err}" unless status.success?
+          "#{name.delete_prefix('instructions-')} #{File.size(out) / 1024} KB"
+        end
+      end
+      puts "#{code}: #{File.size(png) / 1024} KB png → #{built.join(', ')}"
+    end
+  end
+
   desc "Build the 1200×630 share image of each game page (public/games/<code>/og.png). ONLY=code builds one. Needs ImageMagick + pngquant."
   task og_images: :environment do
     bold    = ENV.fetch("OG_FONT_BOLD", "/System/Library/Fonts/Supplemental/Arial Bold.ttf")
