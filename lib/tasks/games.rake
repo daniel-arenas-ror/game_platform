@@ -13,7 +13,7 @@ namespace :games do
     end
   end
 
-  desc "Build the 1200×630 share image of each game page (public/games/<code>/og.png). Needs ImageMagick + pngquant."
+  desc "Build the 1200×630 share image of each game page (public/games/<code>/og.png). ONLY=code builds one. Needs ImageMagick + pngquant."
   task og_images: :environment do
     bold    = ENV.fetch("OG_FONT_BOLD", "/System/Library/Fonts/Supplemental/Arial Bold.ttf")
     regular = ENV.fetch("OG_FONT", "/System/Library/Fonts/Supplemental/Arial.ttf")
@@ -25,6 +25,8 @@ namespace :games do
 
     Dir[Rails.root.join("db/seeds/games/*.yml")].sort.each do |file|
       code  = File.basename(file, ".yml")
+      next if ENV["ONLY"].present? && ENV["ONLY"] != code
+
       game  = YAML.load_file(file)
       art   = Rails.public_path.join("games", code, "instructions.png")
       out   = Rails.public_path.join("games", code, "og.png")

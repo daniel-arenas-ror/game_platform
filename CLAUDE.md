@@ -58,7 +58,7 @@ A real-time multiplayer game platform. A host creates a **Room**, shares a QR co
 | `submarine_combat` | Submarine Combat | Ship placement + battle loop |
 | `mind_match` | Mind Match | Word-matching telepathy game |
 | `soup_of_numbers` | Soup of Numbers | Digit word-search race; first to tap the host's number scores |
-| `doodle_dash` | Doodle Dash | Drawing + guessing. In progress: backend only, `listed: false` |
+| `doodle_dash` | Doodle Dash | Drawing + guessing: artist draws on their phone, the drawing shows on the TV only |
 | `impostor` | Impostor | TODO stub in GameFactory |
 
 FIFA World Cup has data models only (no game logic).
@@ -90,7 +90,7 @@ Each game service implements at minimum:
 7. *(Optional)* **`app/views/rooms/games/{code}/_edit.html.erb`** — Pre-game config pickers.
 8. **`db/seeds/games/{code}.yml`** + add `{code}` to `GAME_CODES` in `db/seeds.rb` — name, `slug` (public URL `/games/{slug}`, never change it once live), description and the game page content (tagline, long_description, min/max_players, players_note, duration_minutes, age, category, how_to_play, tips, perfect_for, faq). Write it from the real rules in the service/channel. `games_controller_test.rb` checks every file is complete.
 9. **Winner celebration (required)** — the player controller's game-over handler must call the shared celebration for the winner(s). See *Winner Celebration* below.
-10. **Game page assets** — add the game's accent to `GamePagesHelper::ACCENTS`, then run `bin/rails games:og_images` to build `public/games/{code}/og.png` (1200×630 share image, made from `instructions.png`; needs ImageMagick + pngquant).
+10. **Game page assets** — add the game's accent to `GamePagesHelper::ACCENTS`, then run `bin/rails games:og_images ONLY={code}` to build `public/games/{code}/og.png` (1200×630 share image, made from `instructions.png`; needs ImageMagick + pngquant).
 
 ### ActionCable — Two-Layer Model
 

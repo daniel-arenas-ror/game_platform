@@ -1,8 +1,6 @@
 # Slug is a public URL (/games/doodle-dash) — never change it once live.
-# listed: false keeps it off the public site in production until the game is finished.
 name: Doodle Dash
 slug: doodle-dash
-listed: false
 description: One player draws a secret word on their phone, the drawing appears live on the
   big screen, and everyone races to guess it. The faster you guess, the more you score!
 tagline: You draw a cat. Everyone guesses "potato". Classic.
@@ -12,8 +10,8 @@ max_players: 12
 players_note: >-
   You need one artist and at least one guesser, so 2 players can play. With 3 to 8 it's at its
   best: plenty of wild guesses, and everyone gets a turn to draw.
-duration_minutes: 15
-age: 6
+duration_minutes: 10
+age: 7
 long_description: >-
   A drawing and guessing race for the whole room. Each turn, one player picks a secret word on their
   phone and draws it with a finger, and every line appears live on the big screen. Everyone else types
