@@ -66,12 +66,26 @@ class GamesControllerTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "<loc>#{game_url(@game)}</loc>"
   end
 
-  test "every seeded game has a 1200x630 share image" do
+  test "every listed game has a 1200x630 share image" do
     Dir[Rails.root.join("db/seeds/games/*.yml")].each do |file|
+      next if YAML.load_file(file)["listed"] == false # still being built
       png = Rails.public_path.join("games", File.basename(file, ".yml"), "og.png")
       assert File.exist?(png), "missing #{png.relative_path_from(Rails.root)} — run bin/rails games:og_images"
       assert_equal [ 1200, 630 ], File.binread(png, 24, 16).unpack("NN"), png.to_s
     end
+  end
+
+  test "an unlisted game is hidden from the public site" do
+    @game.update!(listed: false)
+
+    get game_path(@game)
+    assert_response :not_found
+
+    get games_path
+    assert_select "a[href=?]", game_path(@game), 0
+
+    get sitemap_path
+    assert_not_includes response.body, game_url(@game)
   end
 
   test "unknown slug is a 404" do
@@ -100,7 +114,7 @@ class GamesControllerTest < ActionDispatch::IntegrationTest
     files = Dir[Rails.root.join("db/seeds/games/*.yml")]
     slugs = files.map { |f| YAML.load_file(f).fetch("slug") }
 
-    assert_equal 10, files.size
+    assert_equal 11, files.size
     assert_equal slugs.uniq, slugs
     assert(slugs.all? { |s| s.match?(/\A[a-z0-9]+(?:-[a-z0-9]+)*\z/) })
     assert_includes slugs, "how-to-be-a-billionaire"

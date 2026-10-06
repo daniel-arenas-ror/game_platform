@@ -3,7 +3,7 @@ require "test_helper"
 # Smoke test: every implemented game can be set up through GameFactory.
 class GameSetupTest < ActiveSupport::TestCase
   CODES = %w[fisherman how_want_be_billionare battle_city guess_the_color count_birds
-             sequence_memory submarine_combat mind_match matching_pairs].freeze
+             sequence_memory submarine_combat mind_match matching_pairs doodle_dash].freeze
 
   setup do
     @records = [

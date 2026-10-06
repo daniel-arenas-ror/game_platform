@@ -21,6 +21,8 @@ class GameFactory
       GameServices::SoupOfNumbers.new(room)
     when 'matching_pairs'
       GameServices::MatchingPairs.new(room)
+    when 'doodle_dash'
+      GameServices::DoodleDash.new(room)
     when 'impostor'
       ## TODO
     else

@@ -1,0 +1,42 @@
+# Slug is a public URL (/games/doodle-dash) — never change it once live.
+# listed: false keeps it off the public site in production until the game is finished.
+name: Doodle Dash
+slug: doodle-dash
+listed: false
+description: One player draws a secret word on their phone, the drawing appears live on the
+  big screen, and everyone races to guess it. The faster you guess, the more you score!
+tagline: You draw a cat. Everyone guesses "potato". Classic.
+category: drawing
+min_players: 2
+max_players: 12
+players_note: >-
+  You need one artist and at least one guesser, so 2 players can play. With 3 to 8 it's at its
+  best: plenty of wild guesses, and everyone gets a turn to draw.
+duration_minutes: 15
+age: 6
+long_description: >-
+  A drawing and guessing race for the whole room. Each turn, one player picks a secret word on their
+  phone and draws it with a finger, and every line appears live on the big screen. Everyone else types
+  their guesses on their phone. The faster you guess, the more points you get, and the artist scores
+  for every player who gets it, so drawing well pays off too. Letters of the word appear as hints when
+  time runs low, and the wrong guesses on the TV are often the funniest part.
+how_to_play:
+  - The host picks the drawing time, how many times each player draws, and the word difficulty.
+  - On your turn, pick one of three secret words on your phone, then draw it with your finger. Your drawing appears live on the big screen.
+  - Everyone else watches the TV and types guesses on their phone. If you're one letter off, your phone says "So close!"
+  - A correct guess scores 50 to 100 points, depending on how fast you were. The artist scores 25 for every player who gets it.
+  - Letters of the word appear on the TV as hints. When everyone has drawn, the highest score wins.
+tips:
+  - "Artists: start with the big shape, then add the details. A circle and two ears is already a cat."
+  - "No letters or numbers in your drawing. Draw it, don't write it!"
+  - "Guessers: guess early and often. Wrong guesses cost nothing."
+  - Watch the hint letters. Knowing the word has two parts or starts with a "p" helps a lot.
+  - Short on time? Pick the easy word. A quick guess is worth more than a perfect drawing.
+perfect_for: [party, family, classroom, work]
+faq:
+  - q: Do guessers see the drawing on their phone?
+    a: No. The drawing appears on the big screen, and the phones are only for typing guesses. Everyone looks up at the TV together.
+  - q: Can someone write the answer instead of drawing it?
+    a: The game can't stop it, but it's against the spirit of the game. Words and letters in the drawing are the one house rule.
+  - q: Can I hide wrong guesses from the TV?
+    a: Yes. The host can turn the guess feed off in the room settings. When it's on, rude words are hidden automatically.

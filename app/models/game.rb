@@ -9,6 +9,8 @@ class Game
   # Catalog order: games with a position come first (1, 2, 3…), then the rest, most rooms first.
   field :position, type: Integer
   field :rooms_count, type: Integer, default: 0 # +1 for every room created with this game
+  # false while a game is being built: hidden from the public site in production, shown in development.
+  field :listed, type: Boolean, default: true
 
   # Public game page (/games/:slug). Content lives in db/seeds/games/<code>.yml.
   field :slug, type: String
@@ -35,7 +37,12 @@ class Game
   validates :slug, presence: true, format: { with: /\A[a-z0-9]+(?:-[a-z0-9]+)*\z/ }
 
   def self.catalog
-    all.to_a.sort_by { |g| [ g.position ? 0 : 1, g.position.to_i, -g.rooms_count.to_i, g.name.to_s ] }
+    visible.to_a.sort_by { |g| [ g.position ? 0 : 1, g.position.to_i, -g.rooms_count.to_i, g.name.to_s ] }
+  end
+
+  # The games the public site shows.
+  def self.visible
+    Rails.env.development? ? all : where(:listed.ne => false)
   end
 
   def to_param

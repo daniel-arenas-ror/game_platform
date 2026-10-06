@@ -1,0 +1,304 @@
+# Doodle Dash words. Family-friendly and drawable. Lowercase; multi-word entries are fine.
+# Each turn the artist picks 1 of 3. "mixed" offers one easy, one medium and one hard word.
+easy:
+  - apple
+  - banana
+  - ball
+  - balloon
+  - bed
+  - bee
+  - bell
+  - bike
+  - bird
+  - boat
+  - book
+  - bread
+  - bridge
+  - bus
+  - butterfly
+  - cake
+  - camera
+  - candle
+  - car
+  - carrot
+  - cat
+  - chair
+  - cheese
+  - cloud
+  - clock
+  - cookie
+  - cow
+  - crown
+  - cup
+  - dog
+  - door
+  - drum
+  - duck
+  - ear
+  - egg
+  - eye
+  - fish
+  - flag
+  - flower
+  - fork
+  - frog
+  - ghost
+  - gift
+  - glasses
+  - grapes
+  - guitar
+  - hammer
+  - hat
+  - heart
+  - horse
+  - house
+  - ice cream
+  - kite
+  - key
+  - ladder
+  - lamp
+  - leaf
+  - lemon
+  - lion
+  - lollipop
+  - moon
+  - mouse
+  - mushroom
+  - nose
+  - octopus
+  - owl
+  - pencil
+  - pig
+  - pizza
+  - plane
+  - rain
+  - rainbow
+  - robot
+  - rocket
+  - shoe
+  - smile
+  - snail
+  - snake
+  - snowman
+  - sock
+  - spider
+  - spoon
+  - star
+  - sun
+  - sword
+  - table
+  - tooth
+  - train
+  - tree
+  - truck
+  - turtle
+  - umbrella
+  - watch
+  - whale
+  - window
+  - worm
+medium:
+  - airport
+  - alarm clock
+  - anchor
+  - astronaut
+  - backpack
+  - bandage
+  - barbecue
+  - beach
+  - beard
+  - bowling
+  - bubble
+  - cactus
+  - camping
+  - castle
+  - caterpillar
+  - chef
+  - circus
+  - compass
+  - cowboy
+  - crab
+  - dentist
+  - desert
+  - diamond
+  - dinosaur
+  - dragon
+  - elevator
+  - fire truck
+  - fireworks
+  - fishing
+  - flamingo
+  - garden
+  - giraffe
+  - hamburger
+  - helicopter
+  - hot dog
+  - igloo
+  - island
+  - jellyfish
+  - juggling
+  - kangaroo
+  - lighthouse
+  - lightning
+  - magnet
+  - mermaid
+  - microphone
+  - mountain
+  - painter
+  - parachute
+  - parrot
+  - penguin
+  - piano
+  - pirate
+  - popcorn
+  - pyramid
+  - rollercoaster
+  - sandcastle
+  - scarecrow
+  - scissors
+  - skateboard
+  - skeleton
+  - sleeping
+  - snowflake
+  - spaghetti
+  - submarine
+  - sunflower
+  - superhero
+  - swing
+  - telescope
+  - tent
+  - tornado
+  - toothbrush
+  - traffic light
+  - treasure
+  - unicorn
+  - vacuum
+  - volcano
+  - waterfall
+  - wedding
+  - windmill
+  - wizard
+  - accordion
+  - acrobat
+  - aquarium
+  - ballerina
+  - basketball
+  - beehive
+  - binoculars
+  - blender
+  - bulldozer
+  - campfire
+  - canoe
+  - carousel
+  - chameleon
+  - cheerleader
+  - chimney
+  - coconut
+  - detective
+  - doorbell
+  - earthquake
+  - ferris wheel
+  - firefighter
+  - fountain
+  - goldfish
+  - hammock
+  - hedgehog
+  - hot air balloon
+  - jack-o-lantern
+  - ladybug
+  - lawn mower
+  - lifeguard
+  - magician
+  - moustache
+  - ninja
+  - peacock
+  - pineapple
+  - plumber
+  - podium
+  - raccoon
+  - sailboat
+  - seahorse
+hard:
+  - allergy
+  - avalanche
+  - birthday party
+  - black hole
+  - blizzard
+  - bodyguard
+  - brainstorm
+  - camouflage
+  - chain reaction
+  - checkmate
+  - comedian
+  - daydream
+  - deja vu
+  - echo
+  - evolution
+  - eclipse
+  - gravity
+  - hibernation
+  - homework
+  - hypnosis
+  - jet lag
+  - karaoke
+  - leap year
+  - marathon
+  - midnight snack
+  - migration
+  - monday morning
+  - nightmare
+  - photosynthesis
+  - procrastination
+  - quicksand
+  - recycling
+  - selfie
+  - sleepwalking
+  - social media
+  - solar system
+  - spring cleaning
+  - stage fright
+  - surprise party
+  - teamwork
+  - time travel
+  - traffic jam
+  - treasure hunt
+  - virtual reality
+  - wifi
+  - "writer's block"
+  - yawn
+  - zero gravity
+  - applause
+  - archaeologist
+  - autograph
+  - bedtime story
+  - blind date
+  - bucket list
+  - cliffhanger
+  - deadline
+  - earworm
+  - friendship
+  - gossip
+  - hiccups
+  - high five
+  - inside joke
+  - invisible
+  - lullaby
+  - misunderstanding
+  - multitasking
+  - optical illusion
+  - overtime
+  - peer pressure
+  - plot twist
+  - rush hour
+  - sarcasm
+  - shadow puppet
+  - sore loser
+  - sunburn
+  - tickle
+  - tug of war
+  - under construction
+  - voicemail
+  - wanderlust
+  - weekend
+  - white lie
+  - wishful thinking

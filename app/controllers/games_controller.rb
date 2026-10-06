@@ -7,7 +7,7 @@ class GamesController < ApplicationController
   end
 
   def show
-    @game = Game.find_by!(slug: params[:slug])
+    @game = Game.visible.find_by!(slug: params[:slug])
     @related_games = related_games(@game)
   end
 

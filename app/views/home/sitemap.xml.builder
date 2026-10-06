@@ -14,7 +14,7 @@ xml.urlset xmlns: "http://www.sitemaps.org/schemas/sitemap/0.9" do
     end
   end
 
-  Game.where(:slug.nin => [ nil, "" ]).each do |game|
+  Game.visible.where(:slug.nin => [ nil, "" ]).each do |game|
     xml.url do
       xml.loc game_url(game)
       xml.lastmod game.updated_at.to_date.iso8601 if game.updated_at

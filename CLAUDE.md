@@ -58,13 +58,14 @@ A real-time multiplayer game platform. A host creates a **Room**, shares a QR co
 | `submarine_combat` | Submarine Combat | Ship placement + battle loop |
 | `mind_match` | Mind Match | Word-matching telepathy game |
 | `soup_of_numbers` | Soup of Numbers | Digit word-search race; first to tap the host's number scores |
+| `doodle_dash` | Doodle Dash | Drawing + guessing. In progress: backend only, `listed: false` |
 | `impostor` | Impostor | TODO stub in GameFactory |
 
 FIFA World Cup has data models only (no game logic).
 
 ### Key Models (Mongoid — no ActiveRecord migrations)
 
-- **Game** — Static game definitions (name, `code`, description) plus the public game page content. Seeded from `db/seeds/games/*.yml`; the seeds upsert by `code`, so game IDs stay stable. `code` drives GameFactory; `slug` is the public URL (`to_param`). Lists use `Game.catalog`: games with a `position` (set in the YAML) first, then the rest by `rooms_count` (+1 per room created; recount with `bin/rails games:count_rooms`).
+- **Game** — Static game definitions (name, `code`, description) plus the public game page content. Seeded from `db/seeds/games/*.yml`; the seeds upsert by `code`, so game IDs stay stable. `code` drives GameFactory; `slug` is the public URL (`to_param`). `listed: false` in the YAML hides a game from the public site in production while it's being built (`Game.visible`; development shows everything). Lists use `Game.catalog`: games with a `position` (set in the YAML) first, then the rest by `rooms_count` (+1 per room created; recount with `bin/rails games:count_rooms`).
 - **Room** — A live session. Unique 4-char `code`. `status`: `lobby` → `playing` → `finished`. `game_state` Hash stores all transient runtime state — shape varies by game.
 - **Player** — Belongs to a Room. `nickname`, `role`, `connected` (Boolean). Identity tracked via `session[:player_id]`.
 

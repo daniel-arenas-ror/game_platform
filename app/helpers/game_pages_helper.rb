@@ -12,13 +12,14 @@ module GamePagesHelper
     "submarine_combat"       => { text: "text-cyan-400",    soft: "text-cyan-300",    tint: "bg-cyan-500/10",    border: "border-cyan-500/40",    dot: "bg-cyan-400", hex: "#67e8f9" },
     "mind_match"             => { text: "text-violet-400",  soft: "text-violet-300",  tint: "bg-violet-500/10",  border: "border-violet-500/40",  dot: "bg-violet-400", hex: "#c4b5fd" },
     "soup_of_numbers"        => { text: "text-emerald-400", soft: "text-emerald-300", tint: "bg-emerald-500/10", border: "border-emerald-500/40", dot: "bg-emerald-400", hex: "#6ee7b7" },
-    "matching_pairs"         => { text: "text-rose-400",    soft: "text-rose-300",    tint: "bg-rose-500/10",    border: "border-rose-500/40",    dot: "bg-rose-400", hex: "#fda4af" }
+    "matching_pairs"         => { text: "text-rose-400",    soft: "text-rose-300",    tint: "bg-rose-500/10",    border: "border-rose-500/40",    dot: "bg-rose-400", hex: "#fda4af" },
+    "doodle_dash"            => { text: "text-lime-400",    soft: "text-lime-300",    tint: "bg-lime-500/10",    border: "border-lime-500/40",    dot: "bg-lime-400", hex: "#bef264" }
   }.freeze
 
   CATEGORY_LABELS = {
     "social" => "Social game", "trivia" => "Trivia game", "action" => "Action game",
     "perception" => "Quick-eye game", "memory" => "Memory game", "puzzle" => "Puzzle race",
-    "strategy" => "Strategy game"
+    "strategy" => "Strategy game", "drawing" => "Drawing game"
   }.freeze
 
   # Game::PERFECT_FOR key => [label, icon]

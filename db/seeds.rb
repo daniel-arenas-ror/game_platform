@@ -5,14 +5,14 @@ BattleCity::MapPreset.destroy_all
 # The catalog is ordered by `position:` in the YAML, then by popularity — see Game.catalog.
 GAME_CODES = %w[
   fisherman how_want_be_billionare battle_city guess_the_color count_birds
-  sequence_memory submarine_combat mind_match soup_of_numbers matching_pairs
+  sequence_memory submarine_combat mind_match soup_of_numbers matching_pairs doodle_dash
 ].freeze
 
 Game.not_in(code: GAME_CODES).destroy_all
 GAME_CODES.each do |code|
   attrs = YAML.load_file(Rails.root.join("db/seeds/games/#{code}.yml"))
   # A position removed from the YAML is cleared too, so the YAML stays the source of truth.
-  Game.find_or_initialize_by(code: code).update!(attrs.reverse_merge("position" => nil))
+  Game.find_or_initialize_by(code: code).update!(attrs.reverse_merge("position" => nil, "listed" => true))
 end
 
 # ---------------------------------------------------------------------------

@@ -1,0 +1,37 @@
+# Wrong guesses shown on the TV are replaced by "***" when one of their words matches this list.
+# Plain entries match a whole word ("ass" doesn't block "assemble"); a trailing * matches any word
+# starting with it. Kept short on purpose: it catches the common words in front of a class, it's
+# not a full filter. The host can also turn the guess feed off in the room settings.
+- ass
+- asshole*
+- bastard*
+- bitch*
+- bollocks
+- boob*
+- crap
+- cock
+- cunt*
+- damn*
+- dick
+- dickhead*
+- douche*
+- fag
+- faggot*
+- fuck*
+- motherf*
+- nigg*
+- penis*
+- piss*
+- porn*
+- pussy*
+- retard*
+- sex
+- sexy
+- shit*
+- slut*
+- tit
+- tits
+- twat*
+- vagina*
+- wank*
+- whore*
