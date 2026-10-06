@@ -64,7 +64,7 @@ FIFA World Cup has data models only (no game logic).
 
 ### Key Models (Mongoid — no ActiveRecord migrations)
 
-- **Game** — Static game definitions (name, `code`, description) plus the public game page content. Seeded from `db/seeds/games/*.yml`; the seeds upsert by `code`, so game IDs stay stable. `code` drives GameFactory; `slug` is the public URL (`to_param`).
+- **Game** — Static game definitions (name, `code`, description) plus the public game page content. Seeded from `db/seeds/games/*.yml`; the seeds upsert by `code`, so game IDs stay stable. `code` drives GameFactory; `slug` is the public URL (`to_param`). Lists use `Game.catalog`: games with a `position` (set in the YAML) first, then the rest by `rooms_count` (+1 per room created; recount with `bin/rails games:count_rooms`).
 - **Room** — A live session. Unique 4-char `code`. `status`: `lobby` → `playing` → `finished`. `game_state` Hash stores all transient runtime state — shape varies by game.
 - **Player** — Belongs to a Room. `nickname`, `role`, `connected` (Boolean). Identity tracked via `session[:player_id]`.
 

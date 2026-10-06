@@ -2,6 +2,17 @@ require "open3"
 require "tmpdir"
 
 namespace :games do
+  desc "Recount Game#rooms_count from the rooms in the database (catalog popularity). Safe to re-run."
+  task count_rooms: :environment do
+    counts = Room.collection.aggregate([ { "$group" => { "_id" => "$game_id", "count" => { "$sum" => 1 } } } ])
+                 .to_h { |row| [ row["_id"], row["count"] ] }
+
+    Game.each do |game|
+      game.set(rooms_count: counts.fetch(game.id, 0))
+      puts "#{game.code}: #{game.rooms_count} rooms"
+    end
+  end
+
   desc "Build the 1200×630 share image of each game page (public/games/<code>/og.png). Needs ImageMagick + pngquant."
   task og_images: :environment do
     bold    = ENV.fetch("OG_FONT_BOLD", "/System/Library/Fonts/Supplemental/Arial Bold.ttf")
