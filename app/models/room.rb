@@ -16,6 +16,7 @@ class Room
   before_create :generate_code
   # Atomic, so rooms created at the same time are all counted.
   after_create { Game.where(_id: game_id).inc(rooms_count: 1) }
+  after_create { Event.record(:room_created, room: self) }
 
   # Shown in the join page's "where's the code?" illustration, so it must never be a real room.
   EXAMPLE_CODE = "K7QX".freeze

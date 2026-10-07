@@ -8,4 +8,7 @@ class Player
   field :connections, type: Integer, default: 0   # open ActionCable subscriptions (see ApplicationCable::Channel)
   
   belongs_to :room
+
+  # Players are deleted when they leave, so the stats count them here, when they join.
+  after_create { Event.record(:player_joined, room: room) }
 end
