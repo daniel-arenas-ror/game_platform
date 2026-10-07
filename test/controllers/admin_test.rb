@@ -34,6 +34,17 @@ class AdminTest < ActionDispatch::IntegrationTest
     assert_redirected_to new_admin_user_session_path
   end
 
+  test "the dashboard shows each period, its charts and the game ranking" do
+    log_in
+    AdminStats::RANGES.each_key do |range|
+      get admin_root_path(range: range)
+      assert_response :success
+      assert_select "nav[aria-label=Period] a[aria-current=page][href$='range=#{range}']"
+      assert_select "svg[role=img] rect", AdminStats::CHART_DAYS * 3
+      assert_select "h2#popular"
+    end
+  end
+
   test "the admin pages have no ads, no SEO tags and are never indexed" do
     get new_admin_user_session_path
     assert_response :success

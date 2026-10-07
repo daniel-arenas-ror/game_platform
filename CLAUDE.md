@@ -187,6 +187,7 @@ GET   /<admin_path>            → admin/dashboard#show (hidden super admin, Dev
 
 - **`Event`** — append-only log for the admin stats: `room_created` (Room `after_create`), `player_joined` (Player `after_create`), `game_started` (wrapped around every service's `setup_game!` by `GameServices::Base::TrackStart`; `again: true` for play again). Never store nicknames. Days are counted in **UTC**. `bin/rails events:backfill_rooms` rebuilds `room_created` for old rooms (players and games played can't be rebuilt: players are deleted when they leave).
 - **Admin** — Devise `AdminUser` (lockable, timeoutable, trackable; no sign-up or password reset). The address is the secret `admin_path` in the encrypted credentials (dev/test fall back to `/admin` without it; production has no admin without it). Never link to it, put it in the sitemap or robots.txt. Admin pages use `layouts/admin` (no ads, noindex) and inherit `Admin::BaseController`.
+- **Dashboard** — `AdminStats` (app/services/admin_stats.rb) counts everything with Mongo aggregations on `Event`: rolling periods (today / 7 / 30 days / all) compared with the window before, 30 UTC days per day for the server-drawn SVG charts (`AdminHelper#admin_daily_chart`), and the game ranking by games played. Stats tests use a random far-past `now:` each, since tests share one DB in parallel.
 - `bin/rails admin:create EMAIL=…` creates an admin or resets the password (asks in a terminal; prints a generated one when there's no terminal, e.g. `script/aws_run.sh`). Also `admin:list`, `admin:delete EMAIL=…`.
 
 ### Frontend

@@ -1,16 +1,136 @@
 <% content_for :title, "Stats" %>
+<% totals, days = @stats.totals, @stats.daily %>
 
-<div class="flex flex-wrap items-baseline justify-between gap-2">
-  <h1 class="text-3xl font-extrabold tracking-tight text-white">Stats</h1>
-  <p class="text-xs font-black uppercase tracking-widest text-slate-500">Days in UTC</p>
+<div class="flex flex-wrap items-end justify-between gap-4">
+  <div>
+    <h1 class="text-3xl font-extrabold tracking-tight text-white">Stats</h1>
+    <p class="mt-1 text-sm text-slate-400">
+      <%= @stats.range == "all" ? "Everything recorded so far" : "#{@stats.label == 'Today' ? 'Today' : "Last #{@stats.label}"}, compared with #{@stats.previous_label}" %>
+      · days in UTC
+    </p>
+  </div>
+
+  <nav aria-label="Period" class="flex rounded-xl border border-slate-800 bg-slate-900 p-1 text-sm font-semibold">
+    <% AdminStats::RANGES.each do |key, label| %>
+      <%= link_to label, admin_root_path(range: key), aria: { current: (key == @stats.range ? "page" : nil) },
+            class: "rounded-lg px-3 py-1.5 transition-colors #{key == @stats.range ? 'bg-purple-600 text-white' : 'text-slate-400 hover:text-white'}" %>
+    <% end %>
+  </nav>
 </div>
 
-<div class="mt-6 grid gap-4 sm:grid-cols-3">
-  <% { "room_created" => "Rooms created", "game_started" => "Games played", "player_joined" => "Players joined" }.each do |kind, label| %>
-    <div class="rounded-2xl border border-slate-800 bg-slate-900 p-5">
-      <p class="text-xs font-black uppercase tracking-widest text-slate-500"><%= label %> today</p>
-      <p class="mt-2 text-4xl font-extrabold tabular-nums text-white"><%= number_with_delimiter @totals[kind][:today] %></p>
-      <p class="mt-1 text-sm text-slate-400"><%= number_with_delimiter @totals[kind][:all] %> all time</p>
+<%# The numbers %>
+<div class="mt-6 grid gap-4 grid-cols-2 lg:grid-cols-4">
+  <% AdminHelper::ADMIN_METRICS.merge(avg_players: { label: "Players per game" }).each do |key, metric| %>
+    <div class="rounded-2xl border border-slate-800 bg-slate-900 p-4 sm:p-5">
+      <p class="text-xs font-black uppercase tracking-widest text-slate-500"><%= metric[:label] %></p>
+      <p class="mt-2 text-3xl sm:text-4xl font-extrabold tabular-nums text-white">
+        <%= totals[key].nil? ? "—" : number_with_delimiter(totals[key]) %>
+      </p>
+      <p class="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-slate-500">
+        <% if (before = @stats.previous_totals&.dig(key)) %>
+          <%= admin_change_badge(@stats.change(key)) %>
+          <span><%= number_with_delimiter(before) %> <%= @stats.previous_label %></span>
+        <% elsif @stats.previous_totals %>
+          <span>— <%= @stats.previous_label %></span>
+        <% end %>
+      </p>
     </div>
   <% end %>
 </div>
+
+<%# Per day %>
+<section class="mt-10" aria-labelledby="per-day">
+  <div class="flex flex-wrap items-baseline justify-between gap-2">
+    <h2 id="per-day" class="text-xl font-extrabold text-white">Per day</h2>
+    <p class="text-xs text-slate-500">Last <%= AdminStats::CHART_DAYS %> days · today is the lighter bar</p>
+  </div>
+
+  <div class="mt-4 grid gap-4 lg:grid-cols-3">
+    <% AdminHelper::ADMIN_METRICS.each do |key, metric| %>
+      <div class="rounded-2xl border border-slate-800 bg-slate-900 p-4 sm:p-5">
+        <div class="flex items-baseline justify-between gap-2">
+          <p class="text-sm font-bold text-slate-200"><%= metric[:label] %></p>
+          <p class="text-xs text-slate-500 tabular-nums">max <%= days.map { _1[key] }.max %>/day</p>
+        </div>
+        <div class="mt-3"><%= admin_daily_chart(days, key) %></div>
+        <div class="mt-1.5 flex justify-between text-[0.7rem] text-slate-500 tabular-nums">
+          <span><%= days.first[:day].strftime("%b %-d") %></span>
+          <span>Today</span>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <details class="mt-4 rounded-2xl border border-slate-800 bg-slate-900">
+    <summary class="cursor-pointer px-5 py-3 text-sm font-semibold text-slate-300 hover:text-white">Show the numbers</summary>
+    <div class="max-h-96 overflow-auto px-5 pb-4">
+      <table class="w-full text-sm tabular-nums">
+        <thead class="sticky top-0 bg-slate-900 text-left text-xs uppercase tracking-widest text-slate-500">
+          <tr>
+            <th class="py-2 font-black">Day</th>
+            <% AdminHelper::ADMIN_METRICS.each_value do |metric| %><th class="py-2 text-right font-black"><%= metric[:label] %></th><% end %>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-800">
+          <% days.reverse_each do |row| %>
+            <tr>
+              <td class="py-1.5 text-slate-400"><%= row[:day].strftime("%a %b %-d") %></td>
+              <% AdminHelper::ADMIN_METRICS.each_key do |key| %><td class="py-1.5 text-right text-white"><%= row[key] %></td><% end %>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </details>
+</section>
+
+<%# Most popular %>
+<section class="mt-10" aria-labelledby="popular">
+  <div class="flex flex-wrap items-baseline justify-between gap-2">
+    <h2 id="popular" class="text-xl font-extrabold text-white">Most popular games</h2>
+    <p class="text-xs text-slate-500"><%= @stats.range == "today" ? "Today" : @stats.range == "all" ? "All time" : "Last #{@stats.label}" %> · by games played</p>
+  </div>
+
+  <% if (games = @stats.popular_games).empty? %>
+    <p class="mt-4 rounded-2xl border border-dashed border-slate-700 px-5 py-10 text-center text-slate-400">Nothing played in this period yet.</p>
+  <% else %>
+    <div class="mt-4 overflow-x-auto rounded-2xl border border-slate-800 bg-slate-900">
+      <table class="w-full min-w-[36rem] text-sm tabular-nums">
+        <thead class="text-left text-xs uppercase tracking-widest text-slate-500">
+          <tr class="border-b border-slate-800">
+            <th class="px-5 py-3 font-black">#</th>
+            <th class="py-3 font-black">Game</th>
+            <th class="py-3 text-right font-black">Games played</th>
+            <th class="py-3 pl-4 font-black w-1/4">Share</th>
+            <th class="py-3 text-right font-black">Rooms</th>
+            <th class="px-5 py-3 text-right font-black">Players / game</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-800">
+          <% games.each_with_index do |row, i| %>
+            <% accent = row[:game] ? game_accent(row[:game]) : { dot: "bg-slate-500" } %>
+            <tr>
+              <td class="px-5 py-3 font-bold <%= i.zero? && row[:games].positive? ? 'text-amber-300' : 'text-slate-500' %>"><%= i + 1 %></td>
+              <td class="py-3 font-semibold text-white">
+                <span class="mr-2 inline-block size-2.5 rounded-full <%= accent[:dot] %>" aria-hidden="true"></span><%= row[:name] %>
+              </td>
+              <td class="py-3 text-right font-bold text-white"><%= number_with_delimiter row[:games] %></td>
+              <td class="py-3 pl-4">
+                <div class="flex items-center gap-2">
+                  <div class="h-2 flex-1 rounded-full bg-slate-800"><div class="h-2 rounded-full <%= accent[:dot] %>" style="width: <%= row[:share].round(1) %>%"></div></div>
+                  <span class="w-10 text-right text-xs text-slate-400"><%= row[:share].round %>%</span>
+                </div>
+              </td>
+              <td class="py-3 text-right text-slate-300"><%= number_with_delimiter row[:rooms] %></td>
+              <td class="px-5 py-3 text-right text-slate-300"><%= row[:avg_players] || "—" %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% end %>
+  <p class="mt-3 text-xs text-slate-500">
+    Games played counts every Start, including "play again". Rooms counts the rooms created with that game first; a room can then switch games.
+    Players and games played are recorded since <%= @stats.tracking_since&.strftime("%b %-d, %Y") || "today" %>.
+  </p>
+</section>
