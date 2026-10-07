@@ -1,0 +1,16 @@
+<% content_for :title, "Stats" %>
+
+<div class="flex flex-wrap items-baseline justify-between gap-2">
+  <h1 class="text-3xl font-extrabold tracking-tight text-white">Stats</h1>
+  <p class="text-xs font-black uppercase tracking-widest text-slate-500">Days in UTC</p>
+</div>
+
+<div class="mt-6 grid gap-4 sm:grid-cols-3">
+  <% { "room_created" => "Rooms created", "game_started" => "Games played", "player_joined" => "Players joined" }.each do |kind, label| %>
+    <div class="rounded-2xl border border-slate-800 bg-slate-900 p-5">
+      <p class="text-xs font-black uppercase tracking-widest text-slate-500"><%= label %> today</p>
+      <p class="mt-2 text-4xl font-extrabold tabular-nums text-white"><%= number_with_delimiter @totals[kind][:today] %></p>
+      <p class="mt-1 text-sm text-slate-400"><%= number_with_delimiter @totals[kind][:all] %> all time</p>
+    </div>
+  <% end %>
+</div>
