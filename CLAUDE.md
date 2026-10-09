@@ -190,6 +190,16 @@ GET   /<admin_path>            → admin/dashboard#show (hidden super admin, Dev
 - **Dashboard** — `AdminStats` (app/services/admin_stats.rb) counts everything with Mongo aggregations on `Event`: rolling periods (today / 7 / 30 days / all) compared with the window before, 30 UTC days per day for the server-drawn SVG charts (`AdminHelper#admin_daily_chart`), and the game ranking by games played. Stats tests use a random far-past `now:` each, since tests share one DB in parallel.
 - `bin/rails admin:create EMAIL=…` creates an admin or resets the password (asks in a terminal; prints a generated one when there's no terminal, e.g. `script/aws_run.sh`). Also `admin:list`, `admin:delete EMAIL=…`.
 
+### Languages (i18n)
+
+English and Spanish (`config/initializers/locale.rb`). Strings live in `config/locales/en.yml` / `es.yml` with the same keys.
+
+- **URLs:** English has no prefix (`/games`), Spanish uses `/es` (`/es/games`); routes sit in `scope "(:locale)"`. `default_url_options` adds the prefix, so always build links with route helpers, never hard-coded paths on public pages. Slugs are the same in both languages.
+- **Header picker** (`shared/_locale_picker`) → `GET /language?lang=es&return_to=…` (`LocalesController`) sets the `locale` cookie and returns to the same page in that language. Unprefixed public pages redirect to `/es` when the cookie (or, on a first visit, `Accept-Language`) prefers Spanish.
+- **Rooms keep their language:** `Room#locale` is set from the page that created the room. `RoomsController#room_locale` (and `GamesController` in change-game mode) force that language whatever the URL or cookie, so a phone scanning the QR code sees the host's language. Room screens have no picker.
+- **JS strings:** put them under `js:` in the locale files; the layout embeds them (`LocaleHelper#js_translations_tag`) and controllers use `import { t } from "controllers/shared/i18n"` → `t("game.key", { name })` (`%{name}` interpolation, `one`/`other` plurals with `count`).
+- **SEO:** each public page has hreflang alternates + `og:locale`; the sitemap lists every page in both languages.
+
 ### Frontend
 
 - **Tailwind CSS** via `tailwindcss-rails`. Dark theme: `bg-slate-950` base, `bg-slate-800` cards, `border-slate-700` borders. Per-game accent colors (violet for Mind Match, cyan for Submarine Combat, etc.).
