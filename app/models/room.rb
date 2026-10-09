@@ -4,6 +4,8 @@ class Room
 
   field :code, type: String       # The unique room code for the QR
   field :status, type: String, default: 'lobby'     # 'lobby', 'playing', 'finished'
+  # Language of every screen in the room (lobby, join page, game), whatever the player's own setting.
+  field :locale, type: String, default: "en"
   
   belongs_to :game
   has_many :players, dependent: :destroy
@@ -12,6 +14,8 @@ class Room
   # or store the temporary state in a Hash field
   field :game_state, type: Hash, default: {}
   field :answers_history, type: Array, default: []
+
+  validates :locale, inclusion: { in: ->(_) { I18n.available_locales.map(&:to_s) } }
 
   before_create :generate_code
   # Atomic, so rooms created at the same time are all counted.
