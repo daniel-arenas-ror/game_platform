@@ -19,7 +19,7 @@ class RoomsController < ApplicationController
     @room = Room.find(params[:id])
 
     if @room.update(room_params)
-      redirect_to room_path(@room.code), notice: "Game configured!"
+      redirect_to room_path(@room.code), notice: t("rooms.configured")
     else
       render :edit
     end
@@ -30,7 +30,7 @@ class RoomsController < ApplicationController
     @game = @room.game
     
     if @room.status == 'playing'
-      return redirect_to playing_room_path(@room.code), alert: "Game has already started"
+      return redirect_to playing_room_path(@room.code), alert: t("rooms.already_started")
     end
 
     # The URL that other players will scan to join
@@ -54,7 +54,8 @@ class RoomsController < ApplicationController
 
   def player_join
     @room = Room.find_by!(code: params[:code].upcase)
-    nickname = params[:nickname].strip
+    @game = @room.game
+    nickname = params[:nickname].to_s.strip
 
     if nickname.present?
       @player = @room.players.create!(nickname: nickname)
@@ -71,10 +72,10 @@ class RoomsController < ApplicationController
         player_id: @player.id.to_s
       })
       
-      redirect_to room_path(@room.code), notice: "Joined as #{nickname}!"
+      redirect_to room_path(@room.code), notice: t("rooms.joined", nickname: nickname)
     else
-      flash[:alert] = "Please enter a nickname"
-      render :join
+      flash.now[:alert] = t("rooms.nickname_blank")
+      render :join, status: :unprocessable_entity
     end
   end
 
@@ -93,7 +94,7 @@ class RoomsController < ApplicationController
     current_player
     @room = Room.find_by!(code: params[:id].upcase)
 
-    return redirect_to join_room_path(@room.code), alert: "Game has not started yet" if @room.status == 'lobby'
+    return redirect_to join_room_path(@room.code), alert: t("rooms.not_started") if @room.status == 'lobby'
 
     @game_state = @room.game_state
     @games      = Game.catalog
@@ -131,7 +132,7 @@ class RoomsController < ApplicationController
     return if session[:player_id].blank? || current_player
 
     redirect_to join_room_path(params[:id].to_s.upcase),
-                alert: "You were disconnected for too long and removed from the room. Join again to keep playing."
+                alert: t("rooms.removed")
   end
 
   def room_params

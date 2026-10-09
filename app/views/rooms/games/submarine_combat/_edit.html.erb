@@ -1,8 +1,8 @@
 <%# Grid size picker %>
 <div class="space-y-4 bg-slate-900/50 p-6 rounded-2xl border border-slate-700">
-  <label class="block text-xs font-bold text-slate-400 mb-3 tracking-widest">GRID SIZE</label>
+  <label class="block text-xs font-bold text-slate-400 mb-3 tracking-widest"><%= t(".grid") %></label>
   <div class="grid grid-cols-3 gap-3">
-    <% [[6, "6 × 6", "Quick"], [8, "8 × 8", "Standard"], [10, "10 × 10", "Epic"]].each do |size, label, badge| %>
+    <% [[6, "6 × 6", t(".quick")], [8, "8 × 8", t(".standard")], [10, "10 × 10", t(".epic")]].each do |size, label, badge| %>
       <label class="relative cursor-pointer">
         <input type="radio"
                name="room[game_state][grid_size]"
@@ -21,10 +21,10 @@
 
 <%# Submarine count picker %>
 <div class="space-y-4 bg-slate-900/50 p-6 rounded-2xl border border-slate-700 mt-2">
-  <label class="block text-xs font-bold text-slate-400 mb-3 tracking-widest">SUBMARINES PER PLAYER</label>
+  <label class="block text-xs font-bold text-slate-400 mb-3 tracking-widest"><%= t(".subs") %></label>
   <div class="grid grid-cols-4 gap-3">
     <% [
-      [2, "2", "Size 3 + 2"],
+      [2, "2", t(".size", sizes: "3 + 2")],
       [3, "3", "3 + 2 + 1"],
       [4, "4", "3 + 2 + 2 + 1"],
       [5, "5", "3 + 2 + 2 + 1 + 1"]
@@ -43,5 +43,5 @@
       </label>
     <% end %>
   </div>
-  <p class="text-slate-600 text-xs mt-2">Numbers show ship sizes (cells). Larger fleets = longer games.</p>
+  <p class="text-slate-600 text-xs mt-2"><%= t(".subs_note") %></p>
 </div>

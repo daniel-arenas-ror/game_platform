@@ -8,13 +8,13 @@
       <!-- Left Side: Game Info & QR -->
       <div class="text-center md:text-left">
         <h1 class="text-4xl font-black mb-2"><%= @game.name %></h1>
-        <p class="text-purple-400 font-mono text-2xl mb-8">ROOM: <%= @room.code %></p>
+        <p class="text-purple-400 font-mono text-2xl mb-8"><%= t(".room", code: @room.code) %></p>
         
         <div class="bg-white p-4 rounded-2xl inline-block mb-4 shadow-2xl">
           <% if current_player.nil? %>
             <%= @svg.html_safe %>
           <% elsif game_instruction_image?(@game) %>
-            <%= game_image_tag @game, alt: "#{@game.name} — how to play", priority: true, sizes: "(min-width: 768px) 360px, 90vw",
+            <%= game_image_tag @game, alt: t(".image_alt", game: @game.name), priority: true, sizes: "(min-width: 768px) 360px, 90vw",
                   class: "w-full h-auto max-w-sm" %>
           <% else %>
             <%# No instruction image yet: the game's steps instead %>
@@ -24,15 +24,15 @@
           <% end %>
         </div>
         
-        <p class="text-slate-400">Scan to join the game</p>
+        <p class="text-slate-400"><%= t(".scan") %></p>
         <p class="text-xs text-slate-500 mt-2"><%= @join_url %></p>
       </div>
 
       <!-- Right Side: Player List (ActionCable will update this later) -->
       <div class="bg-slate-800 rounded-3xl p-8 border border-slate-700 shadow-xl min-h-[400px]">
         <h2 class="text-xl font-bold mb-6 flex justify-between">
-          Players 
-          <span class="bg-purple-600 text-xs py-1 px-3 rounded-full">Waiting...</span>
+          <%= t(".players") %>
+          <span class="bg-purple-600 text-xs py-1 px-3 rounded-full"><%= t(".waiting") %></span>
         </h2>
         <div id="player-list" data-room-code="<%= @room.code %>" class="space-y-4">
           <!-- We will inject players here with ActionCable -->
@@ -55,7 +55,7 @@
               method: :post, 
               remote: true, 
               class: "w-full mt-12 bg-green-500 hover:bg-green-400 text-slate-900 font-black py-4 rounded-xl uppercase tracking-widest transition-all text-center block" do %>
-            Start Game
+            <%= t(".start") %>
           <% end %>
         <% end %>
       </div>

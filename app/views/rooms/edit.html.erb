@@ -2,26 +2,26 @@
 <div class="max-w-2xl mx-auto pt-6 mb-4">
   <%# Players already in the room (came from "Change Game"): go back to picking a game for this room %>
   <% if @room.players.exists? %>
-    <%= link_to "← Pick another game", games_path(room: @room.code), class: "inline-block py-2 text-purple-400 hover:text-purple-300 text-sm font-semibold transition-colors rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-400" %>
+    <%= link_to t(".pick_another"), games_path(room: @room.code), class: "inline-block py-2 text-purple-400 hover:text-purple-300 text-sm font-semibold transition-colors rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-400" %>
   <% else %>
-    <%= link_to "← Back to games", games_path, class: "inline-block py-2 text-purple-400 hover:text-purple-300 text-sm font-semibold transition-colors rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-400" %>
+    <%= link_to t(".back"), games_path, class: "inline-block py-2 text-purple-400 hover:text-purple-300 text-sm font-semibold transition-colors rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-400" %>
   <% end %>
 </div>
 
 <div class="max-w-2xl mx-auto bg-slate-800 p-8 rounded-3xl border border-slate-700 shadow-2xl">
-  <h1 class="text-3xl font-black text-white mb-6 uppercase italic">Room Settings</h1>
+  <h1 class="text-3xl font-black text-white mb-6 uppercase italic"><%= t(".title") %></h1>
 
   <%= form_with model: @room, local: true, class: "space-y-8" do |f| %>
 
     <!-- DYNAMIC GAME CONFIGURATION -->
     <div id="game-specific-settings">
       <h3 class="text-purple-400 font-bold mb-4 flex items-center">
-        <span class="mr-2">⚙️</span> <%= @room.game.name %> Configuration
+        <span class="mr-2">⚙️</span> <%= t(".configuration", game: @room.game.name) %>
       </h3>
 
       <%= render "rooms/games/#{@room.game.code}/edit", f: f %>
     </div>
 
-    <%= f.submit "SAVE & READY", class: "w-full bg-gradient-to-r from-green-500 to-emerald-600 text-slate-900 font-black py-4 rounded-xl shadow-lg cursor-pointer hover:scale-105 transition-transform" %>
+    <%= f.submit t(".save"), class: "w-full bg-gradient-to-r from-green-500 to-emerald-600 text-slate-900 font-black py-4 rounded-xl shadow-lg cursor-pointer hover:scale-105 transition-transform" %>
   <% end %>
 </div>

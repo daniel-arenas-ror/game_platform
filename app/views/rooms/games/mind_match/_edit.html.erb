@@ -1,8 +1,8 @@
 <%# Rounds picker %>
 <div class="space-y-4 bg-slate-900/50 p-6 rounded-2xl border border-slate-700">
-  <label class="block text-xs font-bold text-slate-400 mb-3 tracking-widest">NUMBER OF ROUNDS</label>
+  <label class="block text-xs font-bold text-slate-400 mb-3 tracking-widest"><%= t(".rounds") %></label>
   <div class="grid grid-cols-3 gap-3">
-    <% [[3, "3", "Quick"], [5, "5", "Standard"], [10, "10", "Marathon"]].each do |rounds, label, badge| %>
+    <% [[3, "3", t(".quick")], [5, "5", t(".standard")], [10, "10", t(".marathon")]].each do |rounds, label, badge| %>
       <label class="relative cursor-pointer">
         <input type="radio"
                name="room[game_state][total_rounds]"
@@ -21,9 +21,9 @@
 
 <%# Time per round picker %>
 <div class="space-y-4 bg-slate-900/50 p-6 rounded-2xl border border-slate-700 mt-2">
-  <label class="block text-xs font-bold text-slate-400 mb-3 tracking-widest">TIME PER ROUND</label>
+  <label class="block text-xs font-bold text-slate-400 mb-3 tracking-widest"><%= t(".time") %></label>
   <div class="grid grid-cols-3 gap-3">
-    <% [[10, "10s", "Fast"], [15, "15s", "Normal"], [20, "20s", "Relaxed"]].each do |secs, label, badge| %>
+    <% [[10, "10s", t(".fast")], [15, "15s", t(".normal")], [20, "20s", t(".relaxed")]].each do |secs, label, badge| %>
       <label class="relative cursor-pointer">
         <input type="radio"
                name="room[game_state][time_per_round]"
@@ -38,5 +38,5 @@
       </label>
     <% end %>
   </div>
-  <p class="text-slate-600 text-xs mt-2">Players have this long to type their word each round.</p>
+  <p class="text-slate-600 text-xs mt-2"><%= t(".time_note") %></p>
 </div>

@@ -1,8 +1,8 @@
 <% pickers = [
-     ["GRID SIZE",       "grid_size",    "10", [["8", "8×8"], ["10", "10×10"], ["12", "12×12"], ["15", "15×15"]]],
-     ["MAX NUMBER SIZE", "max_digits",   "4",  [["2", "2 digits"], ["3", "3 digits"], ["4", "4 digits"], ["5", "5 digits"]]],
-     ["ROUNDS",          "total_rounds", "10", [["5", "5 rounds"], ["10", "10 rounds"], ["15", "15 rounds"]]],
-     ["TIME PER ROUND",  "round_time",   "60", [["30", "30s"], ["60", "60s"], ["90", "90s"]]]
+     [t(".grid"),       "grid_size",    "10", [["8", "8×8"], ["10", "10×10"], ["12", "12×12"], ["15", "15×15"]]],
+     [t(".max_digits"), "max_digits",   "4",  (2..5).map { |n| [n.to_s, t(".digits", count: n)] }],
+     [t(".rounds"),     "total_rounds", "10", [5, 10, 15].map { |n| [n.to_s, t(".rounds_option", count: n)] }],
+     [t(".time"),       "round_time",   "60", [["30", "30s"], ["60", "60s"], ["90", "90s"]]]
    ] %>
 
 <% pickers.each_with_index do |(title, key, default, options), i| %>
@@ -24,7 +24,7 @@
       <% end %>
     </div>
     <% if key == "max_digits" %>
-      <p class="text-slate-500 text-xs">Numbers mix lengths from 2 digits up to this size.</p>
+      <p class="text-slate-500 text-xs"><%= t(".digits_note") %></p>
     <% end %>
   </div>
 <% end %>

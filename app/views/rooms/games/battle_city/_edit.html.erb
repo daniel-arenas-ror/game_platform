@@ -1,6 +1,6 @@
 <%# Map preset picker %>
 <div class="space-y-4 bg-slate-900/50 p-6 rounded-2xl border border-slate-700">
-  <label class="block text-xs font-bold text-slate-400 mb-3 tracking-widest">MAP</label>
+  <label class="block text-xs font-bold text-slate-400 mb-3 tracking-widest"><%= t(".map") %></label>
   <div class="grid grid-cols-2 gap-3">
     <% BattleCity::MapPreset.all.each do |preset| %>
       <label class="relative cursor-pointer">
@@ -12,7 +12,7 @@
         <div class="flex items-center gap-3 px-3 py-2 bg-slate-800 border-2 border-slate-700 rounded-xl
                     peer-checked:border-yellow-500 peer-checked:bg-yellow-500/10 transition-all">
           <%= battle_city_map_preview(preset, size: 52) %>
-          <span class="text-white font-bold capitalize text-sm"><%= preset.name %></span>
+          <span class="text-white font-bold capitalize text-sm"><%= t(".maps.#{preset.name}", default: preset.name) %></span>
         </div>
       </label>
     <% end %>
@@ -21,7 +21,7 @@
 
 <%# Kills to win %>
 <div class="space-y-4 bg-slate-900/50 p-6 rounded-2xl border border-slate-700 mt-2">
-  <label class="block text-xs font-bold text-slate-400 mb-3 tracking-widest">KILLS TO WIN (0 = base only)</label>
+  <label class="block text-xs font-bold text-slate-400 mb-3 tracking-widest"><%= t(".kills_to_win") %></label>
   <div class="grid grid-cols-4 gap-3">
     <% [0, 3, 5, 10].each do |n| %>
       <label class="relative cursor-pointer">
@@ -41,7 +41,7 @@
 
 <%# Bot enemies picker %>
 <div class="space-y-4 bg-slate-900/50 p-6 rounded-2xl border border-slate-700 mt-2">
-  <label class="block text-xs font-bold text-slate-400 mb-3 tracking-widest">BOT ENEMIES</label>
+  <label class="block text-xs font-bold text-slate-400 mb-3 tracking-widest"><%= t(".bots") %></label>
   <div class="grid grid-cols-4 gap-3">
     <% [0, 1, 2, 3].each do |n| %>
       <label class="relative cursor-pointer">
@@ -52,7 +52,7 @@
                <%= 'checked' if (@room.game_state['bot_count']&.to_i || 0) == n %>>
         <div class="text-center py-3 bg-slate-800 border-2 border-slate-700 rounded-xl text-white font-bold
                     peer-checked:border-yellow-500 peer-checked:bg-yellow-500/10 transition-all">
-          <%= n == 0 ? "None" : "#{n} 🤖" %>
+          <%= n == 0 ? t(".no_bots") : "#{n} 🤖" %>
         </div>
       </label>
     <% end %>
@@ -61,7 +61,7 @@
 
 <%# Max players picker %>
 <div class="space-y-4 bg-slate-900/50 p-6 rounded-2xl border border-slate-700 mt-2">
-  <label class="block text-xs font-bold text-slate-400 mb-3 tracking-widest">MAX PLAYERS</label>
+  <label class="block text-xs font-bold text-slate-400 mb-3 tracking-widest"><%= t(".max_players") %></label>
   <div class="grid grid-cols-3 gap-3">
     <% [2, 3, 4].each do |n| %>
       <label class="relative cursor-pointer">
@@ -72,7 +72,7 @@
                <%= 'checked' if (@room.game_state['max_players']&.to_i || 4) == n %>>
         <div class="text-center py-3 bg-slate-800 border-2 border-slate-700 rounded-xl text-white font-bold
                     peer-checked:border-yellow-500 peer-checked:bg-yellow-500/10 transition-all">
-          <%= n %> Tanks
+          <%= t(".tanks", count: n) %>
         </div>
       </label>
     <% end %>

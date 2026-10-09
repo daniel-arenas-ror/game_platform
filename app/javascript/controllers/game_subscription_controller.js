@@ -40,19 +40,7 @@ export default class extends Controller {
             window.location.reload();
             break;
           case "player_joined":
-            const playerList = document.getElementById('player-list');
-            if (!playerList) return;
-
-            const newPlayer = `
-              <div id="player-${data.player_id}" class="flex items-center space-x-4 bg-slate-700 p-4 rounded-xl border border-purple-500/30 animate-pulse">
-                <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center font-bold">
-                  ${data.nickname[0].toUpperCase()}
-                </div>
-                <div class="text-white font-bold">${data.nickname}</div>
-              </div>
-            `;
-
-            playerList.insertAdjacentHTML('afterbegin', newPlayer);
+            this.addPlayer(data)
             break;
           case "player_left":
             document.getElementById(`player-${data.player_id}`)?.remove();
@@ -62,5 +50,26 @@ export default class extends Controller {
         }
       }
     })
+  }
+
+  // Nicknames are typed by players, so they go in as text, never as HTML.
+  addPlayer(data) {
+    const playerList = document.getElementById("player-list")
+    if (!playerList || document.getElementById(`player-${data.player_id}`)) return
+
+    const row = document.createElement("div")
+    row.id = `player-${data.player_id}`
+    row.className = "flex items-center space-x-4 bg-slate-700 p-4 rounded-xl border border-purple-500/30 animate-pulse"
+
+    const avatar = document.createElement("div")
+    avatar.className = "w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center font-bold"
+    avatar.textContent = (data.nickname || "?")[0].toUpperCase()
+
+    const name = document.createElement("div")
+    name.className = "text-white font-bold"
+    name.textContent = data.nickname
+
+    row.append(avatar, name)
+    playerList.prepend(row)
   }
 }

@@ -1,9 +1,9 @@
 <% pickers = [
-     ["DRAWING TIME",      "draw_time",        "80",    [["60", "60s", "Quick"], ["80", "80s", "Normal"], ["100", "100s", "Relaxed"]]],
-     ["TURNS",             "turns_per_player", "1",     [["1", "1×", "Everyone draws once"], ["2", "2×", "Twice each"], ["3", "3×", "Three times"]]],
-     ["WORDS",             "difficulty",       "mixed", [["easy", "Easy", "cat, sun"], ["medium", "Medium", "volcano"],
-                                                         ["hard", "Hard", "jet lag"], ["mixed", "Mixed", "pick 1 of each"]]],
-     ["GUESSES ON THE TV", "show_guesses",     "true",  [["true", "Show", "funny wrong guesses"], ["false", "Hide", "only who got it"]]]
+     [t(".draw_time"), "draw_time",        "80",    [["60", "60s", t(".quick")], ["80", "80s", t(".normal")], ["100", "100s", t(".relaxed")]]],
+     [t(".turns"),     "turns_per_player", "1",     [["1", "1×", t(".once")], ["2", "2×", t(".twice")], ["3", "3×", t(".three_times")]]],
+     [t(".words"),     "difficulty",       "mixed", [["easy", t(".easy"), t(".easy_example")], ["medium", t(".medium"), t(".medium_example")],
+                                                     ["hard", t(".hard"), t(".hard_example")], ["mixed", t(".mixed"), t(".mixed_desc")]]],
+     [t(".guesses"),   "show_guesses",     "true",  [["true", t(".show"), t(".show_desc")], ["false", t(".hide"), t(".hide_desc")]]]
    ] %>
 
 <% pickers.each_with_index do |(title, key, default, options), i| %>
@@ -26,7 +26,7 @@
       <% end %>
     </div>
     <% if key == "show_guesses" %>
-      <p class="text-slate-500 text-xs">When shown, rude words are hidden automatically.</p>
+      <p class="text-slate-500 text-xs"><%= t(".rude_note") %></p>
     <% end %>
   </div>
 <% end %>

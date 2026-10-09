@@ -1,5 +1,5 @@
 <div class="space-y-6 bg-slate-900/50 p-6 rounded-2xl border border-slate-700">
-  <label class="block text-xs font-bold text-slate-400 mb-3 tracking-widest">NUMBER OF ROUNDS</label>
+  <label class="block text-xs font-bold text-slate-400 mb-3 tracking-widest"><%= t(".rounds") %></label>
   <div class="grid grid-cols-3 gap-3">
     <% [3, 5, 10].each do |num| %>
       <label class="relative cursor-pointer">
@@ -7,7 +7,7 @@
                 class="peer hidden" <%= 'checked' if @room.game_state['total_rounds'].to_i == num %>>
         <div class="text-center py-3 bg-slate-800 border-2 border-slate-700 rounded-xl text-white font-bold 
                     peer-checked:border-purple-500 peer-checked:bg-purple-500/10 transition-all">
-          <%= num %> Rounds
+          <%= t(".rounds_option", count: num) %>
         </div>
       </label>
     <% end %>
@@ -15,6 +15,6 @@
 </div>
 
 <div class="space-y-6 bg-slate-900/50 p-6 rounded-2xl border border-slate-700 mt-2">
-  <label class="block text-xs font-bold text-slate-400 mb-3 tracking-widest">INSTRUCTIONS</label>
-  <%= game_image_tag @room.game, alt: "The Fisherman — how to play", sizes: "(min-width: 672px) 560px, 90vw", class: "w-full h-auto" %>
+  <label class="block text-xs font-bold text-slate-400 mb-3 tracking-widest"><%= t(".instructions") %></label>
+  <%= game_image_tag @room.game, alt: t(".image_alt", game: @room.game.name), sizes: "(min-width: 672px) 560px, 90vw", class: "w-full h-auto" %>
 </div>

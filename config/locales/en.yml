@@ -224,6 +224,158 @@ en:
     home: "Home"
     games: "Games"
 
+
+  rooms:
+    configured: "Game configured!"
+    already_started: "Game has already started"
+    joined: "Joined as %{nickname}!"
+    nickname_blank: "Please enter a nickname"
+    not_started: "Game has not started yet"
+    removed: "You were disconnected for too long and removed from the room. Join again to keep playing."
+    edit:
+      pick_another: "← Pick another game"
+      back: "← Back to games"
+      title: "Room Settings"
+      configuration: "%{game} Configuration"
+      save: "SAVE & READY"
+    show:
+      room: "ROOM: %{code}"
+      image_alt: "%{game} — how to play"
+      scan: "Scan to join the game"
+      players: "Players"
+      waiting: "Waiting..."
+      start: "Start Game"
+    join:
+      title: "Join %{game}"
+      room_code: "Room Code:"
+      nickname: "YOUR NICKNAME"
+      nickname_placeholder: "e.g. Player 1"
+      submit: "ENTER LOBBY"
+      wait: "Wait for the host to start the game"
+    games:
+      change_game:
+        link: "Change Game"
+      # Pre-game settings, one block per game (rooms/games/<code>/_edit).
+      battle_city:
+        edit:
+          map: "MAP"
+          maps:
+            classic: "Classic"
+            open: "Open"
+            siege: "Siege"
+            forest: "Forest"
+          kills_to_win: "KILLS TO WIN (0 = base only)"
+          bots: "BOT ENEMIES"
+          no_bots: "None"
+          max_players: "MAX PLAYERS"
+          tanks: "%{count} Tanks"
+      count_birds:
+        edit:
+          rounds: "ROUNDS"
+          rounds_option: "%{count} rounds"
+          density: "BIRD DENSITY"
+          normal: "Normal"
+          normal_desc: "5–15 birds per round"
+          dense: "Dense"
+          dense_desc: "10–25 birds per round"
+      doodle_dash:
+        edit:
+          draw_time: "DRAWING TIME"
+          quick: "Quick"
+          normal: "Normal"
+          relaxed: "Relaxed"
+          turns: "TURNS"
+          once: "Everyone draws once"
+          twice: "Twice each"
+          three_times: "Three times"
+          words: "WORDS"
+          easy: "Easy"
+          easy_example: "cat, sun"
+          medium: "Medium"
+          medium_example: "volcano"
+          hard: "Hard"
+          hard_example: "jet lag"
+          mixed: "Mixed"
+          mixed_desc: "pick 1 of each"
+          guesses: "GUESSES ON THE TV"
+          show: "Show"
+          show_desc: "funny wrong guesses"
+          hide: "Hide"
+          hide_desc: "only who got it"
+          rude_note: "When shown, rude words are hidden automatically."
+      fisherman:
+        edit:
+          rounds: "NUMBER OF ROUNDS"
+          rounds_option: "%{count} Rounds"
+          instructions: "INSTRUCTIONS"
+          image_alt: "%{game} — how to play"
+      guess_the_color:
+        edit:
+          rounds: "ROUNDS"
+          rounds_option: "%{count} rounds"
+          difficulty: "DIFFICULTY"
+          easy: "Easy"
+          easy_desc: "Vivid colors"
+          hard: "Hard"
+          hard_desc: "Any RGB color"
+      how_want_be_billionare:
+        edit:
+          rounds: "NUMBER OF ROUNDS"
+          rounds_option: "%{count} Rounds"
+          time: "TIME PER ROUND (SECONDS)"
+          instructions: "INSTRUCTIONS"
+          image_alt: "%{game} — how to play"
+      matching_pairs:
+        edit:
+          board: "BOARD SIZE"
+          board_note: "Bigger boards have more pairs and a longer look on the TV (8s → 20s)."
+          cards: "CARDS"
+          animals: "Animals"
+          objects: "Objects"
+          flags: "Flags"
+          numbers: "Numbers"
+          random: "Random"
+          time: "TIME PER ROUND"
+          rounds: "ROUNDS"
+          rounds_option:
+            one: "%{count} round"
+            other: "%{count} rounds"
+      mind_match:
+        edit:
+          rounds: "NUMBER OF ROUNDS"
+          quick: "Quick"
+          standard: "Standard"
+          marathon: "Marathon"
+          time: "TIME PER ROUND"
+          fast: "Fast"
+          normal: "Normal"
+          relaxed: "Relaxed"
+          time_note: "Players have this long to type their word each round."
+      sequence_memory:
+        edit:
+          grid: "GRID SIZE"
+          cells: "%{count} cells"
+          rounds: "ROUNDS"
+          rounds_option: "%{count} rounds"
+      soup_of_numbers:
+        edit:
+          grid: "GRID SIZE"
+          max_digits: "MAX NUMBER SIZE"
+          digits: "%{count} digits"
+          digits_note: "Numbers mix lengths from 2 digits up to this size."
+          rounds: "ROUNDS"
+          rounds_option: "%{count} rounds"
+          time: "TIME PER ROUND"
+      submarine_combat:
+        edit:
+          grid: "GRID SIZE"
+          quick: "Quick"
+          standard: "Standard"
+          epic: "Epic"
+          subs: "SUBMARINES PER PLAYER"
+          size: "Size %{sizes}"
+          subs_note: "Numbers show ship sizes (cells). Larger fleets = longer games."
+
   # Strings for the Stimulus controllers (see LocaleHelper#js_translations_tag).
   js:
     room_code:

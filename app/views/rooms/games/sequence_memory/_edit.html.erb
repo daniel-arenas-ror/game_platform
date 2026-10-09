@@ -1,8 +1,8 @@
 <%# Grid size picker %>
 <div class="space-y-4 bg-slate-900/50 p-6 rounded-2xl border border-slate-700">
-  <label class="block text-xs font-bold text-slate-400 mb-3 tracking-widest">GRID SIZE</label>
+  <label class="block text-xs font-bold text-slate-400 mb-3 tracking-widest"><%= t(".grid") %></label>
   <div class="grid grid-cols-3 gap-3">
-    <% [["3", "3×3", "9 cells"], ["4", "4×4", "16 cells"], ["6", "6×6", "36 cells"]].each do |value, label, desc| %>
+    <% [["3", "3×3", t(".cells", count: 9)], ["4", "4×4", t(".cells", count: 16)], ["6", "6×6", t(".cells", count: 36)]].each do |value, label, desc| %>
       <label class="relative cursor-pointer">
         <input type="radio"
                name="room[game_state][grid_size]"
@@ -21,7 +21,7 @@
 
 <%# Rounds picker %>
 <div class="space-y-4 bg-slate-900/50 p-6 rounded-2xl border border-slate-700 mt-2">
-  <label class="block text-xs font-bold text-slate-400 mb-3 tracking-widest">ROUNDS</label>
+  <label class="block text-xs font-bold text-slate-400 mb-3 tracking-widest"><%= t(".rounds") %></label>
   <div class="grid grid-cols-3 gap-3">
     <% [5, 10, 15].each do |n| %>
       <label class="relative cursor-pointer">
@@ -32,7 +32,7 @@
                <%= 'checked' if (@room.game_state['total_rounds']&.to_i || 10) == n %>>
         <div class="text-center py-3 bg-slate-800 border-2 border-slate-700 rounded-xl text-white font-bold
                     peer-checked:border-yellow-500 peer-checked:bg-yellow-500/10 transition-all">
-          <%= n %> rounds
+          <%= t(".rounds_option", count: n) %>
         </div>
       </label>
     <% end %>

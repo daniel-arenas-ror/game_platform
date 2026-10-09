@@ -1,9 +1,9 @@
 <% pickers = [
-     ["BOARD SIZE",     "grid",         "4x5",    [["4x4", "4×4"], ["4x5", "4×5"], ["5x6", "5×6"], ["6x6", "6×6"]]],
-     ["CARDS",          "category",     "random", [["animals", "🐶 Animals"], ["objects", "🎈 Objects"], ["flags", "🚩 Flags"],
-                                                   ["numbers", "🔢 Numbers"], ["random", "🎲 Random"]]],
-     ["TIME PER ROUND", "round_time",   "120",    [["60", "60s"], ["90", "90s"], ["120", "120s"], ["180", "180s"]]],
-     ["ROUNDS",         "total_rounds", "1",      [["1", "1 round"], ["2", "2 rounds"], ["3", "3 rounds"], ["5", "5 rounds"]]]
+     [t(".board"),  "grid",         "4x5",    [["4x4", "4×4"], ["4x5", "4×5"], ["5x6", "5×6"], ["6x6", "6×6"]]],
+     [t(".cards"),  "category",     "random", [["animals", "🐶 #{t(".animals")}"], ["objects", "🎈 #{t(".objects")}"], ["flags", "🚩 #{t(".flags")}"],
+                                               ["numbers", "🔢 #{t(".numbers")}"], ["random", "🎲 #{t(".random")}"]]],
+     [t(".time"),   "round_time",   "120",    [["60", "60s"], ["90", "90s"], ["120", "120s"], ["180", "180s"]]],
+     [t(".rounds"), "total_rounds", "1",      [1, 2, 3, 5].map { |n| [n.to_s, t(".rounds_option", count: n)] }]
    ] %>
 
 <% pickers.each_with_index do |(title, key, default, options), i| %>
@@ -30,7 +30,7 @@
       <% end %>
     </div>
     <% if key == "grid" %>
-      <p class="text-slate-500 text-xs">Bigger boards have more pairs and a longer look on the TV (8s → 20s).</p>
+      <p class="text-slate-500 text-xs"><%= t(".board_note") %></p>
     <% end %>
   </div>
 <% end %>

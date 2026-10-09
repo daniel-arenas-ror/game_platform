@@ -214,6 +214,157 @@ es:
     home: "Inicio"
     games: "Juegos"
 
+
+  rooms:
+    configured: "¡Juego configurado!"
+    already_started: "El juego ya empezó"
+    joined: "¡Entraste como %{nickname}!"
+    nickname_blank: "Escribe un apodo"
+    not_started: "El juego todavía no ha empezado"
+    removed: "Estuviste desconectado demasiado tiempo y saliste de la sala. Vuelve a unirte para seguir jugando."
+    edit:
+      pick_another: "← Elegir otro juego"
+      back: "← Volver a los juegos"
+      title: "Configuración de la sala"
+      configuration: "Configuración de %{game}"
+      save: "GUARDAR Y LISTO"
+    show:
+      room: "SALA: %{code}"
+      image_alt: "%{game} — cómo se juega"
+      scan: "Escanea para unirte al juego"
+      players: "Jugadores"
+      waiting: "Esperando..."
+      start: "Empezar juego"
+    join:
+      title: "Únete a %{game}"
+      room_code: "Código de sala:"
+      nickname: "TU APODO"
+      nickname_placeholder: "ej. Jugador 1"
+      submit: "ENTRAR A LA SALA"
+      wait: "Espera a que el anfitrión empiece el juego"
+    games:
+      change_game:
+        link: "Cambiar juego"
+      battle_city:
+        edit:
+          map: "MAPA"
+          maps:
+            classic: "Clásico"
+            open: "Abierto"
+            siege: "Asedio"
+            forest: "Bosque"
+          kills_to_win: "IMPACTOS PARA GANAR (0 = solo la base)"
+          bots: "BOTS ENEMIGOS"
+          no_bots: "Ninguno"
+          max_players: "MÁXIMO DE JUGADORES"
+          tanks: "%{count} tanques"
+      count_birds:
+        edit:
+          rounds: "RONDAS"
+          rounds_option: "%{count} rondas"
+          density: "CANTIDAD DE PÁJAROS"
+          normal: "Normal"
+          normal_desc: "5–15 pájaros por ronda"
+          dense: "Denso"
+          dense_desc: "10–25 pájaros por ronda"
+      doodle_dash:
+        edit:
+          draw_time: "TIEMPO PARA DIBUJAR"
+          quick: "Rápido"
+          normal: "Normal"
+          relaxed: "Tranquilo"
+          turns: "TURNOS"
+          once: "Todos dibujan una vez"
+          twice: "Dos veces cada uno"
+          three_times: "Tres veces"
+          words: "PALABRAS"
+          easy: "Fácil"
+          easy_example: "gato, sol"
+          medium: "Media"
+          medium_example: "volcán"
+          hard: "Difícil"
+          hard_example: "desfase horario"
+          mixed: "Mezcla"
+          mixed_desc: "elige 1 de cada una"
+          guesses: "RESPUESTAS EN LA TV"
+          show: "Mostrar"
+          show_desc: "respuestas locas"
+          hide: "Ocultar"
+          hide_desc: "solo quién acertó"
+          rude_note: "Si se muestran, las palabras groseras se ocultan automáticamente."
+      fisherman:
+        edit:
+          rounds: "NÚMERO DE RONDAS"
+          rounds_option: "%{count} rondas"
+          instructions: "INSTRUCCIONES"
+          image_alt: "%{game} — cómo se juega"
+      guess_the_color:
+        edit:
+          rounds: "RONDAS"
+          rounds_option: "%{count} rondas"
+          difficulty: "DIFICULTAD"
+          easy: "Fácil"
+          easy_desc: "Colores vivos"
+          hard: "Difícil"
+          hard_desc: "Cualquier color RGB"
+      how_want_be_billionare:
+        edit:
+          rounds: "NÚMERO DE RONDAS"
+          rounds_option: "%{count} rondas"
+          time: "TIEMPO POR RONDA (SEGUNDOS)"
+          instructions: "INSTRUCCIONES"
+          image_alt: "%{game} — cómo se juega"
+      matching_pairs:
+        edit:
+          board: "TAMAÑO DEL TABLERO"
+          board_note: "Los tableros grandes tienen más parejas y se ven más tiempo en la TV (8 s → 20 s)."
+          cards: "CARTAS"
+          animals: "Animales"
+          objects: "Objetos"
+          flags: "Banderas"
+          numbers: "Números"
+          random: "Al azar"
+          time: "TIEMPO POR RONDA"
+          rounds: "RONDAS"
+          rounds_option:
+            one: "%{count} ronda"
+            other: "%{count} rondas"
+      mind_match:
+        edit:
+          rounds: "NÚMERO DE RONDAS"
+          quick: "Rápida"
+          standard: "Estándar"
+          marathon: "Maratón"
+          time: "TIEMPO POR RONDA"
+          fast: "Rápido"
+          normal: "Normal"
+          relaxed: "Tranquilo"
+          time_note: "Este es el tiempo que tienen los jugadores para escribir su palabra en cada ronda."
+      sequence_memory:
+        edit:
+          grid: "TAMAÑO DE LA CUADRÍCULA"
+          cells: "%{count} casillas"
+          rounds: "RONDAS"
+          rounds_option: "%{count} rondas"
+      soup_of_numbers:
+        edit:
+          grid: "TAMAÑO DE LA CUADRÍCULA"
+          max_digits: "TAMAÑO MÁXIMO DEL NÚMERO"
+          digits: "%{count} dígitos"
+          digits_note: "Los números mezclan largos desde 2 dígitos hasta este tamaño."
+          rounds: "RONDAS"
+          rounds_option: "%{count} rondas"
+          time: "TIEMPO POR RONDA"
+      submarine_combat:
+        edit:
+          grid: "TAMAÑO DE LA CUADRÍCULA"
+          quick: "Rápida"
+          standard: "Estándar"
+          epic: "Épica"
+          subs: "SUBMARINOS POR JUGADOR"
+          size: "Tamaño %{sizes}"
+          subs_note: "Los números son el tamaño de cada barco (casillas). Flotas más grandes = partidas más largas."
+
   js:
     room_code:
       joining: "Entrando…"
