@@ -310,6 +310,11 @@ es:
           rounds: "NÚMERO DE RONDAS"
           rounds_option: "%{count} rondas"
           time: "TIEMPO POR RONDA (SEGUNDOS)"
+          advance: "SIGUIENTE PREGUNTA"
+          auto: "Automática"
+          auto_desc: "A los 5 segundos"
+          manual: "Manual"
+          manual_desc: "El anfitrión toca Siguiente"
       matching_pairs:
         edit:
           board: "TAMAÑO DEL TABLERO"

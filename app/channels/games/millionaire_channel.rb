@@ -1,5 +1,6 @@
 class Games::MillionaireChannel < ApplicationCable::Channel
-  REVEAL_DURATION = 3   # seconds the reveal is shown before the next question
+  REVEAL_DURATION = 5    # "auto" mode: seconds the reveal is shown before the next question
+  MANUAL_WAIT_LIMIT = 1.minutes # "manual" mode: give up if the host never taps Next
 
   def subscribed
     @room   = Room.find_by(code: params[:room_code])
@@ -13,6 +14,7 @@ class Games::MillionaireChannel < ApplicationCable::Channel
   end
 
   def unsubscribed
+    @stop_loop = true # the host left or reloaded: this loop ends (a reload starts a new one)
     return unless @player
 
     track_player_unsubscribed(@player)
@@ -29,7 +31,9 @@ class Games::MillionaireChannel < ApplicationCable::Channel
 
   def start_game_loop
     @stop_loop   = false
+    @next_signal = Queue.new
     @room        = Room.find_by(code: params[:room_code])
+    manual       = @room.game_state["advance"] == "manual"
     total_rounds = @room.game_state["total_rounds"].to_i
     total_rounds = 5 if total_rounds < 1
     stream       = "millionaire_room_#{@room.code}"
@@ -71,10 +75,13 @@ class Games::MillionaireChannel < ApplicationCable::Channel
           round_scores:           result[:round_scores],
           user_points:            result[:user_points],
           question_points:        result[:question_points],
-          nicknames:              nicknames
+          nicknames:              nicknames,
+          advance:                manual ? "manual" : "auto",
+          next_in:                (REVEAL_DURATION unless manual),
+          last:                   index == total_rounds - 1
         })
 
-        sleep REVEAL_DURATION
+        manual ? wait_for_next : sleep(REVEAL_DURATION)
         break if @stop_loop
 
         # ── 3. Load next question (skip on final round) ───────────────────
@@ -112,6 +119,13 @@ class Games::MillionaireChannel < ApplicationCable::Channel
     ActionCable.server.broadcast("millionaire_room_#{@room.code}", { action: "game_restarted" })
   end
 
+  # Host only, "manual" mode: go on to the next question (or the results after the last one).
+  def next_question(_data = {})
+    return if @player
+
+    @next_signal&.push(true)
+  end
+
   def submit_millionaire_answer(data)
     return unless @player
 
@@ -122,5 +136,18 @@ class Games::MillionaireChannel < ApplicationCable::Channel
     return unless @room.game_state["question_id"]
 
     GameServices::HowWantBeBillionare.new(@room).add_answer(@player.id, choice)
+  end
+
+  private
+
+  # Blocks the game loop until the host taps Next. Wakes up every second so a restart or the host
+  # leaving (@stop_loop) ends the loop instead of leaving the thread waiting forever.
+  def wait_for_next
+    @next_signal.clear
+    deadline = MANUAL_WAIT_LIMIT.from_now
+    until @stop_loop || Time.current > deadline
+      return if @next_signal.pop(timeout: 1)
+    end
+    @stop_loop = true
   end
 end

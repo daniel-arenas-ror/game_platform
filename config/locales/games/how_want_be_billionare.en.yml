@@ -13,6 +13,7 @@ en:
           leaderboard: "Leaderboard"
           final_standings: "Final Standings"
           play_again: "Play Again"
+          next_question: "Next question"
   js:
     how_want_be_billionare:
       round: "Round %{round} / %{total}"
@@ -22,3 +23,8 @@ en:
       running_total: "Running total: %{points} pts"
       total: "(%{points} total)"
       player: "Player %{n}"
+      next_question: "Next question"
+      show_results: "Show results"
+      waiting_host: "Waiting for the host…"
+      next_in: "Next question in %{seconds}…"
+      results_in: "Results in %{seconds}…"

@@ -12,6 +12,7 @@ es:
           leaderboard: "Tabla de posiciones"
           final_standings: "Resultado final"
           play_again: "Jugar de nuevo"
+          next_question: "Siguiente pregunta"
   js:
     how_want_be_billionare:
       round: "Ronda %{round} / %{total}"
@@ -21,3 +22,8 @@ es:
       running_total: "Total acumulado: %{points} pts"
       total: "(%{points} en total)"
       player: "Jugador %{n}"
+      next_question: "Siguiente pregunta"
+      show_results: "Ver resultados"
+      waiting_host: "Esperando al anfitrión…"
+      next_in: "Siguiente pregunta en %{seconds}…"
+      results_in: "Resultados en %{seconds}…"

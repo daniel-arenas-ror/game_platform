@@ -321,6 +321,11 @@ en:
           rounds: "NUMBER OF ROUNDS"
           rounds_option: "%{count} Rounds"
           time: "TIME PER ROUND (SECONDS)"
+          advance: "NEXT QUESTION"
+          auto: "Automatic"
+          auto_desc: "After 5 seconds"
+          manual: "Manual"
+          manual_desc: "The host taps Next"
       matching_pairs:
         edit:
           board: "BOARD SIZE"

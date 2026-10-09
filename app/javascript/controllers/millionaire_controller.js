@@ -27,6 +27,8 @@ export default class extends Controller {
     "revealResultText",
     "revealTotalText",
     "revealHostScores",
+    "nextInfo",
+    "nextButton",
     // leaderboard
     "leaderboardList"
   ]
@@ -47,6 +49,7 @@ export default class extends Controller {
   disconnect() {
     this.winSound?.pause()
     this.stopCountdown()
+    clearInterval(this.nextHandle)
     this.channel?.unsubscribe()
   }
 
@@ -128,6 +131,7 @@ export default class extends Controller {
   // ── Message handlers ──────────────────────────────────────────────────────
 
   onSendQuestion(data) {
+    this.hideNext()
     // Reset round state
     this.answered       = false
     this.selectedOption = null
@@ -154,6 +158,7 @@ export default class extends Controller {
 
   onRevealAnswer(data) {
     this.stopCountdown()
+    this.showNext(data)
     const { options, correct_answer_indices, round_scores, user_points, question_points, nicknames, round, total } = data
 
     this.revealRoundLabelTarget.textContent = t("how_want_be_billionare.round_reveal", { round, total })
@@ -228,6 +233,7 @@ export default class extends Controller {
   }
 
   onShowLeaderboard(data) {
+    this.hideNext()
     this.stopCountdown()
     if (!this.playerIdValue) {
       this.winSound = new Audio("/games/sounds/Triumphant_win.mp3")
@@ -297,6 +303,50 @@ export default class extends Controller {
       el.classList.toggle("text-yellow-400", remaining > 5)
       el.classList.toggle("text-red-500",    remaining <= 5)
     })
+  }
+
+  // ── Next question: countdown ("auto") or the host's button ("manual") ────
+
+  showNext({ advance, next_in, last }) {
+    this.hideNext()
+    const isHost = this.playerIdValue === ""
+
+    if (advance === "manual") {
+      if (isHost && this.hasNextButtonTarget) {
+        this.nextButtonTarget.textContent = t(last ? "how_want_be_billionare.show_results" : "how_want_be_billionare.next_question")
+        this.nextButtonTarget.disabled = false
+        this.nextButtonTarget.classList.remove("hidden")
+      } else {
+        this.setNextInfo(t("how_want_be_billionare.waiting_host"))
+      }
+    } else if (next_in) {
+      let remaining = next_in
+      const key = last ? "how_want_be_billionare.results_in" : "how_want_be_billionare.next_in"
+      this.setNextInfo(t(key, { seconds: remaining }))
+      this.nextHandle = setInterval(() => {
+        remaining -= 1
+        if (remaining > 0) this.setNextInfo(t(key, { seconds: remaining }))
+        else clearInterval(this.nextHandle)
+      }, 1000)
+    }
+  }
+
+  hideNext() {
+    clearInterval(this.nextHandle)
+    if (this.hasNextInfoTarget) this.nextInfoTarget.classList.add("hidden")
+    if (this.hasNextButtonTarget) this.nextButtonTarget.classList.add("hidden")
+  }
+
+  setNextInfo(text) {
+    if (!this.hasNextInfoTarget) return
+    this.nextInfoTarget.textContent = text
+    this.nextInfoTarget.classList.remove("hidden")
+  }
+
+  // Host taps Next: the server sends the next question (or the results).
+  nextQuestion() {
+    this.nextButtonTarget.disabled = true
+    this.channel.perform("next_question", {})
   }
 
   // ── Helpers ───────────────────────────────────────────────────────────────
