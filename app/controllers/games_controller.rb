@@ -13,6 +13,11 @@ class GamesController < ApplicationController
 
   private
 
+  # In "Change Game" mode the host is still inside the room, so the catalog uses its language.
+  def room_locale
+    Room.where(code: params[:room].to_s.upcase).first&.locale if params[:room].present?
+  end
+
   # Same-category games first, then the rest of the catalog, in catalog order.
   def related_games(game, count = 3)
     others = Game.catalog.reject { |g| g.id == game.id || g.slug.blank? }

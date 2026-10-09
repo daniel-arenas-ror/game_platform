@@ -6,7 +6,7 @@ class RoomsController < ApplicationController
   def create
     session[:player_id] = nil
     @game = Game.find(params[:game_id])
-    @room = Room.create!(game: @game)
+    @room = Room.create!(game: @game, locale: I18n.locale)
 
     redirect_to edit_room_path(@room.code)
   end
@@ -114,6 +114,16 @@ class RoomsController < ApplicationController
   end
 
   private
+
+  # Lobby, join and game screens speak the room's language, so a phone that scans the QR code
+  # sees the host's language. A new room takes the language of the page it was created from.
+  def room_locale
+    return if action_name == "create"
+
+    @locale_room ||= Room.where(code: (params[:id] || params[:code]).to_s.upcase).first ||
+                     Room.where(id: params[:id]).first
+    @locale_room&.locale
+  end
 
   # Players are deleted after staying disconnected too long (see ApplicationCable::Channel), but
   # their session still holds the old id. Without this they'd be treated as the host.
