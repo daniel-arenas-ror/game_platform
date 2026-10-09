@@ -10,9 +10,9 @@
 
     <%# Header %>
     <div class="flex items-center justify-between px-8 pt-6">
-      <h1 class="text-2xl font-black tracking-widest uppercase text-lime-400">✏️ Doodle Dash</h1>
+      <h1 class="text-2xl font-black tracking-widest uppercase text-lime-400">✏️ <%= @room.game.name %></h1>
       <p class="text-slate-500 text-xs font-mono tracking-widest">
-        Room: <span class="text-white font-bold"><%= @room.code %></span>
+        <%= t("rooms.games.shared.room") %> <span class="text-white font-bold"><%= @room.code %></span>
         · <span data-doodle-dash-host-target="turnLabel"></span>
       </p>
     </div>
@@ -31,9 +31,9 @@
           <div data-doodle-dash-host-target="overlay"
                class="absolute inset-0 flex flex-col items-center justify-center bg-slate-950/90 text-center px-10">
             <p data-doodle-dash-host-target="overlayIcon" class="text-7xl mb-4">✏️</p>
-            <p data-doodle-dash-host-target="overlayTitle" class="font-black text-4xl text-balance">Get ready…</p>
+            <p data-doodle-dash-host-target="overlayTitle" class="font-black text-4xl text-balance"><%= t(".get_ready") %></p>
             <p data-doodle-dash-host-target="overlayHint" class="text-slate-400 text-xl mt-3 text-balance">
-              Grab your phones. One of you is about to draw.
+              <%= t(".grab_phones") %>
             </p>
           </div>
         </div>
@@ -43,20 +43,20 @@
       <div class="w-80 shrink-0 space-y-5">
         <%# Who is drawing + countdown %>
         <div class="bg-slate-800 rounded-3xl border-2 border-lime-500/40 p-6 text-center">
-          <p data-doodle-dash-host-target="artistLabel" class="text-white font-black text-2xl leading-tight">Get ready…</p>
+          <p data-doodle-dash-host-target="artistLabel" class="text-white font-black text-2xl leading-tight"><%= t(".get_ready") %></p>
           <p data-doodle-dash-host-target="phaseHint" class="text-slate-400 text-sm mt-2"></p>
           <p data-doodle-dash-host-target="countdown" class="font-mono font-black text-6xl mt-4 tabular-nums"></p>
         </div>
 
         <%# Leaderboard %>
         <div class="bg-slate-800 rounded-3xl border border-slate-700 p-5">
-          <p class="text-slate-400 text-xs uppercase tracking-widest font-mono mb-3">Scores</p>
+          <p class="text-slate-400 text-xs uppercase tracking-widest font-mono mb-3"><%= t(".scores") %></p>
           <div data-doodle-dash-host-target="scoreboard" class="space-y-2"></div>
         </div>
 
         <%# Live guesses %>
         <div class="bg-slate-800 rounded-3xl border border-slate-700 p-5">
-          <p class="text-slate-400 text-xs uppercase tracking-widest font-mono mb-3">Guesses</p>
+          <p class="text-slate-400 text-xs uppercase tracking-widest font-mono mb-3"><%= t(".guesses") %></p>
           <ul data-doodle-dash-host-target="feed" class="space-y-1.5 text-lg min-h-[8rem]"></ul>
         </div>
       </div>
@@ -70,12 +70,12 @@
     <div data-doodle-dash-host-target="phaseGameOver"
          class="hidden absolute inset-0 z-30 flex flex-col items-center justify-center bg-slate-950/95">
       <p class="text-6xl mb-4">🏆</p>
-      <h2 class="text-5xl font-black text-lime-400 tracking-widest mb-8">GAME OVER</h2>
+      <h2 class="text-5xl font-black text-lime-400 tracking-widest mb-8"><%= t("rooms.games.shared.game_over") %></h2>
       <div data-doodle-dash-host-target="finalLeaderboard" class="space-y-3 w-full max-w-sm mb-10"></div>
       <button data-doodle-dash-host-target="playAgain"
               class="bg-lime-400 hover:bg-lime-300 text-slate-950 font-black px-10 py-3
                      rounded-xl uppercase tracking-widest text-lg transition-colors cursor-pointer">
-        Play Again
+        <%= t("rooms.games.shared.play_again") %>
       </button>
       <%= render partial: "rooms/games/change_game", locals: { room: @room, games: @games } %>
       <%= game_over_ad %>
@@ -96,14 +96,14 @@
     <div class="flex items-center justify-between px-4 pt-5 short-landscape:pt-2 pb-2 short-landscape:pb-0">
       <p class="font-black text-lg tracking-wide leading-tight truncate"><%= session[:nickname] %></p>
       <div class="text-right">
-        <p class="text-[10px] text-slate-500 uppercase tracking-widest">Points</p>
+        <p class="text-[10px] text-slate-500 uppercase tracking-widest"><%= t("rooms.games.shared.points") %></p>
         <p data-doodle-dash-player-target="score" class="font-mono font-black text-3xl text-lime-400 leading-none">0</p>
       </div>
     </div>
 
     <%# Status line %>
     <div class="flex items-center justify-between px-4 pb-3 short-landscape:pb-1">
-      <p data-doodle-dash-player-target="status" class="text-slate-400 text-xs uppercase tracking-widest font-mono">Get ready…</p>
+      <p data-doodle-dash-player-target="status" class="text-slate-400 text-xs uppercase tracking-widest font-mono"><%= t(".get_ready") %></p>
       <p data-doodle-dash-player-target="countdown" class="font-mono font-black text-2xl tabular-nums"></p>
     </div>
 
@@ -111,14 +111,14 @@
       <%# Look at the TV (waiting, someone else choosing) %>
       <div data-doodle-dash-player-target="panelWaiting" class="flex-1 flex flex-col items-center justify-center text-center">
         <p class="text-6xl mb-3">📺</p>
-        <p data-doodle-dash-player-target="waitingTitle" class="font-black text-2xl">Look at the TV!</p>
-        <p data-doodle-dash-player-target="waitingHint" class="text-slate-400 text-sm mt-2">The game starts in a moment.</p>
+        <p data-doodle-dash-player-target="waitingTitle" class="font-black text-2xl"><%= t(".look_tv") %></p>
+        <p data-doodle-dash-player-target="waitingHint" class="text-slate-400 text-sm mt-2"><%= t(".starts_soon") %></p>
       </div>
 
       <%# Artist: pick a word %>
       <div data-doodle-dash-player-target="panelChoose" class="hidden flex-1 flex flex-col justify-center">
-        <p class="text-center font-black text-2xl mb-1">Your turn to draw!</p>
-        <p class="text-center text-slate-400 text-sm mb-6">Pick a word. Only you can see it.</p>
+        <p class="text-center font-black text-2xl mb-1"><%= t(".your_turn") %></p>
+        <p class="text-center text-slate-400 text-sm mb-6"><%= t(".pick_word") %></p>
         <div data-doodle-dash-player-target="choices" class="space-y-3"></div>
       </div>
 
@@ -128,7 +128,7 @@
       <div data-doodle-dash-player-target="panelDraw"
            class="hidden flex-1 flex flex-col short-landscape:flex-row short-landscape:items-center short-landscape:justify-center short-landscape:gap-6 select-none [-webkit-touch-callout:none]">
         <div class="flex flex-col">
-          <p class="text-center text-slate-400 text-xs uppercase tracking-widest font-mono short-landscape:hidden">Draw</p>
+          <p class="text-center text-slate-400 text-xs uppercase tracking-widest font-mono short-landscape:hidden"><%= t(".draw") %></p>
           <p data-doodle-dash-player-target="word" class="text-center font-black text-3xl short-landscape:text-xl text-lime-400 mb-3 short-landscape:mb-1"></p>
 
           <%# Sized so the tools always fit on screen %>
@@ -139,7 +139,7 @@
                     data-action="pointerdown->doodle-dash-player#penDown pointermove->doodle-dash-player#penMove pointerup->doodle-dash-player#penUp pointercancel->doodle-dash-player#penUp"
                     class="block w-full h-full touch-none select-none"></canvas>
           </div>
-          <p class="text-center text-slate-500 text-xs mt-2 short-landscape:hidden">Your drawing shows on the TV. No letters!</p>
+          <p class="text-center text-slate-500 text-xs mt-2 short-landscape:hidden"><%= t(".no_letters") %></p>
         </div>
 
         <%# Tools %>
@@ -148,32 +148,32 @@
           <div class="flex flex-wrap items-center justify-center gap-3 mt-3">
             <div data-doodle-dash-player-target="sizes" class="flex gap-2"></div>
             <button type="button" data-action="doodle-dash-player#undo"
-                    class="h-12 px-4 rounded-xl bg-slate-800 border border-slate-700 font-bold cursor-pointer active:scale-95 transition-transform">↶ Undo</button>
+                    class="h-12 px-4 rounded-xl bg-slate-800 border border-slate-700 font-bold cursor-pointer active:scale-95 transition-transform"><%= t(".undo") %></button>
             <button type="button" data-action="doodle-dash-player#clear"
-                    class="h-12 px-4 rounded-xl bg-slate-800 border border-slate-700 font-bold cursor-pointer active:scale-95 transition-transform">Clear</button>
+                    class="h-12 px-4 rounded-xl bg-slate-800 border border-slate-700 font-bold cursor-pointer active:scale-95 transition-transform"><%= t(".clear") %></button>
           </div>
         </div>
       </div>
 
       <%# Guesser: type the word %>
       <div data-doodle-dash-player-target="panelGuess" class="hidden flex-1 flex flex-col justify-center">
-        <p class="text-center text-slate-400 text-sm mb-2">Look at the TV and guess the drawing</p>
+        <p class="text-center text-slate-400 text-sm mb-2"><%= t(".guess_hint") %></p>
         <p data-doodle-dash-player-target="pattern" class="text-center font-mono font-black text-3xl mb-6"></p>
 
         <form data-doodle-dash-player-target="guessForm" data-action="submit->doodle-dash-player#sendGuess" class="flex gap-2">
           <input data-doodle-dash-player-target="guessInput"
-                 type="text" maxlength="40" placeholder="Your guess…" aria-label="Your guess"
+                 type="text" maxlength="40" placeholder="<%= t(".guess_placeholder") %>" aria-label="<%= t(".guess_label") %>"
                  autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="send"
                  class="flex-1 min-w-0 bg-slate-900 border-2 border-slate-700 focus:border-lime-500 rounded-xl px-4 py-4 text-lg text-white font-bold outline-none transition-colors">
           <button type="submit"
-                  class="shrink-0 bg-lime-400 hover:bg-lime-300 text-slate-950 font-black px-5 rounded-xl cursor-pointer active:scale-95 transition-transform">Send</button>
+                  class="shrink-0 bg-lime-400 hover:bg-lime-300 text-slate-950 font-black px-5 rounded-xl cursor-pointer active:scale-95 transition-transform"><%= t(".send") %></button>
         </form>
         <p data-doodle-dash-player-target="feedback" role="status" class="min-h-10 text-center font-black text-2xl mt-5"></p>
       </div>
 
       <%# Reveal %>
       <div data-doodle-dash-player-target="panelReveal" class="hidden flex-1 flex flex-col items-center justify-center text-center">
-        <p class="text-slate-400 text-sm uppercase tracking-widest font-mono">The word was</p>
+        <p class="text-slate-400 text-sm uppercase tracking-widest font-mono"><%= t(".word_was") %></p>
         <p data-doodle-dash-player-target="revealWord" class="font-black text-4xl text-lime-400 mt-2"></p>
         <p data-doodle-dash-player-target="revealPoints" class="font-black text-2xl mt-6"></p>
       </div>
@@ -185,10 +185,10 @@
       <p data-doodle-dash-player-target="gameOverIcon" class="text-5xl mb-3">🏆</p>
       <p data-doodle-dash-player-target="gameOverTitle" class="font-black text-3xl tracking-wide mb-4"></p>
       <p data-doodle-dash-player-target="finalScore" class="text-lime-400 font-mono font-black text-5xl"></p>
-      <p class="text-slate-500 text-xs mt-1 font-mono">total points</p>
-      <p class="text-slate-600 text-xs mt-8 font-mono">Waiting for host to restart…</p>
+      <p class="text-slate-500 text-xs mt-1 font-mono"><%= t("rooms.games.shared.total_points") %></p>
+      <p class="text-slate-600 text-xs mt-8 font-mono"><%= t("rooms.games.shared.waiting_restart") %></p>
     </div>
 
-    <p class="text-center text-slate-800 text-[10px] font-mono pb-4">Room: <%= @room.code %></p>
+    <p class="text-center text-slate-800 text-[10px] font-mono pb-4"><%= t("rooms.games.shared.room") %> <%= @room.code %></p>
   </div>
 <% end %>

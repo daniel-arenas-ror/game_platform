@@ -1,0 +1,28 @@
+# Soup of Numbers: in-game screen and its JS.
+en:
+  rooms:
+    games:
+      soup_of_numbers:
+        index:
+          get_ready: "Get ready…"
+          scores: "Scores"
+          found: "Found"
+          none_yet: "None yet"
+  js:
+    soup_of_numbers:
+      error: "Something went wrong — start a new game"
+      found_it: "🎉 %{name} found it! +%{points}"
+      nobody: "⏰ Nobody found it"
+      find_this: "Find this number"
+      target_meta: "%{length} digits · %{points} pts"
+      round: "Round %{round} / %{total}"
+      you_found: "🎉 You found it! +%{points}"
+      someone_found: "%{name} found %{number}"
+      nobody_found: "⏰ Nobody found %{number}"
+      not_the_number: "✗ Not the number"
+      you_won: "🥇 You won!"
+      place: "#%{place} place"
+      game_over: "Game over"
+      status: "Round %{round}/%{total} · Find the %{length}-digit number"
+      not_straight: "✗ Not a straight line"
+      has_digits: "✗ The number has %{count} digits"

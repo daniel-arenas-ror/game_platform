@@ -10,9 +10,9 @@
 
     <%# Header %>
     <div class="mb-6 text-center">
-      <h1 class="text-3xl font-black tracking-widest uppercase text-yellow-400">Guess the Color</h1>
+      <h1 class="text-3xl font-black tracking-widest uppercase text-yellow-400"><%= @room.game.name %></h1>
       <p class="text-slate-500 text-xs mt-1 font-mono tracking-widest">
-        Room: <span class="text-white font-bold"><%= @room.code %></span>
+        <%= t("rooms.games.shared.room") %> <span class="text-white font-bold"><%= @room.code %></span>
       </p>
     </div>
 
@@ -23,13 +23,13 @@
       <%# Waiting phase %>
       <div data-guess-the-color-host-target="phaseWaiting"
            class="text-center py-20">
-        <p class="text-slate-400 text-lg font-mono">Waiting for game to start…</p>
+        <p class="text-slate-400 text-lg font-mono"><%= t("rooms.games.shared.waiting_game") %></p>
       </div>
 
       <%# Showing color phase %>
       <div data-guess-the-color-host-target="phaseShowing"
            class="hidden text-center">
-        <p class="text-slate-400 text-xs uppercase tracking-widest mb-4 font-mono">Memorize this color!</p>
+        <p class="text-slate-400 text-xs uppercase tracking-widest mb-4 font-mono"><%= t(".memorize") %></p>
         <div data-guess-the-color-host-target="colorBlock"
              class="w-full rounded-3xl shadow-2xl"
              style="height: 320px;"></div>
@@ -40,7 +40,7 @@
       <%# Picking phase %>
       <div data-guess-the-color-host-target="phasePicking"
            class="hidden text-center">
-        <p class="text-slate-400 text-xs uppercase tracking-widest mb-2 font-mono">Players are picking…</p>
+        <p class="text-slate-400 text-xs uppercase tracking-widest mb-2 font-mono"><%= t(".picking") %></p>
         <p data-guess-the-color-host-target="pickingTimer"
            class="text-yellow-400 font-black text-8xl my-4"></p>
         <div data-guess-the-color-host-target="submittedList"
@@ -50,7 +50,7 @@
       <%# Reveal phase %>
       <div data-guess-the-color-host-target="phaseReveal"
            class="hidden">
-        <p class="text-center text-slate-400 text-xs uppercase tracking-widest mb-6 font-mono">Results</p>
+        <p class="text-center text-slate-400 text-xs uppercase tracking-widest mb-6 font-mono"><%= t("rooms.games.shared.results") %></p>
         <div data-guess-the-color-host-target="revealGrid"
              class="flex gap-4 flex-wrap justify-center"></div>
         <div data-guess-the-color-host-target="roundScores"
@@ -60,13 +60,13 @@
       <%# Game over phase %>
       <div data-guess-the-color-host-target="phaseGameOver"
            class="hidden text-center py-10">
-        <h2 class="text-5xl font-black text-yellow-400 tracking-widest mb-2">GAME OVER</h2>
+        <h2 class="text-5xl font-black text-yellow-400 tracking-widest mb-2"><%= t("rooms.games.shared.game_over") %></h2>
         <div data-guess-the-color-host-target="finalLeaderboard"
              class="mt-8 space-y-3 max-w-sm mx-auto"></div>
         <button data-guess-the-color-host-target="playAgain"
                 class="mt-10 bg-yellow-400 hover:bg-yellow-300 text-slate-950 font-black px-10 py-3
                        rounded-xl uppercase tracking-widest text-lg transition-colors cursor-pointer">
-          Play Again
+          <%= t("rooms.games.shared.play_again") %>
         </button>
         <%= render partial: "rooms/games/change_game", locals: { room: @room, games: @games } %>
         <%= game_over_ad %>
@@ -92,7 +92,7 @@
     <div class="flex items-center justify-between px-6 pt-6 pb-2">
       <span class="font-black text-lg tracking-wide"><%= session[:nickname] %></span>
       <div class="text-right">
-        <p class="text-[10px] text-slate-600 uppercase tracking-widest">Points</p>
+        <p class="text-[10px] text-slate-600 uppercase tracking-widest"><%= t("rooms.games.shared.points") %></p>
         <p data-guess-the-color-player-target="score"
            class="font-mono font-black text-3xl text-yellow-400 leading-none">0</p>
       </div>
@@ -105,15 +105,15 @@
       <div data-guess-the-color-player-target="phaseWaiting"
            class="text-center">
         <p class="text-4xl mb-3">🎨</p>
-        <p class="text-slate-400 font-mono text-sm">Waiting for host…</p>
+        <p class="text-slate-400 font-mono text-sm"><%= t("rooms.games.shared.waiting_host") %></p>
       </div>
 
       <%# Watch screen phase (color is showing on host) %>
       <div data-guess-the-color-player-target="phaseWatch"
            class="hidden text-center">
         <p class="text-6xl mb-4">👀</p>
-        <p class="text-white font-black text-2xl tracking-wide">Watch the screen!</p>
-        <p class="text-slate-400 text-sm mt-2 font-mono">Memorize the color</p>
+        <p class="text-white font-black text-2xl tracking-wide"><%= t(".watch") %></p>
+        <p class="text-slate-400 text-sm mt-2 font-mono"><%= t(".memorize_short") %></p>
       </div>
 
       <%# Picking phase %>
@@ -122,7 +122,7 @@
 
         <%# Countdown %>
         <div class="flex items-center justify-between mb-4">
-          <p class="text-slate-400 text-xs uppercase tracking-widest font-mono">Pick the color</p>
+          <p class="text-slate-400 text-xs uppercase tracking-widest font-mono"><%= t(".pick") %></p>
           <p data-guess-the-color-player-target="pickingTimer"
              class="font-mono font-black text-2xl text-yellow-400"></p>
         </div>
@@ -169,7 +169,7 @@
         <%# Submitted indicator (shown after timer expires) %>
         <p data-guess-the-color-player-target="submittedLabel"
            class="hidden mt-6 text-center text-slate-400 text-sm font-mono tracking-widest">
-          Color submitted ✓
+          <%= t(".submitted") %>
         </p>
       </div>
 
@@ -177,31 +177,31 @@
       <div data-guess-the-color-player-target="phaseSubmitted"
            class="hidden text-center">
         <p class="text-5xl mb-4">✅</p>
-        <p class="text-white font-bold text-xl">Color locked in!</p>
+        <p class="text-white font-bold text-xl"><%= t(".locked") %></p>
         <div data-guess-the-color-player-target="submittedPreview"
              class="w-32 h-32 rounded-2xl mx-auto mt-4 shadow-lg"></div>
-        <p class="text-slate-400 text-sm mt-4 font-mono">Waiting for results…</p>
+        <p class="text-slate-400 text-sm mt-4 font-mono"><%= t(".waiting_results") %></p>
       </div>
 
       <%# Reveal phase %>
       <div data-guess-the-color-player-target="phaseReveal"
            class="hidden text-center w-full">
-        <p class="text-slate-400 text-xs uppercase tracking-widest mb-4 font-mono">Your result</p>
+        <p class="text-slate-400 text-xs uppercase tracking-widest mb-4 font-mono"><%= t(".your_result") %></p>
         <div class="flex gap-4 justify-center mb-6">
           <div class="text-center">
             <div data-guess-the-color-player-target="targetPreview"
                  class="w-28 h-28 rounded-2xl shadow-lg mx-auto"></div>
-            <p class="text-slate-500 text-xs mt-2 font-mono">Target</p>
+            <p class="text-slate-500 text-xs mt-2 font-mono"><%= t(".target") %></p>
           </div>
           <div class="text-center">
             <div data-guess-the-color-player-target="myPickPreview"
                  class="w-28 h-28 rounded-2xl shadow-lg mx-auto"></div>
-            <p class="text-slate-500 text-xs mt-2 font-mono">Your pick</p>
+            <p class="text-slate-500 text-xs mt-2 font-mono"><%= t(".your_pick") %></p>
           </div>
         </div>
         <p data-guess-the-color-player-target="roundPointsLabel"
            class="text-yellow-400 font-black text-4xl"></p>
-        <p class="text-slate-500 text-xs mt-1 font-mono">points this round</p>
+        <p class="text-slate-500 text-xs mt-1 font-mono"><%= t(".points_round") %></p>
       </div>
 
       <%# Game over phase %>
@@ -212,11 +212,11 @@
            class="font-black text-3xl tracking-wide"></p>
         <p data-guess-the-color-player-target="finalScore"
            class="text-yellow-400 font-mono font-black text-5xl mt-4"></p>
-        <p class="text-slate-500 text-xs mt-1 font-mono">total points</p>
-        <p class="text-slate-600 text-xs mt-8 font-mono">Waiting for host to restart…</p>
+        <p class="text-slate-500 text-xs mt-1 font-mono"><%= t("rooms.games.shared.total_points") %></p>
+        <p class="text-slate-600 text-xs mt-8 font-mono"><%= t("rooms.games.shared.waiting_restart") %></p>
       </div>
     </div>
 
-    <p class="text-center text-slate-800 text-[10px] font-mono pb-4">Room: <%= @room.code %></p>
+    <p class="text-center text-slate-800 text-[10px] font-mono pb-4"><%= t("rooms.games.shared.room") %> <%= @room.code %></p>
   </div>
 <% end %>

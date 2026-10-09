@@ -3,50 +3,97 @@ module GameServices
     DEFAULT_ROUNDS     = 5
     DEFAULT_TIME       = 15  # seconds players have to type a word
 
-    CATEGORIES = [
-      # Everyday / concrete
-      "Things you find in a kitchen",
-      "Things you find at the beach",
-      "Things inside a backpack",
-      "Things you see at a birthday party",
-      "Things in a supermarket",
-      "Things you do on a Sunday morning",
-      "Things that are cold",
-      "Things that are loud",
-      "Things that are yellow",
-      "Things you put on bread",
-      "Things you find in a park",
-      "Things in a car",
-      "Things that have wheels",
-      "Things you do before bed",
-      # Pop culture / fun
-      "Famous duos",
-      "Things that are overrated",
-      "Things people say when they're nervous",
-      "Things you'd bring to a desert island",
-      "Things a superhero would carry",
-      "Words that sound funny",
-      "Things that are better with cheese",
-      "Reasons to call in sick to work",
-      "Things you'd find in a wizard's bag",
-      # Abstract / creative
-      "Things that move fast",
-      "Things that make you happy",
-      "Things that are worse than Mondays",
-      "Things that smell amazing",
-      "Things you do when you're bored",
-      "Things that are addictive",
-      "Things people lie about",
-      "Things that are hard to explain",
-      "Things you miss from childhood",
-      "Things money can't buy",
-      "Things that are a waste of time",
-      "Things you'd never eat",
-      "Things that are always late",
-      "Things that belong in a museum",
-      "Things that are impossible to resist",
-      "Things that are surprisingly satisfying"
-    ].freeze
+    # One list per room language; a room's categories come from its own list.
+    CATEGORIES = {
+      "en" => [
+        # Everyday / concrete
+        "Things you find in a kitchen",
+        "Things you find at the beach",
+        "Things inside a backpack",
+        "Things you see at a birthday party",
+        "Things in a supermarket",
+        "Things you do on a Sunday morning",
+        "Things that are cold",
+        "Things that are loud",
+        "Things that are yellow",
+        "Things you put on bread",
+        "Things you find in a park",
+        "Things in a car",
+        "Things that have wheels",
+        "Things you do before bed",
+        # Pop culture / fun
+        "Famous duos",
+        "Things that are overrated",
+        "Things people say when they're nervous",
+        "Things you'd bring to a desert island",
+        "Things a superhero would carry",
+        "Words that sound funny",
+        "Things that are better with cheese",
+        "Reasons to call in sick to work",
+        "Things you'd find in a wizard's bag",
+        # Abstract / creative
+        "Things that move fast",
+        "Things that make you happy",
+        "Things that are worse than Mondays",
+        "Things that smell amazing",
+        "Things you do when you're bored",
+        "Things that are addictive",
+        "Things people lie about",
+        "Things that are hard to explain",
+        "Things you miss from childhood",
+        "Things money can't buy",
+        "Things that are a waste of time",
+        "Things you'd never eat",
+        "Things that are always late",
+        "Things that belong in a museum",
+        "Things that are impossible to resist",
+        "Things that are surprisingly satisfying"
+      ].freeze,
+      "es" => [
+        # Cotidianas / concretas
+        "Cosas que hay en una cocina",
+        "Cosas que encuentras en la playa",
+        "Cosas dentro de una mochila",
+        "Cosas que ves en una fiesta de cumpleaños",
+        "Cosas de un supermercado",
+        "Cosas que haces un domingo por la mañana",
+        "Cosas que son frías",
+        "Cosas que hacen mucho ruido",
+        "Cosas que son amarillas",
+        "Cosas que le pones al pan",
+        "Cosas que encuentras en un parque",
+        "Cosas que hay en un carro",
+        "Cosas que tienen ruedas",
+        "Cosas que haces antes de dormir",
+        # Cultura pop / divertidas
+        "Dúos famosos",
+        "Cosas sobrevaloradas",
+        "Cosas que dice la gente cuando está nerviosa",
+        "Cosas que llevarías a una isla desierta",
+        "Cosas que llevaría un superhéroe",
+        "Palabras que suenan chistosas",
+        "Cosas que son mejores con queso",
+        "Excusas para no ir a trabajar",
+        "Cosas que hay en la bolsa de un mago",
+        # Abstractas / creativas
+        "Cosas que se mueven rápido",
+        "Cosas que te hacen feliz",
+        "Cosas peores que un lunes",
+        "Cosas que huelen delicioso",
+        "Cosas que haces cuando estás aburrido",
+        "Cosas que son adictivas",
+        "Cosas sobre las que la gente miente",
+        "Cosas difíciles de explicar",
+        "Cosas que extrañas de tu infancia",
+        "Cosas que el dinero no puede comprar",
+        "Cosas que son una pérdida de tiempo",
+        "Cosas que nunca comerías",
+        "Cosas que siempre llegan tarde",
+        "Cosas que deberían estar en un museo",
+        "Cosas imposibles de resistir",
+        "Cosas que dan una satisfacción inesperada"
+      ].freeze
+    }.freeze
 
     def initialize(room)
       @room    = room
@@ -82,8 +129,9 @@ module GameServices
     def pick_category!
       @room.reload
       used = @room.game_state["used_categories"] || []
-      available = CATEGORIES - used
-      available = CATEGORIES if available.empty?
+      categories = CATEGORIES.fetch(@room.locale, CATEGORIES["en"])
+      available  = categories - used
+      available  = categories if available.empty?
 
       category = available.sample
       @room.atomic_set(
@@ -158,17 +206,31 @@ module GameServices
     # that don't already end in 'ss', 'us', 'is', 'as', 'os').
     def normalize_word(raw)
       w = raw.to_s
+             .unicode_normalize(:nfkd).gsub(/\p{Mn}/, "") # no accents: "camión" = "camion"
              .downcase
              .strip
              .gsub(/[[:punct:]]+\z/, "")   # strip trailing punctuation
              .gsub(/\A[[:punct:]]+/, "")   # strip leading punctuation
              .gsub(/\s+/, " ")             # collapse internal spaces
 
-      # Fold common English plurals: "cats" → "cat", but keep "grass", "plus", "virus"
-      if w.length > 4 && w.end_with?("s") && !w.end_with?("ss", "us", "is", "as", "os")
-        w = w.chomp("s")
-      end
+      @room.locale == "es" ? fold_spanish_plural(w) : fold_english_plural(w)
+    end
 
+    # "cats" → "cat", but keep "grass", "plus", "virus"
+    def fold_english_plural(w)
+      return w.chomp("s") if w.length > 3 && w.end_with?("s") && !w.end_with?("ss", "us", "is", "as", "os")
+
+      w
+    end
+
+    # Singular and plural fold to the same stem, so they match whichever one people type:
+    # "gato"/"gatos" → "gato", "flor"/"flores" → "flor", "clase"/"clases" → "clas", "luz"/"luces" → "luz".
+    def fold_spanish_plural(w)
+      return w if w.length < 4 || w.include?(" ")
+      return w.sub(/ces\z/, "z") if w.match?(/[aeiou]ces\z/)
+
+      w = w.chomp("s")
+      w = w.chomp("e") if w.match?(/[^aeiou]e\z/)
       w
     end
   end

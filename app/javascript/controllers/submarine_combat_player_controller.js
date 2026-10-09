@@ -1,6 +1,8 @@
 import { Controller } from "@hotwired/stimulus"
 import consumer from "channels/consumer"
 import { celebrateWin } from "controllers/shared/celebration"
+import { t } from "controllers/shared/i18n"
+import { escapeHtml } from "controllers/shared/html"
 
 const SHIP_COLORS = [
   { fill: "#06b6d4", border: "#0891b2" },  // cyan
@@ -106,7 +108,7 @@ export default class extends Controller {
       this.showPhase("battle")
       this.buildAttackGrid()
       this.buildDefenseGrid(myPlacement)
-      this.shotStatusTarget.textContent = "Waiting for round to begin..."
+      this.shotStatusTarget.textContent = t("submarine_combat.waiting_round")
       this.fireBtnTarget.disabled = true
     } else if (this.confirmed) {
       this.showPhase("waiting")
@@ -140,8 +142,8 @@ export default class extends Controller {
     this.selectedAttack = null
     this.shotSubmitted  = false
 
-    this.roundLabelTarget.textContent  = `Round ${data.round}`
-    this.shotStatusTarget.textContent  = "Tap a cell to pick your target"
+    this.roundLabelTarget.textContent  = t("submarine_combat.round", { round: data.round })
+    this.shotStatusTarget.textContent  = t("submarine_combat.pick_target")
     this.fireBtnTarget.disabled        = true
 
     this.renderSubmissions(data.active_ids, [], data.nicknames)
@@ -205,24 +207,24 @@ export default class extends Controller {
     if (myPick) {
       const hitCount = myHits.length
       if (hitCount > 0) {
-        this.showToast(`Hit! ${hitCount} cell${hitCount > 1 ? "s" : ""} struck`, "hit")
-        this.shotStatusTarget.textContent = `Hit! You struck ${hitCount} cell${hitCount > 1 ? "s" : ""}`
+        this.showToast(t("submarine_combat.hit_toast", { count: hitCount }), "hit")
+        this.shotStatusTarget.textContent = t("submarine_combat.hit_status", { count: hitCount })
       } else {
-        this.showToast("Miss", "miss")
-        this.shotStatusTarget.textContent = "Miss — no ships at that coordinate"
+        this.showToast(t("submarine_combat.miss"), "miss")
+        this.shotStatusTarget.textContent = t("submarine_combat.miss_status")
       }
     } else {
-      this.shotStatusTarget.textContent = "No shot submitted this round"
+      this.shotStatusTarget.textContent = t("submarine_combat.no_shot")
     }
 
     // Ship sunk toasts
     Object.entries(sunkShips).forEach(([targetId, shipIndices]) => {
-      const targetNick = (data.nicknames || {})[targetId] || "opponent"
+      const targetNick = (data.nicknames || {})[targetId] || t("submarine_combat.opponent")
       shipIndices.forEach(() => {
         if (targetId === this.playerIdValue) {
-          this.showToast("Your ship was sunk!", "sunk")
+          this.showToast(t("submarine_combat.your_ship_sunk"), "sunk")
         } else {
-          this.showToast(`${targetNick}'s ship sunk!`, "sunk")
+          this.showToast(t("submarine_combat.ship_sunk", { name: targetNick }), "sunk")
         }
       })
     })
@@ -231,7 +233,7 @@ export default class extends Controller {
     if (this.isSpectator) {
       this.renderSpectatorGrids(data.placements || {}, data.nicknames || {})
       if (this.hasSpectatorRoundLabelTarget) {
-        this.spectatorRoundLabelTarget.textContent = `Round ${data.round}`
+        this.spectatorRoundLabelTarget.textContent = t("submarine_combat.round", { round: data.round })
       }
     }
 
@@ -254,8 +256,8 @@ export default class extends Controller {
     const myRank  = sorted.findIndex(([id]) => id === this.playerIdValue) + 1
     const isWinner = data.winner_id === this.playerIdValue
 
-    const rankLabels = { 1: "Victory!", 2: "2nd Place", 3: "3rd Place" }
-    this.gameOverTitleTarget.textContent = rankLabels[myRank] ?? `${myRank}th Place`
+    const rankLabel = t(`submarine_combat.places.${myRank}`)
+    this.gameOverTitleTarget.textContent = rankLabel.startsWith("submarine_combat.") ? t("submarine_combat.place", { rank: myRank }) : rankLabel
     this.gameOverTitleTarget.className   = isWinner
       ? "text-3xl font-black text-yellow-400 mb-8"
       : "text-3xl font-black text-slate-400 mb-8"
@@ -448,7 +450,7 @@ export default class extends Controller {
 
     this.selectedAttack = { row: r, col: c }
     this.fireBtnTarget.disabled = false
-    this.shotStatusTarget.textContent = `Selected: row ${r + 1}, col ${c + 1}`
+    this.shotStatusTarget.textContent = t("submarine_combat.selected", { row: r + 1, col: c + 1 })
     this.buildAttackGrid()
   }
 
@@ -470,7 +472,7 @@ export default class extends Controller {
     this.channel.perform("submit_shot", this.selectedAttack)
     this.shotSubmitted          = true
     this.fireBtnTarget.disabled = true
-    this.shotStatusTarget.textContent = "Shot submitted — waiting for results..."
+    this.shotStatusTarget.textContent = t("submarine_combat.shot_submitted")
   }
 
   // ── UI helpers ────────────────────────────────────────────────────────────
@@ -486,14 +488,14 @@ export default class extends Controller {
   renderShipInfo() {
     const info = this.shipInfoTarget
     if (this.selectedShipIdx === null) {
-      info.innerHTML = '<p class="text-slate-600 text-xs">Tap a ship to select it</p>'
+      info.innerHTML = `<p class="text-slate-600 text-xs">${t("submarine_combat.select_ship")}</p>`
       this.rotateBtnTarget.disabled = true
     } else {
       const ship  = this.ships[this.selectedShipIdx]
       const color = SHIP_COLORS[this.selectedShipIdx % SHIP_COLORS.length]
-      const dir   = ship._orientation === "h" ? "Horizontal" : "Vertical"
+      const dir   = ship._orientation === "h" ? t("submarine_combat.horizontal") : t("submarine_combat.vertical")
       info.innerHTML = `<p class="text-sm font-bold" style="color:${color.fill}">
-        Ship selected &mdash; size ${ship.size} &middot; ${dir} &mdash; tap a cell to move
+        ${t("submarine_combat.ship_selected", { size: ship.size, dir })}
       </p>`
       this.rotateBtnTarget.disabled = false
     }
@@ -511,7 +513,7 @@ export default class extends Controller {
           ? "bg-cyan-500/20 border-cyan-500 text-cyan-300"
           : "bg-slate-800 border-slate-600 text-slate-500"
       ].join(" ")
-      badge.textContent = confirmed ? `${nick} — Ready` : nick
+      badge.textContent = confirmed ? t("submarine_combat.ready", { name: nick }) : nick
       list.appendChild(badge)
     })
   }
@@ -532,7 +534,7 @@ export default class extends Controller {
           ? "bg-green-500/20 border-green-500 text-green-400"
           : "bg-slate-800 border-slate-600 text-slate-500"
       ].join(" ")
-      badge.textContent = submitted ? `${nick} fired` : nick
+      badge.textContent = submitted ? t("submarine_combat.fired", { name: nick }) : nick
       list.appendChild(badge)
     })
   }
@@ -545,8 +547,8 @@ export default class extends Controller {
       const row  = document.createElement("div")
       row.className = "flex items-center justify-between px-4 py-2 bg-slate-800/60 rounded-xl"
       row.innerHTML = `
-        <span class="text-slate-300 font-bold text-sm">${i + 1}. ${nick}</span>
-        <span class="text-cyan-400 font-black tabular-nums">${pts} hits</span>
+        <span class="text-slate-300 font-bold text-sm">${i + 1}. ${escapeHtml(nick)}</span>
+        <span class="text-cyan-400 font-black tabular-nums">${t("submarine_combat.hits", { count: pts })}</span>
       `
       container.appendChild(row)
     })
@@ -683,7 +685,7 @@ export default class extends Controller {
 
       const nameEl = document.createElement("p")
       nameEl.className   = "text-xs font-bold text-slate-300 mb-2 text-center"
-      nameEl.textContent = eliminated ? `${nick} (out)` : nick
+      nameEl.textContent = eliminated ? t("submarine_combat.out", { name: nick }) : nick
       panel.appendChild(nameEl)
 
       const grid = document.createElement("div")

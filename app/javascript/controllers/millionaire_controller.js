@@ -1,6 +1,8 @@
 import { Controller } from "@hotwired/stimulus"
 import consumer from "channels/consumer"
 import { celebrateWin, isTopScore } from "controllers/shared/celebration"
+import { t, num } from "controllers/shared/i18n"
+import { escapeHtml } from "controllers/shared/html"
 
 export default class extends Controller {
   static targets = [
@@ -134,7 +136,7 @@ export default class extends Controller {
     if (this.hasLockLabelTarget)     this.lockLabelTarget.classList.remove("hidden")
 
     // Populate question text (targets appear in both host and player sections)
-    const roundLabel = `Round ${data.round} / ${data.total}`
+    const roundLabel = t("how_want_be_billionare.round", { round: data.round, total: data.total })
     this.questionTextTargets.forEach(el => { el.textContent = data.text })
     this.questionMetaTargets.forEach(el => { el.textContent = roundLabel })
 
@@ -149,7 +151,7 @@ export default class extends Controller {
     this.stopCountdown()
     const { options, correct_answer_indices, round_scores, user_points, question_points, nicknames, round, total } = data
 
-    this.revealRoundLabelTarget.textContent = `Round ${round} / ${total} — Reveal`
+    this.revealRoundLabelTarget.textContent = t("how_want_be_billionare.round_reveal", { round, total })
 
     // Colour each answer tile
     this.revealOptionTargets.forEach((el, i) => {
@@ -185,10 +187,10 @@ export default class extends Controller {
       this.revealHostScoresTarget.classList.add("hidden")
 
       this.revealResultTextTarget.textContent = correct
-        ? `Correct! +${earned.toLocaleString()} pts`
-        : "Incorrect — 0 pts"
+        ? t("how_want_be_billionare.correct", { points: num(earned) })
+        : t("how_want_be_billionare.incorrect")
       this.revealResultTextTarget.style.color = correct ? "#4ade80" : "#f87171"
-      this.revealTotalTextTarget.textContent  = `Running total: ${myTotal.toLocaleString()} pts`
+      this.revealTotalTextTarget.textContent  = t("how_want_be_billionare.running_total", { points: num(myTotal) })
     } else {
       // ── Host view: show per-player round summary ────────────────────────
       this.revealPlayerResultTarget.classList.add("hidden")
@@ -197,7 +199,7 @@ export default class extends Controller {
       this.revealHostScoresTarget.innerHTML = Object.keys(nicknames)
         .sort((a, b) => (user_points[b] || 0) - (user_points[a] || 0))
         .map(pid => {
-          const name   = nicknames[pid] || pid
+          const name   = escapeHtml(nicknames[pid] || pid)
           const earned = round_scores[pid] || 0
           const runTotal = user_points[pid] || 0
           const scored = earned > 0
@@ -208,9 +210,9 @@ export default class extends Controller {
               <span class="font-bold text-sm ${scored ? "text-green-300" : "text-slate-500"}">${name}</span>
               <div class="text-right font-mono text-xs">
                 <span class="${scored ? "text-green-400 font-black" : "text-slate-600"}">
-                  ${scored ? "+" + earned.toLocaleString() : "+0"}
+                  ${scored ? "+" + num(earned) : "+0"}
                 </span>
-                <span class="text-slate-600 ml-2">(${runTotal.toLocaleString()} total)</span>
+                <span class="text-slate-600 ml-2">${t("how_want_be_billionare.total", { points: num(runTotal) })}</span>
               </div>
             </div>
           `
@@ -230,7 +232,7 @@ export default class extends Controller {
     const medals = ["🥇", "🥈", "🥉"]
 
     this.leaderboardListTarget.innerHTML = Object.entries(leaderboard).map(([playerId, points], index) => {
-      const name  = (nicknames && nicknames[playerId]) || `Player ${index + 1}`
+      const name  = escapeHtml((nicknames && nicknames[playerId]) || t("how_want_be_billionare.player", { n: index + 1 }))
       const isTop = index === 0
       const medal = medals[index] || `#${index + 1}`
 
@@ -247,7 +249,7 @@ export default class extends Controller {
           <span class="font-mono ${isTop
             ? "bg-yellow-400 text-slate-950 font-black"
             : "bg-blue-950 border border-blue-800 text-blue-400 font-bold"}
-            px-4 py-1 rounded-full text-sm">${points.toLocaleString()}</span>
+            px-4 py-1 rounded-full text-sm">${num(points)}</span>
         </div>
       `
     }).join("")

@@ -1,0 +1,22 @@
+# Guess the Color: in-game screen and its JS.
+en:
+  rooms:
+    games:
+      guess_the_color:
+        index:
+          memorize: "Memorize this color!"
+          picking: "Players are picking…"
+          watch: "Watch the screen!"
+          memorize_short: "Memorize the color"
+          pick: "Pick the color"
+          submitted: "Color submitted ✓"
+          locked: "Color locked in!"
+          waiting_results: "Waiting for results…"
+          your_result: "Your result"
+          target: "Target"
+          your_pick: "Your pick"
+          points_round: "points this round"
+  js:
+    guess_the_color:
+      target: "Target"
+      no_pick: "%{name} (no pick)"

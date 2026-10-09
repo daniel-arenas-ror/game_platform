@@ -1,0 +1,25 @@
+# Sequence Memory: in-game screen and its JS.
+en:
+  rooms:
+    games:
+      sequence_memory:
+        index:
+          watch_carefully: "Watch carefully…"
+          your_turn: "Your turn!"
+          sequence_was: "The sequence was"
+          watch_remember: "Watch the screen and remember the sequence!"
+          watch: "Watch the screen!"
+          submitted: "Submitted ✓"
+  js:
+    sequence_memory:
+      round_steps:
+        one: "Round %{round} / %{total} · %{count} step"
+        other: "Round %{round} / %{total} · %{count} steps"
+      round: "Round %{round} / %{total}"
+      submitted:
+        one: "%{count} player submitted"
+        other: "%{count} players submitted"
+      step: "Step %{step} / %{total}"
+      done: "Done!"
+      correct_steps: "%{correct} / %{total} correct steps"
+      taps: "%{count} / %{total} taps"

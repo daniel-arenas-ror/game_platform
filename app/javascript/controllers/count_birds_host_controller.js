@@ -1,5 +1,6 @@
 import { Controller } from "@hotwired/stimulus"
 import consumer from "channels/consumer"
+import { t } from "controllers/shared/i18n"
 
 // Bird drawn as a filled "M" silhouette using bezier curves
 // Each bird moves independently — no flocking
@@ -67,9 +68,9 @@ export default class extends Controller {
   onStartRound(data) {
     const { round, total_rounds, bird_count, difficulty, distractor_count, duration } = data
 
-    this.roundCounterTarget.textContent    = `Round ${round} / ${total_rounds}`
-    this.roundCounter2Target.textContent   = `Round ${round} / ${total_rounds}`
-    this.difficultyBadgeTarget.textContent = difficulty.toUpperCase()
+    this.roundCounterTarget.textContent    = t("count_birds.round", { round, total: total_rounds })
+    this.roundCounter2Target.textContent   = t("count_birds.round", { round, total: total_rounds })
+    this.difficultyBadgeTarget.textContent = t(`count_birds.difficulty.${difficulty}`)
     this.difficultyBadgeTarget.style.color = this.difficultyColor(difficulty)
 
     this.spawnBirds(bird_count, distractor_count, difficulty)

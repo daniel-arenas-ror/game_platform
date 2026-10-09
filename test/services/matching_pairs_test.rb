@@ -150,4 +150,16 @@ class MatchingPairsTest < ActiveSupport::TestCase
     urls = Pairs.new(@room).public_state["preload"]
     assert_equal @deck.map { |c| c["src"] }.uniq.sort, urls.sort
   end
+
+  test "every card has a Spanish name and Spanish rooms deal them" do
+    labels = Catalog::LABELS["es"]
+    assert_equal Catalog::ANIMALS.keys.sort, labels["animals"].keys.sort
+    assert_equal Catalog::OBJECTS.keys.sort, labels["objects"].keys.sort
+    assert_equal Catalog::FLAGS.keys.sort, labels["flags"].keys.sort
+
+    dog = Catalog.all("animals", "es").find { |c| c["key"] == "animals:dog" }
+    assert_equal "Perro", dog["label"]
+    assert_equal "Dog", Catalog.all("animals").find { |c| c["key"] == "animals:dog" }["label"]
+    assert_equal "España", Catalog.all("flags", "es").find { |c| c["key"] == "flags:es" }["label"]
+  end
 end

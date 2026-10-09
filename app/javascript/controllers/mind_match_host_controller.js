@@ -1,5 +1,6 @@
 import { Controller } from "@hotwired/stimulus"
 import consumer from "channels/consumer"
+import { t } from "controllers/shared/i18n"
 
 export default class extends Controller {
   static values  = { roomCode: String }
@@ -88,7 +89,7 @@ export default class extends Controller {
     this.showPhase("phaseTransition")
 
     if (this.transitionLabelTarget)
-      this.transitionLabelTarget.textContent = `Round ${data.round} of ${data.total_rounds}`
+      this.transitionLabelTarget.textContent = t("mind_match.round_of", { round: data.round, total: data.total_rounds })
 
     // Client-side 3 → 2 → 1 countdown matching TRANSITION_DURATION
     let n = 3
@@ -107,7 +108,7 @@ export default class extends Controller {
     this.showPhase("phaseCategory")
 
     if (this.roundLabelTarget)
-      this.roundLabelTarget.textContent = `Round ${data.round} / ${data.total_rounds}`
+      this.roundLabelTarget.textContent = t("mind_match.round", { round: data.round, total: data.total_rounds })
     if (this.categoryTextTarget)
       this.categoryTextTarget.textContent = data.category
     if (this.submissionsListTarget)
@@ -144,10 +145,10 @@ export default class extends Controller {
     const top = (data.groups || []).find(g => g.player_ids.length > 1)
     if (top) {
       const n     = top.player_ids.length
-      const nicks = top.player_ids.map(id => this.nicknames[id] || id).join(" & ")
-      this.showToast(`🔥 ${n}-way match: "${top.word}" — ${nicks}`, "match")
+      const nicks = top.player_ids.map(id => this.nicknames[id] || id).join(t("mind_match.and"))
+      this.showToast(t("mind_match.match_toast", { count: n, word: top.word, names: nicks }), "match")
     } else {
-      this.showToast("🤔 No matches this round!", "info")
+      this.showToast(t("mind_match.no_matches"), "info")
     }
   }
 
@@ -163,7 +164,7 @@ export default class extends Controller {
       .sort(([, a], [, b]) => b - a)[0]
     if (winner) {
       const nick = this.nicknames[winner[0]] || winner[0]
-      this.showToast(`🏆 ${nick} wins with ${winner[1]} points!`, "win")
+      this.showToast(t("mind_match.wins_with", { name: nick, points: winner[1] }), "win")
     }
   }
 
@@ -221,9 +222,9 @@ export default class extends Controller {
 
     cards.forEach((c, i) => {
       const pts   = roundScores[c.id] ?? c.n
-      const label = c.n > 1 ? `${c.n}-way match · +${pts}` : c.n === 1 ? `Unique · +${pts}` : "0 pts"
+      const label = c.n > 1 ? t("mind_match.way_match", { count: c.n, points: pts }) : c.n === 1 ? t("mind_match.unique", { points: pts }) : t("mind_match.zero")
       const word  = c.word === null
-        ? `<p class="text-slate-500 italic text-xl">No answer</p>`
+        ? `<p class="text-slate-500 italic text-xl">${t("mind_match.no_answer")}</p>`
         : `<p class="text-white font-black text-2xl truncate">${this.esc(c.word)}</p>`
 
       const el = document.createElement("div")
@@ -264,7 +265,7 @@ export default class extends Controller {
   _updateSubmissionCount() {
     if (this.submissionCountTarget)
       this.submissionCountTarget.textContent =
-        `${this.submittedCount} / ${this.totalPlayers} submitted`
+        t("mind_match.submitted", { count: this.submittedCount, total: this.totalPlayers })
 
     if (this.submissionBarTarget) {
       const pct = this.totalPlayers > 0

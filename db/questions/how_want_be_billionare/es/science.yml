@@ -1,0 +1,91 @@
+# Ciencia — importar con: bin/rails questions:billionaire:import
+
+- text: "¿Con qué nombre se conoce comúnmente el H2O?"
+  topic: "Química"
+  points: 100
+  answers:
+    - { text: "Agua", correct: true }
+    - { text: "Sal" }
+    - { text: "Oxígeno" }
+    - { text: "Agua oxigenada" }
+
+- text: "A nivel del mar, ¿a qué temperatura hierve el agua en grados Celsius?"
+  topic: "Física"
+  points: 200
+  answers:
+    - { text: "90 °C" }
+    - { text: "100 °C", correct: true }
+    - { text: "212 °C" }
+    - { text: "80 °C" }
+
+- text: "¿Cuáles de estos elementos son metales?"
+  topic: "Química"
+  points: 300
+  answers:
+    - { text: "Carbono" }
+    - { text: "Hierro", correct: true }
+    - { text: "Azufre" }
+    - { text: "Cobre", correct: true }
+
+- text: "¿Qué fuerza mantiene a los planetas en órbita alrededor del Sol?"
+  topic: "Física"
+  points: 400
+  answers:
+    - { text: "La presión del aire" }
+    - { text: "El magnetismo" }
+    - { text: "La gravedad", correct: true }
+    - { text: "La fricción" }
+
+- text: "¿Cuál es el gas más abundante en la atmósfera de la Tierra?"
+  topic: "Química"
+  points: 500
+  answers:
+    - { text: "Dióxido de carbono" }
+    - { text: "Oxígeno" }
+    - { text: "Argón" }
+    - { text: "Nitrógeno", correct: true }
+
+- text: "¿Cuál es la sustancia natural más dura?"
+  topic: "Química"
+  points: 600
+  answers:
+    - { text: "Topacio" }
+    - { text: "Granito" }
+    - { text: "Cuarzo" }
+    - { text: "Diamante", correct: true }
+
+- text: "¿Cuál es la unidad del SI de la resistencia eléctrica?"
+  topic: "Física"
+  points: 700
+  answers:
+    - { text: "Amperio" }
+    - { text: "Voltio" }
+    - { text: "Vatio" }
+    - { text: "Ohmio", correct: true }
+
+- text: "¿Qué científico formuló las tres leyes del movimiento?"
+  topic: "Física"
+  points: 800
+  answers:
+    - { text: "Johannes Kepler" }
+    - { text: "Galileo Galilei" }
+    - { text: "Albert Einstein" }
+    - { text: "Isaac Newton", correct: true }
+
+- text: "¿Cuál es la velocidad aproximada de la luz en el vacío?"
+  topic: "Física"
+  points: 900
+  answers:
+    - { text: "30.000 km/s" }
+    - { text: "3.000.000 km/s" }
+    - { text: "300.000 km/s", correct: true }
+    - { text: "3.000 km/s" }
+
+- text: "¿Cuál es el valor aproximado del número de Avogadro?"
+  topic: "Química"
+  points: 1000
+  answers:
+    - { text: "3,00 × 10⁸" }
+    - { text: "1,60 × 10⁻¹⁹" }
+    - { text: "6,022 × 10²³", correct: true }
+    - { text: "9,81 × 10²" }

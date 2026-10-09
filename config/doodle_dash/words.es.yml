@@ -1,0 +1,304 @@
+# Doodle Dash words for Spanish rooms. Same rules as words.yml: family-friendly, drawable,
+# lowercase, multi-word entries are fine. Accents are fine too: guesses are compared without them.
+easy:
+  - manzana
+  - banano
+  - pelota
+  - globo
+  - cama
+  - abeja
+  - campana
+  - bicicleta
+  - pájaro
+  - barco
+  - libro
+  - pan
+  - puente
+  - bus
+  - mariposa
+  - pastel
+  - cámara
+  - vela
+  - carro
+  - zanahoria
+  - gato
+  - silla
+  - queso
+  - nube
+  - reloj
+  - galleta
+  - vaca
+  - corona
+  - taza
+  - perro
+  - puerta
+  - tambor
+  - pato
+  - oreja
+  - huevo
+  - ojo
+  - pez
+  - bandera
+  - flor
+  - tenedor
+  - rana
+  - fantasma
+  - regalo
+  - gafas
+  - uvas
+  - guitarra
+  - martillo
+  - sombrero
+  - corazón
+  - caballo
+  - casa
+  - helado
+  - cometa
+  - llave
+  - escalera
+  - lámpara
+  - hoja
+  - limón
+  - león
+  - paleta
+  - luna
+  - ratón
+  - hongo
+  - nariz
+  - pulpo
+  - búho
+  - lápiz
+  - cerdo
+  - pizza
+  - avión
+  - lluvia
+  - arcoíris
+  - robot
+  - cohete
+  - zapato
+  - sonrisa
+  - caracol
+  - serpiente
+  - muñeco de nieve
+  - media
+  - araña
+  - cuchara
+  - estrella
+  - sol
+  - espada
+  - mesa
+  - diente
+  - tren
+  - árbol
+  - camión
+  - tortuga
+  - paraguas
+  - ballena
+  - ventana
+  - gusano
+  - oso
+medium:
+  - aeropuerto
+  - despertador
+  - ancla
+  - astronauta
+  - mochila
+  - curita
+  - asado
+  - playa
+  - barba
+  - bolos
+  - burbuja
+  - cactus
+  - campamento
+  - castillo
+  - oruga
+  - chef
+  - circo
+  - brújula
+  - vaquero
+  - cangrejo
+  - dentista
+  - desierto
+  - diamante
+  - dinosaurio
+  - dragón
+  - ascensor
+  - camión de bomberos
+  - fuegos artificiales
+  - pescar
+  - flamenco
+  - jardín
+  - jirafa
+  - hamburguesa
+  - helicóptero
+  - perro caliente
+  - iglú
+  - isla
+  - medusa
+  - malabares
+  - canguro
+  - faro
+  - rayo
+  - imán
+  - sirena
+  - micrófono
+  - montaña
+  - pintor
+  - paracaídas
+  - loro
+  - pingüino
+  - piano
+  - pirata
+  - palomitas
+  - pirámide
+  - montaña rusa
+  - castillo de arena
+  - espantapájaros
+  - tijeras
+  - patineta
+  - esqueleto
+  - dormir
+  - copo de nieve
+  - espaguetis
+  - submarino
+  - girasol
+  - superhéroe
+  - columpio
+  - telescopio
+  - carpa
+  - tornado
+  - cepillo de dientes
+  - semáforo
+  - tesoro
+  - unicornio
+  - aspiradora
+  - volcán
+  - cascada
+  - boda
+  - molino de viento
+  - mago
+  - acordeón
+  - acróbata
+  - acuario
+  - bailarina
+  - baloncesto
+  - colmena
+  - binoculares
+  - licuadora
+  - excavadora
+  - fogata
+  - canoa
+  - carrusel
+  - camaleón
+  - porrista
+  - chimenea
+  - coco
+  - detective
+  - timbre
+  - terremoto
+  - rueda de la fortuna
+  - bombero
+  - fuente
+  - pez dorado
+  - hamaca
+  - erizo
+  - globo aerostático
+  - calabaza de halloween
+  - mariquita
+  - cortacésped
+  - salvavidas
+  - bigote
+  - ninja
+  - pavo real
+  - piña
+  - plomero
+  - podio
+  - mapache
+  - velero
+  - caballito de mar
+  - sombrilla de playa
+hard:
+  - alergia
+  - avalancha
+  - fiesta de cumpleaños
+  - agujero negro
+  - tormenta de nieve
+  - guardaespaldas
+  - lluvia de ideas
+  - camuflaje
+  - reacción en cadena
+  - jaque mate
+  - comediante
+  - soñar despierto
+  - deja vu
+  - eco
+  - evolución
+  - eclipse
+  - gravedad
+  - hibernación
+  - tarea
+  - hipnosis
+  - desfase horario
+  - karaoke
+  - año bisiesto
+  - maratón
+  - antojo de medianoche
+  - migración
+  - lunes por la mañana
+  - pesadilla
+  - fotosíntesis
+  - pereza
+  - arenas movedizas
+  - reciclaje
+  - selfi
+  - sonámbulo
+  - redes sociales
+  - sistema solar
+  - limpieza general
+  - miedo escénico
+  - fiesta sorpresa
+  - trabajo en equipo
+  - viaje en el tiempo
+  - embotellamiento
+  - búsqueda del tesoro
+  - realidad virtual
+  - wifi
+  - bloqueo mental
+  - bostezo
+  - gravedad cero
+  - aplausos
+  - arqueólogo
+  - autógrafo
+  - cuento para dormir
+  - cita a ciegas
+  - lista de deseos
+  - final de suspenso
+  - fecha límite
+  - canción pegajosa
+  - amistad
+  - chisme
+  - hipo
+  - choca esos cinco
+  - chiste interno
+  - invisible
+  - canción de cuna
+  - malentendido
+  - hacer varias cosas a la vez
+  - ilusión óptica
+  - horas extra
+  - presión de grupo
+  - giro inesperado
+  - hora pico
+  - sarcasmo
+  - sombras chinescas
+  - mal perdedor
+  - quemadura de sol
+  - cosquillas
+  - tira y afloja
+  - en construcción
+  - buzón de voz
+  - ganas de viajar
+  - fin de semana
+  - mentira piadosa
+  - ilusiones

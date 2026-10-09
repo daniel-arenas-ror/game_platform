@@ -1,0 +1,24 @@
+# How Want to Be a Billionaire: in-game screen and millionaire_controller.js.
+en:
+  rooms:
+    games:
+      how_want_be_billionare:
+        index:
+          preparing: "Preparing Questions"
+          vault: "Securing the bank vault..."
+          loading_question: "Loading question..."
+          players_selecting: "Players are selecting their answers…"
+          lock_in: "Lock in your final answer"
+          locked: "Locked in ✓ — waiting for reveal…"
+          leaderboard: "Leaderboard"
+          final_standings: "Final Standings"
+          play_again: "Play Again"
+  js:
+    how_want_be_billionare:
+      round: "Round %{round} / %{total}"
+      round_reveal: "Round %{round} / %{total} — Reveal"
+      correct: "Correct! +%{points} pts"
+      incorrect: "Incorrect — 0 pts"
+      running_total: "Running total: %{points} pts"
+      total: "(%{points} total)"
+      player: "Player %{n}"

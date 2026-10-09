@@ -1,0 +1,91 @@
+# Biología — importar con: bin/rails questions:billionaire:import
+
+- text: "¿Cuántas patas tiene una araña?"
+  topic: "Biología"
+  points: 100
+  answers:
+    - { text: "8", correct: true }
+    - { text: "12" }
+    - { text: "6" }
+    - { text: "10" }
+
+- text: "¿Cuál es el mamífero más grande de la Tierra?"
+  topic: "Biología"
+  points: 200
+  answers:
+    - { text: "Ballena azul", correct: true }
+    - { text: "Jirafa" }
+    - { text: "Cachalote" }
+    - { text: "Elefante africano" }
+
+- text: "¿Qué órgano bombea la sangre por el cuerpo humano?"
+  topic: "Biología"
+  points: 300
+  answers:
+    - { text: "Pulmones" }
+    - { text: "Riñones" }
+    - { text: "Corazón", correct: true }
+    - { text: "Hígado" }
+
+- text: "¿Cuáles de estos animales son reptiles?"
+  topic: "Biología"
+  points: 400
+  answers:
+    - { text: "Salamandra" }
+    - { text: "Tortuga", correct: true }
+    - { text: "Rana" }
+    - { text: "Cocodrilo", correct: true }
+
+- text: "¿Qué gas absorben las plantas del aire para la fotosíntesis?"
+  topic: "Biología"
+  points: 500
+  answers:
+    - { text: "Oxígeno" }
+    - { text: "Nitrógeno" }
+    - { text: "Dióxido de carbono", correct: true }
+    - { text: "Hidrógeno" }
+
+- text: "¿Cuántos huesos tiene el cuerpo humano adulto?"
+  topic: "Biología"
+  points: 600
+  answers:
+    - { text: "186" }
+    - { text: "256" }
+    - { text: "226" }
+    - { text: "206", correct: true }
+
+- text: "¿Qué parte de la célula se conoce como su 'central de energía'?"
+  topic: "Biología"
+  points: 700
+  answers:
+    - { text: "Ribosoma" }
+    - { text: "Núcleo" }
+    - { text: "Mitocondria", correct: true }
+    - { text: "Aparato de Golgi" }
+
+- text: "¿Qué tipo de sangre se conoce como donante universal?"
+  topic: "Biología"
+  points: 800
+  answers:
+    - { text: "B negativo" }
+    - { text: "AB positivo" }
+    - { text: "O negativo", correct: true }
+    - { text: "A positivo" }
+
+- text: "¿Cuáles de estos animales son marsupiales?"
+  topic: "Biología"
+  points: 900
+  answers:
+    - { text: "Koala", correct: true }
+    - { text: "Canguro", correct: true }
+    - { text: "Ornitorrinco" }
+    - { text: "Perezoso" }
+
+- text: "¿Qué científico es conocido como el padre de la genética por sus experimentos con plantas de guisantes?"
+  topic: "Biología"
+  points: 1000
+  answers:
+    - { text: "Charles Darwin" }
+    - { text: "James Watson" }
+    - { text: "Gregor Mendel", correct: true }
+    - { text: "Louis Pasteur" }

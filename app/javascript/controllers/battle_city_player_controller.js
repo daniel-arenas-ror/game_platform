@@ -1,6 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 import consumer from "channels/consumer"
 import { celebrateWin } from "controllers/shared/celebration"
+import { t } from "controllers/shared/i18n"
 
 const COLOR_HEX = {
   yellow: "#f1c40f",
@@ -88,7 +89,7 @@ export default class extends Controller {
       if (!this.dpadTarget.querySelector("[data-respawn-label]")) {
         const label = document.createElement("p")
         label.setAttribute("data-respawn-label", "")
-        label.textContent  = "Respawning…"
+        label.textContent  = t("battle_city.respawning")
         label.style.cssText = "position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#94a3b8;letter-spacing:.1em;pointer-events:none;"
         this.dpadTarget.style.position = "relative"
         this.dpadTarget.appendChild(label)
@@ -109,7 +110,7 @@ export default class extends Controller {
       this.countdownOverlayTarget.classList.remove("hidden")
       this.statusTextTarget.textContent = count
     } else {
-      this.statusTextTarget.textContent = "GO!"
+      this.statusTextTarget.textContent = t("battle_city.go")
       setTimeout(() => this.countdownOverlayTarget.classList.add("hidden"), 700)
     }
   }
@@ -122,18 +123,12 @@ export default class extends Controller {
                       Object.values(data.scores ?? {}).length > 0 &&
                       myScore === Math.max(...Object.values(data.scores ?? {})))
 
-    const reasons = {
-      base_destroyed:     "The base was destroyed",
-      last_tank_standing: "Last tank standing",
-      kills_limit:        "Kill limit reached"
-    }
-
     if (this.hasGameOverTitleTarget) {
-      this.gameOverTitleTarget.textContent  = isWinner ? "YOU WIN!" : "GAME OVER"
+      this.gameOverTitleTarget.textContent  = isWinner ? t("battle_city.you_win") : t("battle_city.game_over")
       this.gameOverTitleTarget.style.color  = isWinner ? "#f1c40f" : "#ffffff"
     }
     if (this.hasGameOverSubTarget)
-      this.gameOverSubTarget.textContent = reasons[data.reason] ?? ""
+      this.gameOverSubTarget.textContent = data.reason ? t(`battle_city.reasons.${data.reason}`) : ""
     if (this.hasFinalScoreTarget)
       this.finalScoreTarget.textContent = myScore
 

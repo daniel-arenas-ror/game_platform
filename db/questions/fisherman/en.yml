@@ -1,0 +1,32 @@
+# The Fisherman questions for English rooms — import with: bin/rails questions:fisherman:import
+# Each question has several true answers; the Knowers see one of them, the Impostor sees "???".
+- text: "What did people historically use instead of toilet paper?"
+  answers: ["Corn cobs", "Seashells", "Stones", "Silk towels"]
+- text: "What did ancient people use to clean their teeth?"
+  answers: ["Chewing sticks", "Crushed shells", "Charcoal powder"]
+- text: "Which things were actually used as medicine in the past?"
+  answers: ["Crushed mummies", "Mercury", "Leeches"]
+- text: "What unusual items have humans worn as wigs or fake hair?"
+  answers: ["Horsehair", "Yak hair", "Human hair"]
+- text: "What animals were sometimes put on trial in medieval Europe?"
+  answers: ["Rats", "Pigs", "Locusts"]
+- text: "Which things were once believed to protect against evil spirits?"
+  answers: ["Garlic", "Bells", "Salt"]
+- text: "What weird ingredients were once used in beauty treatments?"
+  answers: ["Bird poop", "Lead powder", "Crocodile dung"]
+- text: "What did sailors historically believe brought bad luck on ships?"
+  answers: ["Bananas", "Whistling", "Women onboard"]
+- text: "Which objects have actually been used as pillows in history?"
+  answers: ["Wood blocks", "Stone supports", "Ceramic headrests"]
+- text: "What did ancient Romans sometimes use in public baths?"
+  answers: ["Olive oil", "Metal scrapers", "Shared sponges"]
+- text: "Which bizarre jobs really existed?"
+  answers: ["Royal fart entertainer", "Groom of the stool", "Rat catcher"]
+- text: "What things have people historically used to freshen their breath?"
+  answers: ["Mint leaves", "Charcoal", "Urine"]
+- text: "What materials were used to make ancient writing surfaces?"
+  answers: ["Animal skin", "Bamboo", "Clay tablets"]
+- text: "What did people throw at performers they disliked?"
+  answers: ["Rotten tomatoes", "Eggs", "Fruit"]
+- text: "Which things were once considered luxury foods?"
+  answers: ["Lobster", "Oysters", "Caviar"]

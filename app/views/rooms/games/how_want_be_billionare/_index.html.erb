@@ -13,8 +13,8 @@
       <div class="absolute inset-0 rounded-full border-4 border-t-yellow-400 border-r-transparent animate-spin"></div>
     </div>
     <div class="text-center space-y-2">
-      <h2 class="text-2xl font-black uppercase tracking-widest bg-gradient-to-r from-yellow-400 to-amber-200 bg-clip-text text-transparent">Preparing Questions</h2>
-      <p class="text-sm text-blue-400 animate-pulse font-medium">Securing the bank vault...</p>
+      <h2 class="text-2xl font-black uppercase tracking-widest bg-gradient-to-r from-yellow-400 to-amber-200 bg-clip-text text-transparent"><%= t(".preparing") %></h2>
+      <p class="text-sm text-blue-400 animate-pulse font-medium"><%= t(".vault") %></p>
     </div>
   </div>
 
@@ -27,12 +27,12 @@
       <div class="absolute right-0 top-1/2 -translate-y-1/2 w-4 h-1 bg-blue-500"></div>
       <p data-millionaire-target="questionMeta" class="text-xs font-bold text-blue-400 uppercase tracking-widest mb-2"></p>
       <h2 data-millionaire-target="questionText" class="text-2xl md:text-3xl font-bold tracking-wide leading-relaxed">
-        Loading question...
+        <%= t(".loading_question") %>
       </h2>
     </div>
     <p data-millionaire-target="countdown"
        class="text-center font-mono font-black text-7xl text-yellow-400 tabular-nums"></p>
-    <p class="text-center text-slate-600 text-xs font-mono tracking-widest uppercase">Players are selecting their answers…</p>
+    <p class="text-center text-slate-600 text-xs font-mono tracking-widest uppercase"><%= t(".players_selecting") %></p>
   </div>
 
   <!-- ================================================================= -->
@@ -45,16 +45,16 @@
          class="absolute top-2 right-3 font-mono font-black text-xl text-yellow-400 tabular-nums"></p>
       <p data-millionaire-target="questionMeta" class="text-[10px] sm:text-xs font-bold text-blue-400 uppercase tracking-widest mb-1"></p>
       <h2 data-millionaire-target="questionText" class="text-base sm:text-lg font-bold tracking-wide leading-snug sm:leading-relaxed">
-        Loading question...
+        <%= t(".loading_question") %>
       </h2>
     </div>
 
     <div class="space-y-2 sm:space-y-3">
       <%# The label and the "locked" message share one line so locking in doesn't grow the page. %>
-      <p data-millionaire-target="lockLabel" class="text-center text-xs font-black tracking-widest text-blue-400 uppercase">Lock in your final answer</p>
+      <p data-millionaire-target="lockLabel" class="text-center text-xs font-black tracking-widest text-blue-400 uppercase"><%= t(".lock_in") %></p>
       <p data-millionaire-target="lockedMessage"
          class="hidden text-center text-green-400 font-black tracking-widest text-xs uppercase">
-        Locked in ✓ — waiting for reveal…
+        <%= t(".locked") %>
       </p>
 
       <div class="grid grid-cols-1 gap-2 sm:gap-3 font-mono">
@@ -132,8 +132,8 @@
   <!-- ================================================================= -->
   <div data-millionaire-target="leaderboard" class="hidden flex-1 flex flex-col justify-center max-w-xl mx-auto w-full my-auto space-y-8">
     <div class="text-center">
-      <h2 class="text-4xl font-black bg-gradient-to-b from-yellow-300 via-amber-400 to-amber-600 bg-clip-text text-transparent italic tracking-wider uppercase">Leaderboard</h2>
-      <p class="text-xs tracking-widest text-blue-400 font-bold uppercase mt-1">Final Standings</p>
+      <h2 class="text-4xl font-black bg-gradient-to-b from-yellow-300 via-amber-400 to-amber-600 bg-clip-text text-transparent italic tracking-wider uppercase"><%= t(".leaderboard") %></h2>
+      <p class="text-xs tracking-widest text-blue-400 font-bold uppercase mt-1"><%= t(".final_standings") %></p>
     </div>
 
     <div data-millionaire-target="leaderboardList" class="space-y-3"></div>
@@ -143,7 +143,7 @@
         <button data-action="click->millionaire#restartGame"
                 class="bg-gradient-to-b from-yellow-300 to-amber-500 hover:from-yellow-200 hover:to-amber-400 text-slate-950
                        font-black px-10 py-3 rounded-xl uppercase tracking-widest text-lg transition-colors cursor-pointer">
-          Play Again
+          <%= t(".play_again") %>
         </button>
         <%= render partial: "rooms/games/change_game", locals: { room: @room, games: @games } %>
         <%= game_over_ad %>

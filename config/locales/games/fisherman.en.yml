@@ -1,0 +1,32 @@
+# The Fisherman: in-game screen (rooms/games/fisherman/_index) and its JS.
+en:
+  rooms:
+    games:
+      fisherman:
+        index:
+          roles:
+            fisherman: "Fisherman"
+            knower: "Knower"
+            impostor: "Impostor"
+          setting_up: "Setting up the boat..."
+          intro: "The fisherman reads the question, and each fish must say their answer. The fisherman needs to detect the impostor"
+          who_is_impostor: "Who is the impostor?"
+          selected: "0 Selected"
+          select_one: "Select at least one"
+          knower_title: "YOU ARE A KNOWER"
+          knower_hint: "Don't let the impostor hear you!"
+          secret_answer: "THE SECRET ANSWER IS"
+          impostor_title: "YOU ARE THE IMPOSTOR"
+          impostor_hint: "Listen to the question and blend in!"
+          impostor_note: "You don't know the word! - Invent a clever lie"
+          leaderboard: "LEADERBOARD"
+          points: "Points"
+          play_again: "🎮 Play Again"
+          play_again_note: "Resets all points and starts a new round"
+  js:
+    fisherman:
+      selected: "%{count} Selected"
+      guess:
+        one: "GUESS THIS PLAYER"
+        other: "GUESS THESE %{count} PLAYERS"
+      select_one: "Select at least one"

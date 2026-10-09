@@ -1,0 +1,27 @@
+# Words every game screen uses. Views: t("rooms.games.shared.room"); JS: t("shared.round_of", …).
+en:
+  rooms:
+    games:
+      shared:
+        room: "Room:"
+        game_over: "GAME OVER"
+        play_again: "Play Again"
+        waiting_game: "Waiting for game to start…"
+        waiting_host: "Waiting for host…"
+        waiting_restart: "Waiting for host to restart…"
+        points: "Points"
+        total_points: "total points"
+        results: "Results"
+        final_standings: "Final Standings"
+  js:
+    shared:
+      go: "GO!"
+      round_of: "Round %{round} of %{total}"
+      round: "Round %{round}"
+      player: "Player %{n}"
+      places:
+        "1": "🥇 You Win!"
+        "2": "🥈 2nd Place"
+        "3": "🥉 3rd Place"
+      place: "#%{rank} Place"
+      pts: "%{points} pts"

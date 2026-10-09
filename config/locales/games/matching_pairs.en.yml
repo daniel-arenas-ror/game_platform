@@ -1,0 +1,43 @@
+# Matching Pairs: in-game screen and its JS.
+en:
+  rooms:
+    games:
+      matching_pairs:
+        index:
+          get_ready: "Get ready…"
+          scores: "Scores"
+          look_tv: "Look at the TV!"
+          remember: "Remember where every card is."
+  js:
+    matching_pairs:
+      error: "Something went wrong"
+      error_hint: "Start a new game"
+      memorize: "Memorize the board!"
+      covered: "Phones are covered until the cards turn over."
+      find: "Find the pairs!"
+      everyone_playing: "Everyone is playing on their phone."
+      round_over: "Round over"
+      next_board: "Next board coming up…"
+      get_ready: "Get ready…"
+      look_here: "Look at this screen — the board shows up here first."
+      memorize_hint: "Remember where every card is — then find the pairs on your phone."
+      scoring: "+100 per pair · −10 per wrong pair"
+      someone: "Someone"
+      cleared: "🎉 %{name} cleared the board!"
+      round_n_over: "Round %{round} over"
+      final_results: "Final results…"
+      pairs: "%{count} pairs"
+      round: "Round %{round} / %{total}"
+      look_tv: "Look at the TV!"
+      remember: "Remember where every card is."
+      memorize_status: "Round %{round}/%{total} · Memorize"
+      board_cleared: "🎉 Board cleared!"
+      all_found: "All pairs found — wait for the others"
+      round_over_next: "Round over · next board soon"
+      you_found: "You found %{matches}/%{pairs} pairs"
+      game_over: "Game over"
+      tied_first: "Tied for 1st!"
+      you_won: "You won!"
+      tied_for: "Tied for #%{place}"
+      you_finished: "You finished #%{place}"
+      pairs_progress: "%{matches}/%{pairs} pairs"

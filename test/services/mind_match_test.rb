@@ -48,4 +48,36 @@ class MindMatchTest < ActiveSupport::TestCase
     assert_not submit(@ana, "late")
     assert_empty @room.reload.game_state["answers"]
   end
+
+  test "a Spanish room gets Spanish categories" do
+    @room.update!(locale: "es")
+    category = GameServices::MindMatch.new(Room.find(@room.id)).pick_category!
+    assert_includes GameServices::MindMatch::CATEGORIES["es"], category
+  end
+
+  test "both languages have the same number of categories, all different" do
+    en, es = GameServices::MindMatch::CATEGORIES.values_at("en", "es")
+    assert_equal en.size, es.size
+    assert_equal es.uniq, es
+  end
+
+  test "Spanish answers match without accents and in singular or plural" do
+    svc  = GameServices::MindMatch.new(Room.new(locale: "es"))
+    same = ->(a, b) { assert_equal svc.send(:normalize_word, a), svc.send(:normalize_word, b), "#{a} = #{b}" }
+
+    same.("Camión", "camion")
+    same.("gatos", "gato")
+    same.("flores", "flor")
+    same.("clases", "clase")
+    same.("luces", "luz")
+    same.("Peces!", "pez")
+    same.("café", "cafés")
+    assert_not_equal svc.send(:normalize_word, "gato"), svc.send(:normalize_word, "pato")
+  end
+
+  test "English answers ignore accents too" do
+    svc = GameServices::MindMatch.new(Room.new(locale: "en"))
+    assert_equal svc.send(:normalize_word, "cafe"), svc.send(:normalize_word, "Café")
+    assert_equal svc.send(:normalize_word, "cat"), svc.send(:normalize_word, "cats")
+  end
 end

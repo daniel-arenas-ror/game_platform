@@ -1,0 +1,91 @@
+# Deportes — importar con: bin/rails questions:billionaire:import
+
+- text: "¿Cuántos jugadores tiene cada equipo de fútbol en la cancha?"
+  topic: "Deportes"
+  points: 100
+  answers:
+    - { text: "12" }
+    - { text: "11", correct: true }
+    - { text: "10" }
+    - { text: "9" }
+
+- text: "¿En qué deporte se hace una 'clavada'?"
+  topic: "Deportes"
+  points: 200
+  answers:
+    - { text: "Voleibol" }
+    - { text: "Baloncesto", correct: true }
+    - { text: "Balonmano" }
+    - { text: "Tenis" }
+
+- text: "¿Cada cuánto se celebran normalmente los Juegos Olímpicos de verano?"
+  topic: "Deportes"
+  points: 300
+  answers:
+    - { text: "Cada 5 años" }
+    - { text: "Cada 4 años", correct: true }
+    - { text: "Cada 2 años" }
+    - { text: "Cada 3 años" }
+
+- text: "¿Qué país organizó la primera Copa Mundial de la FIFA en 1930?"
+  topic: "Deportes"
+  points: 400
+  answers:
+    - { text: "Italia" }
+    - { text: "Uruguay", correct: true }
+    - { text: "Brasil" }
+    - { text: "Argentina" }
+
+- text: "En un partido masculino de Grand Slam, ¿cuántos sets hay que ganar para llevarse el partido?"
+  topic: "Deportes"
+  points: 500
+  answers:
+    - { text: "3", correct: true }
+    - { text: "2" }
+    - { text: "4" }
+    - { text: "5" }
+
+- text: "¿Cuáles de estos son torneos de tenis de Grand Slam?"
+  topic: "Deportes"
+  points: 600
+  answers:
+    - { text: "Wimbledon", correct: true }
+    - { text: "Abierto de Estados Unidos", correct: true }
+    - { text: "Masters de Montecarlo" }
+    - { text: "Abierto de Indian Wells" }
+
+- text: "¿Cuál es la distancia oficial de un maratón?"
+  topic: "Deportes"
+  points: 700
+  answers:
+    - { text: "42 km" }
+    - { text: "42,195 km", correct: true }
+    - { text: "40 km" }
+    - { text: "45 km" }
+
+- text: "¿En qué ciudad se celebraron los primeros Juegos Olímpicos modernos en 1896?"
+  topic: "Deportes"
+  points: 800
+  answers:
+    - { text: "París" }
+    - { text: "Roma" }
+    - { text: "Londres" }
+    - { text: "Atenas", correct: true }
+
+- text: "En golf, ¿cómo se llama hacer un hoyo con un golpe menos que el par?"
+  topic: "Deportes"
+  points: 900
+  answers:
+    - { text: "Birdie", correct: true }
+    - { text: "Albatros" }
+    - { text: "Bogey" }
+    - { text: "Eagle" }
+
+- text: "En el fútbol americano, ¿cuántos puntos vale un touchdown antes del punto extra?"
+  topic: "Deportes"
+  points: 1000
+  answers:
+    - { text: "6", correct: true }
+    - { text: "5" }
+    - { text: "3" }
+    - { text: "7" }

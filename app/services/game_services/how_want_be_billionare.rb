@@ -54,7 +54,8 @@ module GameServices
         nil
       end
 
-      pipeline = []
+      language = ::HowWantBeBillionare::Question.match_for(@room.locale)
+      pipeline = [ { "$match" => language } ]
       pipeline << { '$match' => { '_id' => { '$nin' => asked_oids } } } unless asked_oids.empty?
       pipeline << { '$sample' => { size: 1 } }
 
@@ -63,7 +64,7 @@ module GameServices
       if question.nil?
         asked_ids = []
         @room.atomic_set('game_state.asked_question_ids' => [])
-        question = ::HowWantBeBillionare::Question.collection.aggregate([{ '$sample' => { size: 1 } }]).first
+        question = ::HowWantBeBillionare::Question.collection.aggregate([ { "$match" => language }, { "$sample" => { size: 1 } } ]).first
       end
 
       @room.atomic_set(

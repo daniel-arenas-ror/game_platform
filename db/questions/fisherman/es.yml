@@ -1,0 +1,32 @@
+# Preguntas de El Pescador para salas en español — importar con: bin/rails questions:fisherman:import
+# Cada pregunta tiene varias respuestas verdaderas; los Sabios ven una, el Impostor ve "???".
+- text: "¿Qué usaba la gente antes del papel higiénico?"
+  answers: ["Mazorcas de maíz", "Conchas marinas", "Piedras", "Toallas de seda"]
+- text: "¿Qué usaban en la antigüedad para limpiarse los dientes?"
+  answers: ["Ramitas para masticar", "Conchas trituradas", "Polvo de carbón"]
+- text: "¿Qué cosas se usaron de verdad como medicina en el pasado?"
+  answers: ["Momias molidas", "Mercurio", "Sanguijuelas"]
+- text: "¿Qué cosas raras se han usado como pelucas o pelo falso?"
+  answers: ["Crin de caballo", "Pelo de yak", "Pelo humano"]
+- text: "¿Qué animales llegaron a ser juzgados en la Europa medieval?"
+  answers: ["Ratas", "Cerdos", "Langostas"]
+- text: "¿Qué cosas se creía que protegían de los malos espíritus?"
+  answers: ["Ajo", "Campanas", "Sal"]
+- text: "¿Qué ingredientes extraños se usaron en tratamientos de belleza?"
+  answers: ["Caca de pájaro", "Polvo de plomo", "Excremento de cocodrilo"]
+- text: "¿Qué creían los marineros que traía mala suerte en los barcos?"
+  answers: ["Bananos", "Silbar", "Mujeres a bordo"]
+- text: "¿Qué objetos se han usado de verdad como almohadas en la historia?"
+  answers: ["Bloques de madera", "Soportes de piedra", "Reposacabezas de cerámica"]
+- text: "¿Qué usaban a veces los antiguos romanos en los baños públicos?"
+  answers: ["Aceite de oliva", "Raspadores de metal", "Esponjas compartidas"]
+- text: "¿Qué trabajos extraños existieron de verdad?"
+  answers: ["Bufón de pedos del rey", "Ayudante real del baño", "Cazador de ratas"]
+- text: "¿Qué ha usado la gente a lo largo de la historia para refrescar el aliento?"
+  answers: ["Hojas de menta", "Carbón", "Orina"]
+- text: "¿Con qué materiales se hacían las superficies para escribir en la antigüedad?"
+  answers: ["Piel de animal", "Bambú", "Tablillas de arcilla"]
+- text: "¿Qué le lanzaba la gente a los artistas que no le gustaban?"
+  answers: ["Tomates podridos", "Huevos", "Fruta"]
+- text: "¿Qué cosas se consideraban antes comida de lujo?"
+  answers: ["Langosta", "Ostras", "Caviar"]

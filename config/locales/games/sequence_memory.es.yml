@@ -1,0 +1,24 @@
+es:
+  rooms:
+    games:
+      sequence_memory:
+        index:
+          watch_carefully: "Mira con atención…"
+          your_turn: "¡Tu turno!"
+          sequence_was: "La secuencia era"
+          watch_remember: "¡Mira la pantalla y recuerda la secuencia!"
+          watch: "¡Mira la pantalla!"
+          submitted: "Enviado ✓"
+  js:
+    sequence_memory:
+      round_steps:
+        one: "Ronda %{round} / %{total} · %{count} paso"
+        other: "Ronda %{round} / %{total} · %{count} pasos"
+      round: "Ronda %{round} / %{total}"
+      submitted:
+        one: "%{count} jugador envió"
+        other: "%{count} jugadores enviaron"
+      step: "Paso %{step} / %{total}"
+      done: "¡Listo!"
+      correct_steps: "%{correct} / %{total} pasos correctos"
+      taps: "%{count} / %{total} toques"

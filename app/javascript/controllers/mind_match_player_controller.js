@@ -1,5 +1,6 @@
 import { Controller } from "@hotwired/stimulus"
 import consumer from "channels/consumer"
+import { t } from "controllers/shared/i18n"
 import { celebrateWin, isTopScore } from "controllers/shared/celebration"
 
 export default class extends Controller {
@@ -83,7 +84,7 @@ export default class extends Controller {
     this.showPhase("phaseTransition")
 
     if (this.transitionLabelTarget)
-      this.transitionLabelTarget.textContent = `Round ${data.round} of ${data.total_rounds}`
+      this.transitionLabelTarget.textContent = t("mind_match.round_of", { round: data.round, total: data.total_rounds })
 
     let n = 3
     if (this.transitionCountdownTarget) this.transitionCountdownTarget.textContent = n
@@ -132,13 +133,13 @@ export default class extends Controller {
 
     // Toast feedback
     if (myPts > 1) {
-      this.showToast(`✨ You matched! +${myPts} pts`, "match")
+      this.showToast(t("mind_match.you_matched", { points: myPts }), "match")
       this._flashPoints(myPts)
     } else if (myPts === 1) {
       // Solo answer still scores 1 (matched with self — shouldn't happen but just in case)
-      this.showToast(`+1 pt`, "info")
+      this.showToast(t("mind_match.one_point"), "info")
     } else {
-      this.showToast("😬 No match this round", "miss")
+      this.showToast(t("mind_match.no_match_round"), "miss")
     }
   }
 
@@ -151,9 +152,9 @@ export default class extends Controller {
     const sorted = Object.entries(data.scores || {}).sort(([, a], [, b]) => b - a)
     const myRank = sorted.findIndex(([id]) => id === this.playerIdValue)
     if (myRank === 0) {
-      this.showToast("🏆 You won! Congratulations!", "win")
+      this.showToast(t("mind_match.you_won"), "win")
     } else if (myRank >= 0) {
-      this.showToast(`You finished #${myRank + 1}`, "info")
+      this.showToast(t("mind_match.finished", { rank: myRank + 1 }), "info")
     }
     if (isTopScore(data.scores, this.playerIdValue)) celebrateWin()
   }
@@ -189,7 +190,7 @@ export default class extends Controller {
     groups.forEach((g, i) => {
       const n     = g.player_ids.length
       const isMe  = g.player_ids.includes(myId)
-      const pts   = n > 1 ? `+${n} pts` : "No match"
+      const pts   = n > 1 ? t("mind_match.plus_pts", { count: n }) : t("mind_match.no_match")
       const nicks = g.player_ids.map(id => this.esc(this.nicknames[id] || id)).join(", ")
 
       let color = "border-slate-600 bg-slate-800"
@@ -220,7 +221,7 @@ export default class extends Controller {
         const isMe      = id === myId
         const medal     = i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : `${i + 1}.`
         const highlight = isMe ? "border border-violet-500/60 bg-violet-500/10" : "bg-slate-800"
-        const youTag    = isMe ? ` <span class='text-violet-400 text-xs'>(you)</span>` : ""
+        const youTag    = isMe ? ` <span class='text-violet-400 text-xs'>${t("mind_match.you")}</span>` : ""
         return `
           <div class="flex items-center justify-between px-5 py-3 ${highlight} rounded-xl">
             <span class="text-base text-white font-semibold">${medal} ${nick}${youTag}</span>

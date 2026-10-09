@@ -15,6 +15,10 @@ bin/dev
 
 # Seed the database with games and questions
 bin/rails db:seed
+
+# Import game questions (both languages; safe to re-run, never deletes)
+bin/rails questions:billionaire:import
+bin/rails questions:fisherman:import
 ```
 
 ### Testing
@@ -197,7 +201,14 @@ English and Spanish (`config/initializers/locale.rb`). Strings live in `config/l
 - **URLs:** English has no prefix (`/games`), Spanish uses `/es` (`/es/games`); routes sit in `scope "(:locale)"`. `default_url_options` adds the prefix, so always build links with route helpers, never hard-coded paths on public pages. Slugs are the same in both languages.
 - **Header picker** (`shared/_locale_picker`) → `GET /language?lang=es&return_to=…` (`LocalesController`) sets the `locale` cookie and returns to the same page in that language. Unprefixed public pages redirect to `/es` when the cookie (or, on a first visit, `Accept-Language`) prefers Spanish.
 - **Rooms keep their language:** `Room#locale` is set from the page that created the room. `RoomsController#room_locale` (and `GamesController` in change-game mode) force that language whatever the URL or cookie, so a phone scanning the QR code sees the host's language. Room screens have no picker.
-- **JS strings:** put them under `js:` in the locale files; the layout embeds them (`LocaleHelper#js_translations_tag`) and controllers use `import { t } from "controllers/shared/i18n"` → `t("game.key", { name })` (`%{name}` interpolation, `one`/`other` plurals with `count`).
+- **In-game strings** live in `config/locales/games/<code>.en.yml` / `.es.yml`: the view's lazy keys (`rooms.games.<code>.index.*`) and the JS keys (`js.<code>.*`). Words every game uses (Room:, GAME OVER, Play Again, place titles…) are in `games/shared.*.yml`. A page only embeds its own game's `js.<code>` strings.
+- **JS strings:** `import { t, num, placeTitle } from "controllers/shared/i18n"` → `t("game.key", { name })` (`%{name}` interpolation, `one`/`other` plurals with `count`), `num(1000)` formats in the room's language, `placeTitle(rank)` gives "🥇 You Win!" / "2nd Place". Tests fail when a `t("…")` key in the JS is missing in either language, and the test env raises on missing view keys.
+- **Escape player text in HTML:** nicknames, guesses and words are typed by players. Use `textContent`, or `escapeHtml()` from `controllers/shared/html` (or the controller's `esc`) before putting them in an `innerHTML` template — also when they go through `t()`.
+- **Game content per language:** every room gets content in its own language.
+  - Billionaire: `db/questions/how_want_be_billionare/*.yml` (English) and `es/*.yml` (Spanish, same order and points). Fisherman: `db/questions/fisherman/{en,es}.yml`. Both models include `LocalizedQuestion` (`locale` field; no locale = English; a language with no questions falls back to English). Re-run the import tasks after editing.
+  - Doodle Dash: `config/doodle_dash/words.yml` / `words.es.yml`; `blocked_words.yml` covers both languages (keep drawable words out of it — a test checks).
+  - Mind Match: `MindMatch::CATEGORIES` per locale; `normalize_word` ignores accents and folds English or Spanish plurals by room language.
+  - Matching Pairs: `Catalog::LABELS["es"]` names every card (image alt text).
 - **SEO:** each public page has hreflang alternates + `og:locale`; the sitemap lists every page in both languages.
 - **Game content:** `Game::TRANSLATED_FIELDS` (name, description, tagline, how_to_play, faq…) read `translations[locale]` and fall back to English; the Spanish lives in each `db/seeds/games/<code>.yml` under `translations: es:`. Re-run `bin/rails db:seed` after editing.
 - **Prose pages** (about, privacy, contact) are one template per language (`about.es.html.erb`); keep both in sync. Everything else uses lazy keys (`t(".title")`). A test fails when en.yml and es.yml don't have the same keys.

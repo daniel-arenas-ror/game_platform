@@ -1,0 +1,91 @@
+# Geografía — importar con: bin/rails questions:billionaire:import
+
+- text: "¿En qué continente está Egipto?"
+  topic: "Geografía"
+  points: 100
+  answers:
+    - { text: "América del Sur" }
+    - { text: "Europa" }
+    - { text: "África", correct: true }
+    - { text: "Asia" }
+
+- text: "¿Cuál es la capital de Canadá?"
+  topic: "Geografía"
+  points: 200
+  answers:
+    - { text: "Toronto" }
+    - { text: "Ottawa", correct: true }
+    - { text: "Vancouver" }
+    - { text: "Montreal" }
+
+- text: "¿Cuáles de estos países no tienen salida al mar?"
+  topic: "Geografía"
+  points: 300
+  answers:
+    - { text: "Suiza", correct: true }
+    - { text: "Portugal" }
+    - { text: "Bolivia", correct: true }
+    - { text: "Chile" }
+
+- text: "¿Cuál es el país más pequeño del mundo por superficie?"
+  topic: "Geografía"
+  points: 400
+  answers:
+    - { text: "Ciudad del Vaticano", correct: true }
+    - { text: "Mónaco" }
+    - { text: "San Marino" }
+    - { text: "Liechtenstein" }
+
+- text: "¿Qué cordillera se considera tradicionalmente parte de la frontera entre Europa y Asia?"
+  topic: "Geografía"
+  points: 500
+  answers:
+    - { text: "Los Andes" }
+    - { text: "Los Alpes" }
+    - { text: "Los Montes Urales", correct: true }
+    - { text: "Los Pirineos" }
+
+- text: "¿Cuál es el desierto cálido más grande del mundo?"
+  topic: "Geografía"
+  points: 600
+  answers:
+    - { text: "Kalahari" }
+    - { text: "Sahara", correct: true }
+    - { text: "Gobi" }
+    - { text: "Atacama" }
+
+- text: "¿Cuáles de estos países tienen costa en el mar Negro?"
+  topic: "Geografía"
+  points: 700
+  answers:
+    - { text: "Hungría" }
+    - { text: "Turquía", correct: true }
+    - { text: "Grecia" }
+    - { text: "Rumania", correct: true }
+
+- text: "¿Cuál es la capital de Marruecos?"
+  topic: "Geografía"
+  points: 800
+  answers:
+    - { text: "Rabat", correct: true }
+    - { text: "Marrakech" }
+    - { text: "Casablanca" }
+    - { text: "Fez" }
+
+- text: "¿Entre qué países está el lago Titicaca?"
+  topic: "Geografía"
+  points: 900
+  answers:
+    - { text: "Bolivia", correct: true }
+    - { text: "Ecuador" }
+    - { text: "Perú", correct: true }
+    - { text: "Chile" }
+
+- text: "¿Cuál es el lago más profundo del mundo?"
+  topic: "Geografía"
+  points: 1000
+  answers:
+    - { text: "Lago Superior" }
+    - { text: "Mar Caspio" }
+    - { text: "Lago Tanganica" }
+    - { text: "Lago Baikal", correct: true }

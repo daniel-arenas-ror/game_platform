@@ -1,0 +1,24 @@
+# Battle City: in-game screen and its JS (battle_city_host / battle_city_player).
+en:
+  rooms:
+    games:
+      battle_city:
+        index:
+          room: "Room:"
+          game_over: "GAME OVER"
+          play_again: "PLAY AGAIN"
+          player_n: "Player %{n}"
+          your_kills: "Your kills"
+          waiting_restart: "Waiting for host to restart…"
+          kills: "Kills"
+  js:
+    battle_city:
+      go: "GO!"
+      respawning: "Respawning…"
+      you_win: "YOU WIN!"
+      game_over: "GAME OVER"
+      player: "Player %{n}"
+      reasons:
+        base_destroyed: "The base was destroyed!"
+        last_tank_standing: "Last tank standing!"
+        kills_limit: "Kill limit reached!"

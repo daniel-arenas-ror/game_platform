@@ -1,5 +1,6 @@
 import { Controller } from "@hotwired/stimulus"
 import consumer from "channels/consumer"
+import { t } from "controllers/shared/i18n"
 
 const CELL_NEUTRAL   = "#1e3a5f"
 const CELL_HIGHLIGHT = "#facc15"
@@ -73,7 +74,7 @@ export default class extends Controller {
 
     const steps = sequence.length
     this.roundLabelTarget.textContent =
-      `Round ${round} / ${total_rounds} · ${steps} step${steps > 1 ? "s" : ""}`
+      t("sequence_memory.round_steps", { round, total: total_rounds, count: steps })
     this.stepIndicatorTarget.textContent = ""
 
     this.buildGrid(this.gridTarget)
@@ -89,7 +90,7 @@ export default class extends Controller {
 
     this.submittedCount    = 0
     this.inputDuration     = input_duration
-    this.roundLabel2Target.textContent       = `Round ${round} / ${total_rounds}`
+    this.roundLabel2Target.textContent       = t("sequence_memory.round", { round, total: total_rounds })
     this.submittedCountTarget.textContent    = ""
 
     this.buildGrid(this.grid2Target)
@@ -100,14 +101,14 @@ export default class extends Controller {
   onPlayerSubmitted(data) {
     this.submittedCount++
     this.submittedCountTarget.textContent =
-      `${this.submittedCount} player${this.submittedCount > 1 ? "s" : ""} submitted`
+      t("sequence_memory.submitted", { count: this.submittedCount })
   }
 
   onReveal(data) {
     clearInterval(this.timerHandle)
     const { round, total_rounds, sequence } = data
 
-    this.roundLabel3Target.textContent = `Round ${round} / ${total_rounds}`
+    this.roundLabel3Target.textContent = t("sequence_memory.round", { round, total: total_rounds })
     this.buildRevealGrid(this.revealGridTarget, sequence)
     this.playerResultsTarget.innerHTML = this.buildPlayerResults(data)
 
@@ -185,7 +186,7 @@ export default class extends Controller {
     sequence.forEach((cellIndex, step) => {
       // Update step indicator just before the flash
       setTimeout(() => {
-        this.stepIndicatorTarget.textContent = `Step ${step + 1} / ${total}`
+        this.stepIndicatorTarget.textContent = t("sequence_memory.step", { step: step + 1, total })
       }, delay)
 
       // Light up + pulse
@@ -213,7 +214,7 @@ export default class extends Controller {
 
     // Clear step indicator after last flash
     setTimeout(() => {
-      this.stepIndicatorTarget.textContent = "Done!"
+      this.stepIndicatorTarget.textContent = t("sequence_memory.done")
     }, delay)
   }
 

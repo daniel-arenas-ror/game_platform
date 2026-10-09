@@ -1,0 +1,40 @@
+# Preguntas de ¿Quién Quiere Ser Billonario? para salas en español.
+# Importar con: bin/rails questions:billionaire:import (los archivos de es/ se guardan en español).
+# - points: 100–1000 (más difícil = más puntos)
+# - answers: 2 o más opciones; marca cada correcta con `correct: true` (puede haber varias)
+
+- text: "¿Cuál es el planeta más grande del sistema solar?"
+  topic: "Astronomía"
+  points: 100
+  answers:
+    - { text: "Júpiter", correct: true }
+    - { text: "Saturno" }
+    - { text: "Neptuno" }
+    - { text: "La Tierra" }
+
+- text: "¿Quién pintó 'La noche estrellada'?"
+  topic: "Historia del arte"
+  points: 200
+  answers:
+    - { text: "Vincent van Gogh", correct: true }
+    - { text: "Claude Monet" }
+    - { text: "Pablo Picasso" }
+    - { text: "Salvador Dalí" }
+
+- text: "¿Cuáles de estos elementos son gases nobles?"
+  topic: "Química"
+  points: 300
+  answers:
+    - { text: "Neón", correct: true }
+    - { text: "Argón", correct: true }
+    - { text: "Nitrógeno" }
+    - { text: "Cloro" }
+
+- text: "¿En qué año cayó el Muro de Berlín?"
+  topic: "Historia"
+  points: 400
+  answers:
+    - { text: "1989", correct: true }
+    - { text: "1991" }
+    - { text: "1985" }
+    - { text: "1979" }

@@ -1,5 +1,6 @@
 import { Controller } from "@hotwired/stimulus"
 import consumer from "channels/consumer"
+import { t } from "controllers/shared/i18n"
 import {
   buildBoard, cardAt, showBack, showFace, ranked, esc, cascade, restartAnimation, injectStyles, MEDALS
 } from "controllers/matching_pairs/cards"
@@ -60,7 +61,7 @@ export default class extends Controller {
       case "round_over":      this.onRoundOver(data);   break
       case "player_left":     this.onPlayerLeft(data);  break
       case "game_over":       this.onGameOver(data);    break
-      case "game_error":      this.setPhase("Something went wrong", "Start a new game"); break
+      case "game_error":      this.setPhase(t("matching_pairs.error"), t("matching_pairs.error_hint")); break
       case "game_restarted":  window.location.reload(); break
       case "game_changed":    window.location.href = `/rooms/${this.roomCodeValue}`; break
     }
@@ -81,22 +82,22 @@ export default class extends Controller {
     switch (state.status) {
       case "memorize":
         this.revealAll(state.deck)
-        this.setPhase("Memorize the board!", "Phones are covered until the cards turn over.")
+        this.setPhase(t("matching_pairs.memorize"), t("matching_pairs.covered"))
         break
       case "playing":
-        this.setPhase("Find the pairs!", "Everyone is playing on their phone.")
+        this.setPhase(t("matching_pairs.find"), t("matching_pairs.everyone_playing"))
         this.startCountdown(remaining(state.round_ends_at), state.round_time)
         break
       case "round_over":
         this.revealAll(state.deck)
-        this.setPhase("Round over", "Next board coming up…")
+        this.setPhase(t("matching_pairs.round_over"), t("matching_pairs.next_board"))
         break
       case "game_over":
         this.revealAll(state.deck)
         this.onGameOver({ scores: this.scores, nicknames: this.nicknames })
         break
       default:
-        this.setPhase("Get ready…", "Look at this screen — the board shows up here first.")
+        this.setPhase(t("matching_pairs.get_ready"), t("matching_pairs.look_here"))
     }
   }
 
@@ -107,13 +108,13 @@ export default class extends Controller {
     this.renderScoreboard()
 
     this.revealAll(deck, true)
-    this.setPhase("Memorize the board!", "Remember where every card is — then find the pairs on your phone.")
+    this.setPhase(t("matching_pairs.memorize"), t("matching_pairs.memorize_hint"))
     this.startCountdown(duration)
   }
 
   onPlay({ duration }) {
     this.hideAll(true)
-    this.setPhase("Find the pairs!", `+100 per pair · −10 per wrong pair`)
+    this.setPhase(t("matching_pairs.find"), t("matching_pairs.scoring"))
     this.startCountdown(duration)
   }
 
@@ -122,7 +123,7 @@ export default class extends Controller {
     this.progress[player_id] = { ...(this.progress[player_id] || {}), matches, cleared }
     this.renderScoreboard()
     if (match) restartAnimation(this.scoreboardTarget.querySelector(`[data-score="${player_id}"]`), "mp-pop")
-    if (cleared) this.toast(`🎉 ${esc(this.nicknames[player_id] || "Someone")} cleared the board!`)
+    if (cleared) this.toast(t("matching_pairs.cleared", { name: esc(this.nicknames[player_id] || t("matching_pairs.someone")) }))
   }
 
   onRoundOver({ round, total_rounds, deck, scores, progress, nicknames }) {
@@ -133,7 +134,7 @@ export default class extends Controller {
     this.revealAll(deck, true)
     this.renderScoreboard()
     this.countdownTarget.textContent = ""
-    this.setPhase(`Round ${round} over`, round < total_rounds ? "Next board coming up…" : "Final results…")
+    this.setPhase(t("matching_pairs.round_n_over", { round }), round < total_rounds ? t("matching_pairs.next_board") : t("matching_pairs.final_results"))
   }
 
   onPlayerLeft({ player_id }) {
@@ -159,7 +160,7 @@ export default class extends Controller {
   setBoardSize(cols, rows) {
     if (!cols || !rows) return
     this.pairs = cols * rows / 2
-    this.pairsLabelTarget.textContent = `${this.pairs} pairs`
+    this.pairsLabelTarget.textContent = t("matching_pairs.pairs", { count: this.pairs })
     if (cols === this.cols && rows === this.rows) return
 
     this.cols = cols
@@ -198,7 +199,7 @@ export default class extends Controller {
   }
 
   setRoundLabel(round, total) {
-    this.roundLabelTarget.textContent = round ? `Round ${round} / ${total}` : ""
+    this.roundLabelTarget.textContent = round ? t("matching_pairs.round", { round, total }) : ""
   }
 
   renderScoreboard() {

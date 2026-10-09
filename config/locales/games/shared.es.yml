@@ -1,0 +1,26 @@
+es:
+  rooms:
+    games:
+      shared:
+        room: "Sala:"
+        game_over: "FIN DEL JUEGO"
+        play_again: "Jugar de nuevo"
+        waiting_game: "Esperando a que empiece el juego…"
+        waiting_host: "Esperando al anfitrión…"
+        waiting_restart: "Esperando a que el anfitrión reinicie…"
+        points: "Puntos"
+        total_points: "puntos en total"
+        results: "Resultados"
+        final_standings: "Resultado final"
+  js:
+    shared:
+      go: "¡YA!"
+      round_of: "Ronda %{round} de %{total}"
+      round: "Ronda %{round}"
+      player: "Jugador %{n}"
+      places:
+        "1": "🥇 ¡Ganaste!"
+        "2": "🥈 2.º lugar"
+        "3": "🥉 3.er lugar"
+      place: "%{rank}.º lugar"
+      pts: "%{points} pts"

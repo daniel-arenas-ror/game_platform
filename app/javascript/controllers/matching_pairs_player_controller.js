@@ -1,5 +1,6 @@
 import { Controller } from "@hotwired/stimulus"
 import consumer from "channels/consumer"
+import { t } from "controllers/shared/i18n"
 import {
   buildBoard, cardAt, showBack, showFace, preload, ranked, restartAnimation, injectStyles, FLIP_MS, MEDALS
 } from "controllers/matching_pairs/cards"
@@ -81,8 +82,8 @@ export default class extends Controller {
     switch (state.status) {
       case "memorize":
         preload(state.preload)
-        this.showCover("Look at the TV!", "Remember where every card is.")
-        this.setStatus(`Round ${state.round}/${state.total_rounds} · Memorize`)
+        this.showCover(t("matching_pairs.look_tv"), t("matching_pairs.remember"))
+        this.setStatus(t("matching_pairs.memorize_status", { round: state.round, total: state.total_rounds }))
         this.startCountdown(remaining(state.memorize_ends_at), state.memorize_time)
         break
       case "playing":
@@ -104,8 +105,8 @@ export default class extends Controller {
     preload(urls)
     this.newBoard(cols, rows, true)
     this.setFeedback("")
-    this.showCover("Look at the TV!", "Remember where every card is.")
-    this.setStatus(`Round ${round}/${total_rounds} · Memorize`)
+    this.showCover(t("matching_pairs.look_tv"), t("matching_pairs.remember"))
+    this.setStatus(t("matching_pairs.memorize_status", { round, total: total_rounds }))
     this.startCountdown(duration)
   }
 
@@ -138,8 +139,8 @@ export default class extends Controller {
       this.vibrate(60)
       if (cleared) {
         this.active = false
-        this.setFeedback("🎉 Board cleared!", COLOR_GREEN)
-        this.setStatus("All pairs found — wait for the others")
+        this.setFeedback(t("matching_pairs.board_cleared"), COLOR_GREEN)
+        this.setStatus(t("matching_pairs.all_found"))
         setTimeout(() => { confetti(); this.vibrate([ 60, 40, 60, 40, 160 ]) }, FLIP_MS)
       } else {
         this.setFeedback("+100", COLOR_GREEN)
@@ -176,8 +177,8 @@ export default class extends Controller {
       setTimeout(() => { showFace(card, item); card.classList.add("mp-dim") }, i * 25)
     })
 
-    this.setStatus(round < total_rounds ? "Round over · next board soon" : "Round over")
-    this.setFeedback(`You found ${this.matches}/${this.pairs} pairs`, "#fff")
+    this.setStatus(round < total_rounds ? t("matching_pairs.round_over_next") : t("matching_pairs.round_over"))
+    this.setFeedback(t("matching_pairs.you_found", { matches: this.matches, pairs: this.pairs }), "#fff")
   }
 
   onGameOver({ scores }) {
@@ -188,9 +189,9 @@ export default class extends Controller {
     const tied   = me && ranked(scores).filter(r => r.place === place).length > 1
 
     this.gameOverIconTarget.textContent  = MEDALS[place] || "🏁"
-    this.gameOverTitleTarget.textContent = !me ? "Game over" :
-      place === 1 ? (tied ? "Tied for 1st!" : "You won!") :
-      `${tied ? "Tied for" : "You finished"} #${place}`
+    this.gameOverTitleTarget.textContent = !me ? t("matching_pairs.game_over") :
+      place === 1 ? (tied ? t("matching_pairs.tied_first") : t("matching_pairs.you_won")) :
+      t(tied ? "matching_pairs.tied_for" : "matching_pairs.you_finished", { place })
     this.finalScoreTarget.textContent = me?.pts ?? 0
     this.phaseGameOverTarget.classList.remove("hidden")
     if (place === 1) celebrateWin(this.gameOverIconTarget)
@@ -242,7 +243,7 @@ export default class extends Controller {
   startPlaying(seconds, total = seconds) {
     this.hideCover()
     this.active = this.matches < this.pairs
-    this.setStatus(this.active ? "Find the pairs!" : "All pairs found — wait for the others")
+    this.setStatus(this.active ? t("matching_pairs.find") : t("matching_pairs.all_found"))
     this.setFeedback("")
     this.startCountdown(seconds, total)
   }
@@ -266,7 +267,7 @@ export default class extends Controller {
 
   setMatches(matches) {
     this.matches = matches
-    this.pairsTarget.textContent = this.pairs ? `${matches}/${this.pairs} pairs` : ""
+    this.pairsTarget.textContent = this.pairs ? t("matching_pairs.pairs_progress", { matches, pairs: this.pairs }) : ""
   }
 
   setStatus(text) {

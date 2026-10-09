@@ -1,0 +1,23 @@
+es:
+  rooms:
+    games:
+      how_want_be_billionare:
+        index:
+          preparing: "Preparando las preguntas"
+          vault: "Asegurando la bóveda del banco..."
+          loading_question: "Cargando la pregunta..."
+          players_selecting: "Los jugadores están eligiendo sus respuestas…"
+          lock_in: "Elige tu respuesta final"
+          locked: "Respuesta enviada ✓ — esperando la revelación…"
+          leaderboard: "Tabla de posiciones"
+          final_standings: "Resultado final"
+          play_again: "Jugar de nuevo"
+  js:
+    how_want_be_billionare:
+      round: "Ronda %{round} / %{total}"
+      round_reveal: "Ronda %{round} / %{total} — Respuesta"
+      correct: "¡Correcto! +%{points} pts"
+      incorrect: "Incorrecto — 0 pts"
+      running_total: "Total acumulado: %{points} pts"
+      total: "(%{points} en total)"
+      player: "Jugador %{n}"

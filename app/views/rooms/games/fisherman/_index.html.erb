@@ -4,18 +4,18 @@
     <div id="fisherman-game-master" class="relative min-h-screen bg-slate-900 text-white p-6">
 
       <h1 class="text-3xl font-black text-white mb-6 uppercase italic"><%= @current_player&.nickname %></h1>
-      <h2 class="text-3xl font-black text-white mb-6 uppercase italic"><%= @current_player&.role %></h2>
+      <h2 class="text-3xl font-black text-white mb-6 uppercase italic"><%= t(".roles.#{@current_player.role}", default: @current_player.role) if @current_player&.role %></h2>
 
       <% if @room.status == 'playing' %>
         <!-- 1. SPINNER (Loading) -->
         <div id="section-spinner" class="hidden flex flex-col items-center justify-center min-h-[60vh]">
           <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-purple-500"></div>
-          <p class="mt-4 text-slate-400 animate-pulse">Setting up the boat...</p>
+          <p class="mt-4 text-slate-400 animate-pulse"><%= t(".setting_up") %></p>
         </div>
 
         <!-- 2. QUESTION (Fisherman View) -->
         <% if  @current_player&.role == 'fisherman' || (@current_player&.role.nil?) %>
-          <p class="text-slate-400 mb-8 italic">The fisherman reads the question, and each fish must say their answer. The fisherman needs to detect the impostor</p>
+          <p class="text-slate-400 mb-8 italic"><%= t(".intro") %></p>
         <% end %>
 
         <div id="section-fisherman-control" class="<%= @current_player&.role == 'fisherman' || (@current_player&.role.nil?) ? '' : 'hidden' %> space-y-6">
@@ -25,8 +25,8 @@
           </div>
 
           <div class="flex justify-between items-center px-2">
-            <p class="text-slate-500 text-sm font-black uppercase">Who is the impostor?</p>
-            <span id="selection-count" class="bg-purple-600 text-white text-xs px-3 py-1 rounded-full font-bold">0 Selected</span>
+            <p class="text-slate-500 text-sm font-black uppercase"><%= t(".who_is_impostor") %></p>
+            <span id="selection-count" class="bg-purple-600 text-white text-xs px-3 py-1 rounded-full font-bold"><%= t(".selected") %></span>
           </div>
 
           <div class="grid grid-cols-1 gap-3">
@@ -53,7 +53,7 @@
             <button id="btn-lock-guess" 
                     disabled
                     class="w-full py-5 rounded-2xl bg-slate-700 text-slate-500 font-black uppercase tracking-widest transition-all">
-              Select at least one
+              <%= t(".select_one") %>
             </button>
           <% end %>
         </div>
@@ -61,11 +61,11 @@
         <!-- 3. ANSWERED (Knower View) -->
         <div id="section-knower" class="<%= @current_player&.role == 'knower' ? '' : 'hidden' %>">
           <div class="text-center">
-            <h2 class="text-green-400 font-black text-3xl mb-2">YOU ARE A KNOWER</h2>
-            <p class="text-slate-400 mb-8 italic">Don't let the impostor hear you!</p>
+            <h2 class="text-green-400 font-black text-3xl mb-2"><%= t(".knower_title") %></h2>
+            <p class="text-slate-400 mb-8 italic"><%= t(".knower_hint") %></p>
             
             <div class="bg-gradient-to-br from-green-500/20 to-emerald-500/10 p-12 rounded-[3rem] border-4 border-green-500/30 mb-8">
-              <p class="text-xs font-bold tracking-widest text-green-500 mb-2">THE SECRET ANSWER IS</p>
+              <p class="text-xs font-bold tracking-widest text-green-500 mb-2"><%= t(".secret_answer") %></p>
               <h3 class="text-5xl font-black"><%= @room.game_state['answereds'].sample %></h3>
             </div>
           </div>
@@ -74,12 +74,12 @@
         <!-- 4. IMPOSTOR (Impostor View) -->
         <div id="section-impostor" class="<%= @current_player&.role == 'impostor' ? '' : 'hidden' %>">
           <div class="text-center">
-            <h2 class="text-red-500 font-black text-3xl mb-2">YOU ARE THE IMPOSTOR</h2>
-            <p class="text-slate-400 mb-8">Listen to the question and blend in!</p>
+            <h2 class="text-red-500 font-black text-3xl mb-2"><%= t(".impostor_title") %></h2>
+            <p class="text-slate-400 mb-8"><%= t(".impostor_hint") %></p>
             
             <div class="bg-red-500/10 p-12 rounded-[3rem] border-4 border-dashed border-red-500/30 mb-8">
               <h3 class="text-3xl font-black text-red-500">???</h3>
-              <p class="text-xs text-red-400 mt-2">You don't know the word! - Invent a clever lie</p>
+              <p class="text-xs text-red-400 mt-2"><%= t(".impostor_note") %></p>
             </div>
           </div>
         </div>
@@ -89,7 +89,7 @@
           <% if session[:player_id].blank? %>
             <audio src="/games/sounds/Triumphant_win.mp3" autoplay></audio>
           <% end %>
-          <h2 class="text-4xl font-black text-center mb-10 bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent italic">LEADERBOARD</h2>
+          <h2 class="text-4xl font-black text-center mb-10 bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent italic"><%= t(".leaderboard") %></h2>
           <div class="space-y-4">
             <% @room.game_state['sorted_players'].each_with_index do |player, index| %>
               
@@ -116,7 +116,7 @@
                   <p class="text-2xl font-mono font-black <%= index == 0 ? 'text-yellow-400' : 'text-purple-400' %>">
                     <%= player.dig("points") %>
                   </p>
-                  <p class="text-[10px] font-bold uppercase tracking-widest text-slate-500">Points</p>
+                  <p class="text-[10px] font-bold uppercase tracking-widest text-slate-500"><%= t(".points") %></p>
                 </div>
               </div>
 
@@ -126,11 +126,11 @@
           <div class="mt-10 pb-8">
             <button id="btn-restart-game"
                     class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-black py-5 rounded-2xl shadow-xl transform transition-all active:scale-95 uppercase tracking-[0.2em]">
-              🎮 Play Again
+              <%= t(".play_again") %>
             </button>
 
             <p class="text-center text-slate-500 text-xs mt-4 font-bold uppercase tracking-widest">
-              Resets all points and starts a new round
+              <%= t(".play_again_note") %>
             </p>
 
             <% if current_player.nil? %>

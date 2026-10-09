@@ -1,5 +1,6 @@
 import { Controller } from "@hotwired/stimulus"
 import consumer from "channels/consumer"
+import { t } from "controllers/shared/i18n"
 import {
   PALETTE, ERASER, BRUSH_SIZES, fitCanvas, clearCanvas, createPen, redraw, patternHtml, ranked, esc,
   secondsUntil, restartAnimation, injectStyles, MEDALS
@@ -137,19 +138,19 @@ export default class extends Controller {
     this.hasGuessed = false
     this.strokes    = []
     this.lastId     = 0
-    this.setStatus(turn ? `Turn ${turn}/${total_turns}` : "")
+    this.setStatus(turn ? t("doodle_dash.turn_short", { turn, total: total_turns }) : "")
     this.startCountdown(duration)
 
     if (this.isArtist) {
       this.hasChoices = false
-      this.choicesTarget.innerHTML = `<p class="text-center text-slate-500">Getting your words…</p>`
+      this.choicesTarget.innerHTML = `<p class="text-center text-slate-500">${t("doodle_dash.getting_words")}</p>`
       this.showPanel("panelChoose")
       // The words travel on this phone's private stream and can arrive before this announcement.
       if (this.earlyChoices) this.onChooseWord({ choices: this.earlyChoices })
       this.syncUnless(() => this.hasChoices)
       navigator.vibrate?.([ 80, 60, 80 ])
     } else {
-      this.showWaiting(`${this.name(artist_id)} is picking a word…`, "Get ready to guess! Watch the TV.")
+      this.showWaiting(t("doodle_dash.picking", { name: this.name(artist_id) }), t("doodle_dash.get_ready_guess"))
     }
   }
 
@@ -185,16 +186,16 @@ export default class extends Controller {
     if (this.isArtist) {
       this.wordTarget.textContent = this.word || "…"
       this.syncUnless(() => this.word)
-      this.setStatus("You're drawing!")
+      this.setStatus(t("doodle_dash.you_drawing"))
       this.showPanel("panelDraw")
       fitCanvas(this.canvasTarget)
       redraw(this.canvasTarget, this.strokes)
     } else {
-      this.setStatus(`${this.name(artist_id)} is drawing`)
+      this.setStatus(t("doodle_dash.someone_drawing", { name: this.name(artist_id) }))
       this.setPattern(pattern)
       this.showPanel("panelGuess")
       this.setGuessing(!this.hasGuessed)
-      if (this.hasGuessed) this.setFeedback("You got it! Wait for the others.", COLOR_GREEN)
+      if (this.hasGuessed) this.setFeedback(t("doodle_dash.got_it_wait"), COLOR_GREEN)
       else { this.setFeedback(""); this.guessInputTarget.focus() }
     }
   }
@@ -203,23 +204,23 @@ export default class extends Controller {
     if (result === "correct") {
       this.hasGuessed = true
       this.setGuessing(false)
-      this.setFeedback(`You got it! +${points}`, COLOR_GREEN)
+      this.setFeedback(t("doodle_dash.got_it_points", { points }), COLOR_GREEN)
       this.playSound(this.dingSound)
       confetti(30)
       navigator.vibrate?.([ 60, 40, 120 ])
     } else if (result === "close") {
-      this.setFeedback("So close!", COLOR_YELLOW, "dd-shake")
+      this.setFeedback(t("doodle_dash.so_close"), COLOR_YELLOW, "dd-shake")
       navigator.vibrate?.(60)
     } else {
-      const said = this.lastGuess ? `“${this.lastGuess}” isn't it` : "Not it"
-      this.setFeedback(`${said}. Keep trying!`, "#94a3b8", "dd-shake")
+      const said = this.lastGuess ? t("doodle_dash.not_it_word", { guess: this.lastGuess }) : t("doodle_dash.not_it")
+      this.setFeedback(said, "#94a3b8", "dd-shake")
     }
   }
 
   onGuessed({ player_id, scores }) {
     if (scores?.[this.playerIdValue] !== undefined) this.setScore(scores[this.playerIdValue])
     if (this.isArtist) {
-      this.setStatus(`🎉 ${this.name(player_id)} guessed it!`)
+      this.setStatus(t("doodle_dash.someone_guessed", { name: this.name(player_id) }))
       navigator.vibrate?.(40)
     }
   }
@@ -232,14 +233,14 @@ export default class extends Controller {
 
     const count = Object.keys(guessed || {}).length
     let points
-    if (artist_id === this.playerIdValue) points = count ? `+${count * 25} for your drawing` : "Nobody got it this time"
-    else if (guessed?.[this.playerIdValue]) points = `You got it! +${guessed[this.playerIdValue]}`
-    else points = "You didn't get this one"
+    if (artist_id === this.playerIdValue) points = count ? t("doodle_dash.for_drawing", { points: count * 25 }) : t("doodle_dash.nobody_got_it")
+    else if (guessed?.[this.playerIdValue]) points = t("doodle_dash.got_it_points", { points: guessed[this.playerIdValue] })
+    else points = t("doodle_dash.you_didnt")
 
     this.revealWordTarget.textContent = word || "?"
     this.revealPointsTarget.textContent = points
     const guessers = Object.keys(scores || {}).filter(id => id !== artist_id).length
-    this.setStatus(count && count >= guessers ? "Everyone got it!" : "Time's up!")
+    this.setStatus(count && count >= guessers ? t("doodle_dash.everyone_got_it") : t("doodle_dash.times_up"))
     this.showPanel("panelReveal")
     restartAnimation(this.revealWordTarget, "dd-pop")
   }
@@ -251,9 +252,9 @@ export default class extends Controller {
     const tied  = me && ranked(scores).filter(r => r.place === place).length > 1
 
     this.gameOverIconTarget.textContent  = MEDALS[place] || "🏁"
-    this.gameOverTitleTarget.textContent = !me ? "Game over" :
-      place === 1 ? (tied ? "Tied for 1st!" : "You won!") :
-      `${tied ? "Tied for" : "You finished"} #${place}`
+    this.gameOverTitleTarget.textContent = !me ? t("doodle_dash.game_over") :
+      place === 1 ? (tied ? t("doodle_dash.tied_first") : t("doodle_dash.you_won")) :
+      t(tied ? "doodle_dash.tied_for" : "doodle_dash.you_finished", { place })
     this.finalScoreTarget.textContent = me?.pts ?? 0
     this.phaseGameOverTarget.classList.remove("hidden")
     if (isTopScore(scores, this.playerIdValue)) celebrateWin(this.gameOverTitleTarget)
@@ -349,11 +350,11 @@ export default class extends Controller {
 
   renderTools() {
     this.colorsTarget.innerHTML = PALETTE.map(color => `
-      <button type="button" data-color="${color}" aria-label="${color === ERASER ? "Eraser" : `Color ${color}`}"
+      <button type="button" data-color="${color}" aria-label="${color === ERASER ? t("doodle_dash.eraser") : t("doodle_dash.color", { color })}"
               class="size-10 rounded-full border-2 border-slate-600 cursor-pointer grid place-items-center text-lg"
               style="background:${color}">${color === ERASER ? "🧽" : ""}</button>`).join("")
     this.sizesTarget.innerHTML = BRUSH_SIZES.map(size => `
-      <button type="button" data-size="${size}" aria-label="Brush size ${size}"
+      <button type="button" data-size="${size}" aria-label="${t("doodle_dash.brush", { size })}"
               class="size-12 rounded-xl bg-slate-800 border-2 border-slate-700 cursor-pointer grid place-items-center">
         <span class="block rounded-full bg-white" style="width:${4 + size * 0.8}px;height:${4 + size * 0.8}px"></span>
       </button>`).join("")
@@ -456,7 +457,7 @@ export default class extends Controller {
   }
 
   name(id) {
-    return this.nicknames[id] || "Someone"
+    return this.nicknames[id] || t("doodle_dash.someone")
   }
 
   // ── Countdown ─────────────────────────────────────────────────────────────

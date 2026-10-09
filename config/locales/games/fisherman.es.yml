@@ -1,0 +1,31 @@
+es:
+  rooms:
+    games:
+      fisherman:
+        index:
+          roles:
+            fisherman: "Pescador"
+            knower: "Sabio"
+            impostor: "Impostor"
+          setting_up: "Preparando el bote..."
+          intro: "El pescador lee la pregunta y cada pez dice su respuesta. El pescador tiene que descubrir al impostor"
+          who_is_impostor: "¿Quién es el impostor?"
+          selected: "0 elegidos"
+          select_one: "Elige al menos uno"
+          knower_title: "ERES UN SABIO"
+          knower_hint: "¡Que el impostor no te escuche!"
+          secret_answer: "LA RESPUESTA SECRETA ES"
+          impostor_title: "ERES EL IMPOSTOR"
+          impostor_hint: "¡Escucha la pregunta y disimula!"
+          impostor_note: "¡No sabes la palabra! - Inventa una mentira ingeniosa"
+          leaderboard: "TABLA DE POSICIONES"
+          points: "Puntos"
+          play_again: "🎮 Jugar de nuevo"
+          play_again_note: "Reinicia los puntos y empieza una ronda nueva"
+  js:
+    fisherman:
+      selected: "%{count} elegidos"
+      guess:
+        one: "ACUSAR A ESTE JUGADOR"
+        other: "ACUSAR A ESTOS %{count} JUGADORES"
+      select_one: "Elige al menos uno"

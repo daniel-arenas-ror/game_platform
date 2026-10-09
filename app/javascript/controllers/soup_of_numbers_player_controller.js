@@ -1,5 +1,6 @@
 import { Controller } from "@hotwired/stimulus"
 import consumer from "channels/consumer"
+import { t } from "controllers/shared/i18n"
 import { celebrateWin, isTopScore } from "controllers/shared/celebration"
 
 const CELL_EMPTY  = "#1e293b"
@@ -107,7 +108,7 @@ export default class extends Controller {
       this.playChime()
       this.vibrate([ 60, 40, 120 ])
     }
-    this.setFeedback(mine ? `🎉 You found it! +${data.points}` : `${this.esc(data.nickname)} found ${data.number}`,
+    this.setFeedback(mine ? t("soup_of_numbers.you_found", { points: data.points }) : t("soup_of_numbers.someone_found", { name: this.esc(data.nickname), number: this.esc(data.number) }),
                      mine ? COLOR_GREEN : data.color)
   }
 
@@ -115,14 +116,14 @@ export default class extends Controller {
     this.closeRound()
     this.found.push({ number: data.number, cells: data.cells, player_id: null })
     this.paint()
-    this.setFeedback(`⏰ Nobody found ${data.number}`, "#94a3b8")
+    this.setFeedback(t("soup_of_numbers.nobody_found", { number: this.esc(data.number) }), "#94a3b8")
   }
 
   // Ignored once the round closed: the "found by" message stays on screen.
   onClaimRejected() {
     if (!this.active) return
     this.pending = false
-    this.rejectSelection("✗ Not the number")
+    this.rejectSelection(t("soup_of_numbers.not_the_number"))
   }
 
   onGameOver({ scores }) {
@@ -131,7 +132,7 @@ export default class extends Controller {
     const place   = ranking.findIndex(([id]) => id === this.playerIdValue) + 1
     const myScore = scores?.[this.playerIdValue] ?? 0
 
-    this.gameOverTitleTarget.textContent = place === 1 ? "🥇 You won!" : place > 0 ? `#${place} place` : "Game over"
+    this.gameOverTitleTarget.textContent = place === 1 ? t("soup_of_numbers.you_won") : place > 0 ? t("soup_of_numbers.place", { place }) : t("soup_of_numbers.game_over")
     this.finalScoreTarget.textContent    = myScore
     this.phaseGameOverTarget.classList.remove("hidden")
     if (isTopScore(scores, this.playerIdValue)) celebrateWin(this.gameOverTitleTarget)
@@ -142,7 +143,7 @@ export default class extends Controller {
     this.pending      = false
     this.selection    = []
     this.targetLength = length
-    this.statusTarget.textContent = `Round ${round}/${totalRounds} · Find the ${length}-digit number`
+    this.statusTarget.textContent = t("soup_of_numbers.status", { round, total: totalRounds, length })
     this.setFeedback("")
     this.paint()
   }
@@ -179,8 +180,8 @@ export default class extends Controller {
     }
 
     const line = this.extendLine(sel, r, c)
-    if (!line) return this.rejectSelection("✗ Not a straight line")
-    if (line.length > this.targetLength) return this.rejectSelection(`✗ The number has ${this.targetLength} digits`)
+    if (!line) return this.rejectSelection(t("soup_of_numbers.not_straight"))
+    if (line.length > this.targetLength) return this.rejectSelection(t("soup_of_numbers.has_digits", { count: this.targetLength }))
 
     this.selection = line
     this.setFeedback("")

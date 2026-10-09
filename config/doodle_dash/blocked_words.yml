@@ -35,3 +35,33 @@
 - vagina*
 - wank*
 - whore*
+
+# Spanish. Matched after accents are removed ("cabrón" → "cabron"). Words that are also drawable
+# (cabra, huevo, zorro, cono…) are left out on purpose.
+- cabron*
+- cojones
+- culero*
+- culo
+- chingad*
+- chingar*
+- estupid*
+- follar*
+- gonorrea
+- hijueputa*
+- huevon*
+- idiota*
+- imbecil*
+- joder*
+- jodid*
+- malparid*
+- marica*
+- maricon*
+- mierda*
+- pendej*
+- pene
+- pinche*
+- puta*
+- puto*
+- tetas
+- verga*
+- zorra*

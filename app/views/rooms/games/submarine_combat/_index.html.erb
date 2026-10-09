@@ -13,9 +13,9 @@
     <%# ── Phase: Waiting for all players to place their fleet ── %>
     <div data-submarine-combat-host-target="phaseWaiting">
       <div class="flex flex-col items-center justify-center min-h-screen p-8">
-        <p class="text-cyan-400 font-mono text-xs uppercase tracking-widest mb-2">Submarine Combat</p>
-        <h1 class="text-3xl font-black text-white mb-2">Waiting for Players</h1>
-        <p class="text-slate-400 text-sm mb-10">Players are placing their submarines...</p>
+        <p class="text-cyan-400 font-mono text-xs uppercase tracking-widest mb-2"><%= @room.game.name %></p>
+        <h1 class="text-3xl font-black text-white mb-2"><%= t(".waiting_players") %></h1>
+        <p class="text-slate-400 text-sm mb-10"><%= t(".placing") %></p>
 
         <div data-submarine-combat-host-target="playerList"
              class="flex flex-wrap gap-3 justify-center mb-10 min-h-[48px]">
@@ -27,7 +27,7 @@
                 class="px-10 py-4 bg-cyan-600 text-white font-black text-lg rounded-2xl
                        disabled:opacity-30 disabled:cursor-not-allowed
                        hover:bg-cyan-500 transition-colors">
-          Start Battle
+          <%= t(".start_battle") %>
         </button>
       </div>
     </div>
@@ -40,7 +40,7 @@
         <div class="flex items-center gap-6 mb-6">
           <p data-submarine-combat-host-target="roundLabel"
              class="text-slate-300 font-mono text-sm uppercase tracking-widest">
-            Round —
+            <%= t(".round_dash") %>
           </p>
           <div data-submarine-combat-host-target="timerDisplay"
                class="w-14 h-14 rounded-full border-4 border-cyan-500 flex items-center justify-center
@@ -62,13 +62,13 @@
         <%# Legend %>
         <div class="flex gap-4 text-xs font-mono text-slate-500 mt-1">
           <span class="flex items-center gap-1.5">
-            <span class="inline-block w-3 h-3 rounded-sm bg-red-600"></span> Hit
+            <span class="inline-block w-3 h-3 rounded-sm bg-red-600"></span> <%= t(".legend_hit") %>
           </span>
           <span class="flex items-center gap-1.5">
-            <span class="inline-block w-3 h-3 rounded-sm bg-slate-600"></span> Miss
+            <span class="inline-block w-3 h-3 rounded-sm bg-slate-600"></span> <%= t(".legend_miss") %>
           </span>
           <span class="flex items-center gap-1.5">
-            <span class="inline-block w-3 h-3 rounded-sm bg-slate-900 border border-slate-700"></span> Not fired
+            <span class="inline-block w-3 h-3 rounded-sm bg-slate-900 border border-slate-700"></span> <%= t(".legend_not_fired") %>
           </span>
         </div>
 
@@ -78,7 +78,7 @@
     <%# ── Phase: Game Over ── %>
     <div data-submarine-combat-host-target="phaseGameOver" class="hidden">
       <div class="flex flex-col items-center justify-center min-h-screen p-8 text-center">
-        <p class="text-yellow-400 font-mono text-xs uppercase tracking-widest mb-2">Game Over</p>
+        <p class="text-yellow-400 font-mono text-xs uppercase tracking-widest mb-2"><%= t(".game_over") %></p>
         <h1 data-submarine-combat-host-target="gameOverTitle"
             class="text-4xl font-black text-white mb-8">
         </h1>
@@ -90,7 +90,7 @@
         <button data-action="click->submarine-combat-host#restartGame"
                 class="px-8 py-4 bg-cyan-600 text-white font-black text-base rounded-2xl
                        hover:bg-cyan-500 transition-colors">
-          Play Again
+          <%= t("rooms.games.shared.play_again") %>
         </button>
         <%= render partial: "rooms/games/change_game", locals: { room: @room, games: @games } %>
         <%= game_over_ad %>
@@ -119,9 +119,9 @@
     <div data-submarine-combat-player-target="phasePlacement">
       <div class="flex flex-col items-center px-4 pt-8 pb-6">
 
-        <p class="text-cyan-400 font-mono text-xs uppercase tracking-widest mb-1">Submarine Combat</p>
-        <h1 class="text-2xl font-black text-white mb-1">Place Your Fleet</h1>
-        <p class="text-slate-500 text-xs mb-5">Tap a ship to select, then tap a cell to move it</p>
+        <p class="text-cyan-400 font-mono text-xs uppercase tracking-widest mb-1"><%= @room.game.name %></p>
+        <h1 class="text-2xl font-black text-white mb-1"><%= t(".place_fleet") %></h1>
+        <p class="text-slate-500 text-xs mb-5"><%= t(".place_hint") %></p>
 
         <div data-submarine-combat-player-target="shipInfo" class="mb-4 h-6 text-center"></div>
 
@@ -135,18 +135,18 @@
                   disabled
                   class="px-5 py-3 bg-slate-700 text-white font-bold rounded-xl text-sm
                          disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-600 transition-colors">
-            Rotate
+            <%= t(".rotate") %>
           </button>
           <button data-action="click->submarine-combat-player#shuffleAll"
                   class="px-5 py-3 bg-slate-700 text-white font-bold rounded-xl text-sm
                          hover:bg-slate-600 transition-colors">
-            Shuffle
+            <%= t(".shuffle") %>
           </button>
           <button data-action="click->submarine-combat-player#confirmPlacement"
                   data-submarine-combat-player-target="confirmBtn"
                   class="px-5 py-3 bg-cyan-600 text-white font-bold rounded-xl text-sm
                          disabled:opacity-40 disabled:cursor-not-allowed hover:bg-cyan-500 transition-colors">
-            Confirm
+            <%= t(".confirm") %>
           </button>
         </div>
 
@@ -156,9 +156,9 @@
     <%# ── Phase: Waiting (confirmed, waiting for battle start) ── %>
     <div data-submarine-combat-player-target="phaseWaiting" class="hidden">
       <div class="flex flex-col items-center justify-center min-h-screen p-8 text-center">
-        <p class="text-cyan-400 font-mono text-xs uppercase tracking-widest mb-2">Fleet Locked In</p>
-        <h1 class="text-2xl font-black text-white mb-2">Ready for Battle!</h1>
-        <p class="text-slate-400 text-sm mb-8">Waiting for all players to confirm their fleet...</p>
+        <p class="text-cyan-400 font-mono text-xs uppercase tracking-widest mb-2"><%= t(".locked_in") %></p>
+        <h1 class="text-2xl font-black text-white mb-2"><%= t(".ready") %></h1>
+        <p class="text-slate-400 text-sm mb-8"><%= t(".waiting_confirm") %></p>
 
         <div data-submarine-combat-player-target="waitingList"
              class="flex flex-wrap gap-3 justify-center">
@@ -174,7 +174,7 @@
         <div class="flex items-center justify-between w-full max-w-xs mb-4">
           <p data-submarine-combat-player-target="roundLabel"
              class="text-slate-400 font-mono text-xs uppercase tracking-widest">
-            Round —
+            <%= t(".round_dash") %>
           </p>
           <div data-submarine-combat-player-target="timerDisplay"
                class="w-12 h-12 rounded-full border-4 border-cyan-500 flex items-center justify-center
@@ -191,7 +191,7 @@
         <%# Shot status / instruction %>
         <p data-submarine-combat-player-target="shotStatus"
            class="text-slate-400 text-xs mb-3 text-center">
-          Tap a cell to pick your target
+          <%= t(".pick_target") %>
         </p>
 
         <%# Attack grid %>
@@ -205,11 +205,11 @@
                 disabled
                 class="w-full max-w-xs py-4 bg-red-600 text-white font-black text-base rounded-2xl
                        disabled:opacity-30 disabled:cursor-not-allowed hover:bg-red-500 transition-colors mb-8">
-          Fire!
+          <%= t(".fire") %>
         </button>
 
         <%# Defense grid %>
-        <p class="text-slate-600 font-mono text-xs uppercase tracking-widest mb-3">Your Fleet</p>
+        <p class="text-slate-600 font-mono text-xs uppercase tracking-widest mb-3"><%= t(".your_fleet") %></p>
 
         <div data-submarine-combat-player-target="defenseGrid"
              class="grid gap-0.5 w-full max-w-[180px]">
@@ -221,10 +221,10 @@
     <%# ── Phase: Spectator (eliminated) — shows live grids ── %>
     <div data-submarine-combat-player-target="phaseSpectator" class="hidden">
       <div class="flex flex-col items-center px-4 pt-8 pb-8">
-        <p class="text-red-400 font-mono text-xs uppercase tracking-widest mb-1">Eliminated</p>
-        <h1 class="text-xl font-black text-white mb-1">Your Fleet Was Destroyed</h1>
+        <p class="text-red-400 font-mono text-xs uppercase tracking-widest mb-1"><%= t(".eliminated") %></p>
+        <h1 class="text-xl font-black text-white mb-1"><%= t(".destroyed") %></h1>
         <p data-submarine-combat-player-target="spectatorRoundLabel"
-           class="text-slate-500 font-mono text-xs mb-6">Watching the battle...</p>
+           class="text-slate-500 font-mono text-xs mb-6"><%= t(".watching") %></p>
 
         <div data-submarine-combat-player-target="spectatorGrids"
              class="grid grid-cols-2 gap-4 w-full max-w-2xl">
@@ -236,7 +236,7 @@
     <%# ── Phase: Game Over ── %>
     <div data-submarine-combat-player-target="phaseGameOver" class="hidden">
       <div class="flex flex-col items-center justify-center min-h-screen p-8 text-center">
-        <p class="text-yellow-400 font-mono text-xs uppercase tracking-widest mb-2">Game Over</p>
+        <p class="text-yellow-400 font-mono text-xs uppercase tracking-widest mb-2"><%= t(".game_over") %></p>
         <h1 data-submarine-combat-player-target="gameOverTitle"
             class="text-3xl font-black mb-8">
         </h1>
@@ -251,8 +251,8 @@
     <div data-submarine-combat-player-target="eliminationOverlay"
          class="hidden fixed inset-0 z-50 bg-red-950/95 flex items-center justify-center">
       <div class="text-center">
-        <p class="text-red-400 font-mono text-xs uppercase tracking-widest mb-3">Eliminated</p>
-        <h1 class="text-5xl font-black text-white">Your Fleet<br>Was Destroyed</h1>
+        <p class="text-red-400 font-mono text-xs uppercase tracking-widest mb-3"><%= t(".eliminated") %></p>
+        <h1 class="text-5xl font-black text-white"><%= t(".destroyed_html") %></h1>
       </div>
     </div>
 

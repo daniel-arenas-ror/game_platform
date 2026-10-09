@@ -7,9 +7,9 @@
   <div class="flex flex-col items-center justify-center min-h-screen bg-black text-white">
 
     <div class="mb-4 text-center">
-      <h1 class="text-3xl font-black tracking-widest uppercase text-yellow-400">Battle City</h1>
+      <h1 class="text-3xl font-black tracking-widest uppercase text-yellow-400"><%= @room.game.name %></h1>
       <p class="text-slate-500 text-xs mt-1 font-mono tracking-widest">
-        Room: <span class="text-white font-bold"><%= @room.code %></span>
+        <%= t(".room") %> <span class="text-white font-bold"><%= @room.code %></span>
       </p>
     </div>
 
@@ -35,7 +35,7 @@
         <div class="text-center px-8 py-8 w-full">
           <h2 class="font-black text-yellow-400 mb-1 tracking-widest"
               style="font-size: 56px; text-shadow: 0 0 30px rgba(250,204,21,0.7);">
-            GAME OVER
+            <%= t(".game_over") %>
           </h2>
           <p id="battle-city-over-reason"
              class="text-slate-400 text-xs font-mono uppercase tracking-widest mb-6"></p>
@@ -44,7 +44,7 @@
 
           <button id="battle-city-play-again"
                   class="bg-yellow-400 hover:bg-yellow-300 text-slate-950 font-black px-10 py-3 rounded-xl uppercase tracking-widest text-lg transition-colors cursor-pointer">
-            PLAY AGAIN
+            <%= t(".play_again") %>
           </button>
           <%= render partial: "rooms/games/change_game", locals: { room: @room, games: @games } %>
           <%= game_over_ad %>
@@ -57,7 +57,7 @@
       <% tank_colors = %w[text-yellow-400 text-green-400 text-slate-300 text-red-400] %>
       <% @room.players.each_with_index do |player, i| %>
         <div class="bg-slate-900 border border-slate-700 rounded-xl px-5 py-3 text-center min-w-[100px]">
-          <p class="text-[10px] text-slate-600 uppercase tracking-widest">Player <%= i + 1 %></p>
+          <p class="text-[10px] text-slate-600 uppercase tracking-widest"><%= t(".player_n", n: i + 1) %></p>
           <p class="<%= tank_colors[i] %> font-bold mt-1 text-sm"><%= player.nickname %></p>
           <p class="<%= tank_colors[i] %> font-mono font-black text-2xl" id="score-<%= player.id %>">0</p>
         </div>
@@ -90,16 +90,16 @@
       <p data-battle-city-player-target="gameOverTitle"
          class="font-black tracking-widest"
          style="font-size: 64px; text-shadow: 0 0 30px rgba(250,204,21,0.7);">
-        GAME OVER
+        <%= t(".game_over") %>
       </p>
       <p data-battle-city-player-target="gameOverSub"
          class="text-slate-400 text-sm font-mono uppercase tracking-widest mt-2 mb-8"></p>
       <div class="bg-slate-800 border border-slate-700 rounded-2xl px-8 py-4">
-        <p class="text-[10px] text-slate-500 uppercase tracking-widest">Your kills</p>
+        <p class="text-[10px] text-slate-500 uppercase tracking-widest"><%= t(".your_kills") %></p>
         <p data-battle-city-player-target="finalScore"
            class="font-mono font-black text-5xl text-yellow-400 mt-1">0</p>
       </div>
-      <p class="text-slate-600 text-xs mt-10 font-mono">Waiting for host to restart…</p>
+      <p class="text-slate-600 text-xs mt-10 font-mono"><%= t(".waiting_restart") %></p>
     </div>
 
     <%# Header — color badge, nickname, kill score %>
@@ -111,7 +111,7 @@
         <span class="font-black text-lg tracking-wide"><%= session[:nickname] %></span>
       </div>
       <div class="text-right">
-        <p class="text-[10px] text-slate-600 uppercase tracking-widest">Kills</p>
+        <p class="text-[10px] text-slate-600 uppercase tracking-widest"><%= t(".kills") %></p>
         <p data-battle-city-player-target="score"
            class="font-mono font-black text-3xl text-white leading-none">0</p>
       </div>
@@ -148,6 +148,6 @@
       </div>
     </div>
 
-    <p class="text-center text-slate-800 text-[10px] font-mono pb-4">Room: <%= @room.code %></p>
+    <p class="text-center text-slate-800 text-[10px] font-mono pb-4"><%= t(".room") %> <%= @room.code %></p>
   </div>
 <% end %>

@@ -51,16 +51,16 @@ class DoodleDashTest < ActiveSupport::TestCase
   test "a turn offers three different unused words of the chosen level" do
     choices = @svc.start_turn!(0)[:choices]
     assert_equal 3, choices.uniq.length
-    assert(choices.all? { |w| Doodle::WORDS["easy"].include?(w) })
+    assert(choices.all? { |w| Doodle::WORDS["en"]["easy"].include?(w) })
   end
 
   test "mixed offers one easy, one medium and one hard word" do
     @room.atomic_set("game_state.difficulty" => "mixed")
     easy, medium, hard = Doodle.new(@room).start_turn!(0)[:choices]
 
-    assert_includes Doodle::WORDS["easy"], easy
-    assert_includes Doodle::WORDS["medium"], medium
-    assert_includes Doodle::WORDS["hard"], hard
+    assert_includes Doodle::WORDS["en"]["easy"], easy
+    assert_includes Doodle::WORDS["en"]["medium"], medium
+    assert_includes Doodle::WORDS["en"]["hard"], hard
   end
 
   test "only the artist can pick the word, and the first pick wins" do
@@ -245,5 +245,34 @@ class DoodleDashTest < ActiveSupport::TestCase
     Player.where(_id: artist_id).delete_all
 
     assert_nil @svc.start_turn!(0)
+  end
+
+  test "a Spanish room draws Spanish words" do
+    @room.update!(locale: "es")
+    choices = Doodle.new(Room.find(@room.id)).send(:pick_words)
+    assert(choices.all? { |w| Doodle::WORDS["es"]["easy"].include?(w) })
+  end
+
+  test "Spanish guesses: accents, articles and plurals don't matter" do
+    assert Doodle.correct?("el camion", "camión")
+    assert Doodle.correct?("camiones", "camión")
+    assert Doodle.correct?("una flor", "flor")
+    assert Doodle.correct?("flores", "flor")
+    assert Doodle.correct?("arcoiris", "arcoíris")
+    assert Doodle.close?("arcoirsi", "arcoíris")
+    assert_not Doodle.correct?("perro", "gato")
+  end
+
+  test "every word list is complete, unique and never blocked on the TV" do
+    Doodle::WORDS.each do |locale, levels|
+      assert_equal %w[easy medium hard], levels.keys, locale
+      levels.each do |level, words|
+        assert_operator words.size, :>=, 80, "#{locale}.#{level}"
+        assert_equal words.uniq, words, "#{locale}.#{level} has duplicates"
+        assert(words.all? { |w| w == w.downcase }, "#{locale}.#{level} must be lowercase")
+        blocked = words.select { |w| Doodle.feed_text(w) == "***" }
+        assert_empty blocked, "#{locale}.#{level} words hidden by blocked_words.yml"
+      end
+    end
   end
 end

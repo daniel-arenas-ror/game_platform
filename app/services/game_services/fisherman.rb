@@ -68,7 +68,8 @@ module GameServices
     end
 
     def update_question!
-      question = ::Fisherman::Question.collection.aggregate([{ '$sample': { size: 1 } }]).first
+      match    = ::Fisherman::Question.match_for(@room.locale)
+      question = ::Fisherman::Question.collection.aggregate([ { "$match" => match }, { "$sample" => { size: 1 } } ]).first
 
       @room.atomic_set("game_state.question" => question['text'])
       @room.atomic_set("game_state.answereds" => question['answerds'])

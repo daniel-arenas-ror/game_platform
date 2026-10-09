@@ -64,31 +64,82 @@ module GameServices::MatchingPairs::Catalog
     "uy" => "Uruguay", "ve" => "Venezuela", "vn" => "Vietnam"
   }.freeze
 
+  # Card names in Spanish rooms (the image alt text), by card key. Numbers need none.
+  LABELS = {
+    "es" => {
+      "animals" => {
+        "dog" => "Perro", "cat" => "Gato", "mouse" => "Ratón", "hamster" => "Hámster", "rabbit" => "Conejo",
+        "fox" => "Zorro", "bear" => "Oso", "panda" => "Panda", "koala" => "Koala", "tiger" => "Tigre",
+        "lion" => "León", "cow" => "Vaca", "pig" => "Cerdo", "frog" => "Rana", "monkey" => "Mono",
+        "chicken" => "Gallina", "penguin" => "Pingüino", "chick" => "Pollito", "duck" => "Pato", "eagle" => "Águila",
+        "owl" => "Búho", "bat" => "Murciélago", "wolf" => "Lobo", "horse" => "Caballo", "unicorn" => "Unicornio",
+        "bee" => "Abeja", "butterfly" => "Mariposa", "snail" => "Caracol", "ladybug" => "Mariquita", "turtle" => "Tortuga",
+        "snake" => "Serpiente", "lizard" => "Lagartija", "t_rex" => "T-Rex", "octopus" => "Pulpo", "crab" => "Cangrejo",
+        "blowfish" => "Pez globo", "tropical_fish" => "Pez tropical", "dolphin" => "Delfín", "whale" => "Ballena",
+        "shark" => "Tiburón", "crocodile" => "Cocodrilo", "zebra" => "Cebra", "giraffe" => "Jirafa",
+        "elephant" => "Elefante", "camel" => "Camello", "kangaroo" => "Canguro", "peacock" => "Pavo real",
+        "parrot" => "Loro", "flamingo" => "Flamenco", "sloth" => "Perezoso", "otter" => "Nutria",
+        "hedgehog" => "Erizo", "gorilla" => "Gorila"
+      },
+      "objects" => {
+        "apple" => "Manzana", "banana" => "Banano", "grapes" => "Uvas", "watermelon" => "Sandía",
+        "strawberry" => "Fresa", "pineapple" => "Piña", "cherries" => "Cerezas", "lemon" => "Limón", "pizza" => "Pizza",
+        "burger" => "Hamburguesa", "hot_dog" => "Perro caliente", "taco" => "Taco", "donut" => "Dona",
+        "cookie" => "Galleta", "cake" => "Pastel", "ice_cream" => "Helado", "lollipop" => "Paleta",
+        "popcorn" => "Palomitas", "soccer_ball" => "Balón de fútbol", "basketball" => "Balón de baloncesto",
+        "football" => "Balón de fútbol americano", "tennis" => "Pelota de tenis", "guitar" => "Guitarra",
+        "trumpet" => "Trompeta", "drum" => "Tambor", "balloon" => "Globo", "gift" => "Regalo", "crown" => "Corona",
+        "glasses" => "Gafas", "top_hat" => "Sombrero de copa", "umbrella" => "Paraguas", "key" => "Llave",
+        "lock" => "Candado", "light_bulb" => "Bombillo", "rocket" => "Cohete", "car" => "Carro", "bus" => "Bus",
+        "bicycle" => "Bicicleta", "airplane" => "Avión", "sailboat" => "Velero", "anchor" => "Ancla",
+        "alarm_clock" => "Despertador", "hourglass" => "Reloj de arena", "camera" => "Cámara", "laptop" => "Portátil",
+        "books" => "Libros", "pencil" => "Lápiz", "scissors" => "Tijeras", "hammer" => "Martillo", "magnet" => "Imán",
+        "teddy_bear" => "Osito de peluche", "puzzle" => "Pieza de rompecabezas", "dice" => "Dado", "trophy" => "Trofeo",
+        "bell" => "Campana", "rainbow" => "Arcoíris", "star" => "Estrella", "moon" => "Luna",
+        "snowman" => "Muñeco de nieve", "fire" => "Fuego"
+      },
+      "flags" => {
+        "ar" => "Argentina", "au" => "Australia", "at" => "Austria", "be" => "Bélgica", "bo" => "Bolivia",
+        "br" => "Brasil", "ca" => "Canadá", "cl" => "Chile", "cn" => "China", "co" => "Colombia",
+        "cr" => "Costa Rica", "hr" => "Croacia", "cu" => "Cuba", "cz" => "Chequia", "dk" => "Dinamarca",
+        "ec" => "Ecuador", "eg" => "Egipto", "fi" => "Finlandia", "fr" => "Francia", "de" => "Alemania",
+        "gr" => "Grecia", "in" => "India", "ie" => "Irlanda", "il" => "Israel", "it" => "Italia",
+        "jm" => "Jamaica", "jp" => "Japón", "ke" => "Kenia", "mx" => "México", "ma" => "Marruecos",
+        "nl" => "Países Bajos", "nz" => "Nueva Zelanda", "ng" => "Nigeria", "no" => "Noruega", "pa" => "Panamá",
+        "py" => "Paraguay", "pe" => "Perú", "ph" => "Filipinas", "pl" => "Polonia", "pt" => "Portugal",
+        "kr" => "Corea del Sur", "za" => "Sudáfrica", "es" => "España", "se" => "Suecia", "ch" => "Suiza",
+        "th" => "Tailandia", "tr" => "Turquía", "ua" => "Ucrania", "gb" => "Reino Unido", "us" => "Estados Unidos",
+        "uy" => "Uruguay", "ve" => "Venezuela", "vn" => "Vietnam"
+      }
+    }
+  }.freeze
+
   NUMBERS = (1..99).freeze
 
   CATEGORIES = %w[animals objects flags numbers].freeze
 
   module_function
 
-  # `count` distinct cards from `category` ("random" mixes all of them).
-  def sample(category, count)
-    pool = category == "random" ? CATEGORIES.flat_map { |c| all(c) } : all(category)
+  # `count` distinct cards from `category` ("random" mixes all of them), named in `locale`.
+  def sample(category, count, locale = "en")
+    pool = category == "random" ? CATEGORIES.flat_map { |c| all(c, locale) } : all(category, locale)
     pool.sample(count)
   end
 
   # Every card of a category as { "key", "label", "kind" ("image" | "text"), "src" }.
-  def all(category)
+  def all(category, locale = "en")
+    names = LABELS.dig(locale, category) || {}
     case category
-    when "animals" then emoji_cards("animals", ANIMALS)
-    when "objects" then emoji_cards("objects", OBJECTS)
-    when "flags"   then FLAGS.map { |iso, name| card("flags:#{iso}", name, FLAG_URL % iso) }
+    when "animals" then emoji_cards("animals", ANIMALS, names)
+    when "objects" then emoji_cards("objects", OBJECTS, names)
+    when "flags"   then FLAGS.map { |iso, name| card("flags:#{iso}", names[iso] || name, FLAG_URL % iso) }
     when "numbers" then NUMBERS.map { |n| card("numbers:#{n}", n.to_s) }
     else []
     end
   end
 
-  def emoji_cards(category, items)
-    items.map { |key, (label, code)| card("#{category}:#{key}", label, TWEMOJI_URL % code) }
+  def emoji_cards(category, items, names = {})
+    items.map { |key, (label, code)| card("#{category}:#{key}", names[key] || label, TWEMOJI_URL % code) }
   end
 
   def card(key, label, src = nil)

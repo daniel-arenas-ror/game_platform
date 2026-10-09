@@ -1,0 +1,91 @@
+# Literatura — importar con: bin/rails questions:billionaire:import
+
+- text: "¿Quién escribió 'Romeo y Julieta'?"
+  topic: "Literatura"
+  points: 100
+  answers:
+    - { text: "William Shakespeare", correct: true }
+    - { text: "Charles Dickens" }
+    - { text: "Jane Austen" }
+    - { text: "Mark Twain" }
+
+- text: "¿Qué autor creó al detective Sherlock Holmes?"
+  topic: "Literatura"
+  points: 200
+  answers:
+    - { text: "Edgar Allan Poe" }
+    - { text: "Arthur Conan Doyle", correct: true }
+    - { text: "Agatha Christie" }
+    - { text: "Charles Dickens" }
+
+- text: "¿Quién escribió 'Orgullo y prejuicio'?"
+  topic: "Literatura"
+  points: 300
+  answers:
+    - { text: "Charlotte Brontë" }
+    - { text: "Emily Brontë" }
+    - { text: "Jane Austen", correct: true }
+    - { text: "Mary Shelley" }
+
+- text: "¿Cuáles de estas novelas escribió Charles Dickens?"
+  topic: "Literatura"
+  points: 400
+  answers:
+    - { text: "Oliver Twist", correct: true }
+    - { text: "Grandes esperanzas", correct: true }
+    - { text: "Jane Eyre" }
+    - { text: "Moby Dick" }
+
+- text: "¿Quién escribió 'Cien años de soledad'?"
+  topic: "Literatura"
+  points: 500
+  answers:
+    - { text: "Gabriel García Márquez", correct: true }
+    - { text: "Mario Vargas Llosa" }
+    - { text: "Jorge Luis Borges" }
+    - { text: "Isabel Allende" }
+
+- text: "¿Quién escribió 'Don Quijote de la Mancha'?"
+  topic: "Literatura"
+  points: 600
+  answers:
+    - { text: "Lope de Vega" }
+    - { text: "Miguel de Cervantes", correct: true }
+    - { text: "Francisco de Quevedo" }
+    - { text: "Luis de Góngora" }
+
+- text: "¿A qué poeta de la antigua Grecia se le atribuye 'La Odisea'?"
+  topic: "Literatura"
+  points: 700
+  answers:
+    - { text: "Virgilio" }
+    - { text: "Sófocles" }
+    - { text: "Homero", correct: true }
+    - { text: "Ovidio" }
+
+- text: "¿Qué novela empieza con la frase 'Llámenme Ismael'?"
+  topic: "Literatura"
+  points: 800
+  answers:
+    - { text: "Moby Dick", correct: true }
+    - { text: "El viejo y el mar" }
+    - { text: "Robinson Crusoe" }
+    - { text: "La isla del tesoro" }
+
+- text: "¿Quién escribió 'Crimen y castigo'?"
+  topic: "Literatura"
+  points: 900
+  answers:
+    - { text: "Nikolái Gógol" }
+    - { text: "Fiódor Dostoievski", correct: true }
+    - { text: "Antón Chéjov" }
+    - { text: "León Tolstói" }
+
+- text: "¿Qué poeta escribió 'La Divina Comedia'?"
+  topic: "Literatura"
+  points: 1000
+  answers:
+    - { text: "Petrarca" }
+    - { text: "Dante Alighieri", correct: true }
+    - { text: "Giovanni Boccaccio" }
+    - { text: "Virgilio" }

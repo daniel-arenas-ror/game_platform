@@ -1,0 +1,45 @@
+# Mind Match: in-game screen and its JS.
+en:
+  rooms:
+    games:
+      mind_match:
+        index:
+          up_next: "Up next"
+          get_ready_short: "Get ready…"
+          get_ready: "Get Ready!"
+          connected: "Players are connected. Starting soon…"
+          round_dash: "Round —"
+          category: "Category"
+          round_results: "Round Results"
+          scores: "Scores"
+          game_over: "Game Over"
+          final_scores: "Final Scores"
+          host_soon: "The host will start the game soon…"
+          think_of: "Think of…"
+          placeholder: "Type your word…"
+          submit: "Submit"
+          submitted: "Word submitted!"
+          waiting_others: "Waiting for other players…"
+          your_score: "Your Score"
+          zero_submitted: "0 / 0 submitted"
+  js:
+    mind_match:
+      round_of: "Round %{round} of %{total}"
+      round: "Round %{round} / %{total}"
+      match_toast: "🔥 %{count}-way match: \"%{word}\" — %{names}"
+      and: " & "
+      no_matches: "🤔 No matches this round!"
+      wins_with: "🏆 %{name} wins with %{points} points!"
+      way_match: "%{count}-way match · +%{points}"
+      unique: "Unique · +%{points}"
+      zero: "0 pts"
+      no_answer: "No answer"
+      submitted: "%{count} / %{total} submitted"
+      you_matched: "✨ You matched! +%{points} pts"
+      one_point: "+1 pt"
+      no_match_round: "😬 No match this round"
+      you_won: "🏆 You won! Congratulations!"
+      finished: "You finished #%{rank}"
+      plus_pts: "+%{count} pts"
+      no_match: "No match"
+      you: "(you)"

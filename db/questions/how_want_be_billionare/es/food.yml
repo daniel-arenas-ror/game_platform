@@ -1,0 +1,91 @@
+# Comida — importar con: bin/rails questions:billionaire:import
+
+- text: "¿Cuál es el ingrediente principal del guacamole?"
+  topic: "Comida"
+  points: 100
+  answers:
+    - { text: "Tomate" }
+    - { text: "Aguacate", correct: true }
+    - { text: "Pepino" }
+    - { text: "Mango" }
+
+- text: "¿De qué país es originaria la pizza?"
+  topic: "Comida"
+  points: 200
+  answers:
+    - { text: "Francia" }
+    - { text: "Grecia" }
+    - { text: "Estados Unidos" }
+    - { text: "Italia", correct: true }
+
+- text: "¿Cuáles de estas frutas son cítricos?"
+  topic: "Comida"
+  points: 300
+  answers:
+    - { text: "Banano" }
+    - { text: "Toronja", correct: true }
+    - { text: "Manzana" }
+    - { text: "Limón", correct: true }
+
+- text: "¿Con qué se envuelve tradicionalmente el sushi?"
+  topic: "Comida"
+  points: 400
+  answers:
+    - { text: "Nori (alga)", correct: true }
+    - { text: "Lechuga" }
+    - { text: "Piel de tofu" }
+    - { text: "Papel de arroz" }
+
+- text: "¿Cuál es la especia más cara por peso?"
+  topic: "Comida"
+  points: 500
+  answers:
+    - { text: "Cardamomo" }
+    - { text: "Vainilla" }
+    - { text: "Canela" }
+    - { text: "Azafrán", correct: true }
+
+- text: "¿De qué país es plato típico la paella?"
+  topic: "Comida"
+  points: 600
+  answers:
+    - { text: "Italia" }
+    - { text: "Portugal" }
+    - { text: "México" }
+    - { text: "España", correct: true }
+
+- text: "¿Cuál es el ingrediente principal del hummus?"
+  topic: "Comida"
+  points: 700
+  answers:
+    - { text: "Frijoles negros" }
+    - { text: "Garbanzos", correct: true }
+    - { text: "Lentejas" }
+    - { text: "Arvejas" }
+
+- text: "¿Qué cereal se usa para hacer el sake japonés tradicional?"
+  topic: "Comida"
+  points: 800
+  answers:
+    - { text: "Arroz", correct: true }
+    - { text: "Maíz" }
+    - { text: "Cebada" }
+    - { text: "Trigo" }
+
+- text: "¿Qué país es el mayor productor de café del mundo?"
+  topic: "Comida"
+  points: 900
+  answers:
+    - { text: "Colombia" }
+    - { text: "Vietnam" }
+    - { text: "Etiopía" }
+    - { text: "Brasil", correct: true }
+
+- text: "¿Qué queso se usa tradicionalmente en la ensalada griega clásica?"
+  topic: "Comida"
+  points: 1000
+  answers:
+    - { text: "Ricotta" }
+    - { text: "Mozzarella" }
+    - { text: "Halloumi" }
+    - { text: "Feta", correct: true }

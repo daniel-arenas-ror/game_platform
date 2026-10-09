@@ -1,5 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 import consumer from "channels/consumer"
+import { t } from "controllers/shared/i18n"
+import { escapeHtml } from "controllers/shared/html"
 import { Application, Graphics, Container } from "pixi.js"
 
 const WALL_COLORS  = { brick: 0xc0392b, steel: 0x7f8c8d, water: 0x2471a3, trees: 0x1e8449 }
@@ -208,7 +210,7 @@ export default class extends Controller {
       overlay.classList.remove("hidden")
       countEl.textContent = count
     } else {
-      countEl.textContent = "GO!"
+      countEl.textContent = t("battle_city.go")
       setTimeout(() => overlay.classList.add("hidden"), 700)
     }
   }
@@ -224,12 +226,7 @@ export default class extends Controller {
     const playAgain = document.getElementById("battle-city-play-again")
     if (!overlay) return
 
-    const reasons = {
-      base_destroyed:     "The base was destroyed!",
-      last_tank_standing: "Last tank standing!",
-      kills_limit:        "Kill limit reached!"
-    }
-    if (reasonEl) reasonEl.textContent = reasons[data.reason] ?? data.reason ?? ""
+    if (reasonEl) reasonEl.textContent = data.reason ? t(`battle_city.reasons.${data.reason}`) : ""
 
     if (rankEl && this.state?.tanks) {
       const COLORS = { yellow: "#f1c40f", green: "#2ecc71", white: "#ecf0f1", red: "#e74c3c" }
@@ -238,7 +235,7 @@ export default class extends Controller {
 
       rankEl.innerHTML = sorted.map(([pid, score], idx) => {
         const tank     = this.state.tanks[pid]
-        const name     = tank?.nickname ?? `Player ${idx + 1}`
+        const name     = escapeHtml(tank?.nickname ?? t("battle_city.player", { n: idx + 1 }))
         const color    = COLORS[tank?.color] ?? "#ffffff"
         const medal    = ["🥇", "🥈", "🥉"][idx] ?? `${idx + 1}.`
         const isWinner = pid === data.winner_id || (idx === 0 && data.reason === "kills_limit")

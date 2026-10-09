@@ -1,5 +1,6 @@
 import { Controller } from "@hotwired/stimulus"
 import consumer from "channels/consumer"
+import { t, placeTitle } from "controllers/shared/i18n"
 import { celebrateWin, isTopScore } from "controllers/shared/celebration"
 
 const CELL_NEUTRAL  = "#1e3a5f"
@@ -75,7 +76,7 @@ export default class extends Controller {
     const { round, total_rounds, sequence } = data
     this.seqLength = sequence.length
     this.watchRoundLabelTarget.textContent =
-      `Round ${round} / ${total_rounds} · ${sequence.length} step${sequence.length > 1 ? "s" : ""}`
+      t("sequence_memory.round_steps", { round, total: total_rounds, count: sequence.length })
     this.showPhase("phaseWatching")
   }
 
@@ -124,7 +125,7 @@ export default class extends Controller {
     }).join("")
 
     this.roundPointsDescTarget.innerHTML =
-      `<span class="block mb-2">${correct} / ${seq.length} correct steps</span>
+      `<span class="block mb-2">${t("sequence_memory.correct_steps", { correct, total: seq.length })}</span>
        <span class="flex justify-center flex-wrap gap-1">${dots}</span>`
 
     this.showPhase("phaseReveal")
@@ -139,8 +140,7 @@ export default class extends Controller {
     const rank   = sorted.findIndex(([id]) => id === myId) + 1
     const total  = scores[myId] ?? 0
 
-    const titles = ["", "You won! 🥇", "2nd place 🥈", "3rd place 🥉"]
-    this.gameOverTitleTarget.textContent = titles[rank] || `#${rank} place`
+    this.gameOverTitleTarget.textContent = placeTitle(rank)
     this.finalScoreTarget.textContent    = total
 
     this.showPhase("phaseGameOver")
@@ -224,7 +224,7 @@ export default class extends Controller {
   }
 
   updateProgress() {
-    this.tapProgressTarget.textContent = `${this.taps.length} / ${this.seqLength} taps`
+    this.tapProgressTarget.textContent = t("sequence_memory.taps", { count: this.taps.length, total: this.seqLength })
   }
 
   // ── Submit ────────────────────────────────────────────────────────────────

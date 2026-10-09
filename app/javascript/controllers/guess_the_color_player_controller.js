@@ -1,5 +1,6 @@
 import { Controller } from "@hotwired/stimulus"
 import consumer from "channels/consumer"
+import { placeTitle } from "controllers/shared/i18n"
 import { celebrateWin, isTopScore } from "controllers/shared/celebration"
 
 export default class extends Controller {
@@ -128,9 +129,8 @@ export default class extends Controller {
     const sorted     = Object.entries(data.scores ?? {}).sort(([, a], [, b]) => b - a)
     const myRank     = sorted.findIndex(([id]) => id === this.playerIdValue) + 1
 
-    const titles = { 1: "🥇 You Win!", 2: "🥈 2nd Place", 3: "🥉 3rd Place" }
     if (this.hasGameOverTitleTarget)
-      this.gameOverTitleTarget.textContent = titles[myRank] ?? `#${myRank} Place`
+      this.gameOverTitleTarget.textContent = placeTitle(myRank)
 
     if (this.hasFinalScoreTarget)
       this.finalScoreTarget.textContent = finalScore

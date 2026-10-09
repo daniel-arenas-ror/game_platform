@@ -1,5 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 import consumer from "channels/consumer"
+import { t } from "controllers/shared/i18n"
+import { escapeHtml } from "controllers/shared/html"
 
 export default class extends Controller {
   static values  = { roomCode: String }
@@ -103,7 +105,7 @@ export default class extends Controller {
     // ── Color blocks grid ───────────────────────────────────────────────
     if (this.hasRevealGridTarget) {
       const { r, g, b } = data.target_color
-      let html = this.colorCard(`rgb(${r},${g},${b})`, "Target", true)
+      let html = this.colorCard(`rgb(${r},${g},${b})`, t("guess_the_color.target"), true)
 
       Object.entries(data.picks).forEach(([playerId, pick]) => {
         const nickname = this.nicknameFor(playerId, data)
@@ -117,7 +119,7 @@ export default class extends Controller {
       Object.keys(data.scores).forEach(playerId => {
         if (!data.picks[playerId]) {
           const nickname = this.nicknameFor(playerId, data)
-          html += this.colorCard("rgb(30,30,30)", `${nickname} (no pick)`, false, true)
+          html += this.colorCard("rgb(30,30,30)", t("guess_the_color.no_pick", { name: nickname }), false, true)
         }
       })
 
@@ -132,7 +134,7 @@ export default class extends Controller {
         const roundPts   = data.round_scores[playerId] ?? 0
         return `
           <div class="flex items-center justify-between py-2 px-4 bg-slate-800 rounded-xl">
-            <span class="font-bold text-white text-sm">${nickname}</span>
+            <span class="font-bold text-white text-sm">${escapeHtml(nickname)}</span>
             <div class="text-right">
               <span class="text-yellow-400 font-mono font-black text-lg">${total}</span>
               <span class="text-slate-500 text-xs font-mono ml-2">(+${roundPts})</span>
@@ -158,7 +160,7 @@ export default class extends Controller {
                       ${idx === 0 ? "border border-yellow-500/50" : ""}">
             <div class="flex items-center gap-3">
               <span class="text-xl">${medal}</span>
-              <span class="font-bold text-white">${nickname}</span>
+              <span class="font-bold text-white">${escapeHtml(nickname)}</span>
             </div>
             <span class="text-yellow-400 font-mono font-black text-xl">${score}</span>
           </div>`
@@ -211,7 +213,7 @@ export default class extends Controller {
 
   updateRoundCounter(round, total) {
     if (this.hasRoundCounterTarget)
-      this.roundCounterTarget.textContent = `Round ${round} of ${total}`
+      this.roundCounterTarget.textContent = t("shared.round_of", { round, total })
   }
 
   colorCard(bg, label, isTarget, dimmed = false) {
@@ -221,7 +223,7 @@ export default class extends Controller {
       <div class="text-center ${opacity}">
         <div class="w-28 h-28 rounded-2xl shadow-lg ${border}"
              style="background:${bg}"></div>
-        <p class="text-xs font-bold mt-2 text-slate-300 max-w-[112px] truncate">${label}</p>
+        <p class="text-xs font-bold mt-2 text-slate-300 max-w-[112px] truncate">${escapeHtml(label)}</p>
       </div>`
   }
 

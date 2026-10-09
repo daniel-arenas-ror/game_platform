@@ -1,0 +1,91 @@
+# Historia — importar con: bin/rails questions:billionaire:import
+
+- text: "¿Quién fue la primera persona en caminar sobre la Luna?"
+  topic: "Historia"
+  points: 100
+  answers:
+    - { text: "Buzz Aldrin" }
+    - { text: "Neil Armstrong", correct: true }
+    - { text: "Michael Collins" }
+    - { text: "Yuri Gagarin" }
+
+- text: "¿En qué año terminó la Segunda Guerra Mundial?"
+  topic: "Historia"
+  points: 200
+  answers:
+    - { text: "1939" }
+    - { text: "1944" }
+    - { text: "1945", correct: true }
+    - { text: "1950" }
+
+- text: "¿Qué civilización construyó Machu Picchu?"
+  topic: "Historia"
+  points: 300
+  answers:
+    - { text: "Inca", correct: true }
+    - { text: "Olmeca" }
+    - { text: "Azteca" }
+    - { text: "Maya" }
+
+- text: "¿Quién fue el primer emperador de los franceses?"
+  topic: "Historia"
+  points: 400
+  answers:
+    - { text: "Luis XVI" }
+    - { text: "Napoleón Bonaparte", correct: true }
+    - { text: "Luis XIV" }
+    - { text: "Carlomagno" }
+
+- text: "¿Qué barco se hundió en su viaje inaugural en abril de 1912?"
+  topic: "Historia"
+  points: 500
+  answers:
+    - { text: "Queen Mary" }
+    - { text: "Lusitania" }
+    - { text: "Titanic", correct: true }
+    - { text: "Britannic" }
+
+- text: "¿Cuáles de estos países formaron parte del Eje en la Segunda Guerra Mundial?"
+  topic: "Historia"
+  points: 600
+  answers:
+    - { text: "Brasil" }
+    - { text: "Alemania", correct: true }
+    - { text: "Japón", correct: true }
+    - { text: "Suecia" }
+
+- text: "¿Quién fue la primera mujer en ganar un Premio Nobel?"
+  topic: "Historia"
+  points: 700
+  answers:
+    - { text: "Rosalind Franklin" }
+    - { text: "Ada Lovelace" }
+    - { text: "Marie Curie", correct: true }
+    - { text: "Madre Teresa" }
+
+- text: "¿Durante qué dinastía se construyó la mayor parte de la Gran Muralla China que se conserva hoy?"
+  topic: "Historia"
+  points: 800
+  answers:
+    - { text: "Ming", correct: true }
+    - { text: "Tang" }
+    - { text: "Qin" }
+    - { text: "Han" }
+
+- text: "¿En qué año cayó tradicionalmente el Imperio romano de Occidente?"
+  topic: "Historia"
+  points: 900
+  answers:
+    - { text: "1453 d. C." }
+    - { text: "395 d. C." }
+    - { text: "476 d. C.", correct: true }
+    - { text: "410 d. C." }
+
+- text: "¿Qué acuerdo de paz puso fin a la Guerra de los Treinta Años en 1648?"
+  topic: "Historia"
+  points: 1000
+  answers:
+    - { text: "Tratado de Versalles" }
+    - { text: "Paz de Westfalia", correct: true }
+    - { text: "Tratado de Utrecht" }
+    - { text: "Tratado de Tordesillas" }

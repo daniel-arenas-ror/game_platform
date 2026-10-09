@@ -55,7 +55,7 @@ module GameServices
       @players = @room.players.to_a
       state = @room.game_state
       pairs = state["cols"].to_i * state["rows"].to_i / 2
-      cards = Catalog.sample(state["category"], pairs)
+      cards = Catalog.sample(state["category"], pairs, @room.locale)
       deck  = (cards + cards).shuffle
 
       @room.atomic_set(

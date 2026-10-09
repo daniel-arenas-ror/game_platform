@@ -1,5 +1,6 @@
 import { Controller } from "@hotwired/stimulus"
 import consumer from "channels/consumer"
+import { t } from "controllers/shared/i18n"
 
 const CELL_EMPTY  = "#1e293b"
 const CELL_MISSED = "#475569"
@@ -69,7 +70,7 @@ export default class extends Controller {
       case "number_missed":   this.onNumberMissed(data); break
       case "player_left":     this.onPlayerLeft(data);  break
       case "game_over":       this.onGameOver(data);    break
-      case "game_error":      this.showBanner("Something went wrong — start a new game", CELL_MISSED); break
+      case "game_error":      this.showBanner(t("soup_of_numbers.error"), CELL_MISSED); break
       case "game_restarted":  window.location.reload(); break
       case "game_changed":    window.location.href = `/rooms/${this.roomCodeValue}`; break
     }
@@ -117,7 +118,7 @@ export default class extends Controller {
     this.renderScoreboard()
     this.renderFoundList()
     this.playChime()
-    this.showBanner(`🎉 ${this.esc(data.nickname)} found it! +${data.points}`, data.color)
+    this.showBanner(t("soup_of_numbers.found_it", { name: this.esc(data.nickname), points: data.points }), data.color)
   }
 
   onNumberMissed(data) {
@@ -126,7 +127,7 @@ export default class extends Controller {
     this.found.push(entry)
     this.paintEntry(entry, true)
     this.renderFoundList()
-    this.showBanner("⏰ Nobody found it", CELL_MISSED)
+    this.showBanner(t("soup_of_numbers.nobody"), CELL_MISSED)
   }
 
   onPlayerLeft({ player_id }) {
@@ -191,9 +192,9 @@ export default class extends Controller {
   // ── Sidebar ───────────────────────────────────────────────────────────────
 
   showTarget(target) {
-    this.targetTitleTarget.textContent  = "Find this number"
+    this.targetTitleTarget.textContent  = t("soup_of_numbers.find_this")
     this.targetNumberTarget.textContent = target.number
-    this.targetMetaTarget.textContent   = `${target.length} digits · ${target.points} pts`
+    this.targetMetaTarget.textContent   = t("soup_of_numbers.target_meta", { length: target.length, points: target.points })
     this.restartAnimation(this.targetNumberTarget, "son-pop-in")
   }
 
@@ -205,7 +206,7 @@ export default class extends Controller {
   }
 
   setRoundLabel(round, total) {
-    this.roundLabelTarget.textContent = round ? `Round ${round} / ${total}` : ""
+    this.roundLabelTarget.textContent = round ? t("soup_of_numbers.round", { round, total }) : ""
   }
 
   renderScoreboard() {

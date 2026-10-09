@@ -1,0 +1,27 @@
+es:
+  rooms:
+    games:
+      soup_of_numbers:
+        index:
+          get_ready: "Prepárate…"
+          scores: "Puntajes"
+          found: "Encontrados"
+          none_yet: "Ninguno todavía"
+  js:
+    soup_of_numbers:
+      error: "Algo salió mal — empieza un juego nuevo"
+      found_it: "🎉 ¡%{name} lo encontró! +%{points}"
+      nobody: "⏰ Nadie lo encontró"
+      find_this: "Encuentra este número"
+      target_meta: "%{length} dígitos · %{points} pts"
+      round: "Ronda %{round} / %{total}"
+      you_found: "🎉 ¡Lo encontraste! +%{points}"
+      someone_found: "%{name} encontró el %{number}"
+      nobody_found: "⏰ Nadie encontró el %{number}"
+      not_the_number: "✗ Ese no es el número"
+      you_won: "🥇 ¡Ganaste!"
+      place: "%{place}.º lugar"
+      game_over: "Fin del juego"
+      status: "Ronda %{round}/%{total} · Encuentra el número de %{length} dígitos"
+      not_straight: "✗ No es una línea recta"
+      has_digits: "✗ El número tiene %{count} dígitos"

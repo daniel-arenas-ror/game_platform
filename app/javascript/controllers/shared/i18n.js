@@ -29,3 +29,12 @@ export function t(key, vars = {}) {
   if (typeof value !== "string") return key
   return value.replace(/%\{(\w+)\}/g, (match, name) => (name in vars ? String(vars[name]) : match))
 }
+
+// Numbers in the page's language: 1,000 in English, 1.000 in Spanish.
+export const num = (n) => Number(n || 0).toLocaleString(locale())
+
+// "🥇 You Win!", "🥈 2nd Place", … "#5 Place" for a 1-based rank.
+export const placeTitle = (rank) => {
+  const title = t(`shared.places.${rank}`)
+  return title === `shared.places.${rank}` ? t("shared.place", { rank }) : title
+}

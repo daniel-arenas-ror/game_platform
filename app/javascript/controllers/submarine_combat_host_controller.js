@@ -1,5 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 import consumer from "channels/consumer"
+import { t } from "controllers/shared/i18n"
+import { escapeHtml } from "controllers/shared/html"
 
 const SHIP_COLORS = [
   { fill: "#06b6d4", border: "#0891b2" },
@@ -96,7 +98,7 @@ export default class extends Controller {
         })
       })
 
-      this.roundLabelTarget.textContent = `Round ${state.round || "—"}`
+      this.roundLabelTarget.textContent = t("submarine_combat.round", { round: state.round || "—" })
       this.showPhase("battle")
       this.renderPlayerBoards(placements)
     } else {
@@ -126,7 +128,7 @@ export default class extends Controller {
     this.activeIds        = data.active_ids || []
     this.submittedIds     = []
 
-    this.roundLabelTarget.textContent = `Round ${data.round}`
+    this.roundLabelTarget.textContent = t("submarine_combat.round", { round: data.round })
     this.renderSubmissions()
 
     // Refresh aggregate board and player status at the start of each round
@@ -170,13 +172,13 @@ export default class extends Controller {
     // Sunk ship toasts
     Object.entries(data.sunk_ships || {}).forEach(([targetId, shipIndices]) => {
       const targetNick = this.currentNicknames[targetId] || targetId.slice(-4)
-      shipIndices.forEach(() => this.showToast(`${targetNick}'s ship sunk!`, "sunk"))
+      shipIndices.forEach(() => this.showToast(t("submarine_combat.ship_sunk", { name: targetNick }), "sunk"))
     })
 
     // Elimination toasts
     ;(data.eliminated || []).forEach(id => {
       const nick = this.currentNicknames[id] || id.slice(-4)
-      this.showToast(`${nick} eliminated!`, "elim")
+      this.showToast(t("submarine_combat.eliminated", { name: nick }), "elim")
     })
   }
 
@@ -184,8 +186,8 @@ export default class extends Controller {
     this.winSound = new Audio("/games/sounds/Triumphant_win.mp3")
     this.winSound.play().catch(() => {}) // ignore autoplay blocks
     this.stopCountdown()
-    const winnerNick = (data.nicknames || {})[data.winner_id] || "Unknown"
-    this.gameOverTitleTarget.textContent = `${winnerNick} wins!`
+    const winnerNick = (data.nicknames || {})[data.winner_id] || t("submarine_combat.unknown")
+    this.gameOverTitleTarget.textContent = t("submarine_combat.wins", { name: winnerNick })
     this.renderFinalScores(data.scores, data.nicknames)
     this.showPhase("gameOver")
   }
@@ -239,9 +241,9 @@ export default class extends Controller {
       header.className = "flex items-center justify-between mb-3"
       header.innerHTML = `
         <span class="font-bold text-sm ${eliminated ? "text-red-400" : "text-slate-200"}">
-          ${nick}${eliminated ? " (out)" : ""}
+          ${escapeHtml(eliminated ? t("submarine_combat.out", { name: nick }) : nick)}
         </span>
-        <span class="font-mono text-xs text-cyan-400">${pts} hits</span>
+        <span class="font-mono text-xs text-cyan-400">${t("submarine_combat.hits", { count: pts })}</span>
       `
       panel.appendChild(header)
 
@@ -347,7 +349,7 @@ export default class extends Controller {
           ? "bg-green-500/20 border-green-500 text-green-400"
           : "bg-slate-800 border-slate-600 text-slate-500"
       ].join(" ")
-      badge.textContent = submitted ? `${nick} fired` : nick
+      badge.textContent = submitted ? t("submarine_combat.fired", { name: nick }) : nick
       list.appendChild(badge)
     })
   }
@@ -367,7 +369,7 @@ export default class extends Controller {
           ? "bg-cyan-500/20 border-cyan-500 text-cyan-300"
           : "bg-slate-800 border-slate-600 text-slate-400"
       ].join(" ")
-      badge.textContent = confirmed ? `${nick} — Ready` : nick
+      badge.textContent = confirmed ? t("submarine_combat.ready", { name: nick }) : nick
       list.appendChild(badge)
     })
   }
@@ -383,8 +385,8 @@ export default class extends Controller {
       const row  = document.createElement("div")
       row.className = "flex items-center justify-between px-4 py-3 bg-slate-800/60 rounded-xl"
       row.innerHTML = `
-        <span class="text-slate-200 font-bold">${i + 1}. ${nick}</span>
-        <span class="text-cyan-400 font-black tabular-nums">${pts} hits</span>
+        <span class="text-slate-200 font-bold">${i + 1}. ${escapeHtml(nick)}</span>
+        <span class="text-cyan-400 font-black tabular-nums">${t("submarine_combat.hits", { count: pts })}</span>
       `
       container.appendChild(row)
     })

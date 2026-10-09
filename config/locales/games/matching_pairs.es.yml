@@ -1,0 +1,42 @@
+es:
+  rooms:
+    games:
+      matching_pairs:
+        index:
+          get_ready: "Prepárate…"
+          scores: "Puntajes"
+          look_tv: "¡Mira la TV!"
+          remember: "Recuerda dónde está cada carta."
+  js:
+    matching_pairs:
+      error: "Algo salió mal"
+      error_hint: "Empieza un juego nuevo"
+      memorize: "¡Memoriza el tablero!"
+      covered: "Los celulares están tapados hasta que las cartas se volteen."
+      find: "¡Encuentra las parejas!"
+      everyone_playing: "Todos están jugando en su celular."
+      round_over: "Fin de la ronda"
+      next_board: "Ya viene el siguiente tablero…"
+      get_ready: "Prepárate…"
+      look_here: "Mira esta pantalla — el tablero aparece aquí primero."
+      memorize_hint: "Recuerda dónde está cada carta — luego encuentra las parejas en tu celular."
+      scoring: "+100 por pareja · −10 por error"
+      someone: "Alguien"
+      cleared: "🎉 ¡%{name} despejó el tablero!"
+      round_n_over: "Fin de la ronda %{round}"
+      final_results: "Resultados finales…"
+      pairs: "%{count} parejas"
+      round: "Ronda %{round} / %{total}"
+      look_tv: "¡Mira la TV!"
+      remember: "Recuerda dónde está cada carta."
+      memorize_status: "Ronda %{round}/%{total} · Memoriza"
+      board_cleared: "🎉 ¡Tablero despejado!"
+      all_found: "Encontraste todas las parejas — espera a los demás"
+      round_over_next: "Fin de la ronda · ya viene el siguiente tablero"
+      you_found: "Encontraste %{matches}/%{pairs} parejas"
+      game_over: "Fin del juego"
+      tied_first: "¡Empate en el 1.er lugar!"
+      you_won: "¡Ganaste!"
+      tied_for: "Empate en el puesto %{place}"
+      you_finished: "Terminaste en el puesto %{place}"
+      pairs_progress: "%{matches}/%{pairs} parejas"

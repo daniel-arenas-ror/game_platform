@@ -12,10 +12,11 @@ class ApplicationController < ActionController::Base
   stale_when_importmap_changes
 
   def current_player
-    @current_player ||= Player.find(session[:player_id]) if session[:player_id]
-  rescue Mongoid::Errors::DocumentNotFound
-    session[:player_id] = nil
-    nil
+    return unless session[:player_id]
+
+    @current_player ||= Player.where(id: session[:player_id]).first
+    session[:player_id] = nil unless @current_player
+    @current_player
   end
 
   # English URLs have no prefix ("/games"), Spanish ones do ("/es/games").

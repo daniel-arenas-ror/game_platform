@@ -2,6 +2,7 @@ module HowWantBeBillionare
   class Question
     include Mongoid::Document
     include Mongoid::Timestamps
+    include LocalizedQuestion
 
     field :text, type: String
     field :correct_answer, type: Array

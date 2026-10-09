@@ -1,0 +1,21 @@
+# Count Birds: in-game screen and its JS.
+en:
+  rooms:
+    games:
+      count_birds:
+        index:
+          hint_html: "Count only the <span class=\"text-yellow-300\">dark birds</span>"
+          answer_was: "The answer was"
+          watch: "Watch the screen and count the black birds!"
+          your_count: "Your count"
+          submitted: "Answer submitted ✓"
+          correct_answer: "Correct answer"
+          black_birds: "black birds"
+          your_answer: "Your answer"
+  js:
+    count_birds:
+      round: "Round %{round} / %{total}"
+      difficulty:
+        static: "STATIC"
+        moving: "MOVING"
+        chaos: "CHAOS"

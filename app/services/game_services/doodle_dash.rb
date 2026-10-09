@@ -24,7 +24,10 @@ module GameServices
     MAX_STROKES            = 1500
     MAX_STROKE_ID          = 100_000
 
-    WORDS   = YAML.load_file(Rails.root.join("config/doodle_dash/words.yml")).transform_values(&:freeze).freeze
+    # Word lists per room language: config/doodle_dash/words.yml (English) and words.<locale>.yml.
+    WORDS = { "en" => "words.yml", "es" => "words.es.yml" }.transform_values do |file|
+      YAML.load_file(Rails.root.join("config/doodle_dash", file)).transform_values(&:freeze).freeze
+    end.freeze
     BLOCKED = YAML.load_file(Rails.root.join("config/doodle_dash/blocked_words.yml")).freeze
 
     # Never sent to guessers or the TV while a turn is being played.
@@ -265,10 +268,10 @@ module GameServices
 
     # ── Guess matching ───────────────────────────────────────────────────────
 
-    # Lowercase, no accents or punctuation, single spaces, no leading article.
+    # Lowercase, no accents or punctuation, single spaces, no leading article (English or Spanish).
     def self.normalize(text)
       text.to_s.unicode_normalize(:nfkd).gsub(/\p{Mn}/, "").downcase
-          .gsub(/[^a-z0-9\s]/, "").squish.sub(/\A(a|an|the) /, "")
+          .gsub(/[^a-z0-9\s]/, "").squish.sub(/\A(a|an|the|el|la|los|las|un|una|unos|unas) /, "")
     end
 
     # Spaces don't matter ("hotdog" = "hot dog") and plurals count ("cats" for "cat").
@@ -277,7 +280,7 @@ module GameServices
       w = normalize(word).delete(" ")
       return false if g.empty?
 
-      g == w || g == "#{w}s" || g == "#{w}es" || w == "#{g}s"
+      g == w || g == "#{w}s" || g == "#{w}es" || w == "#{g}s" || w == "#{g}es"
     end
 
     # One letter off (or two neighbours swapped, the usual phone typo) on a word of 4+ letters.
@@ -355,12 +358,13 @@ module GameServices
 
     # Three unused words. "mixed" offers one easy, one medium and one hard word.
     def pick_words
-      used = @room.game_state["used_words"].to_a
+      used  = @room.game_state["used_words"].to_a
+      words = WORDS.fetch(@room.locale, WORDS["en"])
       pools =
         if @room.game_state["difficulty"] == "mixed"
-          %w[easy medium hard].map { |level| WORDS[level] }
+          %w[easy medium hard].map { |level| words[level] }
         else
-          Array.new(CHOICES) { WORDS[@room.game_state["difficulty"]] }
+          Array.new(CHOICES) { words[@room.game_state["difficulty"]] }
         end
 
       pools.each_with_object([]) do |pool, picked|

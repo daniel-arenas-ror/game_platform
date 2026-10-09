@@ -158,9 +158,14 @@ class SpanishPagesTest < ActionDispatch::IntegrationTest
     flatten = ->(hash, prefix = nil) {
       hash.flat_map { |k, v| v.is_a?(Hash) ? flatten.(v, [ prefix, k ].compact.join(".")) : [ [ prefix, k ].compact.join(".") ] }
     }
-    en = flatten.(YAML.load_file(Rails.root.join("config/locales/en.yml"))["en"])
-    es = flatten.(YAML.load_file(Rails.root.join("config/locales/es.yml"))["es"])
-    assert_empty en - es, "missing in es.yml"
-    assert_empty es - en, "missing in en.yml"
+    # en.yml ↔ es.yml, games/fisherman.en.yml ↔ games/fisherman.es.yml…
+    Dir[Rails.root.join("config/locales/{en.yml,games/*.en.yml}")].each do |en_file|
+      es_file = en_file.sub(/(\A|\/|\.)en\.yml\z/) { "#{$1}es.yml" }
+      assert File.exist?(es_file), "missing #{es_file}"
+      en = flatten.(YAML.load_file(en_file)["en"])
+      es = flatten.(YAML.load_file(es_file)["es"])
+      assert_empty en - es, "missing in #{File.basename(es_file)}"
+      assert_empty es - en, "missing in #{File.basename(en_file)}"
+    end
   end
 end

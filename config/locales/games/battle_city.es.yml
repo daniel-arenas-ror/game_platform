@@ -1,0 +1,23 @@
+es:
+  rooms:
+    games:
+      battle_city:
+        index:
+          room: "Sala:"
+          game_over: "FIN DEL JUEGO"
+          play_again: "JUGAR DE NUEVO"
+          player_n: "Jugador %{n}"
+          your_kills: "Tus impactos"
+          waiting_restart: "Esperando a que el anfitrión reinicie…"
+          kills: "Impactos"
+  js:
+    battle_city:
+      go: "¡YA!"
+      respawning: "Reapareciendo…"
+      you_win: "¡GANASTE!"
+      game_over: "FIN DEL JUEGO"
+      player: "Jugador %{n}"
+      reasons:
+        base_destroyed: "¡La base fue destruida!"
+        last_tank_standing: "¡Último tanque en pie!"
+        kills_limit: "¡Se alcanzó el límite de impactos!"

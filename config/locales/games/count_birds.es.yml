@@ -1,0 +1,20 @@
+es:
+  rooms:
+    games:
+      count_birds:
+        index:
+          hint_html: "Cuenta solo los <span class=\"text-yellow-300\">pájaros oscuros</span>"
+          answer_was: "La respuesta era"
+          watch: "¡Mira la pantalla y cuenta los pájaros negros!"
+          your_count: "Tu cuenta"
+          submitted: "Respuesta enviada ✓"
+          correct_answer: "Respuesta correcta"
+          black_birds: "pájaros negros"
+          your_answer: "Tu respuesta"
+  js:
+    count_birds:
+      round: "Ronda %{round} / %{total}"
+      difficulty:
+        static: "QUIETOS"
+        moving: "EN MOVIMIENTO"
+        chaos: "CAOS"

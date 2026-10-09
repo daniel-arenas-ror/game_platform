@@ -1,0 +1,21 @@
+es:
+  rooms:
+    games:
+      guess_the_color:
+        index:
+          memorize: "¡Memoriza este color!"
+          picking: "Los jugadores están eligiendo…"
+          watch: "¡Mira la pantalla!"
+          memorize_short: "Memoriza el color"
+          pick: "Elige el color"
+          submitted: "Color enviado ✓"
+          locked: "¡Color enviado!"
+          waiting_results: "Esperando los resultados…"
+          your_result: "Tu resultado"
+          target: "Objetivo"
+          your_pick: "Tu color"
+          points_round: "puntos esta ronda"
+  js:
+    guess_the_color:
+      target: "Objetivo"
+      no_pick: "%{name} (sin color)"

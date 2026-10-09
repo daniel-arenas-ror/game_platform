@@ -1,0 +1,91 @@
+# Mitología y lenguaje — importar con: bin/rails questions:billionaire:import
+
+- text: "¿Quién es el rey de los dioses en la mitología griega?"
+  topic: "Mitología"
+  points: 100
+  answers:
+    - { text: "Apolo" }
+    - { text: "Ares" }
+    - { text: "Zeus", correct: true }
+    - { text: "Hades" }
+
+- text: "¿Qué idioma tiene más hablantes nativos en el mundo?"
+  topic: "Lenguaje"
+  points: 200
+  answers:
+    - { text: "Español" }
+    - { text: "Chino mandarín", correct: true }
+    - { text: "Inglés" }
+    - { text: "Hindi" }
+
+- text: "En la mitología nórdica, ¿cómo se llama el martillo de Thor?"
+  topic: "Mitología"
+  points: 300
+  answers:
+    - { text: "Gungnir" }
+    - { text: "Mjölnir", correct: true }
+    - { text: "Excalibur" }
+    - { text: "Gram" }
+
+- text: "¿Cuáles de estas son lenguas romances?"
+  topic: "Lenguaje"
+  points: 400
+  answers:
+    - { text: "Italiano", correct: true }
+    - { text: "Rumano", correct: true }
+    - { text: "Alemán" }
+    - { text: "Griego" }
+
+- text: "¿Qué dios romano equivale al dios griego Ares?"
+  topic: "Mitología"
+  points: 500
+  answers:
+    - { text: "Júpiter" }
+    - { text: "Mercurio" }
+    - { text: "Marte", correct: true }
+    - { text: "Neptuno" }
+
+- text: "¿Qué héroe griego realizó los doce trabajos?"
+  topic: "Mitología"
+  points: 600
+  answers:
+    - { text: "Teseo" }
+    - { text: "Heracles", correct: true }
+    - { text: "Perseo" }
+    - { text: "Aquiles" }
+
+- text: "¿Qué significa la palabra japonesa 'arigatō'?"
+  topic: "Lenguaje"
+  points: 700
+  answers:
+    - { text: "Adiós" }
+    - { text: "Hola" }
+    - { text: "Por favor" }
+    - { text: "Gracias", correct: true }
+
+- text: "¿Qué alfabeto se usa para escribir el ruso?"
+  topic: "Lenguaje"
+  points: 800
+  answers:
+    - { text: "Griego" }
+    - { text: "Cirílico", correct: true }
+    - { text: "Árabe" }
+    - { text: "Latino" }
+
+- text: "En la mitología egipcia, ¿qué dios gobernaba a los muertos y el más allá?"
+  topic: "Mitología"
+  points: 900
+  answers:
+    - { text: "Ra" }
+    - { text: "Osiris", correct: true }
+    - { text: "Set" }
+    - { text: "Horus" }
+
+- text: "¿Qué escritura antigua se descifró gracias a la piedra de Rosetta?"
+  topic: "Lenguaje"
+  points: 1000
+  answers:
+    - { text: "Jeroglíficos egipcios", correct: true }
+    - { text: "Lineal B" }
+    - { text: "Glifos mayas" }
+    - { text: "Cuneiforme" }

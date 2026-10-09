@@ -1,5 +1,6 @@
 import { Controller } from "@hotwired/stimulus"
 import consumer from "channels/consumer"
+import { placeTitle } from "controllers/shared/i18n"
 import { celebrateWin, isTopScore } from "controllers/shared/celebration"
 
 export default class extends Controller {
@@ -110,8 +111,7 @@ export default class extends Controller {
     const rank    = sorted.findIndex(([id]) => id === myId) + 1
     const total   = scores[myId] ?? 0
 
-    const titles  = ["", "You won! 🥇", "2nd place 🥈", "3rd place 🥉"]
-    this.gameOverTitleTarget.textContent = titles[rank] || `#${rank} place`
+    this.gameOverTitleTarget.textContent = placeTitle(rank)
     this.finalScoreTarget.textContent    = total
 
     this.showPhase("phaseGameOver")

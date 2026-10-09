@@ -1,4 +1,5 @@
 import consumer from "channels/consumer"
+import { t } from "controllers/shared/i18n"
 
 const fishermanGameContainer = document.getElementById('fisherman-game-container');
 
@@ -74,18 +75,18 @@ if(fishermanGameContainer) {
 
       // Update UI State
       const count = selectedIds.length;
-      countBadge.innerText = `${count} Selected`;
+      countBadge.innerText = t("fisherman.selected", { count });
       
       if (count > 0) {
         lockBtn.disabled = false;
         lockBtn.classList.replace('bg-slate-700', 'bg-yellow-400');
         lockBtn.classList.replace('text-slate-500', 'text-slate-900');
-        lockBtn.innerText = `GUESS THESE ${count} PLAYERS`;
+        lockBtn.innerText = t("fisherman.guess", { count });
       } else {
         lockBtn.disabled = true;
         lockBtn.classList.replace('bg-yellow-400', 'bg-slate-700');
         lockBtn.classList.replace('text-slate-900', 'text-slate-500');
-        lockBtn.innerText = "Select at least one";
+        lockBtn.innerText = t("fisherman.select_one");
       }
     }
 

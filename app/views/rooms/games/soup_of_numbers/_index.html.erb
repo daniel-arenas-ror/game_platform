@@ -10,9 +10,9 @@
 
     <%# Header %>
     <div class="flex items-center justify-between px-8 pt-6">
-      <h1 class="text-2xl font-black tracking-widest uppercase text-emerald-400">🔢 Soup of Numbers</h1>
+      <h1 class="text-2xl font-black tracking-widest uppercase text-emerald-400">🔢 <%= @room.game.name %></h1>
       <p class="text-slate-500 text-xs font-mono tracking-widest">
-        Room: <span class="text-white font-bold"><%= @room.code %></span>
+        <%= t("rooms.games.shared.room") %> <span class="text-white font-bold"><%= @room.code %></span>
         · <span data-soup-of-numbers-host-target="roundLabel"></span>
       </p>
     </div>
@@ -28,7 +28,7 @@
         <%# Current target %>
         <div class="bg-slate-800 rounded-3xl border-2 border-emerald-500/40 p-6 text-center">
           <p data-soup-of-numbers-host-target="targetTitle"
-             class="text-slate-400 text-xs uppercase tracking-widest font-mono">Get ready…</p>
+             class="text-slate-400 text-xs uppercase tracking-widest font-mono"><%= t(".get_ready") %></p>
           <p data-soup-of-numbers-host-target="targetNumber"
              class="font-mono font-black text-6xl tracking-[0.2em] text-white my-3 tabular-nums">…</p>
           <p data-soup-of-numbers-host-target="targetMeta"
@@ -41,15 +41,15 @@
 
         <%# Scores %>
         <div class="bg-slate-800 rounded-3xl border border-slate-700 p-5">
-          <p class="text-slate-400 text-xs uppercase tracking-widest font-mono mb-3">Scores</p>
+          <p class="text-slate-400 text-xs uppercase tracking-widest font-mono mb-3"><%= t(".scores") %></p>
           <div data-soup-of-numbers-host-target="scoreboard" class="space-y-2"></div>
         </div>
 
         <%# Numbers found so far %>
         <div class="bg-slate-800 rounded-3xl border border-slate-700 p-5">
-          <p class="text-slate-400 text-xs uppercase tracking-widest font-mono mb-3">Found</p>
+          <p class="text-slate-400 text-xs uppercase tracking-widest font-mono mb-3"><%= t(".found") %></p>
           <div data-soup-of-numbers-host-target="foundList" class="flex flex-wrap gap-2">
-            <p class="text-slate-600 text-sm font-mono">None yet</p>
+            <p class="text-slate-600 text-sm font-mono"><%= t(".none_yet") %></p>
           </div>
         </div>
       </div>
@@ -59,13 +59,13 @@
     <div data-soup-of-numbers-host-target="phaseGameOver"
          class="hidden absolute inset-0 z-30 flex flex-col items-center justify-center bg-slate-950/95">
       <p class="text-6xl mb-4">🏆</p>
-      <h2 class="text-5xl font-black text-emerald-400 tracking-widest mb-8">GAME OVER</h2>
+      <h2 class="text-5xl font-black text-emerald-400 tracking-widest mb-8"><%= t("rooms.games.shared.game_over") %></h2>
       <div data-soup-of-numbers-host-target="finalLeaderboard"
            class="space-y-3 w-full max-w-sm mb-10"></div>
       <button data-soup-of-numbers-host-target="playAgain"
               class="bg-emerald-400 hover:bg-emerald-300 text-slate-950 font-black px-10 py-3
                      rounded-xl uppercase tracking-widest text-lg transition-colors cursor-pointer">
-        Play Again
+        <%= t("rooms.games.shared.play_again") %>
       </button>
       <%= render partial: "rooms/games/change_game", locals: { room: @room, games: @games } %>
       <%= game_over_ad %>
@@ -89,7 +89,7 @@
         <span class="font-black text-lg tracking-wide"><%= session[:nickname] %></span>
       </div>
       <div class="text-right">
-        <p class="text-[10px] text-slate-600 uppercase tracking-widest">Points</p>
+        <p class="text-[10px] text-slate-600 uppercase tracking-widest"><%= t("rooms.games.shared.points") %></p>
         <p data-soup-of-numbers-player-target="score"
            class="font-mono font-black text-3xl text-emerald-400 leading-none">0</p>
       </div>
@@ -98,7 +98,7 @@
     <%# Status line %>
     <div class="flex items-center justify-between px-4 pb-3">
       <p data-soup-of-numbers-player-target="status"
-         class="text-slate-400 text-xs uppercase tracking-widest font-mono">Get ready…</p>
+         class="text-slate-400 text-xs uppercase tracking-widest font-mono"><%= t(".get_ready") %></p>
       <p data-soup-of-numbers-player-target="countdown"
          class="font-mono font-black text-2xl tabular-nums"></p>
     </div>
@@ -123,10 +123,10 @@
          class="font-black text-3xl tracking-wide mb-4"></p>
       <p data-soup-of-numbers-player-target="finalScore"
          class="text-emerald-400 font-mono font-black text-5xl"></p>
-      <p class="text-slate-500 text-xs mt-1 font-mono">total points</p>
-      <p class="text-slate-600 text-xs mt-8 font-mono">Waiting for host to restart…</p>
+      <p class="text-slate-500 text-xs mt-1 font-mono"><%= t("rooms.games.shared.total_points") %></p>
+      <p class="text-slate-600 text-xs mt-8 font-mono"><%= t("rooms.games.shared.waiting_restart") %></p>
     </div>
 
-    <p class="text-center text-slate-800 text-[10px] font-mono mt-auto pb-4">Room: <%= @room.code %></p>
+    <p class="text-center text-slate-800 text-[10px] font-mono mt-auto pb-4"><%= t("rooms.games.shared.room") %> <%= @room.code %></p>
   </div>
 <% end %>
