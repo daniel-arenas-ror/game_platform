@@ -62,3 +62,5 @@ end
 gem 'rqrcode'
 
 gem "devise", "~> 5.0"
+# Spanish defaults for dates, numbers and validation messages.
+gem "rails-i18n", "~> 8.0"
