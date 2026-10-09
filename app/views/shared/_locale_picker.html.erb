@@ -1,0 +1,23 @@
+<%# Language picker in the site header. Shows a compact globe + code so it fits next to the nav on
+    phones; the real (transparent) select sits on top, so the native list shows the full names.
+    Works without JS (the submit button); with JS it switches on change. %>
+<%= form_with url: switch_locale_path(locale: nil), method: :get, local: true,
+      data: { controller: "locale-picker" }, class: "flex items-center" do %>
+  <%= hidden_field_tag :return_to, request.fullpath, id: nil %>
+  <div class="relative flex items-center gap-1.5 px-2.5 py-2 rounded-lg border border-slate-700 bg-slate-800 text-slate-200 text-sm font-semibold hover:border-slate-500 focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-purple-400">
+    <svg aria-hidden="true" class="w-4 h-4 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+    </svg>
+    <span aria-hidden="true"><%= I18n.locale.to_s.upcase %></span>
+    <svg aria-hidden="true" class="w-3 h-3 text-slate-400" viewBox="0 0 20 20" fill="currentColor"><path d="M5.3 7.3a1 1 0 0 1 1.4 0L10 10.6l3.3-3.3a1 1 0 1 1 1.4 1.4l-4 4a1 1 0 0 1-1.4 0l-4-4a1 1 0 0 1 0-1.4z"/></svg>
+    <select id="locale-picker" name="lang" aria-label="<%= t("locale_picker.label") %>" data-action="locale-picker#change"
+            class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+      <% LocaleHelper::LOCALE_NAMES.each do |locale, name| %>
+        <option value="<%= locale %>" lang="<%= locale %>" <%= "selected" if locale == I18n.locale %>><%= name %></option>
+      <% end %>
+    </select>
+  </div>
+  <noscript>
+    <button type="submit" class="ml-2 px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 text-sm font-semibold text-slate-200"><%= t("locale_picker.submit") %></button>
+  </noscript>
+<% end %>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="<%= I18n.locale %>">
   <head>
     <title><%= page_title %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -9,8 +9,15 @@
     <meta name="application-name" content="<%= SeoHelper::SITE_NAME %>">
     <meta name="mobile-web-app-capable" content="yes">
     <link rel="canonical" href="<%= canonical_url %>">
+    <% if site_header? && @room.nil? %>
+      <% I18n.available_locales.each do |locale| %>
+        <link rel="alternate" hreflang="<%= locale %>" href="<%= locale_url_for(locale) %>">
+      <% end %>
+      <link rel="alternate" hreflang="x-default" href="<%= locale_url_for(I18n.default_locale) %>">
+    <% end %>
 
     <meta property="og:type" content="website">
+    <meta property="og:locale" content="<%= I18n.locale == :es ? "es_ES" : "en_US" %>">
     <meta property="og:site_name" content="<%= SeoHelper::SITE_NAME %>">
     <meta property="og:title" content="<%= page_title %>">
     <meta property="og:description" content="<%= page_description %>">
@@ -38,6 +45,7 @@
 
     <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= js_translations_tag %>
     <%= javascript_importmap_tags %>
   </head>
 

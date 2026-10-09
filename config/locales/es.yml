@@ -1,0 +1,7 @@
+# Spanish strings. Same keys as en.yml.
+es:
+  locale_picker:
+    label: "Idioma"
+    submit: "Cambiar"
+
+  js: {}

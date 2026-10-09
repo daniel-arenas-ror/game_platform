@@ -1,13 +1,13 @@
 Rails.application.routes.draw do
-  root "home#index"
-  get "games", to: "games#index", as: :games
-  get "games/:slug", to: "games#show", as: :game
+  # Declares :locale as a known option, so positional args (edit_room_path(code)) fill :id and
+  # not the optional locale segment — also outside controllers (tests, channels, jobs).
+  default_url_options locale: nil
+
   get "sitemap.xml", to: "home#sitemap", defaults: { format: :xml }, as: :sitemap
   get "robots.txt", to: "home#robots", defaults: { format: :text }, as: :robots
 
-  get "privacy", to: "pages#privacy", as: :privacy
-  get "about",   to: "pages#about",   as: :about
-  get "contact", to: "pages#contact", as: :contact
+  # Switches the language from the header picker and goes back to the same page in that language.
+  get "language", to: "locales#update", as: :switch_locale
 
   get "up" => "rails/health#show", as: :rails_health_check
 
@@ -22,15 +22,27 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :rooms, only: [:create, :show, :edit, :update] do
-    member do
-      post "start"
-      get "playing"
-      post "change_game"
-    end
-  end
+  # English has no prefix; every other language gets one ("/es/games"). Room pages use the
+  # room's own language whatever the prefix (see ApplicationController#room_locale).
+  scope "(:locale)", locale: /es/ do
+    root "home#index"
+    get "games", to: "games#index", as: :games
+    get "games/:slug", to: "games#show", as: :game
 
-  get "join", to: "join#show", as: :find_room
-  get "join/:code", to: "rooms#join", as: :join_room
-  post "join/:code", to: "rooms#player_join", as: :submit_join
+    get "privacy", to: "pages#privacy", as: :privacy
+    get "about",   to: "pages#about",   as: :about
+    get "contact", to: "pages#contact", as: :contact
+
+    resources :rooms, only: [:create, :show, :edit, :update] do
+      member do
+        post "start"
+        get "playing"
+        post "change_game"
+      end
+    end
+
+    get "join", to: "join#show", as: :find_room
+    get "join/:code", to: "rooms#join", as: :join_room
+    post "join/:code", to: "rooms#player_join", as: :submit_join
+  end
 end
