@@ -1,21 +1,21 @@
-<% content_for :title, "Join a game" %>
-<% content_for :description, "Got a room code from the host's screen? Enter it here to join the game from your phone — no app, no sign-up." %>
+<% content_for :title, t(".title") %>
+<% content_for :description, t(".description") %>
 
 <div class="bg-slate-900 min-h-[calc(100svh-4rem)] px-4 sm:px-6 lg:px-8 py-10 sm:py-16 flex items-center">
   <div class="w-full max-w-5xl mx-auto grid lg:grid-cols-[minmax(0,28rem)_minmax(0,1fr)] gap-12 lg:gap-20 items-center">
 
     <section aria-labelledby="join-title" class="w-full max-w-md mx-auto lg:mx-0">
-      <h1 id="join-title" class="text-4xl sm:text-5xl font-extrabold tracking-tight text-white text-balance">Got a room code?</h1>
-      <p class="mt-3 text-slate-400 text-lg text-pretty">Type the 4 characters from the host's screen and you're in.</p>
+      <h1 id="join-title" class="text-4xl sm:text-5xl font-extrabold tracking-tight text-white text-balance"><%= t(".heading") %></h1>
+      <p class="mt-3 text-slate-400 text-lg text-pretty"><%= t(".intro") %></p>
 
       <%= form_with url: find_room_path, method: :get,
             class: "group mt-8",
             data: { controller: "room-code", action: "submit->room-code#submit", error: (flash[:alert].present? ? "" : nil) } do |f| %>
-        <%= f.label :code, "Room code", class: "sr-only" %>
+        <%= f.label :code, t(".code_label"), class: "sr-only" %>
         <div class="relative">
           <%= f.text_field :code,
                 value: @code,
-                placeholder: "ROOM CODE",
+                placeholder: t(".code_placeholder"),
                 maxlength: 4,
                 minlength: 4,
                 required: true,
@@ -45,16 +45,16 @@
         <% if flash[:alert] %>
           <p id="room-code-hint" role="alert" class="mt-3 text-red-400 text-sm"><%= flash[:alert] %></p>
         <% else %>
-          <p id="room-code-hint" class="mt-3 text-slate-400 text-sm">Letters and numbers only — it joins as soon as you type the 4th.</p>
+          <p id="room-code-hint" class="mt-3 text-slate-400 text-sm"><%= t(".hint") %></p>
         <% end %>
 
-        <%= f.button "Join game", name: nil,
-              data: { room_code_target: "submit", label: "Join game" },
+        <%= f.button t(".submit"), name: nil,
+              data: { room_code_target: "submit", label: t(".submit") },
               class: "mt-6 w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 disabled:opacity-70 disabled:cursor-wait text-white text-lg font-black py-4 rounded-xl transition-transform active:scale-[0.98] cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-400" %>
       <% end %>
 
       <ul class="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm text-slate-300">
-        <% ["No app to install", "No sign-up", "Free"].each do |perk| %>
+        <% t("perks").values_at(:no_app, :no_sign_up, :free).each do |perk| %>
           <li class="flex items-center gap-2">
             <svg class="size-4 text-purple-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
             <%= perk %>
@@ -64,16 +64,16 @@
     </section>
 
     <aside aria-labelledby="where-title" class="w-full max-w-md mx-auto lg:max-w-none">
-      <h2 id="where-title" class="text-lg font-bold text-white">Where's the code?</h2>
-      <p class="mt-2 text-slate-400 text-pretty">On the shared screen — the TV, the projector or the video call. It sits right under the game name.</p>
+      <h2 id="where-title" class="text-lg font-bold text-white"><%= t(".where_title") %></h2>
+      <p class="mt-2 text-slate-400 text-pretty"><%= t(".where_text") %></p>
 
       <%# A miniature of the host lobby, with the room code called out %>
       <figure class="mt-6">
         <div class="rounded-2xl border border-slate-700 bg-slate-800 p-2 shadow-2xl">
           <div class="aspect-video rounded-xl bg-slate-950 p-4 sm:p-6 flex items-center gap-4 sm:gap-6 overflow-hidden">
             <div class="flex-1 min-w-0">
-              <p class="text-white font-black text-sm sm:text-xl truncate">Mind Match</p>
-              <p class="mt-1 sm:mt-2 inline-block font-mono font-bold text-purple-400 text-sm sm:text-xl rounded-md ring-2 ring-purple-400/70 ring-offset-4 ring-offset-slate-950 px-1">ROOM: <%= Room::EXAMPLE_CODE %></p>
+              <p class="text-white font-black text-sm sm:text-xl truncate"><%= t("mock_game_name") %></p>
+              <p class="mt-1 sm:mt-2 inline-block font-mono font-bold text-purple-400 text-sm sm:text-xl rounded-md ring-2 ring-purple-400/70 ring-offset-4 ring-offset-slate-950 px-1"><%= t("home.index.mock_room", code: Room::EXAMPLE_CODE) %></p>
               <div class="mt-4 sm:mt-6 space-y-1.5" aria-hidden="true">
                 <div class="h-2 w-3/4 rounded-full bg-slate-800"></div>
                 <div class="h-2 w-1/2 rounded-full bg-slate-800"></div>
@@ -88,13 +88,13 @@
           </div>
         </div>
         <figcaption class="mt-4 text-sm text-slate-400 text-pretty">
-          <span class="text-slate-300 font-semibold">Faster:</span> point your phone camera at the QR code and skip typing.
+          <%= t(".faster_html") %>
         </figcaption>
       </figure>
 
       <p class="mt-10 text-sm text-slate-400">
-        Hosting instead?
-        <%= link_to games_path, class: "text-purple-300 hover:text-white font-semibold underline underline-offset-4 decoration-purple-500/50 hover:decoration-white rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-400" do %>Pick a game<% end %>
+        <%= t(".hosting") %>
+        <%= link_to games_path, class: "text-purple-300 hover:text-white font-semibold underline underline-offset-4 decoration-purple-500/50 hover:decoration-white rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-400" do %><%= t(".pick_game") %><% end %>
       </p>
     </aside>
 

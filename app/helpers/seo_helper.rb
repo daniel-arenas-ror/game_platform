@@ -1,16 +1,13 @@
 module SeoHelper
   SITE_NAME = "Grouparty".freeze
-  DEFAULT_TITLE = "#{SITE_NAME} – Free Party Games You Play From Your Phone".freeze
-  DEFAULT_DESCRIPTION = "Free multiplayer party games for groups. Put the host screen on your TV, " \
-                        "friends join by scanning a QR code and play from their phones — no app, no sign-up.".freeze
 
   # Views set these with `content_for :title` / `content_for :description`.
   def page_title
-    content_for?(:title) ? "#{content_for(:title)} | #{SITE_NAME}" : DEFAULT_TITLE
+    content_for?(:title) ? "#{content_for(:title)} | #{SITE_NAME}" : t("seo.default_title", site: SITE_NAME)
   end
 
   def page_description
-    content_for?(:description) ? content_for(:description) : DEFAULT_DESCRIPTION
+    content_for?(:description) ? content_for(:description) : t("seo.default_description")
   end
 
   def canonical_url

@@ -37,3 +37,39 @@ faq:
     a: At least 2. There's no strict limit, and it gets more chaotic and more fun with 4 or more.
   - q: Can we play Submarine Combat over a video call?
     a: Yes. Each round gives you 20 seconds to choose, so a small video delay doesn't matter.
+
+# Spanish. Same fields as above; anything missing falls back to English.
+translations:
+  es:
+    name: Combate de Submarinos
+    description: Coloca tus submarinos en la cuadrícula y dispara a una coordenada cada ronda. Tu
+      disparo alcanza a todos los rivales que tengan un barco ahí. ¡Gana la última flota a flote!
+    tagline: Como el clásico juego de mesa, pero todos juegan a la vez y cada disparo alcanza a todos los rivales.
+    players_note: >-
+      Se necesitan al menos 2 flotas. Con 4 o más se pone salvaje, porque cada disparo revisa la
+      cuadrícula de todos los rivales a la vez.
+    long_description: >-
+      El clásico juego de esconderse en el mar, rehecho para grupos. Cada uno esconde sus submarinos
+      en una cuadrícula secreta en su celular. Luego, en cada ronda, cada jugador elige una coordenada
+      para disparar, y ese disparo revisa la cuadrícula de todos los rivales a la vez. Un impacto
+      suma un punto, hundir un submarino completo se siente genial, y el jugador que pierde toda su
+      flota queda eliminado. Gana la última flota que siga a flote.
+    how_to_play:
+      - El anfitrión elige el tamaño de la cuadrícula (6×6, 8×8 o 10×10) y cuántos submarinos tiene cada jugador.
+      - Tu celular coloca tu flota al azar. Toca un submarino para moverlo, girarlo o mezclarlos todos, y luego confirma.
+      - En cada ronda tienes 20 segundos para elegir una coordenada a la que disparar.
+      - Tu disparo se revisa en la cuadrícula de cada rival. Cada impacto suma 1 punto.
+      - Cuando todos los submarinos de un jugador se hunden, queda eliminado. Gana la última flota a flote.
+    tips:
+      - La pantalla principal muestra dónde ya han disparado todos, así que no desperdicies un disparo en una casilla vacía.
+      - Después de un impacto, apunta a las casillas de al lado. Los submarinos están en línea recta.
+      - Reparte tus primeros disparos como un tablero de ajedrez. Así encuentras antes los submarinos grandes.
+      - Aleja tu flota del centro. Todos apuntan ahí primero.
+      - Cuadrícula más grande + más submarinos = una partida más larga y más táctica.
+    faq:
+      - q: ¿En qué se diferencia del clásico juego de mesa Batalla Naval?
+        a: Todos juegan al mismo tiempo, y cada disparo se revisa en la cuadrícula de todos los rivales a la vez, así que puedes alcanzar a varios jugadores con un solo disparo.
+      - q: ¿Cuántos jugadores pueden jugar Combate de Submarinos?
+        a: Al menos 2. No hay un límite estricto, y con 4 o más es más caótico y más divertido.
+      - q: ¿Se puede jugar Combate de Submarinos por videollamada?
+        a: Sí. Cada ronda te da 20 segundos para elegir, así que un pequeño retraso en el video no importa.

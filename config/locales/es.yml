@@ -1,7 +1,219 @@
-# Spanish strings. Same keys as en.yml.
+# Spanish strings. Same keys as en.yml. Neutral Latin American Spanish, "tú" form.
 es:
+  seo:
+    default_title: "%{site} – Juegos de fiesta gratis que se juegan desde el celular"
+    default_description: >-
+      Juegos de fiesta multijugador gratis para grupos. Pon la pantalla principal en tu TV, tus
+      amigos se unen escaneando un código QR y juegan desde su celular — sin app y sin registro.
+    og_locale: es_LA
+
   locale_picker:
     label: "Idioma"
     submit: "Cambiar"
 
-  js: {}
+  layouts:
+    application:
+      skip_to_content: "Ir al contenido"
+
+  shared:
+    site_header:
+      main_nav: "Principal"
+      home: "Inicio"
+      games: "Juegos"
+      join: "Unirse"
+    footer:
+      tagline: "Juegos de fiesta gratis"
+      nav: "Pie de página"
+      about: "Acerca de"
+      contact: "Contacto"
+      privacy: "Política de privacidad"
+    ad_slot:
+      label: "Publicidad"
+
+  mock_game_name: "Mentes Gemelas"
+
+  perks:
+    no_registration: "Sin registro"
+    no_app: "Sin instalar apps"
+    no_sign_up: "Sin registro"
+    free: "Gratis"
+    no_downloads: "Sin descargas"
+    no_accounts: "Sin cuentas"
+    any_browser: "Funciona en cualquier navegador"
+
+  home:
+    index:
+      hero_title: "Dale un toque divertido a cualquier reunión."
+      hero_text: >-
+        Juegos de fiesta gratis para salones de clase, equipos de trabajo y reuniones familiares.
+        Pon una pantalla donde todos la vean — los jugadores se unen desde su celular en segundos.
+      start_game: "Empezar un juego"
+      join_game: "Unirse a un juego"
+      hero_figure: "La pantalla principal muestra un código de sala y un código QR; los jugadores se unen desde su celular."
+      mock_room: "SALA: %{code}"
+      mock_players: "JUGADORES"
+      mock_room_code: "CÓDIGO DE SALA"
+      mock_joined: "¡Ya estás!"
+      any_room_title: "Hecho para cualquier lugar"
+      any_room_text: "Cada uno tiene su propio control, así que nadie espera turno y nadie se queda solo mirando."
+      use_cases:
+        classroom:
+          label: "Salones de clase"
+          headline: "Una pausa activa que funciona."
+          body: "Despierta a la clase entre lecciones. Todos los estudiantes juegan a la vez desde su celular, y la pantalla grande mantiene unido al grupo."
+        work:
+          label: "Equipos de trabajo"
+          headline: "Anima cualquier reunión."
+          body: "Empieza con cinco minutos de juego. La gente se relaja, habla más y se conoce mejor — en la oficina o en una videollamada."
+        family:
+          label: "Familia y amigos"
+          headline: "Tiempo de calidad frente a la TV."
+          body: "De los niños a los abuelos, todos están en el mismo juego. Sin controles que compartir y nada que instalar."
+      try: "Prueba:"
+      why_title: "Más que un juego"
+      why_text: "Unas cuantas rondas juntos cambian el ambiente de un lugar. Esto es lo que la gente gana."
+      benefits:
+        - title: "Tómate un respiro del estrés"
+          body: "Reírse juntos es la forma más rápida de recargarse después de un día largo o una reunión pesada."
+        - title: "Despierta tu cerebro"
+          body: "Memoria, concentración y agilidad mental — cada juego pone tu cabeza a trabajar."
+        - title: "Fomenta el trabajo en equipo"
+          body: "Algunos juegos premian pensar igual, otros te hacen leer a la gente que te rodea."
+        - title: "Conoce a tu equipo"
+          body: "Descubre cómo piensan tus compañeros cuando no hay una agenda sobre la mesa."
+        - title: "Tiempo de calidad en familia"
+          body: "Los celulares se vuelven controles, así que todos están en el mismo juego, juntos."
+      simple_title: "Nada que instalar. Juega donde se reúnan."
+      same_room_title: "En el mismo lugar"
+      same_room_text: "Abre un juego en una TV, un proyector o un portátil. Todos escanean el código QR con la cámara del celular y listo."
+      video_call_title: "En una videollamada"
+      video_call_text_html: >-
+        Comparte tu pantalla en Zoom, Google Meet o Microsoft Teams. Los jugadores escanean el código desde la llamada — o lo
+        escriben en %{join_link} — y empiezan a jugar.
+      video_call_note: "Los juegos de reacción rápida se disfrutan más en el mismo lugar."
+      how_title: "Cómo funciona"
+      steps:
+        - title: "Elige un juego"
+          body: "La pantalla principal muestra un código de sala y un código QR. Ponla en la pantalla más grande que tengas, o compártela en tu llamada."
+        - title: "Únete desde tu celular"
+          body: "Los jugadores escanean el código QR o escriben el código de sala, eligen un apodo y listo."
+        - title: "Jueguen juntos"
+          body: "Trivia, deducción social, memoria, colores y más — %{count} juegos, todos jugando en vivo."
+      ready_title: "Listo cuando tu grupo lo esté."
+      ready_text: "Abre una sala en segundos. Sin registro."
+
+  join:
+    show:
+      title: "Unirse a un juego"
+      description: "¿Tienes un código de sala de la pantalla principal? Escríbelo aquí para unirte al juego desde tu celular — sin app y sin registro."
+      heading: "¿Tienes un código de sala?"
+      intro: "Escribe los 4 caracteres de la pantalla principal y listo."
+      code_label: "Código de sala"
+      code_placeholder: "CÓDIGO"
+      hint: "Solo letras y números — entras en cuanto escribas el 4.º."
+      submit: "Unirse al juego"
+      where_title: "¿Dónde está el código?"
+      where_text: "En la pantalla compartida — la TV, el proyector o la videollamada. Está justo debajo del nombre del juego."
+      faster_html: "<span class=\"text-slate-300 font-semibold\">Más rápido:</span> apunta la cámara de tu celular al código QR y no tendrás que escribir."
+      hosting: "¿Vas a ser el anfitrión?"
+      pick_game: "Elige un juego"
+    not_found: "No hay ninguna sala con el código %{code}. Revisa la pantalla principal e inténtalo de nuevo."
+    blank: "Escribe un código de sala."
+
+  games:
+    index:
+      title: "Juegos"
+      description: "Elige un juego de fiesta gratis — trivia, deducción social, memoria, colores, batallas de tanques y más. Abre una sala en la pantalla grande y todos juegan desde su celular."
+      heading: "Elige un juego"
+      heading_room: "Elige el siguiente juego"
+      intro: "Elige un juego para abrir una sala. Pon esta pantalla donde todos la vean, y los jugadores se unen desde su celular."
+      changing_html: "Cambiando el juego de la sala %{code}"
+      changing_text: "Elige un juego nuevo, o vuelve a configurar %{game}. Los jugadores siguen en la sala."
+      cancel: "Cancelar"
+      image_alt: "%{game} — cómo se juega"
+      current_game: "Juego actual"
+      configure: "Configurar"
+      switch: "Cambiar a este juego"
+      play_now: "Jugar ahora"
+      empty_html: "Aún no hay juegos. Ejecuta %{command} para añadirlos."
+    show:
+      title: "%{game} – Juego de fiesta gratis"
+      breadcrumb: "Ruta de navegación"
+      at_a_glance: "De un vistazo"
+      about_minutes: "Unos %{count} min"
+      ages: "Desde %{age} años"
+      on_your_phone: "Se juega con el celular"
+      start_game: "Empezar juego"
+      how_to_play_link: "Cómo se juega ↓"
+      free_note: "Gratis y sin registro. Ábrelo en una TV o portátil y todos se unen desde su celular."
+      image_alt: "%{game} — cómo se juega, ilustrado"
+      the_idea: "La idea"
+      what_is: "¿Qué es %{game}?"
+      step_by_step: "Paso a paso"
+      how_to_play: "Cómo se juega %{game}"
+      how_many: "¿Cuántos jugadores?"
+      players_word: "jugadores"
+      tips_label: "Consejos y trucos"
+      how_to_win: "Cómo ganar en %{game}"
+      where_it_shines: "Donde brilla"
+      perfect_for: "Perfecto para…"
+      great_fit: "Ideal"
+      same_room_best: "Mejor en el mismo lugar"
+      not_best: "No es la mejor opción"
+      questions: "Preguntas"
+      faq_title: "Preguntas frecuentes de %{game}"
+      you_might_like: "También te puede gustar"
+      all_games: "Todos los juegos →"
+      ready: "¿Listos para jugar %{game}?"
+      ready_text: "Abre una sala, ponla en la pantalla grande y comparte el código QR. Estarán jugando en menos de un minuto."
+
+  pages:
+    header:
+      back: "← Volver a los juegos"
+
+  game_pages:
+    categories:
+      social: "Juego social"
+      trivia: "Juego de trivia"
+      action: "Juego de acción"
+      perception: "Juego de vista rápida"
+      memory: "Juego de memoria"
+      puzzle: "Carrera de acertijos"
+      strategy: "Juego de estrategia"
+      drawing: "Juego de dibujo"
+      default: "Juego de fiesta"
+    genres:
+      social: "Social"
+      trivia: "Trivia"
+      action: "Acción"
+      perception: "Vista rápida"
+      memory: "Memoria"
+      puzzle: "Acertijos"
+      strategy: "Estrategia"
+      drawing: "Dibujo"
+      default: "Fiesta"
+    settings:
+      party: "Fiestas"
+      family: "En familia"
+      classroom: "Salones de clase"
+      work: "Equipos de trabajo"
+      video_call: "Videollamadas"
+    any_group: "Cualquier grupo"
+    players:
+      one: "%{count} jugador"
+      other: "%{count} jugadores"
+    players_range: "%{min}–%{max} jugadores"
+    general_faq:
+      - q: "¿Los jugadores necesitan descargar una app?"
+        a: "No. Los jugadores escanean el código QR de la pantalla principal con la cámara del celular y juegan en el navegador. Sin app y sin cuenta."
+      - q: "¿Es gratis?"
+        a: "Sí, todos los juegos de %{site} son gratis."
+    platform: "Navegador web"
+    operating_system: "Cualquiera (navegador web)"
+    how_to_play: "Cómo se juega %{game}"
+    home: "Inicio"
+    games: "Juegos"
+
+  js:
+    room_code:
+      joining: "Entrando…"

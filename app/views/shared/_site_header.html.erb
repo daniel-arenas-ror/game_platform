@@ -4,14 +4,14 @@
     <%= link_to SeoHelper::SITE_NAME, root_path,
           class: "py-2 text-xl font-extrabold tracking-tight text-white rounded focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-purple-400" %>
 
-    <nav aria-label="Main" class="flex items-center gap-1 sm:gap-2 text-sm font-semibold">
-      <% [["Home", root_path, controller_name == "home"],
-          ["Games", games_path, controller_name == "games"]].each do |label, path, active| %>
+    <nav aria-label="<%= t(".main_nav") %>" class="flex items-center gap-1 sm:gap-2 text-sm font-semibold">
+      <% [[t(".home"), root_path, controller_name == "home"],
+          [t(".games"), games_path, controller_name == "games"]].each do |label, path, active| %>
         <%= link_to label, path,
               aria: { current: (active ? "page" : nil) },
               class: "px-3 py-2 rounded-lg transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-400 #{active ? "text-white" : "text-slate-400 hover:text-white"}" %>
       <% end %>
-      <%= link_to "Join", find_room_path,
+      <%= link_to t(".join"), find_room_path,
             aria: { current: (controller_name == "join" ? "page" : nil) },
             class: "ml-1 px-4 py-2 rounded-lg border transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-400 #{controller_name == "join" ? "bg-purple-600 border-purple-600 text-white" : "bg-purple-500/15 border-purple-500/30 text-purple-100 hover:bg-purple-600 hover:border-purple-600 hover:text-white"}" %>
       <%# In "Change Game" mode the room's language is fixed, so there is nothing to pick. %>

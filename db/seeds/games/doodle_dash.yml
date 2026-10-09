@@ -38,3 +38,40 @@ faq:
     a: The game can't stop it, but it's against the spirit of the game. Words and letters in the drawing are the one house rule.
   - q: Can I hide wrong guesses from the TV?
     a: Yes. The host can turn the guess feed off in the room settings. When it's on, rude words are hidden automatically.
+
+# Spanish. Same fields as above; anything missing falls back to English.
+translations:
+  es:
+    name: Dibuja y Adivina
+    description: Un jugador dibuja una palabra secreta en su celular, el dibujo aparece en vivo en
+      la pantalla grande y todos compiten por adivinarla. ¡Cuanto más rápido adivines, más puntos!
+    tagline: Dibujas un gato. Todos dicen "papa". Clásico.
+    players_note: >-
+      Se necesita un artista y al menos un adivinador, así que se puede jugar con 2. De 3 a 8 es
+      cuando mejor funciona: muchas respuestas locas, y todos tienen su turno para dibujar.
+    long_description: >-
+      Una carrera de dibujar y adivinar para toda la sala. En cada turno, un jugador elige una
+      palabra secreta en su celular y la dibuja con el dedo, y cada trazo aparece en vivo en la
+      pantalla grande. Los demás escriben sus respuestas en su celular. Cuanto más rápido adivines,
+      más puntos ganas, y el artista suma por cada jugador que acierta, así que dibujar bien también
+      paga. Cuando queda poco tiempo aparecen letras de la palabra como pistas, y las respuestas
+      equivocadas en la TV suelen ser lo más divertido.
+    how_to_play:
+      - El anfitrión elige el tiempo para dibujar, cuántas veces dibuja cada jugador y la dificultad de las palabras.
+      - En tu turno, elige una de tres palabras secretas en tu celular y dibújala con el dedo. Tu dibujo aparece en vivo en la pantalla grande.
+      - Los demás miran la TV y escriben sus respuestas en el celular. Si te falta una letra, tu celular dice "¡Casi!"
+      - Una respuesta correcta suma de 50 a 100 puntos, según lo rápido que fuiste. El artista suma 25 por cada jugador que acierta.
+      - Las letras de la palabra aparecen en la TV como pistas. Cuando todos hayan dibujado, gana el puntaje más alto.
+    tips:
+      - "Artistas: empiecen por la forma grande y luego añadan los detalles. Un círculo y dos orejas ya es un gato."
+      - "Nada de letras ni números en el dibujo. ¡Dibújalo, no lo escribas!"
+      - "Adivinadores: respondan pronto y seguido. Equivocarse no cuesta nada."
+      - Fíjate en las letras de pista. Saber que la palabra tiene dos partes o empieza por "p" ayuda mucho.
+      - ¿Poco tiempo? Elige la palabra fácil. Una respuesta rápida vale más que un dibujo perfecto.
+    faq:
+      - q: ¿Los adivinadores ven el dibujo en su celular?
+        a: No. El dibujo aparece en la pantalla grande, y los celulares solo sirven para escribir respuestas. Todos miran la TV juntos.
+      - q: ¿Alguien puede escribir la respuesta en vez de dibujarla?
+        a: El juego no puede impedirlo, pero va contra el espíritu del juego. Nada de palabras ni letras en el dibujo es la única regla de la casa.
+      - q: ¿Puedo ocultar las respuestas equivocadas de la TV?
+        a: Sí. El anfitrión puede apagar las respuestas en pantalla en la configuración de la sala. Cuando están activadas, las palabras groseras se ocultan automáticamente.

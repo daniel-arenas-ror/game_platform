@@ -37,3 +37,39 @@ faq:
     a: No. It's the same sequence with one new step added at the end, so it gets longer each round.
   - q: Which grid size should we pick?
     a: 3×3 is great for kids and warm-ups, 4×4 is the classic, and 6×6 is for memory champions.
+
+# Spanish. Same fields as above; anything missing falls back to English.
+translations:
+  es:
+    name: Memoria de Secuencias
+    description: ¡Mira cómo se ilumina la cuadrícula en secuencia y repítela en tu celular! Cada
+      ronda añade un paso más — ¿hasta dónde llega tu memoria?
+    tagline: Una luz más en cada ronda. ¿Hasta cuándo aguanta tu cerebro?
+    players_note: >-
+      Todos repiten la secuencia en su propio celular al mismo tiempo, así que es igual de divertido
+      solo que con un grupo grande.
+    long_description: >-
+      Mira cómo la cuadrícula de la pantalla grande se ilumina una casilla a la vez, y luego toca las
+      mismas casillas en el mismo orden en tu celular. Cada ronda añade un paso más a la secuencia, y
+      siempre es la misma secuencia más uno, así que el reto es mantenerla toda en la cabeza. Ganas
+      10 puntos por cada paso correcto desde el inicio, así que incluso un error cerca del final
+      todavía suma.
+    how_to_play:
+      - El anfitrión elige el tamaño de la cuadrícula (3×3, 4×4 o 6×6) y cuántas rondas jugar.
+      - Las casillas de la pantalla grande se iluminan una por una. Fíjate bien en el orden.
+      - Toca las mismas casillas en el mismo orden en tu celular.
+      - Ganas 10 puntos por cada paso correcto desde el inicio, hasta tu primer error.
+      - Cada ronda añade un paso más. Gana el total más alto tras la última ronda.
+    tips:
+      - Di las posiciones en tu cabeza, como "arriba a la izquierda, centro, abajo a la derecha".
+      - Agrupa la secuencia en bloques de tres. Es mucho más fácil de recordar.
+      - Solo el último paso es nuevo en cada ronda. Concéntrate en él mientras repites el resto.
+      - El tiempo para responder crece en cada ronda, así que no hay que apurarse.
+      - 3×3 es perfecto para niños. 6×6 es brutal, así que pruébenlo cuando todos hayan calentado.
+    faq:
+      - q: ¿Cómo se puntúa Memoria de Secuencias?
+        a: Ganas 10 puntos por cada paso que repites bien desde el principio. La cuenta se detiene en tu primer toque equivocado.
+      - q: ¿La secuencia cambia en cada ronda?
+        a: No. Es la misma secuencia con un paso nuevo al final, así que se alarga en cada ronda.
+      - q: ¿Qué tamaño de cuadrícula elegimos?
+        a: 3×3 es ideal para niños y para calentar, 4×4 es el clásico, y 6×6 es para campeones de la memoria.

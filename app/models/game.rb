@@ -27,6 +27,18 @@ class Game
   field :perfect_for, type: Array, default: [] # keys of PERFECT_FOR
   field :faq, type: Array, default: [] # [{ "q" => "...", "a" => "..." }]
 
+  # Other languages of the text fields, from the YAML's `translations:` block:
+  # { "es" => { "name" => "...", "how_to_play" => [...], ... } }. English lives in the fields themselves.
+  field :translations, type: Hash, default: {}
+  TRANSLATED_FIELDS = %w[name description tagline long_description players_note how_to_play tips faq].freeze
+
+  # Each text field reads the current language, falling back to English when it isn't translated.
+  TRANSLATED_FIELDS.each do |name|
+    define_method(name) do
+      translations.dig(I18n.locale.to_s, name).presence || super()
+    end
+  end
+
   # Settings a game page can recommend it for.
   PERFECT_FOR = %w[party family classroom work video_call].freeze
 

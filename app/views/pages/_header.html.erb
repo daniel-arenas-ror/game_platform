@@ -1,4 +1,4 @@
-<%= link_to "← Back to games", games_path, class: "text-purple-400 hover:text-purple-300 text-sm font-semibold" %>
+<%= link_to t(".back"), games_path, class: "text-purple-400 hover:text-purple-300 text-sm font-semibold" %>
 <h1 class="text-4xl font-extrabold text-white mt-6 mb-2"><%= title %></h1>
 <% if local_assigns[:subtitle] %>
   <p class="text-slate-400 text-lg mb-10"><%= subtitle %></p>

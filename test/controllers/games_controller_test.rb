@@ -136,4 +136,51 @@ class GamesControllerTest < ActionDispatch::IntegrationTest
       assert(data["faq"].size >= 3 && data["faq"].all? { |f| f["q"].present? && f["a"].present? }, name)
     end
   end
+
+  test "every seeded game has its page content in Spanish" do
+    Dir[Rails.root.join("db/seeds/games/*.yml")].each do |file|
+      data = YAML.load_file(file)
+      es   = data.dig("translations", "es") || {}
+      name = File.basename(file)
+
+      # The name may stay the same (Battle City); everything else must be written in Spanish.
+      %w[description tagline long_description players_note].each do |key|
+        assert es[key].present?, "#{name}: missing es.#{key}"
+      end
+      %w[how_to_play tips faq].each do |key|
+        assert_equal data[key].size, es[key]&.size, "#{name}: es.#{key} should have as many items as the English"
+      end
+      assert(es["faq"].all? { |f| f["q"].present? && f["a"].present? }, name)
+      assert_empty es.keys - Game::TRANSLATED_FIELDS, "#{name}: es has fields that aren't translated"
+    end
+  end
+
+  test "the Spanish game page shows the Spanish content" do
+    @game.update!(min_players: 1, max_players: 12, duration_minutes: 10, category: "puzzle", how_to_play: %w[One Two],
+                  faq: [ { "q" => "How many points?", "a" => "50 per digit" } ],
+                  translations: { "es" => { "name" => "Sopa de Números", "how_to_play" => %w[Uno Dos],
+                                            "faq" => [ { "q" => "¿Cuántos puntos?", "a" => "50 por dígito" } ] } })
+    get game_path(@game, locale: :es)
+
+    assert_select "html[lang=es]"
+    assert_select "h1", "Sopa de Números"
+    assert_select "title", /Sopa de Números – Juego de fiesta gratis/
+    assert_select "#how-to-play ol li", text: /Uno/
+    assert_select "ul[aria-label='De un vistazo'] li", text: /1–12 jugadores/
+    assert_select "details summary", text: /¿Cuántos puntos\?/
+    assert_select "details summary", text: /¿Es gratis\?/
+    assert_select "form[action=?] button", rooms_path(game_id: @game.id, locale: :es), text: "Empezar juego"
+
+    graph = JSON.parse(css_select("script[type='application/ld+json']").first.text).fetch("@graph")
+    assert_equal "es", graph.first["inLanguage"]
+    assert_equal "Acertijos", graph.first["genre"]
+    assert_equal [ "Inicio", "Juegos", "Sopa de Números" ], graph.last["itemListElement"].map { |i| i["name"] }
+  end
+
+  test "untranslated fields fall back to English" do
+    @game.update!(tagline: "Race for numbers", translations: { "es" => { "name" => "Sopa de Números" } })
+    get game_path(@game, locale: :es)
+    assert_select "h1", "Sopa de Números"
+    assert_select "p", "Race for numbers"
+  end
 end

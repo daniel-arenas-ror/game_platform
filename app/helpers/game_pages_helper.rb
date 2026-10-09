@@ -16,28 +16,16 @@ module GamePagesHelper
     "doodle_dash"            => { text: "text-lime-400",    soft: "text-lime-300",    tint: "bg-lime-500/10",    border: "border-lime-500/40",    dot: "bg-lime-400", hex: "#bef264" }
   }.freeze
 
-  CATEGORY_LABELS = {
-    "social" => "Social game", "trivia" => "Trivia game", "action" => "Action game",
-    "perception" => "Quick-eye game", "memory" => "Memory game", "puzzle" => "Puzzle race",
-    "strategy" => "Strategy game", "drawing" => "Drawing game"
-  }.freeze
+  CATEGORIES = %w[social trivia action perception memory puzzle strategy drawing].freeze
 
-  # Game::PERFECT_FOR key => [label, icon]
+  # Game::PERFECT_FOR key => icon. Labels are in the locale files (game_pages.settings).
   SETTINGS = {
-    "party"      => [ "Parties", :party ],
-    "family"     => [ "Family time", :home ],
-    "classroom"  => [ "Classrooms", :school ],
-    "work"       => [ "Work teams", :briefcase ],
-    "video_call" => [ "Video calls", :video ]
+    "party"      => :party,
+    "family"     => :home,
+    "classroom"  => :school,
+    "work"       => :briefcase,
+    "video_call" => :video
   }.freeze
-
-  # Shown on every game page, after the game's own questions.
-  GENERAL_FAQ = [
-    { "q" => "Do players need to download an app?",
-      "a" => "No. Players scan the QR code on the host screen with their phone camera and play in the browser. No app, no account." },
-    { "q" => "Is it free?",
-      "a" => "Yes, every game on %{site} is free to play." }
-  ].freeze
 
   # Lucide-style 24×24 stroke paths.
   ICON_PATHS = {
@@ -60,7 +48,11 @@ module GamePagesHelper
   end
 
   def game_category_label(game)
-    CATEGORY_LABELS.fetch(game.category.to_s, "Party game")
+    t("game_pages.categories.#{CATEGORIES.include?(game.category.to_s) ? game.category : "default"}")
+  end
+
+  def game_genre(game)
+    t("game_pages.genres.#{CATEGORIES.include?(game.category.to_s) ? game.category : "default"}")
   end
 
   def game_page_icon(name, css: "size-5")
@@ -69,14 +61,16 @@ module GamePagesHelper
   end
 
   def game_players_label(game)
-    return "Any group" if game.min_players.blank? || game.max_players.blank?
-    return "#{game.min_players} players" if game.min_players == game.max_players
+    return t("game_pages.any_group") if game.min_players.blank? || game.max_players.blank?
+    return t("game_pages.players", count: game.min_players) if game.min_players == game.max_players
 
-    "#{game.min_players}–#{game.max_players} players"
+    t("game_pages.players_range", min: game.min_players, max: game.max_players)
   end
 
+  # The game's own questions, then the ones every game page answers.
   def game_faq(game)
-    game.faq + GENERAL_FAQ.map { |f| f.merge("a" => format(f["a"], site: SeoHelper::SITE_NAME)) }
+    general = t("game_pages.general_faq").map { |f| { "q" => f[:q], "a" => format(f[:a], site: SeoHelper::SITE_NAME) } }
+    game.faq + general
   end
 
   # schema.org JSON-LD for a game page: the game, its rules, its FAQ and the breadcrumb.
@@ -90,9 +84,9 @@ module GamePagesHelper
       "@type" => "VideoGame", "@id" => "#{url}#game", "name" => game.name, "url" => url,
       "description" => game.long_description.presence || game.description,
       "image" => images.presence,
-      "genre" => game_category_label(game).delete_suffix(" game"),
-      "gamePlatform" => "Web browser", "operatingSystem" => "Any (web browser)",
-      "applicationCategory" => "GameApplication", "inLanguage" => "en",
+      "genre" => game_genre(game),
+      "gamePlatform" => t("game_pages.platform"), "operatingSystem" => t("game_pages.operating_system"),
+      "applicationCategory" => "GameApplication", "inLanguage" => I18n.locale.to_s,
       "playMode" => game.max_players.to_i > 1 ? "MultiPlayer" : "SinglePlayer",
       "numberOfPlayers" => ({ "@type" => "QuantitativeValue", "minValue" => game.min_players,
                               "maxValue" => game.max_players } if game.min_players && game.max_players),
@@ -103,7 +97,7 @@ module GamePagesHelper
     }.compact
 
     how_to = if game.how_to_play.any?
-      { "@type" => "HowTo", "@id" => "#{url}#how-to-play", "name" => "How to play #{game.name}",
+      { "@type" => "HowTo", "@id" => "#{url}#how-to-play", "name" => t("game_pages.how_to_play", game: game.name),
         "totalTime" => video_game["timeRequired"],
         "step" => game.how_to_play.each_with_index.map { |text, i|
           { "@type" => "HowToStep", "position" => i + 1, "text" => text, "url" => "#{url}#how-to-play" }
@@ -119,7 +113,7 @@ module GamePagesHelper
 
     breadcrumb = {
       "@type" => "BreadcrumbList",
-      "itemListElement" => [ [ "Home", root_url ], [ "Games", games_url ], [ game.name, url ] ].each_with_index.map { |(name, item), i|
+      "itemListElement" => [ [ t("game_pages.home"), root_url ], [ t("game_pages.games"), games_url ], [ game.name, url ] ].each_with_index.map { |(name, item), i|
         { "@type" => "ListItem", "position" => i + 1, "name" => name, "item" => item }
       }
     }

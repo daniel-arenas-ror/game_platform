@@ -1,0 +1,67 @@
+<% content_for :title, "Acerca de" %>
+<% content_for :description, "Grouparty es una colección gratuita de juegos de fiesta para jugar juntos: una pantalla compartida y cada uno se une desde su propio celular. Hecho por diversión por Daniel Arenas." %>
+
+<div class="min-h-screen py-12 px-4 sm:px-6">
+  <article class="max-w-3xl mx-auto text-slate-300 leading-relaxed space-y-6">
+    <%= render "pages/header", title: "Acerca de #{SeoHelper::SITE_NAME}", subtitle: "Juegos de fiesta para una pantalla grande y los celulares de todos." %>
+
+    <section class="space-y-4">
+      <h2 class="text-2xl font-bold text-white">¿Qué es <%= SeoHelper::SITE_NAME %>?</h2>
+      <p>
+        <%= SeoHelper::SITE_NAME %> es una colección gratuita de juegos de fiesta multijugador hecha para grupos en el mismo lugar.
+        Una persona abre un juego en una TV, un portátil o una tableta: esa es la pantalla principal que todos miran.
+        Los demás escanean el código QR con su celular, escriben un apodo y juegan desde su propio dispositivo.
+      </p>
+      <p>
+        No hay nada que instalar ni cuentas que crear. Funciona en cualquier navegador moderno, así que una cena
+        familiar, una pausa en clase o una noche con amigos se puede convertir en un juego en menos de un minuto.
+      </p>
+    </section>
+
+    <section class="space-y-4">
+      <h2 class="text-2xl font-bold text-white">Los juegos</h2>
+      <p>
+        La colección mezcla formas de jugar muy distintas: trivia contra el reloj, deducción social, retos de memoria,
+        adivinar colores, buscar números, coincidir palabras, batallas de tanques y combate de submarinos. Cada juego
+        está pensado para que la pantalla compartida cuente la historia mientras cada celular se vuelve un control
+        privado, así que pueden guardar secretos, competir entre ustedes y ver los resultados juntos.
+      </p>
+      <% if (games = Game.visible.to_a.sort_by(&:name)).any? %>
+        <ul class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <% games.each do |game| %>
+            <li class="bg-slate-800 border border-slate-700 rounded-xl px-4 py-3">
+              <p class="text-white font-bold"><%= game.name %></p>
+              <p class="text-slate-400 text-sm"><%= game.description %></p>
+            </li>
+          <% end %>
+        </ul>
+      <% end %>
+    </section>
+
+    <section class="space-y-4">
+      <h2 class="text-2xl font-bold text-white">Quién lo hace</h2>
+      <p>
+        Hola, soy <strong class="text-white">Daniel Arenas</strong>, desarrollador de software. Construí
+        <%= SeoHelper::SITE_NAME %> por diversión, porque quería juegos sencillos para jugar con amigos y familia
+        sin que nadie tuviera que descargar una app. Sigo añadiendo juegos nuevos y mejorando los que ya existen.
+      </p>
+      <p>
+        Puedes ver más de mi trabajo en GitHub:
+        <%= link_to "github.com/daniel-arenas-ror", PagesController::GITHUB_URL,
+                    class: "text-purple-400 hover:text-purple-300 underline", target: "_blank", rel: "noopener" %>.
+      </p>
+    </section>
+
+    <section class="space-y-4">
+      <h2 class="text-2xl font-bold text-white">Gratis para jugar</h2>
+      <p>
+        <%= SeoHelper::SITE_NAME %> es gratis. Para ayudar a pagar los servidores, el sitio puede mostrar anuncios de Google.
+        Puedes leer cómo funciona en la <%= link_to "Política de privacidad", privacy_path, class: "text-purple-400 hover:text-purple-300 underline" %>.
+        Las ideas, los reportes de errores y las sugerencias de juegos siempre son bienvenidos en la
+        <%= link_to "página de contacto", contact_path, class: "text-purple-400 hover:text-purple-300 underline" %>.
+      </p>
+    </section>
+  </article>
+
+  <%= ad_slot :page, css: "max-w-3xl mx-auto mt-12" %>
+</div>

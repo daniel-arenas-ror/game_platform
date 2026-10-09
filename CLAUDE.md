@@ -88,7 +88,7 @@ Each game service implements at minimum:
 5. **`app/views/rooms/games/{code}/_index.html.erb`** — In-game view. Rendered dynamically by `rooms#playing`. Root element needs `data-controller`, `data-{ctrl}-room-code-value`, `data-{ctrl}-player-id-value`.
 6. **`app/javascript/controllers/{code}_host_controller.js`** + **`{code}_player_controller.js`**
 7. *(Optional)* **`app/views/rooms/games/{code}/_edit.html.erb`** — Pre-game config pickers.
-8. **`db/seeds/games/{code}.yml`** + add `{code}` to `GAME_CODES` in `db/seeds.rb` — name, `slug` (public URL `/games/{slug}`, never change it once live), description and the game page content (tagline, long_description, min/max_players, players_note, duration_minutes, age, category, how_to_play, tips, perfect_for, faq). Write it from the real rules in the service/channel. `games_controller_test.rb` checks every file is complete.
+8. **`db/seeds/games/{code}.yml`** + add `{code}` to `GAME_CODES` in `db/seeds.rb` — name, `slug` (public URL `/games/{slug}`, never change it once live), description and the game page content (tagline, long_description, min/max_players, players_note, duration_minutes, age, category, how_to_play, tips, perfect_for, faq). Write it from the real rules in the service/channel, then the Spanish version of the text fields under `translations: es:` (see *Languages*). `games_controller_test.rb` checks every file is complete in both languages.
 9. **Winner celebration (required)** — the player controller's game-over handler must call the shared celebration for the winner(s). See *Winner Celebration* below.
 10. **Game page assets** — add the game's accent to `GamePagesHelper::ACCENTS`, then run `bin/rails games:webp ONLY={code}` (the WebP copies pages actually show: 400/640 px, full and top-cropped "card"; needs libvips) and `bin/rails games:og_images ONLY={code}` (`og.png`, the 1200×630 share image; needs ImageMagick + pngquant). Both are made from `instructions.png`. Show game images with `game_image_tag` (srcset + `?v=` digest, since public files are cached for a year), never `image_tag` on the PNG.
 
@@ -199,6 +199,8 @@ English and Spanish (`config/initializers/locale.rb`). Strings live in `config/l
 - **Rooms keep their language:** `Room#locale` is set from the page that created the room. `RoomsController#room_locale` (and `GamesController` in change-game mode) force that language whatever the URL or cookie, so a phone scanning the QR code sees the host's language. Room screens have no picker.
 - **JS strings:** put them under `js:` in the locale files; the layout embeds them (`LocaleHelper#js_translations_tag`) and controllers use `import { t } from "controllers/shared/i18n"` → `t("game.key", { name })` (`%{name}` interpolation, `one`/`other` plurals with `count`).
 - **SEO:** each public page has hreflang alternates + `og:locale`; the sitemap lists every page in both languages.
+- **Game content:** `Game::TRANSLATED_FIELDS` (name, description, tagline, how_to_play, faq…) read `translations[locale]` and fall back to English; the Spanish lives in each `db/seeds/games/<code>.yml` under `translations: es:`. Re-run `bin/rails db:seed` after editing.
+- **Prose pages** (about, privacy, contact) are one template per language (`about.es.html.erb`); keep both in sync. Everything else uses lazy keys (`t(".title")`). A test fails when en.yml and es.yml don't have the same keys.
 
 ### Frontend
 

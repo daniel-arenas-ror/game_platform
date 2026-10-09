@@ -37,3 +37,39 @@ faq:
     a: Animals, objects, country flags, numbers, or a random mix.
   - q: Is Matching Pairs good for young kids?
     a: Yes. A 4×4 board with animals is perfect for little ones, and bigger boards challenge older players.
+
+# Spanish. Same fields as above; anything missing falls back to English.
+translations:
+  es:
+    name: Encuentra las Parejas
+    description: Memoriza el tablero en la pantalla grande y luego encuentra todas las parejas en
+      tu celular antes de que se acabe el tiempo. ¡Cada pareja suma, cada error resta unos puntos!
+    tagline: Mira bien. En unos segundos todas las cartas se voltean.
+    players_note: >-
+      Cada uno juega su propio tablero en su celular al mismo tiempo, así que funciona con
+      cualquier tamaño de grupo, desde una práctica en solitario hasta un salón completo.
+    long_description: >-
+      El clásico juego de memoria con cartas, jugado por todos a la vez. La pantalla grande muestra
+      todo el tablero boca arriba durante unos segundos. Luego las cartas se voltean y cada uno tiene
+      que encontrar las parejas en su propio celular, usando solo lo que recuerda. Cada pareja suma
+      100 puntos, pero cada error resta 10, así que adivinar tiene un precio. Elige animales,
+      objetos, banderas, números o una mezcla al azar.
+    how_to_play:
+      - El anfitrión elige el tamaño del tablero (de 4×4 a 6×6), el tipo de cartas, el tiempo por ronda y el número de rondas.
+      - Todo el tablero aparece boca arriba en la pantalla grande durante 8 a 20 segundos, según su tamaño. ¡Memorízalo!
+      - Las cartas se voltean. Toca dos cartas en tu celular para destaparlas.
+      - Una pareja suma 100 puntos y queda abierta. Un error resta 10 puntos y las cartas se vuelven a voltear.
+      - Despeja tu tablero antes de que se acabe el tiempo. Gana el puntaje más alto.
+    tips:
+      - No intentes recordarlo todo. Elige una fila o una esquina y recuérdala bien.
+      - Di las parejas en tu cabeza, como "perro arriba a la izquierda, perro abajo a la derecha".
+      - Los errores restan puntos, así que si no tienes idea, toca primero una carta que sí recuerdes.
+      - Un error igual te muestra dos cartas. Úsalo en tu siguiente turno.
+      - Empiecen con 4×4 para calentar. 6×6 con banderas es un verdadero reto.
+    faq:
+      - q: ¿Cómo se puntúa Encuentra las Parejas?
+        a: Cada pareja vale 100 puntos y cada error resta 10. Tu puntaje nunca baja de 0.
+      - q: ¿Con qué cartas se puede jugar?
+        a: Animales, objetos, banderas de países, números o una mezcla al azar.
+      - q: ¿Encuentra las Parejas es bueno para niños pequeños?
+        a: Sí. Un tablero de 4×4 con animales es perfecto para los más pequeños, y los tableros grandes retan a los mayores.

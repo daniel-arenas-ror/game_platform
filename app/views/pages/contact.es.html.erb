@@ -1,0 +1,36 @@
+<% content_for :title, "Contacto" %>
+<% content_for :description, "Escríbele a Grouparty: preguntas, reportes de errores, ideas de juegos o solicitudes de privacidad." %>
+
+<div class="min-h-screen py-12 px-4 sm:px-6">
+  <article class="max-w-3xl mx-auto text-slate-300 leading-relaxed space-y-6">
+    <%= render "pages/header", title: "Contacto", subtitle: "¿Preguntas, ideas o problemas? Me encantaría saber de ti." %>
+
+    <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 sm:p-8 text-center">
+      <p class="text-slate-400 text-sm uppercase tracking-widest font-semibold mb-3">Correo</p>
+      <%= mail_to PagesController::CONTACT_EMAIL, PagesController::CONTACT_EMAIL,
+                  class: "text-2xl sm:text-3xl font-bold text-purple-400 hover:text-purple-300 break-all" %>
+      <p class="text-slate-500 text-sm mt-4">Normalmente respondo en unos días.</p>
+    </div>
+
+    <section class="space-y-4">
+      <h2 class="text-2xl font-bold text-white">Sobre qué puedes escribir</h2>
+      <ul class="list-disc pl-6 space-y-2">
+        <li><strong class="text-white">Reportes de errores:</strong> cuéntame en qué juego, qué pasó, y el dispositivo y navegador que usaste. Un código de sala o una captura de pantalla ayudan mucho.</li>
+        <li><strong class="text-white">Ideas de juegos:</strong> muchos de los juegos empezaron como sugerencias. Si tienes una, envíala.</li>
+        <li><strong class="text-white">Preguntas:</strong> cómo funciona un juego, cómo jugar con un grupo grande o cualquier otra cosa.</li>
+        <li><strong class="text-white">Solicitudes de privacidad:</strong> para preguntar por los datos de una sala en la que jugaste o pedir que se borren, consulta la <%= link_to "Política de privacidad", privacy_path, class: "text-purple-400 hover:text-purple-300 underline" %>.</li>
+      </ul>
+    </section>
+
+    <section class="space-y-4">
+      <h2 class="text-2xl font-bold text-white">Sobre el desarrollador</h2>
+      <p>
+        <%= SeoHelper::SITE_NAME %> está hecho por Daniel Arenas. También me puedes encontrar en
+        <%= link_to "GitHub", PagesController::GITHUB_URL, class: "text-purple-400 hover:text-purple-300 underline", target: "_blank", rel: "noopener" %>.
+        Hay más sobre el proyecto en la página <%= link_to "Acerca de", about_path, class: "text-purple-400 hover:text-purple-300 underline" %>.
+      </p>
+    </section>
+  </article>
+
+  <%= ad_slot :page, css: "max-w-3xl mx-auto mt-12" %>
+</div>

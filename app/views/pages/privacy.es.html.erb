@@ -1,0 +1,117 @@
+<% content_for :title, "Política de privacidad" %>
+<% content_for :description, "Cómo maneja Grouparty tus datos: qué guardamos cuando juegas, las cookies que usamos y cómo Google AdSense muestra anuncios." %>
+<% link = "text-purple-400 hover:text-purple-300 underline" %>
+
+<div class="min-h-screen py-12 px-4 sm:px-6">
+  <article class="max-w-3xl mx-auto text-slate-300 leading-relaxed space-y-8">
+    <%= render "pages/header", title: "Política de privacidad", subtitle: "Última actualización: 9 de octubre de 2026" %>
+
+    <section class="space-y-4">
+      <p>
+        Esta Política de privacidad explica qué información recopila <%= SeoHelper::SITE_NAME %> (“nosotros”) cuando
+        visitas o juegas en este sitio web, cómo se usa y qué opciones tienes. <%= SeoHelper::SITE_NAME %> es operado
+        por Daniel Arenas. Si tienes cualquier pregunta, escribe a
+        <%= mail_to PagesController::CONTACT_EMAIL, nil, class: link %>.
+      </p>
+    </section>
+
+    <section class="space-y-4">
+      <h2 class="text-2xl font-bold text-white">1. Información que recopilamos</h2>
+      <p>No necesitas una cuenta para usar <%= SeoHelper::SITE_NAME %>. Solo guardamos lo que los juegos necesitan para funcionar:</p>
+      <ul class="list-disc pl-6 space-y-2">
+        <li><strong class="text-white">Apodo:</strong> el nombre que escribes al unirte a una sala. Se muestra a las demás personas de esa sala. Por favor no uses tu nombre real completo ni información sensible como apodo.</li>
+        <li><strong class="text-white">Datos del juego:</strong> el código de sala, la configuración del juego y lo que pasa durante la partida (respuestas, puntajes, movimientos). Se usa para hacer funcionar el juego y mostrar los resultados.</li>
+        <li><strong class="text-white">Datos técnicos:</strong> como la mayoría de sitios web, nuestros servidores registran datos básicos de cada solicitud (dirección IP, tipo de navegador, páginas solicitadas, fecha y hora) para mantener el servicio funcionando, corregir errores y prevenir abusos.</li>
+      </ul>
+      <p>No pedimos tu correo, número de teléfono, ubicación ni datos de pago, y no vendemos tu información personal.</p>
+    </section>
+
+    <section class="space-y-4">
+      <h2 class="text-2xl font-bold text-white">2. Cookies</h2>
+      <p>Usamos pocas cookies:</p>
+      <ul class="list-disc pl-6 space-y-2">
+        <li><strong class="text-white">Cookies esenciales:</strong> una cookie de sesión recuerda qué jugador eres en una sala, para que puedas recargar la página o reconectarte sin perder tu lugar. El juego no funciona sin ella.</li>
+        <li><strong class="text-white">Cookie de preferencia:</strong> recuerda el idioma que elegiste (inglés o español), para que el sitio se abra en ese idioma la próxima vez.</li>
+        <li><strong class="text-white">Cookies publicitarias:</strong> las colocan Google y sus socios cuando se muestran anuncios (ver la siguiente sección).</li>
+      </ul>
+      <p>Puedes bloquear o borrar las cookies en la configuración de tu navegador. Si bloqueas las cookies esenciales, no podrás unirte a un juego.</p>
+    </section>
+
+    <section class="space-y-4">
+      <h2 class="text-2xl font-bold text-white">3. Publicidad (Google AdSense)</h2>
+      <p>
+        Para que <%= SeoHelper::SITE_NAME %> siga siendo gratis, usamos Google AdSense para mostrar anuncios. Google y otros
+        proveedores externos usan cookies para mostrar anuncios basados en tus visitas anteriores a este y otros sitios web.
+      </p>
+      <ul class="list-disc pl-6 space-y-2">
+        <li>El uso de cookies publicitarias por parte de Google les permite a Google y a sus socios mostrarte anuncios basados en tus visitas a este y otros sitios de Internet.</li>
+        <li>Puedes desactivar la publicidad personalizada en la <%= link_to "Configuración de anuncios", "https://adssettings.google.com", class: link, target: "_blank", rel: "noopener" %> de Google.</li>
+        <li>También puedes desactivar el uso de cookies de algunos proveedores externos para publicidad personalizada en <%= link_to "www.aboutads.info", "https://www.aboutads.info/choices/", class: link, target: "_blank", rel: "noopener" %>.</li>
+        <li>Más información en <%= link_to "Cómo utiliza Google la información de los sitios o aplicaciones que usan sus servicios", "https://policies.google.com/technologies/partner-sites?hl=es", class: link, target: "_blank", rel: "noopener" %>.</li>
+      </ul>
+      <p>
+        A los visitantes del Espacio Económico Europeo, el Reino Unido y Suiza se les pide su consentimiento antes de
+        mostrar anuncios personalizados, y pueden cambiar su elección en cualquier momento.
+      </p>
+    </section>
+
+    <section class="space-y-4">
+      <h2 class="text-2xl font-bold text-white">4. Cómo usamos la información</h2>
+      <ul class="list-disc pl-6 space-y-2">
+        <li>Para crear salas, conectar a los jugadores y hacer funcionar los juegos en tiempo real.</li>
+        <li>Para mostrar puntajes, resultados y tablas de posiciones a las personas de la misma sala.</li>
+        <li>Para mantener el sitio seguro, encontrar errores y mejorar los juegos.</li>
+        <li>Para mostrar anuncios que ayudan a pagar el servicio.</li>
+      </ul>
+    </section>
+
+    <section class="space-y-4">
+      <h2 class="text-2xl font-bold text-white">5. Cuánto tiempo la guardamos</h2>
+      <p>
+        Los jugadores que salen de una sala se eliminan de ella poco después de desconectarse. Los datos de la sala
+        (código, configuración, apodos y puntajes) quedan en nuestra base de datos cuando termina el juego, y solo se
+        usan para operar el servicio. Los registros del servidor se usan solo para seguridad y resolución de problemas.
+        Puedes pedirnos que borremos los datos de una sala en cualquier momento escribiendo a
+        <%= mail_to PagesController::CONTACT_EMAIL, nil, class: link %>.
+      </p>
+    </section>
+
+    <section class="space-y-4">
+      <h2 class="text-2xl font-bold text-white">6. Con quién la compartimos</h2>
+      <p>
+        No vendemos ni alquilamos tu información. Los datos solo se comparten con los proveedores que nos ayudan a
+        operar el sitio (proveedores de alojamiento y de base de datos), con Google para la publicidad como se describe
+        arriba, o cuando la ley lo exige.
+      </p>
+    </section>
+
+    <section class="space-y-4">
+      <h2 class="text-2xl font-bold text-white">7. Menores de edad</h2>
+      <p>
+        <%= SeoHelper::SITE_NAME %> es un sitio web para público general y no está dirigido a menores de 13 años. No
+        recopilamos a sabiendas información personal de menores. Los juegos suelen jugarse en familia; en ese caso, un
+        adulto debería ser el anfitrión de la sala. Si crees que un menor nos dio información personal, contáctanos y la
+        borraremos.
+      </p>
+    </section>
+
+    <section class="space-y-4">
+      <h2 class="text-2xl font-bold text-white">8. Tus derechos</h2>
+      <p>
+        Según dónde vivas (por ejemplo, bajo el RGPD en Europa o la CCPA en California), puedes tener derecho a acceder,
+        corregir o borrar tu información personal, o a oponerte a cómo se usa. Para hacer una solicitud, escribe a
+        <%= mail_to PagesController::CONTACT_EMAIL, nil, class: link %>.
+      </p>
+    </section>
+
+    <section class="space-y-4">
+      <h2 class="text-2xl font-bold text-white">9. Cambios en esta política</h2>
+      <p>
+        Podemos actualizar esta Política de privacidad de vez en cuando. La fecha al inicio de esta página indica cuándo
+        se cambió por última vez.
+      </p>
+    </section>
+  </article>
+
+  <%= ad_slot :page, css: "max-w-3xl mx-auto mt-12" %>
+</div>

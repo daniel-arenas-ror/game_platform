@@ -17,7 +17,7 @@
     <% end %>
 
     <meta property="og:type" content="website">
-    <meta property="og:locale" content="<%= I18n.locale == :es ? "es_ES" : "en_US" %>">
+    <meta property="og:locale" content="<%= t("seo.og_locale") %>">
     <meta property="og:site_name" content="<%= SeoHelper::SITE_NAME %>">
     <meta property="og:title" content="<%= page_title %>">
     <meta property="og:description" content="<%= page_description %>">
@@ -50,7 +50,7 @@
   </head>
 
   <body class="bg-slate-900 min-h-screen">
-    <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-lg focus:bg-purple-600 focus:px-4 focus:py-2 focus:text-sm focus:font-bold focus:text-white">Skip to content</a>
+    <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-lg focus:bg-purple-600 focus:px-4 focus:py-2 focus:text-sm focus:font-bold focus:text-white"><%= t(".skip_to_content") %></a>
     <%= render "shared/site_header" if site_header? %>
     <main id="main">
       <%= yield %>

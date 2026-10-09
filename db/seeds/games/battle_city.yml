@@ -37,3 +37,38 @@ faq:
     a: Yes. Start a game with just yourself and add bots for opponents.
   - q: Does Battle City work over a video call?
     a: It's a fast real-time game, so it plays best in the same room as the screen. Over a video call the delay makes steering hard.
+
+# Spanish. Same fields as above; anything missing falls back to English.
+translations:
+  es:
+    description: ¡Batalla de tanques multijugador! Maneja tu tanque desde el celular, destruye
+      a los enemigos y protege la base.
+    tagline: Tu celular es el control. La TV es el campo de batalla. ¡Protege la base!
+    players_note: >-
+      Hasta 4 jugadores manejan un tanque cada uno. ¿Juegas solo o con 2? El anfitrión puede añadir
+      hasta 3 bots para que la arena nunca se sienta vacía.
+    long_description: >-
+      Un juego de tanques retro de arcade para toda la sala. Cada uno maneja su tanque de color desde
+      el celular mientras el mapa se juega en vivo en la pantalla grande. Rompe muros de ladrillo,
+      escóndete entre los árboles, esquiva el acero y dispara a los otros tanques para sumar puntos.
+      Pero cuida la base: si un disparo de cualquiera la alcanza, el juego termina para todos. Elige
+      un mapa, añade unos bots y descubre quién domina la arena.
+    how_to_play:
+      - El anfitrión elige un mapa (Clásico, Abierto, Asedio o Bosque), cuántos impactos se necesitan para ganar y hasta 3 bots.
+      - Tu celular se convierte en control. Muévete con las flechas y pulsa Disparar.
+      - Acierta a otro tanque para sumar un punto. Los tanques alcanzados vuelven a los 3 segundos.
+      - Los muros de ladrillo se rompen con los disparos, los de acero no, y los árboles te esconden mientras pasas.
+      - Gana el primero en llegar a la meta, o el último tanque en pie. Si la base recibe un disparo, el juego termina de inmediato.
+    tips:
+      - Los árboles son el mejor escondite. Espera adentro y sorprende al que pase.
+      - Dispara al ladrillo para abrir caminos nuevos, o déjalo en pie como protección.
+      - Mantén tus disparos lejos de la base. Una bala perdida termina el juego para todos.
+      - Los bots apuntan a la base, así que alguien tiene que quedarse atrás defendiéndola.
+      - 'El modo "Solo base" (0 impactos para ganar) lo convierte en supervivencia: gana el último tanque en pie.'
+    faq:
+      - q: ¿Cuántos jugadores pueden jugar Battle City?
+        a: Hasta 4 jugadores, cada uno manejando su tanque desde el celular. Además, el anfitrión puede añadir hasta 3 bots.
+      - q: ¿Puedo jugar Battle City solo?
+        a: Sí. Empieza una partida contigo solo y añade bots como rivales.
+      - q: ¿Funciona Battle City por videollamada?
+        a: Es un juego rápido en tiempo real, así que se juega mejor en la misma sala que la pantalla. En una videollamada el retraso hace difícil maniobrar.

@@ -37,3 +37,39 @@ faq:
     a: The counting time grows from 5 seconds in the first round to 15 seconds in the last, and a full 10-round game takes about 5 minutes.
   - q: What makes the later rounds harder?
     a: From round 6 the birds move and distractors appear (colored birds and shapes you shouldn't count). From round 12 it's full chaos.
+
+# Spanish. Same fields as above; anything missing falls back to English.
+translations:
+  es:
+    name: Cuenta Pájaros
+    description: ¡Cuenta los pájaros negros en la pantalla! Las rondas se complican — los pájaros
+      se mueven, cambian de color y aparecen distractores.
+    tagline: Fácil, solo hay que contar pájaros. Hasta que empiezan a moverse.
+    players_note: >-
+      Todos cuentan al mismo tiempo en su propio celular, así que funciona con cualquier grupo, desde
+      1 jugador hasta un salón completo.
+    long_description: >-
+      Una bandada de pájaros negros aterriza en la pantalla grande y tienes unos segundos para
+      contarlos. Suena fácil, ¿verdad? Cada ronda trae más pájaros. Luego empiezan a volar, después
+      aparecen pájaros de colores y otras figuras para confundirte, y en las últimas rondas es un caos
+      total. Escribe tu cuenta en el celular: las respuestas exactas ganan 100 puntos, y fallar por
+      uno todavía da 50.
+    how_to_play:
+      - El anfitrión elige cuántas rondas jugar (5, 10 o 15) y qué tan lleno se pone el cielo (Normal o Denso).
+      - Aparecen pájaros negros en la pantalla grande. ¡Cuenta solo los negros!
+      - Marca tu cuenta en el celular con los botones + y − antes de que se acabe el tiempo. Tienes 5 segundos en la primera ronda y hasta 15 en la última.
+      - Una cuenta exacta da 100 puntos y fallar por uno da 50. Cualquier otra cosa no suma.
+      - Las rondas se complican cuando los pájaros se mueven y aparecen distractores. Gana el total más alto.
+    tips:
+      - Cuenta en grupos de 2 o 3 en lugar de uno por uno. Es mucho más rápido.
+      - Divide la pantalla en tu cabeza (mitad izquierda, luego mitad derecha) y suma.
+      - Ignora los pájaros de colores y las figuras. Están ahí para engañarte.
+      - Acercarse también vale. Si se acaba el tiempo, pon tu mejor estimación, porque fallar por uno todavía da 50.
+      - A los niños les encanta Normal, y Denso es un verdadero reto para adultos.
+    faq:
+      - q: ¿Cuenta Pájaros es bueno para niños?
+        a: Sí. Las primeras rondas son conteos sencillos, ideales para los más pequeños, y las rondas finales retan a niños mayores y adultos.
+      - q: ¿Cuánto dura una partida de Cuenta Pájaros?
+        a: El tiempo para contar crece de 5 segundos en la primera ronda a 15 en la última, y una partida completa de 10 rondas dura unos 5 minutos.
+      - q: ¿Qué hace más difíciles las últimas rondas?
+        a: Desde la ronda 6 los pájaros se mueven y aparecen distractores (pájaros de colores y figuras que no debes contar). Desde la ronda 12 es caos total.

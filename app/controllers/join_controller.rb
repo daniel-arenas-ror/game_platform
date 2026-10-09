@@ -11,7 +11,7 @@ class JoinController < ApplicationController
     else
       # Keep what they typed so a single wrong character is quick to fix.
       flash[:code] = code.first(4) if code.present?
-      redirect_to find_room_path, alert: code.present? ? "No room found with code #{code}. Check the host's screen and try again." : "Enter a room code."
+      redirect_to find_room_path, alert: code.present? ? t("join.not_found", code: code) : t("join.blank")
     end
   end
 end

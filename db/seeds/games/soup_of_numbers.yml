@@ -39,3 +39,40 @@ faq:
     a: 50 points per digit, so a 2-digit number is worth 100 and a 5-digit number is worth 250.
   - q: Is Soup of Numbers good for the classroom?
     a: Yes. It practices reading and recognizing numbers, and every player races on their own phone.
+
+# Spanish. Same fields as above; anything missing falls back to English.
+translations:
+  es:
+    name: Sopa de Números
+    description: Una cuadrícula llena de dígitos esconde números secretos. La pantalla muestra qué
+      número buscar — el primero en encontrarlo en la sopa y tocarlo gana los puntos. ¡Los números
+      más largos valen más!
+    tagline: Una sopa de letras, pero con números. Y todos compiten.
+    players_note: >-
+      Solo el jugador más rápido puntúa en cada ronda, así que es mejor con 2 a 8 personas
+      compitiendo. Jugar solo también es un buen calentamiento.
+    long_description: >-
+      Todos reciben la misma cuadrícula de dígitos en su celular, una sopa llena de números. En cada
+      ronda, la pantalla grande muestra un número escondido en algún lugar de esa sopa. Encuéntralo,
+      toca sus dígitos en línea recta y, si eres el primero, los puntos son tuyos. Los números más
+      largos valen más, así que encontrar uno de 5 dígitos vale 250 puntos. Cada número encontrado se
+      pinta de tu color, así que puedes ver quién va ganando con solo mirar la sopa.
+    how_to_play:
+      - El anfitrión elige el tamaño de la sopa, el largo máximo de los números (2 a 5 dígitos), las rondas y el tiempo por ronda.
+      - Todos reciben la misma cuadrícula de dígitos en su celular.
+      - La pantalla grande muestra el número que hay que encontrar. Se lee en línea recta, horizontal, vertical o en diagonal.
+      - Toca sus dígitos en orden. El primer jugador en encontrarlo gana 50 puntos por dígito.
+      - Si nadie lo encuentra a tiempo, se revela y empieza la siguiente ronda. Gana el total más alto.
+    tips:
+      - Busca primero el primer dígito, luego revisa las casillas de alrededor para encontrar el segundo.
+      - Los números pueden ir en horizontal, en vertical o en diagonal, así que revisa todas las direcciones.
+      - Los dígitos raros son más fáciles de ver. Si el número tiene un 7 y la sopa tiene pocos 7, empieza por ahí.
+      - Cualquier copia del número cuenta, incluso una que haya aparecido por casualidad.
+      - Sopa pequeña (8×8) para partidas rápidas, 15×15 para verdaderos cazadores de números.
+    faq:
+      - q: ¿Cómo se juega Sopa de Números?
+        a: Es como una sopa de letras con dígitos. La pantalla muestra un número, y el primer jugador en encontrarlo en la cuadrícula y tocar sus dígitos gana los puntos.
+      - q: ¿Cuántos puntos vale cada número?
+        a: 50 puntos por dígito, así que un número de 2 dígitos vale 100 y uno de 5 dígitos vale 250.
+      - q: ¿Sopa de Números sirve para el salón de clases?
+        a: Sí. Practica la lectura y el reconocimiento de números, y cada jugador compite desde su propio celular.

@@ -1,4 +1,5 @@
 import { Controller } from "@hotwired/stimulus"
+import { t } from "controllers/shared/i18n"
 
 // Join page: shows the room code as 4 slots over a real text input, and submits on the 4th character.
 // Without JS the plain input still works.
@@ -38,7 +39,7 @@ export default class extends Controller {
     if (this.submitting) return event.preventDefault()
     this.submitting = true
     this.submitTarget.disabled = true
-    this.submitTarget.textContent = "Joining…"
+    this.submitTarget.textContent = t("room_code.joining")
   }
 
   render() {

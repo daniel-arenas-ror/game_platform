@@ -20,7 +20,7 @@ class LocaleTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "html[lang=es]"
     assert_select "#locale-picker option[selected][value=es]"
-    assert_select "nav[aria-label=Main] a[href=?]", find_room_path(locale: :es)
+    assert_select "nav[aria-label=Principal] a[href=?]", find_room_path(locale: :es)
   end
 
   test "public pages list both languages for search engines" do
@@ -118,5 +118,49 @@ class LocaleTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "<loc>#{games_url}</loc>"
     assert_includes response.body, "<loc>#{games_url(locale: :es)}</loc>"
     assert_includes response.body, %(hreflang="es" href="#{game_url(@game, locale: :es)}")
+  end
+end
+
+class SpanishPagesTest < ActionDispatch::IntegrationTest
+  test "the public pages are in Spanish under /es" do
+    { root_path(locale: :es) => "Dale un toque divertido a cualquier reunión.",
+      games_path(locale: :es) => "Elige un juego",
+      find_room_path(locale: :es) => "¿Tienes un código de sala?",
+      about_path(locale: :es) => "Acerca de Grouparty",
+      contact_path(locale: :es) => "Contacto",
+      privacy_path(locale: :es) => "Política de privacidad" }.each do |path, heading|
+      get path
+      assert_response :success
+      assert_select "h1", heading
+      assert_select "nav a", "Inicio"
+      assert_select "footer a", "Política de privacidad"
+    end
+  end
+
+  test "the Spanish home page has a Spanish title and description" do
+    get root_path(locale: :es)
+    assert_select "title", "Grouparty – Juegos de fiesta gratis que se juegan desde el celular"
+    assert_select "meta[property='og:locale'][content=es_LA]"
+  end
+
+  test "a wrong room code is explained in Spanish" do
+    get find_room_path(locale: :es, code: "ZZZZ")
+    follow_redirect!
+    assert_select "[role=alert]", /No hay ninguna sala con el código ZZZZ/
+  end
+
+  test "Spanish JS strings are on the page" do
+    get find_room_path(locale: :es)
+    assert_equal "Entrando…", JSON.parse(css_select("#i18n-strings").first.text).dig("room_code", "joining")
+  end
+
+  test "every English key has a Spanish one" do
+    flatten = ->(hash, prefix = nil) {
+      hash.flat_map { |k, v| v.is_a?(Hash) ? flatten.(v, [ prefix, k ].compact.join(".")) : [ [ prefix, k ].compact.join(".") ] }
+    }
+    en = flatten.(YAML.load_file(Rails.root.join("config/locales/en.yml"))["en"])
+    es = flatten.(YAML.load_file(Rails.root.join("config/locales/es.yml"))["es"])
+    assert_empty en - es, "missing in es.yml"
+    assert_empty es - en, "missing in en.yml"
   end
 end

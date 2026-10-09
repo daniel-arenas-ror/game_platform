@@ -38,3 +38,40 @@ faq:
     a: Answers are compared without caps, extra spaces or punctuation, and common plurals are folded, so "Cats" and "cat" match.
   - q: Can we play Mind Match over a video call?
     a: Yes. You have 10 to 20 seconds to type each word, so it plays great on Zoom, Meet or Teams.
+
+# Spanish. Same fields as above; anything missing falls back to English.
+translations:
+  es:
+    name: Mentes Gemelas
+    description: La pantalla muestra una categoría. Todos escriben una palabra — ganas puntos por
+      cada jugador que piense lo mismo que tú. ¡Cuantas más mentes coincidan, más puntos!
+    tagline: No seas original. Sé predecible. ¡Piensa como el grupo!
+    players_note: >-
+      Sumas puntos al coincidir con otros jugadores, así que se necesitan al menos 3. De 5 a 10 la
+      revelación es lo mejor, con grandes grupos de la misma palabra y una respuesta solitaria que
+      nadie esperaba.
+    long_description: >-
+      La pantalla principal muestra una categoría como "Cosas que encuentras en la playa" o "Dúos
+      famosos". Cada uno escribe en secreto una palabra en su celular. Luego se revelan las
+      respuestas y ganas un punto por cada jugador, tú incluido, que escribió la misma palabra. El
+      objetivo no es ser ingenioso. Es adivinar lo que pensarán los demás. Habrá gritos de alegría
+      cuando cinco personas escriban "arena", y quejas para el único que escribió "medusa".
+    how_to_play:
+      - El anfitrión elige el número de rondas y cuántos segundos tienen todos para escribir.
+      - Aparece una categoría en la pantalla grande, como "Cosas que son amarillas".
+      - Escribe una palabra en tu celular antes de que se acabe el tiempo. ¡Sin hablar!
+      - Las respuestas se agrupan. Si 4 personas escribieron la misma palabra, cada una gana 4 puntos.
+      - Una categoría nueva en cada ronda. Gana el total más alto al final.
+    tips:
+      - Ve por la primera palabra, la más obvia. Es lo que todos los demás también están pensando.
+      - Piensa en quién está en la sala. Un grupo de niños y uno de chefs responderán distinto a "Cosas de la cocina".
+      - Las mayúsculas, los espacios de más y los signos no importan, así que "Arena" y "arena" cuentan como la misma palabra.
+      - Usa una sola palabra sencilla. "Banano" coincidirá con mucha más gente que "banano maduro".
+      - Pruébalo para romper el hielo en el trabajo. Aprenderás mucho sobre cómo piensa tu equipo.
+    faq:
+      - q: ¿Cómo se puntúa Mentes Gemelas?
+        a: Cada jugador de un grupo de palabras iguales gana tantos puntos como personas haya en el grupo. Si 3 personas escribieron "arena", cada una gana 3 puntos.
+      - q: ¿Importa la ortografía?
+        a: Las respuestas se comparan sin tener en cuenta mayúsculas, espacios de más ni signos de puntuación, así que "Arena" y "arena" coinciden.
+      - q: ¿Se puede jugar Mentes Gemelas por videollamada?
+        a: Sí. Tienes de 10 a 20 segundos para escribir cada palabra, así que funciona muy bien en Zoom, Meet o Teams.

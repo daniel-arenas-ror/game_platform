@@ -37,3 +37,40 @@ faq:
     a: Easy uses 12 bright, fully saturated colors. Hard can be any color, including muddy and pastel tones.
   - q: Can we play Guess the Color over a video call?
     a: You can, but video calls change colors a little when they compress the screen. It's fairest in the same room as the TV.
+
+# Spanish. Same fields as above; anything missing falls back to English.
+translations:
+  es:
+    name: Adivina el Color
+    description: La pantalla principal muestra un color durante 5 segundos. ¡Recréalo en tu
+      celular con los controles RGB antes de que se acabe el tiempo!
+    tagline: Lo viste 5 segundos. Ahora mézclalo de memoria.
+    players_note: >-
+      Todos mezclan su color al mismo tiempo, así que funciona con cualquier tamaño de grupo. Con 3
+      o más, la revelación, donde los colores de todos aparecen junto al real, saca las mayores
+      carcajadas.
+    long_description: >-
+      ¿Crees que tienes buen ojo para el color? La pantalla principal muestra un color durante 5
+      segundos y luego desaparece. Todos tienen 10 segundos para recrearlo en su celular con los
+      controles de rojo, verde y azul. Cuanto más se parezca tu mezcla, más puntos ganas, hasta
+      1.000 por ronda. Luego viene la revelación, con los colores de todos junto al real, y ahí
+      empiezan las risas.
+    how_to_play:
+      - El anfitrión elige el número de rondas y la dificultad. Fácil usa colores vivos y brillantes. Difícil puede ser cualquier color.
+      - Un color llena la pantalla principal durante 5 segundos. Míralo bien y memorízalo.
+      - El color desaparece. Tienes 10 segundos para mezclarlo en tu celular con los controles de rojo, verde y azul.
+      - Cuanto más se parezca tu color al real, más puntos ganas, hasta 1.000 por ronda.
+      - Después de cada ronda, los colores de todos se muestran junto al real. Gana el total más alto tras la última ronda.
+    tips:
+      - Encuentra primero el canal más fuerte. ¿Es sobre todo rojo, verde o azul? Ajusta ese control y luego los demás.
+      - Los tres controles altos dan colores claros. Los tres bajos dan colores oscuros.
+      - El amarillo es rojo más verde. El morado es rojo más azul. El cian es verde más azul.
+      - No te fíes del brillo de la pantalla. La mayoría de colores se ven un poco más claros en una TV de lo que son.
+      - Empiecen en Fácil y pasen a Difícil cuando todos le agarren el truco a los controles.
+    faq:
+      - q: ¿Cómo se puntúa Adivina el Color?
+        a: Cada ronda vale hasta 1.000 puntos. Cuanto más se acerque tu color al objetivo, más ganas.
+      - q: ¿Cuál es la diferencia entre Fácil y Difícil?
+        a: Fácil usa 12 colores brillantes y saturados. Difícil puede ser cualquier color, incluidos tonos apagados y pastel.
+      - q: ¿Se puede jugar Adivina el Color por videollamada?
+        a: Se puede, pero las videollamadas cambian un poco los colores al comprimir la pantalla. Es más justo en la misma sala que la TV.

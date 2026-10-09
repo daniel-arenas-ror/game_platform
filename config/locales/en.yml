@@ -1,13 +1,230 @@
 # English strings. Spanish lives in es.yml with the same keys.
 #
-# - Views:   <%= t("locale_picker.label") %>
-# - JS:      everything under `js:` is sent to the page; import { t } from "controllers/shared/i18n"
+# - Views use lazy keys: t(".title") in app/views/home/index.html.erb reads en.home.index.title.
+# - JS:    everything under `js:` is sent to the page; import { t } from "controllers/shared/i18n"
+# - Long prose pages (about, privacy, contact) are whole templates per language: about.es.html.erb.
 #
 # YAML reads yes/no/on/off as booleans, so quote them when they are text.
 en:
+  seo:
+    default_title: "%{site} – Free Party Games You Play From Your Phone"
+    default_description: >-
+      Free multiplayer party games for groups. Put the host screen on your TV, friends join by
+      scanning a QR code and play from their phones — no app, no sign-up.
+    og_locale: en_US
+
   locale_picker:
     label: "Language"
     submit: "Change"
 
+  layouts:
+    application:
+      skip_to_content: "Skip to content"
+
+  shared:
+    site_header:
+      main_nav: "Main"
+      home: "Home"
+      games: "Games"
+      join: "Join"
+    footer:
+      tagline: "Free party games"
+      nav: "Footer"
+      about: "About"
+      contact: "Contact"
+      privacy: "Privacy Policy"
+    ad_slot:
+      label: "Advertisement"
+
+  # Shared by the home, join and games pages.
+  # Game name in the lobby mock-ups on the home and join pages.
+  mock_game_name: "Mind Match"
+
+  perks:
+    no_registration: "No registration needed"
+    no_app: "No app to install"
+    no_sign_up: "No sign-up"
+    free: "Free"
+    no_downloads: "No downloads"
+    no_accounts: "No accounts"
+    any_browser: "Works in any browser"
+
+  home:
+    index:
+      hero_title: "Give any gathering a fun touch."
+      hero_text: >-
+        Free party games for classrooms, work teams and family get-togethers.
+        Put one screen where everyone can see it — players join from their phones in seconds.
+      start_game: "Start a game"
+      join_game: "Join a game"
+      hero_figure: "The host screen shows a room code and QR code; players join from their phones."
+      mock_room: "ROOM: %{code}"
+      mock_players: "PLAYERS"
+      mock_room_code: "ROOM CODE"
+      mock_joined: "You're in!"
+      any_room_title: "Made for any room"
+      any_room_text: "Everyone holds their own controller, so nobody waits for a turn and nobody is left just watching."
+      use_cases:
+        classroom:
+          label: "Classrooms"
+          headline: "A brain break that works."
+          body: "Wake the class up between lessons. Every student plays at once from their phone, and the big screen keeps the whole room together."
+        work:
+          label: "Work teams"
+          headline: "Warm up any meeting."
+          body: "Start with five minutes of play. People loosen up, talk more and get to know each other — in the office or on a video call."
+        family:
+          label: "Family & friends"
+          headline: "Quality time around the TV."
+          body: "From kids to grandparents, everyone is in the same game. No controllers to share and nothing to set up."
+      try: "Try:"
+      why_title: "More than a game"
+      why_text: "A few rounds together change the mood of a room. Here's what people get out of it."
+      benefits:
+        - title: "Take a break from stress"
+          body: "Laughing together is the quickest reset after a long day or a heavy meeting."
+        - title: "Wake up your brain"
+          body: "Memory, focus and quick thinking — every game gives your head a workout."
+        - title: "Encourage teamwork"
+          body: "Some games reward thinking alike, others make you read the people around you."
+        - title: "Get to know your team"
+          body: "See how your colleagues think when there's no agenda on the table."
+        - title: "Quality time with family"
+          body: "Phones become controllers, so everyone is in the same game, together."
+      simple_title: "Nothing to install. Play wherever you meet."
+      same_room_title: "In the same room"
+      same_room_text: "Open a game on a TV, projector or laptop. Everyone scans the QR code with their phone camera and they're in."
+      video_call_title: "On a video call"
+      video_call_text_html: >-
+        Share your screen on Zoom, Google Meet or Microsoft Teams. Players scan the code from the call — or type it at
+        %{join_link} — and start playing.
+      video_call_note: "Fast-reaction games play best in the same room."
+      how_title: "How it works"
+      steps:
+        - title: "Pick a game"
+          body: "The host screen shows a room code and a QR code. Put it on the biggest screen you have, or share it on your call."
+        - title: "Join from your phone"
+          body: "Players scan the QR code or type the room code, pick a nickname and they're in."
+        - title: "Play together"
+          body: "Trivia, social deduction, memory, color matching and more — %{count} games, everyone playing live."
+      ready_title: "Ready when your group is."
+      ready_text: "Open a room in a few seconds. No registration needed."
+
+  join:
+    show:
+      title: "Join a game"
+      description: "Got a room code from the host's screen? Enter it here to join the game from your phone — no app, no sign-up."
+      heading: "Got a room code?"
+      intro: "Type the 4 characters from the host's screen and you're in."
+      code_label: "Room code"
+      code_placeholder: "ROOM CODE"
+      hint: "Letters and numbers only — it joins as soon as you type the 4th."
+      submit: "Join game"
+      where_title: "Where's the code?"
+      where_text: "On the shared screen — the TV, the projector or the video call. It sits right under the game name."
+      faster_html: "<span class=\"text-slate-300 font-semibold\">Faster:</span> point your phone camera at the QR code and skip typing."
+      hosting: "Hosting instead?"
+      pick_game: "Pick a game"
+    not_found: "No room found with code %{code}. Check the host's screen and try again."
+    blank: "Enter a room code."
+
+  games:
+    index:
+      title: "Games"
+      description: "Pick a free party game — trivia, social deduction, memory, color matching, tank battles and more. Open a room on the big screen and everyone plays from their phone."
+      heading: "Pick a game"
+      heading_room: "Pick the next game"
+      intro: "Choose a game to open a room. Put this screen where everyone can see it, and players join from their phones."
+      changing_html: "Changing game for room %{code}"
+      changing_text: "Pick a new game, or configure %{game} again. Players stay in the room."
+      cancel: "Cancel"
+      image_alt: "%{game} — how to play"
+      current_game: "Current game"
+      configure: "Configure"
+      switch: "Switch to this game"
+      play_now: "Play Now"
+      empty_html: "No games yet. Run %{command} to add them."
+    show:
+      title: "%{game} – Free Party Game"
+      breadcrumb: "Breadcrumb"
+      at_a_glance: "At a glance"
+      about_minutes: "About %{count} min"
+      ages: "Ages %{age}+"
+      on_your_phone: "Play on your phone"
+      start_game: "Start game"
+      how_to_play_link: "How to play ↓"
+      free_note: "Free, no sign-up. Open it on a TV or laptop and everyone joins from their phone."
+      image_alt: "%{game} — how to play, illustrated"
+      the_idea: "The idea"
+      what_is: "What is %{game}?"
+      step_by_step: "Step by step"
+      how_to_play: "How to play %{game}"
+      how_many: "How many players?"
+      players_word: "players"
+      tips_label: "Tips & tricks"
+      how_to_win: "How to win at %{game}"
+      where_it_shines: "Where it shines"
+      perfect_for: "Perfect for…"
+      great_fit: "Great fit"
+      same_room_best: "Best in the same room"
+      not_best: "Not the best pick"
+      questions: "Questions"
+      faq_title: "%{game} FAQ"
+      you_might_like: "You might also like"
+      all_games: "All games →"
+      ready: "Ready to play %{game}?"
+      ready_text: "Open a room, put it on the big screen and share the QR code. You'll be playing in under a minute."
+
+  pages:
+    header:
+      back: "← Back to games"
+
+  # GamePagesHelper
+  game_pages:
+    categories:
+      social: "Social game"
+      trivia: "Trivia game"
+      action: "Action game"
+      perception: "Quick-eye game"
+      memory: "Memory game"
+      puzzle: "Puzzle race"
+      strategy: "Strategy game"
+      drawing: "Drawing game"
+      default: "Party game"
+    # schema.org genre
+    genres:
+      social: "Social"
+      trivia: "Trivia"
+      action: "Action"
+      perception: "Quick-eye"
+      memory: "Memory"
+      puzzle: "Puzzle"
+      strategy: "Strategy"
+      drawing: "Drawing"
+      default: "Party"
+    settings:
+      party: "Parties"
+      family: "Family time"
+      classroom: "Classrooms"
+      work: "Work teams"
+      video_call: "Video calls"
+    any_group: "Any group"
+    players:
+      one: "%{count} player"
+      other: "%{count} players"
+    players_range: "%{min}–%{max} players"
+    general_faq:
+      - q: "Do players need to download an app?"
+        a: "No. Players scan the QR code on the host screen with their phone camera and play in the browser. No app, no account."
+      - q: "Is it free?"
+        a: "Yes, every game on %{site} is free to play."
+    platform: "Web browser"
+    operating_system: "Any (web browser)"
+    how_to_play: "How to play %{game}"
+    home: "Home"
+    games: "Games"
+
   # Strings for the Stimulus controllers (see LocaleHelper#js_translations_tag).
-  js: {}
+  js:
+    room_code:
+      joining: "Joining…"

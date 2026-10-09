@@ -38,3 +38,39 @@ faq:
     a: Any number from 1 up. Everyone answers on their own phone at the same time, so it works for a family, a team or a full classroom.
   - q: Do we see the same questions every time?
     a: Questions are picked at random, and when you play again in the same room the game skips the ones you've already answered.
+
+# Spanish. Same fields as above; anything missing falls back to English.
+translations:
+  es:
+    name: ¿Quién Quiere Ser Billonario?
+    description: Un juego de trivia. ¡Responde bien las preguntas para ganar puntos y
+      convertirte en billonario!
+    tagline: Cuatro respuestas, una es la correcta, y el reloj no se detiene.
+    players_note: >-
+      Todos responden al mismo tiempo desde su propio celular, así que funciona con 1 jugador o con
+      un salón entero. Con 5 o más, la tabla de posiciones se vuelve una verdadera carrera.
+    long_description: >-
+      Un concurso de televisión en tu sala. La pantalla principal muestra una pregunta y cuatro
+      posibles respuestas, todos eligen una en su celular antes de que se acabe el tiempo y luego se
+      revela la correcta. Hay preguntas de historia, ciencia, geografía, deportes, comida,
+      literatura, mitología y más. Las preguntas difíciles valen más, de 100 hasta 1.000 puntos, así
+      que una respuesta valiente puede darle la vuelta a toda la tabla.
+    how_to_play:
+      - El anfitrión elige el número de preguntas y cuántos segundos tiene cada uno para responder.
+      - Una pregunta y cuatro respuestas aparecen en la pantalla grande.
+      - Toca tu respuesta en el celular antes de que se acabe el tiempo. Solo tienes un toque, así que elige bien.
+      - Se revela la respuesta correcta y todos los que acertaron ganan los puntos de la pregunta.
+      - Las preguntas difíciles valen más. Gana el total más alto después de la última pregunta.
+    tips:
+      - Lee las cuatro respuestas antes de tocar. La primera que parece correcta no siempre lo es.
+      - Si no estás seguro, descarta las respuestas claramente falsas y adivina entre las demás.
+      - Pendiente de los puntos. Una pregunta de 1.000 puntos al final puede cambiarlo todo.
+      - "Anfitriones: con tiempos cortos (5 o 10 segundos) el juego se vuelve ruidoso y frenético. 20 o 30 segundos es ideal para niños."
+      - Si vuelven a jugar en la misma sala, no se repiten las preguntas que ya vieron.
+    faq:
+      - q: ¿De qué temas son las preguntas de trivia?
+        a: Historia, ciencia, biología, geografía, deportes, comida, literatura, matemáticas y tecnología, mitología y lenguaje, y cultura general.
+      - q: ¿Cuántas personas pueden jugar la trivia?
+        a: Desde 1 en adelante. Todos responden en su propio celular al mismo tiempo, así que funciona para una familia, un equipo o un salón completo.
+      - q: ¿Salen las mismas preguntas cada vez?
+        a: Las preguntas se eligen al azar, y cuando vuelven a jugar en la misma sala el juego omite las que ya respondieron.

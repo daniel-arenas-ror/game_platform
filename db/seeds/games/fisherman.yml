@@ -38,3 +38,41 @@ faq:
     a: Yes. Everything is said out loud, so it works well on Zoom, Meet or Teams. Share the host screen and everyone joins from their phone.
   - q: Does the Impostor score points?
     a: The Impostor wins by not getting caught. Every time the Fisherman accuses someone innocent, that player scores instead, so a good bluff hands points to the others.
+
+# Spanish. Same fields as above; anything missing falls back to English.
+translations:
+  es:
+    name: El Pescador
+    description: Un juego de deducción social. El pescador debe encontrar al impostor antes
+      de que se mezcle con los que saben la respuesta.
+    tagline: Uno de ustedes está mintiendo. El Pescador tiene un solo lance para atraparlo.
+    players_note: >-
+      Cada ronda necesita un Pescador, un Impostor y al menos un Sabio, así que técnicamente se
+      puede jugar con 3. De 4 a 8 el Impostor tiene un grupo donde esconderse, y los faroles se
+      ponen buenísimos.
+    long_description: >-
+      El Pescador es un juego de faroles que se juega en voz alta. En cada ronda la pantalla
+      principal hace una pregunta extraña, como qué usaba la gente antes del papel higiénico. Los
+      Sabios ven la respuesta secreta en su celular. El Impostor solo ve signos de interrogación y
+      tiene que inventar algo creíble en el momento. El Pescador escucha a todos y luego lanza la
+      red. Si atrapa al Impostor, el Pescador gana un punto. Si acusa a un Sabio inocente, ese Sabio
+      se lleva el punto.
+    how_to_play:
+      - En cada ronda los celulares reparten roles secretos. Un Pescador, un Impostor, y todos los demás son Sabios.
+      - El Pescador lee la pregunta en voz alta. Los Sabios ven la respuesta secreta en su celular. El Impostor solo ve "???".
+      - Por turnos, cada uno dice su respuesta en voz alta. El Impostor tiene que inventarse una y sonar convincente.
+      - El Pescador elige quién cree que es el Impostor y confirma su elección.
+      - Si atrapa al Impostor, el Pescador gana un punto. Cada jugador inocente acusado gana un punto. Los roles rotan y gana quien tenga más puntos tras la última ronda.
+    tips:
+      - "Sabios: no lo hagan demasiado obvio. Si el Impostor escucha la respuesta primero, puede copiarla."
+      - "Impostor: escucha a los demás antes de responder. Sus respuestas son tus mejores pistas."
+      - "Pescador: cada inocente que acusas le regala un punto, así que lanza con cuidado."
+      - Las respuestas un poco raras pero no locas son las mejores amigas del Impostor.
+      - Mira las caras, no solo las palabras. Reírse antes de tiempo delata mucho.
+    faq:
+      - q: ¿Cuántos jugadores se necesitan para El Pescador?
+        a: Al menos 3 (un Pescador, un Impostor y un Sabio), pero es mejor con 4 a 8 jugadores para que el Impostor tenga gente detrás de quien esconderse.
+      - q: ¿Se puede jugar El Pescador por videollamada?
+        a: Sí. Todo se dice en voz alta, así que funciona muy bien en Zoom, Meet o Teams. Comparte la pantalla principal y todos se unen desde su celular.
+      - q: ¿El Impostor gana puntos?
+        a: El Impostor gana si no lo atrapan. Cada vez que el Pescador acusa a un inocente, ese jugador se lleva el punto, así que un buen farol les regala puntos a los demás.
