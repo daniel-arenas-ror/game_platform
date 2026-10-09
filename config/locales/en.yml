@@ -307,8 +307,6 @@ en:
         edit:
           rounds: "NUMBER OF ROUNDS"
           rounds_option: "%{count} Rounds"
-          instructions: "INSTRUCTIONS"
-          image_alt: "%{game} — how to play"
       guess_the_color:
         edit:
           rounds: "ROUNDS"
@@ -323,8 +321,6 @@ en:
           rounds: "NUMBER OF ROUNDS"
           rounds_option: "%{count} Rounds"
           time: "TIME PER ROUND (SECONDS)"
-          instructions: "INSTRUCTIONS"
-          image_alt: "%{game} — how to play"
       matching_pairs:
         edit:
           board: "BOARD SIZE"

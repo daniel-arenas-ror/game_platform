@@ -36,60 +36,31 @@
   </div>
 
   <!-- ================================================================= -->
-  <!-- SECTION 3: INPUT — player phone view -->
+  <!-- SECTION 3: INPUT — player phone view: only the answers, filling the screen.  -->
+  <!-- The question is read on the TV.                                              -->
   <!-- ================================================================= -->
-  <div data-millionaire-target="input" class="hidden flex-1 flex flex-col max-w-2xl mx-auto w-full gap-3 sm:gap-4 sm:pb-8">
+  <div data-millionaire-target="input" class="hidden flex-1 flex flex-col w-full max-w-2xl mx-auto gap-3">
 
-    <div class="relative bg-gradient-to-b from-blue-900/80 to-slate-900/90 border-y-2 border-blue-500/50 px-4 py-3 sm:p-6 text-center shadow-2xl sm:mt-4">
-      <p data-millionaire-target="countdown"
-         class="absolute top-2 right-3 font-mono font-black text-xl text-yellow-400 tabular-nums"></p>
-      <p data-millionaire-target="questionMeta" class="text-[10px] sm:text-xs font-bold text-blue-400 uppercase tracking-widest mb-1"></p>
-      <h2 data-millionaire-target="questionText" class="text-base sm:text-lg font-bold tracking-wide leading-snug sm:leading-relaxed">
-        <%= t(".loading_question") %>
-      </h2>
-    </div>
-
-    <div class="space-y-2 sm:space-y-3">
-      <%# The label and the "locked" message share one line so locking in doesn't grow the page. %>
-      <p data-millionaire-target="lockLabel" class="text-center text-xs font-black tracking-widest text-blue-400 uppercase"><%= t(".lock_in") %></p>
+    <%# The label and the "locked" message share one line so locking in doesn't move the answers. %>
+    <div class="flex items-center justify-between gap-3 px-1">
+      <p data-millionaire-target="lockLabel" class="text-xs font-black tracking-widest text-blue-400 uppercase"><%= t(".lock_in") %></p>
       <p data-millionaire-target="lockedMessage"
-         class="hidden text-center text-green-400 font-black tracking-widest text-xs uppercase">
+         class="hidden text-green-400 font-black tracking-widest text-xs uppercase">
         <%= t(".locked") %>
       </p>
+      <p data-millionaire-target="countdown" class="font-mono font-black text-2xl text-yellow-400 tabular-nums"></p>
+    </div>
 
-      <div class="grid grid-cols-1 gap-2 sm:gap-3 font-mono">
-        <button data-action="click->millionaire#selectOption" data-option="0"
-                class="w-full text-left bg-gradient-to-r from-blue-950 to-slate-900 border-2 border-blue-800 px-4 py-3 sm:p-5 rounded-2xl
-                       transition-all duration-200 hover:border-yellow-400 active:scale-[0.99] flex items-center justify-between gap-3 group">
-          <div class="flex items-baseline"><span class="text-yellow-400 font-black mr-2 sm:mr-3 shrink-0">A:</span>
-               <span data-millionaire-target="optionA" class="font-sans font-bold text-slate-200 group-hover:text-white"></span></div>
-          <div class="w-4 h-4 shrink-0 rounded-full border-2 border-blue-600 group-hover:border-yellow-400"></div>
+    <div class="flex-1 grid grid-rows-4 gap-3">
+      <% %w[A B C D].each_with_index do |letter, idx| %>
+        <button data-action="click->millionaire#selectOption" data-option="<%= idx %>"
+                class="w-full h-full min-h-0 text-left bg-gradient-to-r from-blue-950 to-slate-900 border-2 border-blue-800 px-5 rounded-2xl
+                       transition-all duration-200 hover:border-yellow-400 active:scale-[0.99] flex items-center gap-4 group">
+          <span class="text-yellow-400 font-mono font-black text-2xl sm:text-3xl shrink-0"><%= letter %>:</span>
+          <span data-millionaire-target="option<%= letter %>"
+                class="font-bold text-xl sm:text-2xl leading-snug text-slate-100 group-hover:text-white line-clamp-3"></span>
         </button>
-
-        <button data-action="click->millionaire#selectOption" data-option="1"
-                class="w-full text-left bg-gradient-to-r from-blue-950 to-slate-900 border-2 border-blue-800 px-4 py-3 sm:p-5 rounded-2xl
-                       transition-all duration-200 hover:border-yellow-400 active:scale-[0.99] flex items-center justify-between gap-3 group">
-          <div class="flex items-baseline"><span class="text-yellow-400 font-black mr-2 sm:mr-3 shrink-0">B:</span>
-               <span data-millionaire-target="optionB" class="font-sans font-bold text-slate-200 group-hover:text-white"></span></div>
-          <div class="w-4 h-4 shrink-0 rounded-full border-2 border-blue-600 group-hover:border-yellow-400"></div>
-        </button>
-
-        <button data-action="click->millionaire#selectOption" data-option="2"
-                class="w-full text-left bg-gradient-to-r from-blue-950 to-slate-900 border-2 border-blue-800 px-4 py-3 sm:p-5 rounded-2xl
-                       transition-all duration-200 hover:border-yellow-400 active:scale-[0.99] flex items-center justify-between gap-3 group">
-          <div class="flex items-baseline"><span class="text-yellow-400 font-black mr-2 sm:mr-3 shrink-0">C:</span>
-               <span data-millionaire-target="optionC" class="font-sans font-bold text-slate-200 group-hover:text-white"></span></div>
-          <div class="w-4 h-4 shrink-0 rounded-full border-2 border-blue-600 group-hover:border-yellow-400"></div>
-        </button>
-
-        <button data-action="click->millionaire#selectOption" data-option="3"
-                class="w-full text-left bg-gradient-to-r from-blue-950 to-slate-900 border-2 border-blue-800 px-4 py-3 sm:p-5 rounded-2xl
-                       transition-all duration-200 hover:border-yellow-400 active:scale-[0.99] flex items-center justify-between gap-3 group">
-          <div class="flex items-baseline"><span class="text-yellow-400 font-black mr-2 sm:mr-3 shrink-0">D:</span>
-               <span data-millionaire-target="optionD" class="font-sans font-bold text-slate-200 group-hover:text-white"></span></div>
-          <div class="w-4 h-4 shrink-0 rounded-full border-2 border-blue-600 group-hover:border-yellow-400"></div>
-        </button>
-      </div>
+      <% end %>
     </div>
   </div>
 

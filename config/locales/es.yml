@@ -296,8 +296,6 @@ es:
         edit:
           rounds: "NÚMERO DE RONDAS"
           rounds_option: "%{count} rondas"
-          instructions: "INSTRUCCIONES"
-          image_alt: "%{game} — cómo se juega"
       guess_the_color:
         edit:
           rounds: "RONDAS"
@@ -312,8 +310,6 @@ es:
           rounds: "NÚMERO DE RONDAS"
           rounds_option: "%{count} rondas"
           time: "TIEMPO POR RONDA (SEGUNDOS)"
-          instructions: "INSTRUCCIONES"
-          image_alt: "%{game} — cómo se juega"
       matching_pairs:
         edit:
           board: "TAMAÑO DEL TABLERO"

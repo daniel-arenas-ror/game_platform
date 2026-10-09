@@ -38,6 +38,7 @@ export default class extends Controller {
     this.selectedOption = null
     this.timerHandle    = null
     this.clickingSound  = new Audio("/games/sounds/clicking.mp3")
+    this.chooseSound    = new Audio("/games/sounds/choose.mp3")
     this.clickingSound.loop = true
     this.updateVisibility()
     this.subscribe()
@@ -68,13 +69,17 @@ export default class extends Controller {
     if (this.answered) return
     this.answered       = true
     this.selectedOption = parseInt(event.currentTarget.dataset.option, 10)
+    this.chooseSound.currentTime = 0
+    this.chooseSound.play().catch(() => {}) // ignore autoplay blocks
 
     this.optionButtons().forEach(btn => btn.classList.replace("border-yellow-400", "border-blue-800"))
     event.currentTarget.classList.replace("border-blue-800", "border-yellow-400")
 
+    // The picked answer stays bright; the others fade.
     this.optionButtons().forEach(btn => {
       btn.disabled = true
-      btn.classList.add("opacity-60", "cursor-not-allowed")
+      btn.classList.add("cursor-not-allowed")
+      if (btn !== event.currentTarget) btn.classList.add("opacity-40")
     })
 
     if (this.hasLockedMessageTarget) this.lockedMessageTarget.classList.remove("hidden")
@@ -129,7 +134,7 @@ export default class extends Controller {
 
     this.optionButtons().forEach(btn => {
       btn.disabled = false
-      btn.classList.remove("opacity-60", "cursor-not-allowed", "border-yellow-400")
+      btn.classList.remove("opacity-40", "cursor-not-allowed", "border-yellow-400")
       btn.classList.add("border-blue-800")
     })
     if (this.hasLockedMessageTarget) this.lockedMessageTarget.classList.add("hidden")
