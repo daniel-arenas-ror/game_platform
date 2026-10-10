@@ -52,4 +52,49 @@ class Games::MillionaireChannelTest < ActionCable::Channel::TestCase
     subscribe(room_code: @room.code, player_id: @room.players.first.id.to_s)
     assert_nothing_raised { perform :next_question }
   end
+
+  test "a phone that connects after the question went out still gets it, with the time left" do
+    ana = @room.players.first
+    @room.update!(status: "playing")
+    @room.atomic_set("game_state.screen" => { "action" => "send_question", "round" => 1, "total" => 1, "text" => @question.text,
+                                              "options" => @question.answers.as_json, "duration" => 10,
+                                              "ends_at" => Time.current.to_f + 7.5 })
+
+    subscribe(room_code: @room.code, player_id: ana.id.to_s)
+    question = transmissions.find { |m| m["action"] == "send_question" }
+    assert_equal [ @question.text, 7, nil ], question.values_at("text", "duration", "my_choice")
+  end
+
+  test "a phone that reconnects after answering sees its answer locked" do
+    ana = @room.players.first
+    @room.update!(status: "playing")
+    @room.atomic_set("game_state.answers_history" => { @question.id.to_s => { ana.id.to_s => 1 } },
+                     "game_state.screen" => { "action" => "send_question", "ends_at" => Time.current.to_f + 5 })
+
+    subscribe(room_code: @room.code, player_id: ana.id.to_s)
+    assert_equal 1, transmissions.find { |m| m["action"] == "send_question" }["my_choice"]
+  end
+
+  test "a question whose time is up isn't sent again, but the reveal is" do
+    ana = @room.players.first
+    @room.update!(status: "playing")
+    @room.atomic_set("game_state.screen" => { "action" => "send_question", "ends_at" => Time.current.to_f - 1 })
+    subscribe(room_code: @room.code, player_id: ana.id.to_s)
+    assert_empty transmissions
+    unsubscribe
+
+    @room.atomic_set("game_state.screen" => { "action" => "reveal_answer", "advance" => "manual", "ends_at" => nil })
+    subscribe(room_code: @room.code, player_id: ana.id.to_s)
+    assert_equal "reveal_answer", transmissions.last["action"]
+  end
+
+  test "the game loop saves each screen for late phones" do
+    subscribe(room_code: @room.code, player_id: "")
+    perform :start_game_loop
+
+    Timeout.timeout(5) { sleep 0.05 until actions.any? { |a| a["action"] == "send_question" } }
+    Timeout.timeout(5) { sleep 0.05 until @room.reload.game_state.dig("screen", "action") }
+    assert_includes %w[send_question reveal_answer], @room.game_state["screen"]["action"]
+    unsubscribe
+  end
 end

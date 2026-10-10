@@ -70,25 +70,27 @@ export default class extends Controller {
 
   selectOption(event) {
     if (this.answered) return
-    this.answered       = true
-    this.selectedOption = parseInt(event.currentTarget.dataset.option, 10)
     this.chooseSound.currentTime = 0
     this.chooseSound.play().catch(() => {}) // ignore autoplay blocks
+    this.lockChoice(event.currentTarget)
+    this.channel.perform("submit_millionaire_answer", { choice: this.selectedOption })
+  }
 
-    this.optionButtons().forEach(btn => btn.classList.replace("border-yellow-400", "border-blue-800"))
-    event.currentTarget.classList.replace("border-blue-800", "border-yellow-400")
+  // Marks the picked answer: it stays bright, the others fade, nothing can be tapped any more.
+  lockChoice(picked) {
+    this.answered       = true
+    this.selectedOption = parseInt(picked.dataset.option, 10)
 
-    // The picked answer stays bright; the others fade.
     this.optionButtons().forEach(btn => {
+      btn.classList.replace("border-yellow-400", "border-blue-800")
       btn.disabled = true
       btn.classList.add("cursor-not-allowed")
-      if (btn !== event.currentTarget) btn.classList.add("opacity-40")
+      if (btn !== picked) btn.classList.add("opacity-40")
     })
+    picked.classList.replace("border-blue-800", "border-yellow-400")
 
     if (this.hasLockedMessageTarget) this.lockedMessageTarget.classList.remove("hidden")
     if (this.hasLockLabelTarget)     this.lockLabelTarget.classList.add("hidden")
-
-    this.channel.perform("submit_millionaire_answer", { choice: this.selectedOption })
   }
 
   // ── Host: Play Again ──────────────────────────────────────────────────────
@@ -154,6 +156,10 @@ export default class extends Controller {
 
     this.statusValue = this.playerIdValue === "" ? "question" : "input"
     this.startCountdown(data.duration)
+
+    // Reconnected after answering this question (sent with the current screen on connect).
+    const picked = [...this.optionButtons()].find(btn => parseInt(btn.dataset.option, 10) === data.my_choice)
+    if (picked) this.lockChoice(picked)
   }
 
   onRevealAnswer(data) {

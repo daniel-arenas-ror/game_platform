@@ -15,7 +15,8 @@ module GameServices
       @room.atomic_set(
         'game_state.user_points'        => user_points,
         'game_state.asked_question_ids' => asked_ids,
-        'game_state.answers_history'    => {}
+        'game_state.answers_history'    => {},
+        'game_state.screen'             => nil
       )
 
       update_question!

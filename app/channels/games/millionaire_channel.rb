@@ -11,6 +11,7 @@ class Games::MillionaireChannel < ApplicationCable::Channel
     broadcast_presence(true) if @player
 
     stream_from "millionaire_room_#{@room.code}"
+    transmit_current_screen if @player
   end
 
   def unsubscribed
@@ -47,14 +48,14 @@ class Games::MillionaireChannel < ApplicationCable::Channel
         sleep_time = 10 if sleep_time < 1
 
         # ── 1. Broadcast the current question ────────────────────────────
-        ActionCable.server.broadcast(stream, {
+        broadcast_screen(stream, {
           action:   "send_question",
           round:    index + 1,
           total:    total_rounds,
           text:     @room.game_state["question"],
           options:  @room.game_state["answers"],
           duration: sleep_time
-        })
+        }, sleep_time)
 
         sleep sleep_time
         break if @stop_loop
@@ -65,7 +66,7 @@ class Games::MillionaireChannel < ApplicationCable::Channel
         @room.reload
         nicknames = @room.players.each_with_object({}) { |p, h| h[p.id.to_s] = p.nickname }
 
-        ActionCable.server.broadcast(stream, {
+        broadcast_screen(stream, {
           action:                 "reveal_answer",
           round:                  index + 1,
           total:                  total_rounds,
@@ -79,7 +80,7 @@ class Games::MillionaireChannel < ApplicationCable::Channel
           advance:                manual ? "manual" : "auto",
           next_in:                (REVEAL_DURATION unless manual),
           last:                   index == total_rounds - 1
-        })
+        }, (manual ? nil : REVEAL_DURATION))
 
         manual ? wait_for_next : sleep(REVEAL_DURATION)
         break if @stop_loop
@@ -91,6 +92,7 @@ class Games::MillionaireChannel < ApplicationCable::Channel
       unless @stop_loop
         @room.reload
         @room.update!(status: "finished")
+        @room.atomic_set("game_state.screen" => nil)
 
         user_points = @room.game_state["user_points"] || {}
         nicknames   = @room.players.each_with_object({}) { |p, h| h[p.id.to_s] = p.nickname }
@@ -139,6 +141,33 @@ class Games::MillionaireChannel < ApplicationCable::Channel
   end
 
   private
+
+  # Every question and reveal is also saved as the room's current screen, so a phone that connects
+  # late (the TV starts the game while phones are still loading the page) or reconnects still gets it.
+  def broadcast_screen(stream, payload, seconds)
+    ends_at = seconds && Time.current.to_f + seconds
+    @room.atomic_set("game_state.screen" => payload.merge(ends_at: ends_at).as_json)
+    ActionCable.server.broadcast(stream, payload)
+  end
+
+  # Sends a subscribing player the screen everyone else is on, with the time that's left.
+  def transmit_current_screen
+    screen = @room.game_state["screen"]
+    return unless @room.status == "playing" && screen.is_a?(Hash)
+
+    ends_at = screen.delete("ends_at")
+    left    = ends_at && (ends_at - Time.current.to_f).floor
+    case screen["action"]
+    when "send_question"
+      return unless left && left.positive?
+
+      screen["duration"] = left
+      screen["my_choice"] = @room.game_state.dig("answers_history", @room.game_state["question_id"].to_s, @player.id.to_s)
+    when "reveal_answer"
+      screen["next_in"] = left.clamp(0..) if left
+    end
+    transmit(screen)
+  end
 
   # Blocks the game loop until the host taps Next. Wakes up every second so a restart or the host
   # leaving (@stop_loop) ends the loop instead of leaving the thread waiting forever.
