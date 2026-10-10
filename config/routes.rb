@@ -19,6 +19,7 @@ Rails.application.routes.draw do
                              controllers: { sessions: "admin/sessions" }
     namespace :admin, path: admin_path do
       root "dashboard#show"
+      resources :rooms, only: %i[index show]
     end
   end
 

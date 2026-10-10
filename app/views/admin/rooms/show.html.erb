@@ -1,0 +1,116 @@
+<% content_for :title, "Room #{@room.code}" %>
+<% game = @games[@room.game_id] %>
+
+<%= link_to "← All rooms", admin_rooms_path, class: "text-sm font-semibold text-slate-400 hover:text-white" %>
+
+<div class="mt-3 flex flex-wrap items-center gap-3">
+  <h1 class="font-mono text-3xl font-extrabold tracking-tight text-white"><%= @room.code %></h1>
+  <%= admin_room_status(@room.status) %>
+</div>
+<p class="mt-1 text-sm text-slate-400"><%= game&.name || "Unknown game" %> · times in UTC</p>
+
+<%# The facts %>
+<dl class="mt-6 grid gap-4 grid-cols-2 lg:grid-cols-4">
+  <% [
+       [ "Game",          game&.name || "—" ],
+       [ "Language",      @room.locale.upcase ],
+       [ "Created",       admin_time(@room.created_at) ],
+       [ "Last activity", admin_time(@room.updated_at) ],
+       [ "Players now",   @players.size ],
+       [ "Players joined", @event_counts["player_joined"].to_i ],
+       [ "Games played",  @event_counts["game_started"].to_i ],
+       [ "Room ID",       tag.span(@room.id.to_s, class: "font-mono text-xs break-all") ]
+     ].each do |label, value| %>
+    <div class="rounded-2xl border border-slate-800 bg-slate-900 p-4">
+      <dt class="text-xs font-black uppercase tracking-widest text-slate-500"><%= label %></dt>
+      <dd class="mt-2 font-bold text-white tabular-nums"><%= value %></dd>
+    </div>
+  <% end %>
+</dl>
+
+<%# Who's in it %>
+<section class="mt-10" aria-labelledby="players">
+  <h2 id="players" class="text-xl font-extrabold text-white">Players now</h2>
+  <% if @players.empty? %>
+    <p class="mt-4 rounded-2xl border border-dashed border-slate-700 px-5 py-8 text-center text-slate-400">Nobody is in the room. Players are removed 30 seconds after they leave.</p>
+  <% else %>
+    <% scores = @room.game_state.values.find { |v| v.is_a?(Hash) && @players.any? { |p| v.key?(p.id.to_s) } && v.values.all?(Numeric) } %>
+    <div class="mt-4 overflow-x-auto rounded-2xl border border-slate-800 bg-slate-900">
+      <table class="w-full min-w-[36rem] text-sm tabular-nums">
+        <thead class="text-left text-xs uppercase tracking-widest text-slate-500">
+          <tr class="border-b border-slate-800">
+            <th class="px-5 py-3 font-black">Nickname</th>
+            <th class="py-3 font-black">Connection</th>
+            <th class="py-3 font-black">Role</th>
+            <th class="py-3 text-right font-black">Score</th>
+            <th class="px-5 py-3 font-black">Joined</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-800">
+          <% @players.each do |player| %>
+            <tr>
+              <td class="px-5 py-3 font-semibold text-white"><%= player.nickname %></td>
+              <td class="py-3">
+                <% if player.connected %>
+                  <span class="text-green-300">● Online</span>
+                  <span class="text-xs text-slate-500">(<%= pluralize(player.connections.to_i, "tab") %>)</span>
+                <% else %>
+                  <span class="text-amber-300">○ Offline</span>
+                <% end %>
+              </td>
+              <td class="py-3 text-slate-300"><%= player.role.presence || "—" %></td>
+              <td class="py-3 text-right text-white"><%= scores ? number_with_delimiter(scores[player.id.to_s].to_i) : "—" %></td>
+              <td class="px-5 py-3 text-slate-400"><%= admin_time(player.created_at) %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% end %>
+</section>
+
+<%# What happened %>
+<section class="mt-10" aria-labelledby="history">
+  <div class="flex flex-wrap items-baseline justify-between gap-2">
+    <h2 id="history" class="text-xl font-extrabold text-white">History</h2>
+    <p class="text-xs text-slate-500">Newest first<%= " · last #{@events.size}" if @events.size == 200 %></p>
+  </div>
+  <% if @events.empty? %>
+    <p class="mt-4 rounded-2xl border border-dashed border-slate-700 px-5 py-8 text-center text-slate-400">No events recorded for this room.</p>
+  <% else %>
+    <ol class="mt-4 divide-y divide-slate-800 rounded-2xl border border-slate-800 bg-slate-900 text-sm">
+      <% @events.each do |event| %>
+        <li class="flex flex-wrap items-center gap-x-4 gap-y-1 px-5 py-2.5">
+          <span class="w-40 shrink-0 text-slate-400 tabular-nums"><%= admin_time(event.created_at) %></span>
+          <span class="font-semibold text-white">
+            <%= case event.kind
+                when "room_created"  then "Room created"
+                when "player_joined" then "A player joined"
+                when "game_started"  then event.again ? "Played again" : "Game started"
+                end %>
+          </span>
+          <% if event.kind == "game_started" %>
+            <span class="text-slate-400"><%= @games[event.game_id]&.name %> · <%= pluralize(event.players.to_i, "player") %></span>
+          <% elsif event.kind == "room_created" %>
+            <span class="text-slate-400"><%= @games[event.game_id]&.name %></span>
+          <% end %>
+        </li>
+      <% end %>
+    </ol>
+  <% end %>
+</section>
+
+<%# The raw state, for debugging a game %>
+<section class="mt-10" aria-labelledby="state">
+  <h2 id="state" class="text-xl font-extrabold text-white">Game state</h2>
+  <% if @room.game_state.blank? %>
+    <p class="mt-4 text-sm text-slate-400">Empty: the game hasn't started since the room was set up.</p>
+  <% else %>
+    <details class="mt-4 rounded-2xl border border-slate-800 bg-slate-900">
+      <summary class="cursor-pointer px-5 py-3 text-sm font-semibold text-slate-300 hover:text-white">
+        Show game_state (<%= pluralize(@room.game_state.size, "key") %>)
+      </summary>
+      <pre class="max-h-[32rem] overflow-auto px-5 pb-4 text-xs leading-relaxed text-slate-300"><%= JSON.pretty_generate(@room.game_state.as_json) %></pre>
+    </details>
+  <% end %>
+</section>

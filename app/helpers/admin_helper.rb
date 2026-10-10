@@ -6,6 +6,28 @@ module AdminHelper
     players: { label: "Players joined", bar: "fill-amber-300" }
   }.freeze
 
+  ROOM_STATUS_STYLES = {
+    "lobby"    => "text-amber-200 bg-amber-500/10 border-amber-500/30",
+    "playing"  => "text-green-200 bg-green-500/10 border-green-500/30",
+    "finished" => "text-slate-300 bg-slate-500/10 border-slate-500/30"
+  }.freeze
+
+  # The pages in the admin menu: label, path helper and the controller that marks it current.
+  def admin_menu
+    [ [ "Dashboard", admin_root_path, "admin/dashboard" ], [ "Rooms", admin_rooms_path, "admin/rooms" ] ]
+  end
+
+  def admin_room_status(status)
+    tag.span(status, class: "inline-block rounded-md border px-2 py-0.5 text-xs font-bold #{ROOM_STATUS_STYLES.fetch(status.to_s, ROOM_STATUS_STYLES["finished"])}")
+  end
+
+  # "Oct 10, 14:05 UTC" with "3 hours ago" on hover. Like the stats, admin times are in UTC.
+  def admin_time(time)
+    return "—" unless time
+
+    tag.time(time.utc.strftime("%b %-d, %H:%M UTC"), datetime: time.utc.iso8601, title: "#{time_ago_in_words(time)} ago")
+  end
+
   # "+12%", "−8%", "New" or nil: the change since the previous window, with its color.
   def admin_change_badge(change)
     return if change.nil?
