@@ -22,6 +22,11 @@ en:
       skip_to_content: "Skip to content"
 
   shared:
+    room_players:
+      button: "Players"
+      title: "Players"
+      hint: "Remove players who aren't playing, so the game doesn't wait for them."
+      close: "Close"
     site_header:
       main_nav: "Main"
       home: "Home"
@@ -232,6 +237,7 @@ en:
     nickname_blank: "Please enter a nickname"
     not_started: "Game has not started yet"
     removed: "You were disconnected for too long and removed from the room. Join again to keep playing."
+    kicked: "The host removed you from the room. Join again if you want to play."
     edit:
       pick_another: "← Pick another game"
       back: "← Back to games"
@@ -245,6 +251,8 @@ en:
       players: "Players"
       waiting: "Waiting..."
       start: "Start Game"
+      remove: "Remove"
+      remove_player: "Remove %{name}"
     join:
       title: "Join %{game}"
       room_code: "Room Code:"
@@ -379,5 +387,13 @@ en:
 
   # Strings for the Stimulus controllers (see LocaleHelper#js_translations_tag).
   js:
+    room_players:
+      remove_player: "Remove %{name}"
+      remove: "Remove"
+      removing: "Removing…"
+      confirm: "Remove %{name} from the room?"
+      offline: "Offline"
+      empty: "No players yet."
+      error: "Couldn't load the players. Try again."
     room_code:
       joining: "Joining…"

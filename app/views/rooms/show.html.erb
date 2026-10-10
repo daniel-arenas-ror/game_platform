@@ -1,6 +1,8 @@
 <div data-controller="game-subscription" 
      data-game-subscription-room-code-value="<%= @room.code %>"
-     data-game-subscription-user-id-value="<%= current_player&.id %>">
+     data-game-subscription-user-id-value="<%= current_player&.id %>"
+     data-game-subscription-host-value="<%= current_player.nil? %>"
+     data-game-subscription-players-url-value="<%= players_room_path(@room.code) %>">
 
   <div class="bg-slate-900 min-h-screen text-white p-8 flex flex-col items-center">
     <div class="max-w-4xl w-full grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
@@ -41,7 +43,13 @@
               <div class="w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center font-bold">
                 <%= player.nickname[0].upcase %>
               </div>
-              <div class="text-white font-bold"><%= player.nickname %></div>
+              <div class="text-white font-bold flex-1 min-w-0 truncate"><%= player.nickname %></div>
+              <% if current_player.nil? %>
+                <button type="button" data-action="game-subscription#remove"
+                        data-player-id="<%= player.id %>" data-nickname="<%= player.nickname %>"
+                        aria-label="<%= t(".remove_player", name: player.nickname) %>"
+                        class="ml-auto shrink-0 rounded-lg border border-red-500/40 bg-red-500/10 px-3 py-1.5 text-sm font-bold text-red-300 hover:bg-red-500/20 disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-red-400"><%= t(".remove") %></button>
+              <% end %>
             </div>
           <% end %>
           <div class="flex items-center space-x-4 bg-slate-700/50 p-4 rounded-xl border border-slate-600 animate-pulse">
@@ -66,3 +74,4 @@
     <%= ad_slot :lobby, css: "mt-16 max-w-4xl w-full" %>
   </div>
 </div>
+<%= render "shared/room_players", room: @room %>

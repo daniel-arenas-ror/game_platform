@@ -1,8 +1,12 @@
 import { Controller } from "@hotwired/stimulus"
 import consumer from "channels/consumer"
+import { t } from "controllers/shared/i18n"
+import { confirmRemove, removePlayer } from "controllers/shared/remove_player"
+
+const REMOVE_CLASS = "ml-auto shrink-0 rounded-lg border border-red-500/40 bg-red-500/10 px-3 py-1.5 text-sm font-bold text-red-300 hover:bg-red-500/20 disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-red-400"
 
 export default class extends Controller {
-  static values = { roomCode: String, userId: String }
+  static values = { roomCode: String, userId: String, host: Boolean, playersUrl: String }
 
   connect() {
     this.subscribe()
@@ -66,10 +70,40 @@ export default class extends Controller {
     avatar.textContent = (data.nickname || "?")[0].toUpperCase()
 
     const name = document.createElement("div")
-    name.className = "text-white font-bold"
+    name.className = "text-white font-bold flex-1 min-w-0 truncate"
     name.textContent = data.nickname
 
     row.append(avatar, name)
+    if (this.hostValue) row.append(this.removeButton(data))
     playerList.prepend(row)
+  }
+
+  removeButton(data) {
+    const button = document.createElement("button")
+    button.type = "button"
+    button.className = REMOVE_CLASS
+    button.dataset.action = "game-subscription#remove"
+    button.dataset.playerId = data.player_id
+    button.dataset.nickname = data.nickname
+    button.setAttribute("aria-label", t("room_players.remove_player", { name: data.nickname }))
+    button.textContent = t("room_players.remove")
+    return button
+  }
+
+  // Host only. The row goes away when the "player_left" broadcast arrives.
+  async remove(event) {
+    const button = event.currentTarget
+    const player = { id: button.dataset.playerId, nickname: button.dataset.nickname }
+    if (!confirmRemove(player)) return
+
+    button.disabled = true
+    button.textContent = t("room_players.removing")
+    try {
+      const response = await removePlayer(this.playersUrlValue, player)
+      if (!response.ok) throw new Error(response.status)
+    } catch {
+      button.disabled = false
+      button.textContent = t("room_players.remove")
+    }
   }
 }

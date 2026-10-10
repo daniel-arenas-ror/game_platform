@@ -8,6 +8,9 @@ class Games::MillionaireChannelTest < ActionCable::Channel::TestCase
     @room = Room.create!(game: @game, game_state: { "total_rounds" => 1, "time_per_round" => 1, "advance" => "manual" })
     @room.players.create!(nickname: "Ana")
     GameServices::HowWantBeBillionare.new(@room).setup_game!
+    # setup_game! samples any question, maybe another parallel test's that gets deleted mid-game: use ours.
+    @room.atomic_set("game_state.question_id" => @question.id, "game_state.question" => @question.text,
+                     "game_state.answers" => @question.answers)
   end
 
   teardown do

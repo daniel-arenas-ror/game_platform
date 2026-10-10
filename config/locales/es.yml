@@ -16,6 +16,11 @@ es:
       skip_to_content: "Ir al contenido"
 
   shared:
+    room_players:
+      button: "Jugadores"
+      title: "Jugadores"
+      hint: "Saca a quien no esté jugando, así el juego no lo espera."
+      close: "Cerrar"
     site_header:
       main_nav: "Principal"
       home: "Inicio"
@@ -222,6 +227,7 @@ es:
     nickname_blank: "Escribe un apodo"
     not_started: "El juego todavía no ha empezado"
     removed: "Estuviste desconectado demasiado tiempo y saliste de la sala. Vuelve a unirte para seguir jugando."
+    kicked: "El anfitrión te sacó de la sala. Vuelve a unirte si quieres jugar."
     edit:
       pick_another: "← Elegir otro juego"
       back: "← Volver a los juegos"
@@ -235,6 +241,8 @@ es:
       players: "Jugadores"
       waiting: "Esperando..."
       start: "Empezar juego"
+      remove: "Sacar"
+      remove_player: "Sacar a %{name}"
     join:
       title: "Únete a %{game}"
       room_code: "Código de sala:"
@@ -367,5 +375,13 @@ es:
           subs_note: "Los números son el tamaño de cada barco (casillas). Flotas más grandes = partidas más largas."
 
   js:
+    room_players:
+      remove_player: "Sacar a %{name}"
+      remove: "Sacar"
+      removing: "Sacando…"
+      confirm: "¿Sacar a %{name} de la sala?"
+      offline: "Desconectado"
+      empty: "Todavía no hay jugadores."
+      error: "No se pudieron cargar los jugadores. Inténtalo otra vez."
     room_code:
       joining: "Entrando…"

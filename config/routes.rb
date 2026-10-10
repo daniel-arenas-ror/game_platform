@@ -38,6 +38,8 @@ Rails.application.routes.draw do
         post "start"
         get "playing"
         post "change_game"
+        get "players"
+        delete "players/:player_id", action: :remove_player, as: :remove_player
       end
     end
 

@@ -41,6 +41,7 @@ class PlayerRemover
     payload = { action: "player_left", player_id: player_id, nickname: nickname }
     ActionCable.server.broadcast("game_#{@room.code}", payload)
     ActionCable.server.broadcast(@room.game_stream_name, payload)
+    ActionCable.server.broadcast(RoomChannel.stream_for_room(@room.code), payload)
 
     game_service&.player_removed!(player_id) if @room.status == "playing"
     true

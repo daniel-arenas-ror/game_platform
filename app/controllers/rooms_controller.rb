@@ -2,6 +2,7 @@ class RoomsController < ApplicationController
   # Rooms and join links are temporary and private — keep them out of search results.
   before_action { response.set_header("X-Robots-Tag", "noindex, nofollow") }
   before_action :redirect_removed_player, only: %i[show playing]
+  before_action :host_only, only: %i[players remove_player]
 
   def create
     session[:player_id] = nil
@@ -50,6 +51,7 @@ class RoomsController < ApplicationController
   def join
     @room = Room.find_by!(code: params[:code].upcase)
     @game = @room.game
+    flash.now[:alert] = t("rooms.kicked") if params[:removed] == "host"
   end
 
   def player_join
@@ -66,11 +68,9 @@ class RoomsController < ApplicationController
       session[:nickname] = nickname
       session[:room_code] = @room.code
 
-      ActionCable.server.broadcast("game_#{@room.code}", {
-        action: "player_joined",
-        nickname: @player.nickname,
-        player_id: @player.id.to_s
-      })
+      joined = { action: "player_joined", nickname: @player.nickname, player_id: @player.id.to_s }
+      ActionCable.server.broadcast("game_#{@room.code}", joined)
+      ActionCable.server.broadcast(RoomChannel.stream_for_room(@room.code), joined)
       
       redirect_to room_path(@room.code), notice: t("rooms.joined", nickname: nickname)
     else
@@ -114,7 +114,29 @@ class RoomsController < ApplicationController
     redirect_to edit_room_path(@room.code)
   end
 
+  # Host only: the room's players for the "Players" panel on the lobby and game screens.
+  def players
+    room = Room.find_by!(code: params[:id].upcase)
+    render json: room.players.order_by(created_at: :asc).map { |p|
+      { id: p.id.to_s, nickname: p.nickname, connected: p.connected != false }
+    }
+  end
+
+  # Host only: removes a player who isn't playing, so games that wait for everyone go on.
+  # PlayerRemover cleans the game state and tells every screen; the removed phone goes to the join page.
+  def remove_player
+    room   = Room.find_by!(code: params[:id].upcase)
+    player = room.players.where(id: params[:player_id]).first
+    PlayerRemover.new(player).remove! if player
+    head :no_content
+  end
+
   private
+
+  # The host is the screen without a player in its session.
+  def host_only
+    head :forbidden if session[:player_id].present?
+  end
 
   # Lobby, join and game screens speak the room's language, so a phone that scans the QR code
   # sees the host's language. A new room takes the language of the page it was created from.

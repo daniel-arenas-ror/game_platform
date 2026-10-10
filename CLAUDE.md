@@ -102,6 +102,8 @@ Each game service implements at minimum:
 
 **Player presence:** every channel loads the player with `find_player` (rejects removed players) and calls `track_player_subscribed` / `track_player_unsubscribed` (helpers in `ApplicationCable::Channel`). When a player's last subscription closes, `PlayerRemover` deletes them after a 30s grace period, drops their keys from `game_state`, broadcasts `player_left`, and calls the game service's `player_removed!` hook.
 
+**Players panel (every room screen):** `shared/_room_players` is rendered by `rooms/show` (lobby) and `rooms/playing`, so every game gets it with no per-game code. The host sees a "Players" button (bottom-left) that lists everyone (`GET /rooms/:id/players`) and removes a player (the lobby list also has a Remove button per row; both use `controllers/shared/remove_player.js` → `DELETE /rooms/:id/players/:player_id` → `PlayerRemover`, the same cleanup as a disconnect, so games waiting for every answer go on). Both actions are host-only (no `session[:player_id]`). `RoomChannel` (`room_{code}`, no presence counting) tells the removed phone to go to the join page. Keep the game's own fixed elements away from the bottom-left corner.
+
 **Layer 2 — Game-specific:** `Games::{Name}Channel` (`{code}_room_{room_code}`) — subscribed by Stimulus when the playing view loads. Drives all in-game events.
 
 ### Stimulus Controller Conventions
