@@ -38,3 +38,23 @@
     <% end %>
   </div>
 </div>
+
+<%# Time to pick %>
+<div class="space-y-4 bg-slate-900/50 p-6 rounded-2xl border border-slate-700 mt-2">
+  <label class="block text-xs font-bold text-slate-400 mb-3 tracking-widest"><%= t(".pick_time") %></label>
+  <div class="grid grid-cols-3 gap-3">
+    <% GameServices::GuessTheColor::PICK_TIMES.each do |seconds| %>
+      <label class="relative cursor-pointer">
+        <input type="radio"
+               name="room[game_state][pick_time]"
+               value="<%= seconds %>"
+               class="peer hidden"
+               <%= 'checked' if GameServices::GuessTheColor.pick_time(@room.game_state['pick_time']) == seconds %>>
+        <div class="text-center py-3 bg-slate-800 border-2 border-slate-700 rounded-xl text-white font-bold
+                    peer-checked:border-yellow-500 peer-checked:bg-yellow-500/10 transition-all">
+          <%= t(".pick_time_option", count: seconds) %>
+        </div>
+      </label>
+    <% end %>
+  </div>
+</div>

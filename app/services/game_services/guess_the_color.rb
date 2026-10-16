@@ -5,6 +5,14 @@ module GameServices
     # Easy mode: 12 vivid hues spaced 30° apart, full saturation, mid lightness
     EASY_HUES = (0..330).step(30).to_a.freeze
 
+    # Seconds players get to mix the color, picked on the settings screen.
+    PICK_TIMES        = [ 5, 10, 15 ].freeze
+    DEFAULT_PICK_TIME = 10
+
+    def self.pick_time(value)
+      PICK_TIMES.include?(value.to_i) ? value.to_i : DEFAULT_PICK_TIME
+    end
+
     def initialize(room)
       @room    = room
       @players = room.players.to_a
@@ -22,6 +30,7 @@ module GameServices
           "round"         => 0,
           "total_rounds"  => total_rounds,
           "difficulty"    => difficulty,
+          "pick_time"     => self.class.pick_time(@room.game_state["pick_time"]),
           "scores"        => scores,
           "current_color" => nil,
           "picks"         => {},

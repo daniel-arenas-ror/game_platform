@@ -1,7 +1,6 @@
 class Games::GuessTheColorChannel < ApplicationCable::Channel
   STREAM_PREFIX    = "guess_the_color_room_"
   SHOW_DURATION    = 5   # seconds the color is shown on host screen
-  PICK_DURATION    = 10  # seconds players have to submit their pick
   REVEAL_DURATION  = 5   # seconds the reveal is shown before next round
 
   def subscribed
@@ -18,6 +17,7 @@ class Games::GuessTheColorChannel < ApplicationCable::Channel
   end
 
   def unsubscribed
+    @stop_loop = true # the host left or reloaded: this loop ends (a reload starts a new one)
     return unless @player
 
     track_player_unsubscribed(@player)
@@ -38,6 +38,7 @@ class Games::GuessTheColorChannel < ApplicationCable::Channel
     @room        = Room.find_by(code: params[:room_code])
     service      = GameServices::GuessTheColor.new(@room)
     total_rounds = @room.game_state["total_rounds"].to_i
+    pick_time    = GameServices::GuessTheColor.pick_time(@room.game_state["pick_time"])
 
     Thread.new do
       total_rounds.times do |i|
@@ -65,11 +66,11 @@ class Games::GuessTheColorChannel < ApplicationCable::Channel
         @room.atomic_set("game_state.status" => "picking")
         broadcast({
           action:       "start_picking",
-          duration:     PICK_DURATION,
+          duration:     pick_time,
           round:        round,
           total_rounds: total_rounds
         })
-        sleep PICK_DURATION
+        sleep pick_time
         sleep 1.5   # grace period — lets in-flight client submissions arrive before we read picks
 
         # ── 3. Score & reveal ──────────────────────────────────────────────

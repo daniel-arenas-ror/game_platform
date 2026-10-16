@@ -313,6 +313,8 @@ es:
           easy_desc: "Colores vivos"
           hard: "Difícil"
           hard_desc: "Cualquier color RGB"
+          pick_time: "TIEMPO PARA ELEGIR EL COLOR"
+          pick_time_option: "%{count} seg"
       how_want_be_billionare:
         edit:
           rounds: "NÚMERO DE RONDAS"
