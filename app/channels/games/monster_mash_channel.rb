@@ -33,14 +33,15 @@ class Games::MonsterMashChannel < ApplicationCable::Channel
 
   # Everything this screen may see right now: on connecting (a late or reloaded phone joins the
   # current phase, with its drawing so far) and when a screen asks again. At the reveal it also
-  # gets the monster on show; at the end, the TV gets the gallery.
+  # gets the monster on show; from the vote on, every monster.
   def sync(_data = nil)
     @room.reload
     svc   = service
     state = @room.game_state
     transmit({ action: "state", state: host? ? svc.host_state : svc.player_state(@player.id), nicknames: nicknames_map })
     transmit({ action: "monster", monster: svc.monster(state["reveal_index"]) }) if state["phase"] == "reveal" && state["reveal_index"].to_i >= 0
-    transmit({ action: "gallery", monsters: svc.gallery }) if state["phase"] == "game_over"
+    # The vote and the results show every monster: a screen that missed the reveal gets them all.
+    transmit({ action: "gallery", monsters: svc.gallery }) if %w[vote results game_over].include?(state["phase"])
   end
 
   # ── Host actions ──────────────────────────────────────────────────────────

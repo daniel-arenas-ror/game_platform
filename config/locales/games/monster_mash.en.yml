@@ -1,0 +1,61 @@
+# Monster Mash: in-game screen and its JS.
+en:
+  rooms:
+    games:
+      monster_mash:
+        index:
+          title: "Monster Mash"
+          sound: "Sound"
+          skip: "Next ⏭"
+          get_ready: "Get ready to draw a monster…"
+          look_tv: "Look at the TV"
+          undo: "↶ Undo"
+          clear: "Clear"
+          done: "Done ✓"
+          connect_here: "Connect your drawing to these lines"
+          see_gallery: "See all the monsters"
+  js:
+    monster_mash:
+      parts:
+        head: "head"
+        body: "body"
+        legs: "legs"
+      part_icons:
+        head: "🧠"
+        body: "👕"
+        legs: "🦵"
+      theme_label: "Tonight's theme"
+      draw_the: "Draw the %{part}!"
+      draw_hint_head: "Start a monster: draw its head."
+      draw_hint_body: "Draw a body under someone's head."
+      draw_hint_legs: "Finish a monster: draw its legs."
+      tv_draw_title: "Everyone: draw the %{part}!"
+      tv_draw_hint: "Keep your drawing secret until the reveal."
+      done_count: "%{done} of %{total} done"
+      voted_count: "%{done} of %{total} voted"
+      done_wait: "Done! Waiting for the others…"
+      passing_title: "Pass it on!"
+      passing_hint: "Next: the %{part}. You'll see only the bottom of the part above."
+      reveal_title: "Monster %{index} of %{total}"
+      artists: "Head: %{head} · Body: %{body} · Legs: %{legs}"
+      vote_title: "Vote for the best monster!"
+      vote_hint: "Not the one you started."
+      vote_for: "Which monster is the best?"
+      yours: "Yours"
+      you_voted: "You voted for %{name}."
+      monster_of_night: "Monster of the Night"
+      votes:
+        one: "%{count} vote"
+        other: "%{count} votes"
+      no_votes: "Nobody voted!"
+      your_points:
+        one: "You scored %{count} point"
+        other: "You scored %{count} points"
+      you_win: "Best artist!"
+      winners: "Best artist: %{names}"
+      game_over: "What a night!"
+      nobody: "(nobody)"
+      error: "Something went wrong. Start a new game."
+      color: "Color %{color}"
+      eraser: "Eraser"
+      brush: "Brush size %{size}"

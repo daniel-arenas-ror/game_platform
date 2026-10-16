@@ -1,0 +1,61 @@
+# Monstruos Mezclados: pantalla del juego y su JS.
+es:
+  rooms:
+    games:
+      monster_mash:
+        index:
+          title: "Monstruos Mezclados"
+          sound: "Sonido"
+          skip: "Siguiente ⏭"
+          get_ready: "Prepárate para dibujar un monstruo…"
+          look_tv: "Mira la pantalla"
+          undo: "↶ Deshacer"
+          clear: "Borrar"
+          done: "Listo ✓"
+          connect_here: "Une tu dibujo a estas líneas"
+          see_gallery: "Ver todos los monstruos"
+  js:
+    monster_mash:
+      parts:
+        head: "cabeza"
+        body: "cuerpo"
+        legs: "piernas"
+      part_icons:
+        head: "🧠"
+        body: "👕"
+        legs: "🦵"
+      theme_label: "El tema de esta noche"
+      draw_the: "¡Dibuja: %{part}!"
+      draw_hint_head: "Empieza un monstruo: dibuja su cabeza."
+      draw_hint_body: "Dibuja un cuerpo debajo de la cabeza de alguien."
+      draw_hint_legs: "Termina un monstruo: dibuja sus piernas."
+      tv_draw_title: "¡Todos a dibujar: %{part}!"
+      tv_draw_hint: "Que nadie vea tu dibujo hasta la revelación."
+      done_count: "%{done} de %{total} listos"
+      voted_count: "%{done} de %{total} votaron"
+      done_wait: "¡Listo! Esperando a los demás…"
+      passing_title: "¡Pásalo!"
+      passing_hint: "Ahora: %{part}. Solo verás el final de la parte de arriba."
+      reveal_title: "Monstruo %{index} de %{total}"
+      artists: "Cabeza: %{head} · Cuerpo: %{body} · Piernas: %{legs}"
+      vote_title: "¡Vota por el mejor monstruo!"
+      vote_hint: "No el que tú empezaste."
+      vote_for: "¿Cuál es el mejor monstruo?"
+      yours: "El tuyo"
+      you_voted: "Votaste por %{name}."
+      monster_of_night: "Monstruo de la Noche"
+      votes:
+        one: "%{count} voto"
+        other: "%{count} votos"
+      no_votes: "¡Nadie votó!"
+      your_points:
+        one: "Ganaste %{count} punto"
+        other: "Ganaste %{count} puntos"
+      you_win: "¡Mejor artista!"
+      winners: "Mejor artista: %{names}"
+      game_over: "¡Qué noche!"
+      nobody: "(nadie)"
+      error: "Algo salió mal. Empieza un juego nuevo."
+      color: "Color %{color}"
+      eraser: "Borrador"
+      brush: "Pincel tamaño %{size}"

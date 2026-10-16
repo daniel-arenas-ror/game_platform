@@ -83,7 +83,9 @@ namespace :games do
                  "(", "(", "-size", "640x", "-background", "none", "-fill", "white", "-font", bold,
                  "-pointsize", "72", "-interline-spacing", "-6", "caption:#{game.fetch('name')}", ")",
                  "(", "-size", "640x28", "xc:none", ")",
-                 "(", "-size", "620x", "-background", "none", "-fill", color, "-font", bold,
+                 # Settings carry over: without resetting the name's tight spacing, the tagline's last
+                 # line loses the bottom of its g, y and p.
+                 "(", "-size", "620x", "-background", "none", "-fill", color, "-font", bold, "-interline-spacing", "0",
                  "-pointsize", "32", "caption:#{game.fetch('tagline')}", ")",
                  "-background", "none", "-append", ")",
                  "-geometry", "+70+120", "-composite",

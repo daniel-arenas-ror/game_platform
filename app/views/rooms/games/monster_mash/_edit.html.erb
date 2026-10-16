@@ -1,0 +1,18 @@
+<% mash = GameServices::MonsterMash %>
+
+<%# Drawing time per part %>
+<div class="space-y-4 bg-slate-900/50 p-6 rounded-2xl border border-slate-700">
+  <label class="block text-xs font-bold text-slate-400 mb-3 tracking-widest"><%= t(".draw_time") %></label>
+  <div class="grid grid-cols-3 gap-3">
+    <% mash::DRAW_TIMES.each do |seconds| %>
+      <label class="relative cursor-pointer">
+        <input type="radio" name="room[game_state][draw_time]" value="<%= seconds %>" class="peer hidden"
+               <%= "checked" if mash.draw_time(@room.game_state["draw_time"]) == seconds %>>
+        <div class="text-center py-3 bg-slate-800 border-2 border-slate-700 rounded-xl text-white font-bold
+                    peer-checked:border-green-500 peer-checked:bg-green-500/10 transition-all">
+          <%= t(".draw_time_option", count: seconds) %>
+        </div>
+      </label>
+    <% end %>
+  </div>
+</div>

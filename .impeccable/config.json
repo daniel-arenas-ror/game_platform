@@ -12,6 +12,12 @@
         ],
         "createdAt": "2026-10-06T02:19:12.306Z",
         "reason": "Claude: text-slate-950 (near-black) on bg-lime-400 toast is ~11:1 contrast, not gray-on-color"
+      },
+      {
+        "rule": "bounce-easing",
+        "value": "mm-wobble",
+        "createdAt": "2026-10-16T17:35:07.051Z",
+        "reason": "Claude triage: mm-wobble is a slow ease-in-out ±2° idle sway of the TV's zombie icon, not a bounce or elastic curve"
       }
     ]
   }

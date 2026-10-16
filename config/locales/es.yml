@@ -319,6 +319,10 @@ es:
           reveal_roles: "MOSTRAR EL ROL DE QUIEN SALE"
           "on": "Sí"
           "off": "No"
+      monster_mash:
+        edit:
+          draw_time: "TIEMPO PARA DIBUJAR CADA PARTE"
+          draw_time_option: "%{count} seg"
       guess_the_color:
         edit:
           rounds: "RONDAS"

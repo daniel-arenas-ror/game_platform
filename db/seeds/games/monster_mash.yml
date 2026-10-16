@@ -1,0 +1,87 @@
+# Slug is a public URL (/games/monster-mash) — never change it once live.
+name: Monster Mash
+slug: monster-mash
+# Halloween: right after Haunted House in the catalog for the season. Remove the position after Halloween.
+position: 2
+description: A Halloween drawing relay. Everyone draws a head, a body and legs for monsters that
+  get passed around, without seeing the rest. Then the big screen reveals the creatures you made.
+tagline: You drew a head. Someone gave it chicken legs.
+category: drawing
+min_players: 3
+max_players: 12
+players_note: >-
+  3 players can play, and every monster is drawn by all three of you. From 4 players the monsters get
+  more mixed, and with 6 to 10 you get a whole gallery of creatures to vote on.
+duration_minutes: 10
+age: 7
+long_description: >-
+  Monster Mash is a spooky take on the classic folded-paper drawing game. Everyone gets the same
+  Halloween theme, like a monster that lives in your fridge, and draws a head on their phone. Then the
+  monsters move along: you draw a body for someone else's monster, seeing only the bottom of the neck,
+  and then the legs, seeing only the bottom of the body. Nobody knows what they're drawing onto. When
+  the last legs are done, the big screen reveals each monster from head to toe, gives it a ridiculous
+  name and shows who drew which part. Everyone votes for the best one, and every artist of a winning
+  monster scores.
+how_to_play:
+  - The host picks how long each part takes. Everyone sees the same spooky theme on the big screen.
+  - Draw a head on your phone with your finger. When you're happy, tap Done.
+  - The monsters move along. Draw a body under someone else's head. You only see the bottom of their drawing, so connect to those lines.
+  - Pass it on once more and draw the legs. Then the big screen reveals every monster from head to toe, with a funny name and its three artists.
+  - Vote on your phone for the best monster, but not the one you started. Every vote gives a point to each artist of that monster.
+tips:
+  - Draw big and bold. Thin, tiny lines are hard to see on the TV.
+  - "Make the neck and the waist easy to find: draw the lines all the way to the bottom edge."
+  - Use the theme. A monster that eats socks needs some socks somewhere!
+  - Colors help a lot. A green body or purple legs make your part stand out in the reveal.
+  - Don't overthink it. The funniest monsters come from parts that don't match at all.
+perfect_for: [party, family, classroom, work]
+faq:
+  - q: Do you see the other parts of the monster while drawing?
+    a: Only a thin strip at the bottom of the part above yours, so you know where to connect. The whole monster is a surprise until the reveal on the big screen.
+  - q: How are points scored in Monster Mash?
+    a: Everyone votes for their favourite monster, except the one they started. Each vote gives a point to all three artists of that monster. With 3 players everyone draws on every monster, so it's more about the laughs than the score.
+  - q: What if someone doesn't finish their drawing in time?
+    a: Everything drawn so far is kept. When the timer runs out, the monster moves on with whatever is on the page, and the reveal shows it as it is.
+  - q: Can we keep the monsters?
+    a: Yes. At the end every phone can open the gallery with all the monsters of the game, perfect for a screenshot.
+
+# Spanish. Same fields as above; anything missing falls back to English.
+translations:
+  es:
+    name: Monstruos Mezclados
+    description: Un relevo de dibujo de Halloween. Todos dibujan una cabeza, un cuerpo y unas
+      piernas para monstruos que van pasando, sin ver el resto. Después la pantalla grande revela
+      las criaturas que crearon.
+    tagline: Dibujaste una cabeza. Alguien le puso patas de pollo.
+    players_note: >-
+      Se puede jugar con 3, y cada monstruo lo dibujan los tres. Desde 4 jugadores los monstruos se
+      mezclan más, y de 6 a 10 tienen toda una galería de criaturas para votar.
+    long_description: >-
+      Monstruos Mezclados es una versión de miedo del clásico juego de dibujar en un papel doblado.
+      Todos reciben el mismo tema de Halloween, como un monstruo que vive en tu refrigerador, y
+      dibujan una cabeza en su celular. Luego los monstruos pasan: dibujas el cuerpo del monstruo de
+      otra persona viendo solo el final del cuello, y después las piernas, viendo solo el final del
+      cuerpo. Nadie sabe sobre qué está dibujando. Cuando terminan las últimas piernas, la pantalla
+      grande revela cada monstruo de pies a cabeza, le pone un nombre ridículo y muestra quién dibujó
+      cada parte. Todos votan por el mejor, y cada artista de un monstruo ganador suma puntos.
+    how_to_play:
+      - El anfitrión elige cuánto tiempo hay para cada parte. Todos ven el mismo tema de miedo en la pantalla grande.
+      - Dibuja una cabeza en tu celular con el dedo. Cuando te guste, toca Listo.
+      - Los monstruos pasan. Dibuja un cuerpo debajo de la cabeza de otra persona. Solo ves el final de su dibujo, así que une tu dibujo a esas líneas.
+      - Pásalo una vez más y dibuja las piernas. Después la pantalla grande revela cada monstruo de pies a cabeza, con un nombre divertido y sus tres artistas.
+      - Vota en tu celular por el mejor monstruo, pero no por el que empezaste. Cada voto da un punto a cada artista de ese monstruo.
+    tips:
+      - Dibuja grande y con trazo grueso. Las líneas finas y pequeñas se ven mal en la TV.
+      - "Que el cuello y la cintura sean fáciles de encontrar: lleva las líneas hasta el borde de abajo."
+      - Usa el tema. ¡Un monstruo que come calcetines necesita calcetines en alguna parte!
+      - Los colores ayudan mucho. Un cuerpo verde o unas piernas moradas hacen que tu parte destaque en la revelación.
+      - No lo pienses demasiado. Los monstruos más divertidos salen de partes que no combinan para nada.
+    faq:
+      - q: ¿Se ven las otras partes del monstruo mientras dibujas?
+        a: Solo una franja delgada al final de la parte de arriba, para saber dónde unir tu dibujo. El monstruo completo es una sorpresa hasta la revelación en la pantalla grande.
+      - q: ¿Cómo se ganan puntos en Monstruos Mezclados?
+        a: Todos votan por su monstruo favorito, menos el que empezaron. Cada voto da un punto a los tres artistas de ese monstruo. Con 3 jugadores todos dibujan en todos los monstruos, así que se trata más de reír que de ganar.
+      - q: ¿Qué pasa si alguien no termina su dibujo a tiempo?
+        a: Se guarda todo lo dibujado. Cuando se acaba el tiempo, el monstruo pasa con lo que haya en la hoja, y la revelación lo muestra tal cual.
+      - q: ¿Podemos guardar los monstruos?
+        a: Sí. Al final cada celular puede abrir la galería con todos los monstruos de la partida, ideal para una captura de pantalla.

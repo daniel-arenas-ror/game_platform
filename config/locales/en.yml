@@ -330,6 +330,10 @@ en:
           reveal_roles: "REVEAL ROLES WHEN SOMEONE IS OUT"
           "on": "On"
           "off": "Off"
+      monster_mash:
+        edit:
+          draw_time: "DRAWING TIME PER PART"
+          draw_time_option: "%{count} sec"
       guess_the_color:
         edit:
           rounds: "ROUNDS"

@@ -64,6 +64,7 @@ A real-time multiplayer game platform. A host creates a **Room**, shares a QR co
 | `soup_of_numbers` | Soup of Numbers | Digit word-search race; first to tap the host's number scores |
 | `doodle_dash` | Doodle Dash | Drawing + guessing: artist draws on their phone, the drawing shows on the TV only |
 | `haunted_house` | Haunted House | Halloween Werewolf-style: secret roles (ghosts, Medium, trick-or-treaters), night moves + day vote; loop id + heartbeat in `game_state`, TV sounds made with Web Audio |
+| `monster_mash` | Monster Mash | Halloween drawing relay: head → body → legs passed around, guide strip from the part above, reveal + vote; drawings in `MonsterMash::Drawing` |
 | `impostor` | Impostor | TODO stub in GameFactory |
 
 FIFA World Cup has data models only (no game logic).

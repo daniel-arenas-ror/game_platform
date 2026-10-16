@@ -1,0 +1,155 @@
+<% is_host = session[:player_id].blank? %>
+
+<% if is_host %>
+  <%# ================================================================= %>
+  <%# HOST VIEW — TV: the theme, progress, the reveal, votes, gallery   %>
+  <%# ================================================================= %>
+  <div data-controller="monster-mash-host"
+       data-monster-mash-host-room-code-value="<%= @room.code %>"
+       class="mm-bg relative flex flex-col min-h-screen text-white overflow-hidden">
+
+    <%# Header %>
+    <div class="relative z-10 flex items-center justify-between px-8 pt-6">
+      <h1 class="text-2xl font-black tracking-widest uppercase text-green-400">🧟 <%= t(".title") %></h1>
+      <div class="flex items-center gap-4">
+        <button type="button" data-action="monster-mash-host#toggleSound" data-monster-mash-host-target="soundButton"
+                class="rounded-full border border-slate-700 bg-slate-900/70 px-3 py-1 text-xs font-bold text-slate-300 hover:text-white cursor-pointer">
+          🔊 <%= t(".sound") %>
+        </button>
+        <p class="text-slate-500 text-xs font-mono tracking-widest">
+          <%= t("rooms.games.shared.room") %> <span class="text-white font-bold"><%= @room.code %></span>
+        </p>
+      </div>
+    </div>
+
+    <div class="relative z-10 flex-1 flex flex-col items-center justify-center gap-6 px-8 py-6 text-center">
+      <%# Story line: icon, headline, hint %>
+      <div data-monster-mash-host-target="story" class="flex flex-col items-center">
+        <p data-monster-mash-host-target="icon" class="mm-wobble text-[8rem] leading-none mb-4">🧟</p>
+        <p data-monster-mash-host-target="kicker" class="text-green-300 text-sm uppercase tracking-[0.3em] font-mono"></p>
+        <h2 data-monster-mash-host-target="headline" class="font-black text-5xl text-balance max-w-4xl mt-2"><%= t(".get_ready") %></h2>
+        <p data-monster-mash-host-target="subline" class="text-slate-300 text-2xl mt-4 text-balance max-w-3xl"></p>
+      </div>
+
+      <%# The monster on show (reveal) %>
+      <div data-monster-mash-host-target="reveal" class="hidden flex items-center gap-12">
+        <div data-monster-mash-host-target="revealMonster" class="w-[min(30vw,calc(72vh*4/9))]"></div>
+        <div class="max-w-md text-left">
+          <p data-monster-mash-host-target="revealCount" class="text-green-300 text-sm uppercase tracking-[0.3em] font-mono"></p>
+          <h2 data-monster-mash-host-target="revealName" class="font-black text-5xl mt-3 text-balance"></h2>
+          <p data-monster-mash-host-target="revealArtists" class="text-slate-300 text-xl mt-5"></p>
+        </div>
+      </div>
+
+      <%# Every monster (vote, results) %>
+      <div data-monster-mash-host-target="grid" class="hidden w-full max-w-6xl flex flex-wrap justify-center gap-4"></div>
+
+      <p data-monster-mash-host-target="progress" class="text-green-300 font-bold text-xl min-h-[1.75rem]"></p>
+      <p data-monster-mash-host-target="countdown" class="font-mono font-black text-6xl tabular-nums min-h-[4rem]"></p>
+      <button type="button" data-monster-mash-host-target="skipButton" data-action="monster-mash-host#skip"
+              class="hidden rounded-xl border border-slate-600 bg-slate-800/80 px-6 py-2 font-bold text-slate-200 hover:text-white cursor-pointer">
+        <%= t(".skip") %>
+      </button>
+    </div>
+
+    <%# Game over %>
+    <div data-monster-mash-host-target="phaseGameOver"
+         class="hidden absolute inset-0 z-30 overflow-y-auto bg-slate-950 px-8 py-10">
+      <div class="flex flex-col items-center text-center">
+        <p class="text-7xl mb-3">🏆</p>
+        <h2 data-monster-mash-host-target="gameOverTitle" class="text-5xl font-black text-green-400 tracking-wide"></h2>
+        <p data-monster-mash-host-target="gameOverHint" class="text-slate-300 text-xl mt-2"></p>
+        <div data-monster-mash-host-target="finalScores" class="w-full max-w-md mt-6 space-y-2"></div>
+        <div class="flex flex-col items-center mt-6">
+          <button data-action="monster-mash-host#restart"
+                  class="bg-green-500 hover:bg-green-400 text-slate-950 font-black px-10 py-3 rounded-xl uppercase tracking-widest text-lg transition-colors cursor-pointer">
+            <%= t("rooms.games.shared.play_again") %>
+          </button>
+          <%= render partial: "rooms/games/change_game", locals: { room: @room, games: @games } %>
+        </div>
+        <div data-monster-mash-host-target="gallery" class="w-full max-w-6xl flex flex-wrap justify-center gap-4 mt-10"></div>
+        <%= game_over_ad %>
+      </div>
+    </div>
+  </div>
+
+<% else %>
+  <%# ================================================================= %>
+  <%# PLAYER VIEW — phone: draw your part, then vote                    %>
+  <%# ================================================================= %>
+  <% current_player %>
+  <div data-controller="monster-mash-player"
+       data-monster-mash-player-room-code-value="<%= @room.code %>"
+       data-monster-mash-player-player-id-value="<%= session[:player_id] %>"
+       data-look-tv="<%= t(".look_tv") %>"
+       class="mm-bg flex flex-col min-h-dvh text-white overflow-x-hidden">
+
+    <%# Header %>
+    <div class="flex items-center justify-between gap-3 px-4 pt-5 pb-2">
+      <p class="font-black text-lg tracking-wide leading-tight truncate"><%= session[:nickname] %></p>
+      <p data-monster-mash-player-target="countdown" class="font-mono font-black text-2xl tabular-nums"></p>
+    </div>
+    <p data-monster-mash-player-target="status" class="px-4 pb-3 text-green-300 text-xs uppercase tracking-widest font-mono"></p>
+
+    <div class="flex-1 flex flex-col px-4 pb-4">
+      <%# Messages (theme, passing, look at the TV, waiting) %>
+      <div data-monster-mash-player-target="panelMessage" class="flex-1 flex flex-col items-center justify-center text-center">
+        <p data-monster-mash-player-target="messageIcon" class="text-6xl mb-3">🧟</p>
+        <p data-monster-mash-player-target="messageTitle" class="font-black text-2xl text-balance"><%= t(".get_ready") %></p>
+        <p data-monster-mash-player-target="messageHint" class="text-slate-300 text-sm mt-2 text-balance"></p>
+      </div>
+
+      <%# Drawing %>
+      <div data-monster-mash-player-target="panelDraw" class="hidden flex-1 flex flex-col select-none [-webkit-touch-callout:none]">
+        <p data-monster-mash-player-target="drawTitle" class="text-center font-black text-2xl text-green-300"></p>
+        <p data-monster-mash-player-target="drawHint" class="text-center text-slate-400 text-xs mb-3"></p>
+
+        <div class="mx-auto w-[min(100%,calc((100dvh-20rem)*4/3))]">
+          <%# The bottom of the part above, so the drawing connects to it %>
+          <div data-monster-mash-player-target="guideBox" class="hidden">
+            <canvas data-monster-mash-player-target="guide" class="block w-full rounded-t-2xl opacity-60" style="aspect-ratio: 4 / 0.6;"></canvas>
+            <p class="text-center text-[10px] text-green-200 uppercase tracking-widest py-1 bg-green-900/40"><%= t(".connect_here") %></p>
+          </div>
+          <div class="rounded-b-2xl overflow-hidden border-2 border-green-700/60 bg-white" style="aspect-ratio: 4 / 3;">
+            <canvas data-monster-mash-player-target="canvas"
+                    data-action="pointerdown->monster-mash-player#penDown pointermove->monster-mash-player#penMove pointerup->monster-mash-player#penUp pointercancel->monster-mash-player#penUp"
+                    class="block w-full h-full touch-none select-none"></canvas>
+          </div>
+        </div>
+
+        <div data-monster-mash-player-target="colors" class="flex flex-wrap justify-center gap-2 mt-4"></div>
+        <div class="flex flex-wrap items-center justify-center gap-3 mt-3">
+          <div data-monster-mash-player-target="sizes" class="flex gap-2"></div>
+          <button type="button" data-action="monster-mash-player#undo"
+                  class="h-12 px-4 rounded-xl bg-slate-800 border border-slate-700 font-bold cursor-pointer active:scale-95 transition-transform"><%= t(".undo") %></button>
+          <button type="button" data-action="monster-mash-player#clear"
+                  class="h-12 px-4 rounded-xl bg-slate-800 border border-slate-700 font-bold cursor-pointer active:scale-95 transition-transform"><%= t(".clear") %></button>
+        </div>
+        <button type="button" data-action="monster-mash-player#done" data-monster-mash-player-target="doneButton"
+                class="mt-4 w-full rounded-2xl bg-green-500 hover:bg-green-400 py-4 text-xl font-black text-slate-950 cursor-pointer active:scale-95 transition-transform"><%= t(".done") %></button>
+      </div>
+
+      <%# Vote %>
+      <div data-monster-mash-player-target="panelVote" class="hidden flex-1 flex flex-col">
+        <p data-monster-mash-player-target="voteTitle" class="text-center font-black text-2xl mb-4"></p>
+        <div data-monster-mash-player-target="voteGrid" class="grid grid-cols-2 gap-3"></div>
+      </div>
+
+      <%# Gallery (after the game) %>
+      <div data-monster-mash-player-target="panelGallery" class="hidden grid grid-cols-2 gap-3"></div>
+    </div>
+
+    <%# Game over %>
+    <div data-monster-mash-player-target="phaseGameOver"
+         class="hidden fixed inset-0 z-30 flex flex-col items-center justify-center bg-slate-950 text-center px-6 py-10">
+      <p class="text-6xl mb-3">🏆</p>
+      <p data-monster-mash-player-target="gameOverTitle" class="font-black text-3xl tracking-wide mb-2"></p>
+      <p data-monster-mash-player-target="gameOverHint" class="text-green-300 font-bold"></p>
+      <button type="button" data-action="monster-mash-player#showGallery"
+              class="mt-6 rounded-xl border border-green-500/60 px-5 py-2 font-bold text-green-200 cursor-pointer"><%= t(".see_gallery") %></button>
+      <p class="text-slate-600 text-xs mt-6 font-mono"><%= t("rooms.games.shared.waiting_restart") %></p>
+    </div>
+
+    <p class="text-center text-slate-700 text-[10px] font-mono pb-4"><%= t("rooms.games.shared.room") %> <%= @room.code %></p>
+  </div>
+<% end %>
