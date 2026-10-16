@@ -1,0 +1,62 @@
+<% house = GameServices::HauntedHouse %>
+<% state = @room.game_state %>
+
+<%# Discussion time %>
+<div class="space-y-4 bg-slate-900/50 p-6 rounded-2xl border border-slate-700">
+  <label class="block text-xs font-bold text-slate-400 mb-3 tracking-widest"><%= t(".discussion") %></label>
+  <div class="grid grid-cols-3 gap-3">
+    <% house::DISCUSSION_TIMES.each do |seconds| %>
+      <label class="relative cursor-pointer">
+        <input type="radio" name="room[game_state][discussion_time]" value="<%= seconds %>" class="peer hidden"
+               <%= "checked" if house.discussion_time(state["discussion_time"]) == seconds %>>
+        <div class="text-center py-3 bg-slate-800 border-2 border-slate-700 rounded-xl text-white font-bold
+                    peer-checked:border-orange-500 peer-checked:bg-orange-500/10 transition-all">
+          <%= t(".discussion_option", count: seconds / 60) %>
+        </div>
+      </label>
+    <% end %>
+  </div>
+</div>
+
+<%# Number of ghosts %>
+<div class="space-y-4 bg-slate-900/50 p-6 rounded-2xl border border-slate-700 mt-2">
+  <label class="block text-xs font-bold text-slate-400 mb-3 tracking-widest"><%= t(".ghosts") %></label>
+  <div class="grid grid-cols-3 gap-3">
+    <% house::GHOST_CHOICES.each do |choice| %>
+      <label class="relative cursor-pointer">
+        <input type="radio" name="room[game_state][ghosts]" value="<%= choice %>" class="peer hidden"
+               <%= "checked" if (house::GHOST_CHOICES.include?(state["ghosts"].to_s) ? state["ghosts"].to_s : "auto") == choice %>>
+        <div class="text-center py-3 px-2 bg-slate-800 border-2 border-slate-700 rounded-xl transition-all
+                    peer-checked:border-orange-500 peer-checked:bg-orange-500/10">
+          <% if choice == "auto" %>
+            <p class="text-white font-bold"><%= t(".ghosts_auto") %></p>
+            <p class="text-slate-500 text-xs mt-1"><%= t(".ghosts_auto_desc") %></p>
+          <% else %>
+            <p class="text-white font-bold text-xl leading-tight"><%= choice %></p>
+            <p class="text-slate-500 text-xs mt-1"><%= t(".ghosts_option", count: choice.to_i) %></p>
+          <% end %>
+        </div>
+      </label>
+    <% end %>
+  </div>
+</div>
+
+<%# On/off options %>
+<% [ [ "medium", t(".medium"), t(".medium_desc") ], [ "reveal_roles", t(".reveal_roles"), nil ] ].each do |key, label, desc| %>
+  <div class="space-y-4 bg-slate-900/50 p-6 rounded-2xl border border-slate-700 mt-2">
+    <label class="block text-xs font-bold text-slate-400 mb-1 tracking-widest"><%= label %></label>
+    <% if desc %><p class="text-slate-500 text-xs mb-3"><%= desc %></p><% end %>
+    <div class="grid grid-cols-2 gap-3">
+      <% [ [ "true", t(".on") ], [ "false", t(".off") ] ].each do |value, text| %>
+        <label class="relative cursor-pointer">
+          <input type="radio" name="room[game_state][<%= key %>]" value="<%= value %>" class="peer hidden"
+                 <%= "checked" if (state[key].to_s == "false" ? "false" : "true") == value %>>
+          <div class="text-center py-3 bg-slate-800 border-2 border-slate-700 rounded-xl text-white font-bold
+                      peer-checked:border-orange-500 peer-checked:bg-orange-500/10 transition-all">
+            <%= text %>
+          </div>
+        </label>
+      <% end %>
+    </div>
+  </div>
+<% end %>

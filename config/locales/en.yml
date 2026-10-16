@@ -315,6 +315,21 @@ en:
         edit:
           rounds: "NUMBER OF ROUNDS"
           rounds_option: "%{count} Rounds"
+      haunted_house:
+        edit:
+          discussion: "DISCUSSION TIME"
+          discussion_option: "%{count} min"
+          ghosts: "GHOSTS"
+          ghosts_auto: "Auto"
+          ghosts_auto_desc: "1, or 2 with 8+ players"
+          ghosts_option:
+            one: "ghost"
+            other: "ghosts"
+          medium: "MEDIUM"
+          medium_desc: "Each night, checks if one player is a ghost"
+          reveal_roles: "REVEAL ROLES WHEN SOMEONE IS OUT"
+          "on": "On"
+          "off": "Off"
       guess_the_color:
         edit:
           rounds: "ROUNDS"

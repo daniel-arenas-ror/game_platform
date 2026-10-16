@@ -1,0 +1,128 @@
+<% is_host = session[:player_id].blank? %>
+
+<% if is_host %>
+  <%# ================================================================= %>
+  <%# HOST VIEW — TV: the phase, the story, who's in the house          %>
+  <%# ================================================================= %>
+  <div data-controller="haunted-house-host"
+       data-haunted-house-host-room-code-value="<%= @room.code %>"
+       class="hh-night relative flex flex-col min-h-screen text-white overflow-hidden">
+
+    <%# Header %>
+    <div class="relative z-10 flex items-center justify-between px-8 pt-6">
+      <h1 class="text-2xl font-black tracking-widest uppercase text-orange-400">🏚️ <%= t(".title") %></h1>
+      <div class="flex items-center gap-4">
+        <button type="button" data-action="haunted-house-host#toggleSound" data-haunted-house-host-target="soundButton"
+                aria-pressed="true"
+                class="rounded-full border border-slate-700 bg-slate-900/70 px-3 py-1 text-xs font-bold text-slate-300 hover:text-white cursor-pointer">
+          🔊 <%= t(".sound") %>
+        </button>
+        <p class="text-slate-500 text-xs font-mono tracking-widest">
+          <%= t("rooms.games.shared.room") %> <span class="text-white font-bold"><%= @room.code %></span>
+          <span data-haunted-house-host-target="nightLabel"></span>
+        </p>
+      </div>
+    </div>
+
+    <div class="relative z-10 flex-1 flex items-center gap-10 px-8 py-6">
+      <%# The story of the phase %>
+      <div class="flex-1 flex flex-col items-center justify-center text-center">
+        <p data-haunted-house-host-target="icon" class="hh-float text-[9rem] leading-none mb-6">🏚️</p>
+        <h2 data-haunted-house-host-target="headline" class="font-black text-5xl text-balance max-w-3xl"><%= t(".check_phone") %></h2>
+        <p data-haunted-house-host-target="subline" class="text-slate-300 text-2xl mt-4 text-balance max-w-2xl"><%= t(".check_phone_hint") %></p>
+        <div data-haunted-house-host-target="tally" class="hidden w-full max-w-xl mt-8 space-y-3"></div>
+        <p data-haunted-house-host-target="progress" class="text-orange-300 font-bold text-xl mt-6 min-h-[1.75rem]"></p>
+        <p data-haunted-house-host-target="countdown" class="font-mono font-black text-7xl mt-4 tabular-nums min-h-[4.5rem]"></p>
+        <button type="button" data-haunted-house-host-target="skipButton" data-action="haunted-house-host#skip"
+                class="hidden mt-6 rounded-xl border border-slate-600 bg-slate-800/80 px-6 py-2 font-bold text-slate-200 hover:text-white cursor-pointer">
+          <%= t(".skip") %>
+        </button>
+      </div>
+
+      <%# Who's in the house %>
+      <div class="w-80 shrink-0 space-y-5">
+        <div class="bg-slate-900/70 backdrop-blur rounded-3xl border border-orange-500/30 p-5">
+          <p class="text-slate-400 text-xs uppercase tracking-widest font-mono mb-3"><%= t(".in_house") %></p>
+          <ul data-haunted-house-host-target="alive" class="space-y-2"></ul>
+        </div>
+        <div data-haunted-house-host-target="outBox" class="hidden bg-slate-900/70 backdrop-blur rounded-3xl border border-slate-700 p-5">
+          <p class="text-slate-400 text-xs uppercase tracking-widest font-mono mb-3"><%= t(".out_of_house") %></p>
+          <ul data-haunted-house-host-target="out" class="space-y-2"></ul>
+        </div>
+      </div>
+    </div>
+
+    <%# Game over %>
+    <div data-haunted-house-host-target="phaseGameOver"
+         class="hidden absolute inset-0 z-30 flex flex-col items-center justify-center bg-slate-950/95 px-8">
+      <p data-haunted-house-host-target="gameOverIcon" class="text-8xl mb-4">👻</p>
+      <h2 data-haunted-house-host-target="gameOverTitle" class="text-5xl font-black text-orange-400 tracking-wide mb-2"></h2>
+      <p data-haunted-house-host-target="gameOverHint" class="text-slate-400 text-xl mb-8"></p>
+      <ul data-haunted-house-host-target="finalRoles" class="grid grid-cols-2 lg:grid-cols-3 gap-3 w-full max-w-3xl mb-10"></ul>
+      <button data-action="haunted-house-host#restart"
+              class="bg-orange-500 hover:bg-orange-400 text-slate-950 font-black px-10 py-3
+                     rounded-xl uppercase tracking-widest text-lg transition-colors cursor-pointer">
+        <%= t("rooms.games.shared.play_again") %>
+      </button>
+      <%= render partial: "rooms/games/change_game", locals: { room: @room, games: @games } %>
+      <%= game_over_ad %>
+    </div>
+  </div>
+
+<% else %>
+  <%# ================================================================= %>
+  <%# PLAYER VIEW — phone: the secret role and the night / vote moves   %>
+  <%# ================================================================= %>
+  <% current_player %>
+  <div data-controller="haunted-house-player"
+       data-haunted-house-player-room-code-value="<%= @room.code %>"
+       data-haunted-house-player-player-id-value="<%= session[:player_id] %>"
+       data-look-tv="<%= t(".look_tv") %>" data-out-hint="<%= t(".out_hint") %>"
+       class="hh-night flex flex-col min-h-dvh text-white overflow-x-hidden">
+
+    <%# Header: nickname, the role (hidden until tapped: neighbours can see a phone), the timer %>
+    <div class="relative z-10 flex items-center justify-between gap-3 px-4 pt-5 pb-2">
+      <p class="font-black text-lg tracking-wide leading-tight truncate"><%= session[:nickname] %></p>
+      <button type="button" data-action="haunted-house-player#toggleRole" data-haunted-house-player-target="roleButton"
+              class="hidden shrink-0 rounded-full border border-slate-600 bg-slate-900/80 px-3 py-1.5 text-sm font-bold cursor-pointer">
+        👁 <%= t(".my_role") %>
+      </button>
+    </div>
+    <div class="relative z-10 flex items-center justify-between px-4 pb-3">
+      <p data-haunted-house-player-target="status" class="text-slate-400 text-xs uppercase tracking-widest font-mono"></p>
+      <p data-haunted-house-player-target="countdown" class="font-mono font-black text-2xl tabular-nums"></p>
+    </div>
+
+    <div class="relative z-10 flex-1 flex flex-col px-4 pb-4">
+      <%# Secret role card (the roles phase, or "My role") %>
+      <button type="button" data-haunted-house-player-target="roleCard" data-action="haunted-house-player#toggleRole"
+              class="hidden w-full rounded-3xl border-2 border-orange-500/50 bg-slate-900/90 p-6 text-center mb-4 cursor-pointer">
+        <p class="text-slate-400 text-sm uppercase tracking-widest font-mono" data-haunted-house-player-target="roleLabel"></p>
+        <p data-haunted-house-player-target="roleIcon" class="text-7xl my-3"></p>
+        <p data-haunted-house-player-target="roleName" class="font-black text-3xl text-orange-300"></p>
+        <p data-haunted-house-player-target="roleDesc" class="text-slate-300 text-sm mt-3 text-balance"></p>
+        <p data-haunted-house-player-target="roleExtra" class="text-orange-200 text-sm font-bold mt-3"></p>
+        <p class="text-slate-500 text-xs mt-4"><%= t(".tap_to_hide") %></p>
+      </button>
+
+      <%# The phase's move: a list of players, the hiding places, or a message %>
+      <div data-haunted-house-player-target="panel" class="flex-1 flex flex-col justify-center">
+        <div class="text-center">
+          <p class="text-6xl mb-3">📺</p>
+          <p class="font-black text-2xl"><%= t(".look_tv") %></p>
+        </div>
+      </div>
+    </div>
+
+    <%# Game over %>
+    <div data-haunted-house-player-target="phaseGameOver"
+         class="hidden fixed inset-0 z-30 flex flex-col items-center justify-center bg-slate-950/95 text-center px-6">
+      <p data-haunted-house-player-target="gameOverIcon" class="text-6xl mb-3">👻</p>
+      <p data-haunted-house-player-target="gameOverTitle" class="font-black text-3xl tracking-wide mb-2"></p>
+      <p data-haunted-house-player-target="gameOverHint" class="text-slate-400"></p>
+      <p class="text-slate-600 text-xs mt-8 font-mono"><%= t("rooms.games.shared.waiting_restart") %></p>
+    </div>
+
+    <p class="relative z-10 text-center text-slate-700 text-[10px] font-mono pb-4"><%= t("rooms.games.shared.room") %> <%= @room.code %></p>
+  </div>
+<% end %>

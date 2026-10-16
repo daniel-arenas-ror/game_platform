@@ -304,6 +304,21 @@ es:
         edit:
           rounds: "NÚMERO DE RONDAS"
           rounds_option: "%{count} rondas"
+      haunted_house:
+        edit:
+          discussion: "TIEMPO PARA HABLAR"
+          discussion_option: "%{count} min"
+          ghosts: "FANTASMAS"
+          ghosts_auto: "Auto"
+          ghosts_auto_desc: "1, o 2 con 8+ jugadores"
+          ghosts_option:
+            one: "fantasma"
+            other: "fantasmas"
+          medium: "MÉDIUM"
+          medium_desc: "Cada noche, revisa si un jugador es fantasma"
+          reveal_roles: "MOSTRAR EL ROL DE QUIEN SALE"
+          "on": "Sí"
+          "off": "No"
       guess_the_color:
         edit:
           rounds: "RONDAS"

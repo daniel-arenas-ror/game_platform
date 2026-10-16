@@ -37,7 +37,8 @@ class Room
     "mind_match"             => "mind_match_room_",
     "soup_of_numbers"        => "soup_of_numbers_room_",
     "matching_pairs"         => "matching_pairs_room_",
-    "doodle_dash"            => "doodle_dash_room_"
+    "doodle_dash"            => "doodle_dash_room_",
+    "haunted_house"          => "haunted_house_room_"
   }.freeze
 
   def game_stream_name

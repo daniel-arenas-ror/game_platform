@@ -13,7 +13,8 @@ module GamePagesHelper
     "mind_match"             => { text: "text-violet-400",  soft: "text-violet-300",  tint: "bg-violet-500/10",  border: "border-violet-500/40",  dot: "bg-violet-400", hex: "#c4b5fd" },
     "soup_of_numbers"        => { text: "text-emerald-400", soft: "text-emerald-300", tint: "bg-emerald-500/10", border: "border-emerald-500/40", dot: "bg-emerald-400", hex: "#6ee7b7" },
     "matching_pairs"         => { text: "text-rose-400",    soft: "text-rose-300",    tint: "bg-rose-500/10",    border: "border-rose-500/40",    dot: "bg-rose-400", hex: "#fda4af" },
-    "doodle_dash"            => { text: "text-lime-400",    soft: "text-lime-300",    tint: "bg-lime-500/10",    border: "border-lime-500/40",    dot: "bg-lime-400", hex: "#bef264" }
+    "doodle_dash"            => { text: "text-lime-400",    soft: "text-lime-300",    tint: "bg-lime-500/10",    border: "border-lime-500/40",    dot: "bg-lime-400", hex: "#bef264" },
+    "haunted_house"          => { text: "text-orange-500",  soft: "text-orange-300",  tint: "bg-orange-600/10",  border: "border-orange-600/40",  dot: "bg-orange-500", hex: "#fb923c" }
   }.freeze
 
   CATEGORIES = %w[social trivia action perception memory puzzle strategy drawing].freeze
