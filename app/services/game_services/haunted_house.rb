@@ -22,6 +22,10 @@ module GameServices
 
     # Never sent to the TV or to other phones while the game is on.
     SECRET_KEYS = %w[roles ghost_picks medium_checks hides votes].freeze
+    # The loop's own bookkeeping, of no use to any screen.
+    INTERNAL_KEYS = %w[loop_id loop_beat skip].freeze
+
+    attr_reader :room
 
     def initialize(room)
       @room    = room
@@ -55,7 +59,10 @@ module GameServices
           "victim"          => nil,
           "verdict"         => nil,
           "winner"          => nil,
-          "phase_ends_at"   => nil
+          "phase_ends_at"   => nil,
+          "skip"            => nil,
+          "loop_id"         => nil,
+          "loop_beat"       => nil
         )
       )
 
@@ -84,6 +91,28 @@ module GameServices
       roles[shuffled.shift] = MEDIUM if medium && ids.size >= 4 && shuffled.any?
       shuffled.each { |id| roles[id] = GUEST }
       roles
+    end
+
+    # ── Phases ───────────────────────────────────────────────────────────────
+
+    # Before the first night: every phone shows its secret role.
+    def start_roles!(duration)
+      start_phase!("roles", duration)
+    end
+
+    # Seconds left in the current phase (nil when it has no timer).
+    def seconds_left
+      ends_at = @room.game_state["phase_ends_at"]
+      ends_at && [ (ends_at - Time.now.to_f).ceil, 0 ].max
+    end
+
+    # The host's Skip: ends the discussion early. Only the discussion can be skipped.
+    def skip!
+      apply({ "_id" => @room.id, "game_state.phase" => "discussion" }, "$set" => { "game_state.skip" => "discussion" })
+    end
+
+    def skipped?(phase)
+      fresh_state["skip"] == phase
     end
 
     # ── Night ────────────────────────────────────────────────────────────────
@@ -136,10 +165,13 @@ module GameServices
       apply(filter, "$set" => { "game_state.hides.#{pid}" => place.to_s })
     end
 
-    # True when every player still in the house has done their night action.
+    # True when every player still in the house has done their night action and, with two ghosts,
+    # they agree on one victim (until then the night runs on, so they have time to agree).
     def night_done?
-      state = fresh_state
-      state["alive"].to_a.all? { |pid| acted_tonight?(state, pid) }
+      state  = fresh_state
+      ghosts = state["alive"].to_a.select { |pid| state["roles"].to_h[pid] == GHOST }
+      state["alive"].to_a.all? { |pid| acted_tonight?(state, pid) } &&
+        ghosts.map { |pid| state["ghost_picks"].to_h[pid] }.uniq.size <= 1
     end
 
     # Players who have acted tonight. Safe to show anyone: every role acts at night.
@@ -241,10 +273,7 @@ module GameServices
 
     # Player ids on the winning team (for the celebration), also counting players already out.
     def winners
-      state = fresh_state
-      return [] unless state["winner"]
-
-      state["roles"].to_h.select { |_, role| (role == GHOST) == (state["winner"] == "ghosts") }.keys
+      winners_in(fresh_state)
     end
 
     def finish_game!
@@ -274,11 +303,13 @@ module GameServices
     def public_state
       state = @room.game_state
       over  = state["phase"] == "game_over" || state["winner"].present?
-      shown = state.except(*SECRET_KEYS)
+      shown = state.except(*SECRET_KEYS, *INTERNAL_KEYS)
       shown["out"] = state["out"].to_a.map { |o| over || state["reveal_roles"] ? o : o.merge("role" => nil) }
       shown["acted"] = acted_tonight if state["phase"] == "night"
       shown["acted"] = voted if state["phase"] == "vote"
       shown["roles"] = state["roles"] if over
+      shown["winners"] = winners_in(state) if over
+      shown["seconds_left"] = seconds_left
       shown
     end
 
@@ -307,6 +338,12 @@ module GameServices
 
     private
 
+    def winners_in(state)
+      return [] unless state["winner"]
+
+      state["roles"].to_h.select { |_, role| (role == GHOST) == (state["winner"] == "ghosts") }.keys
+    end
+
     # The ids picked most often (several on a tie, none when nobody picked).
     def most_picked(ids)
       tally = ids.tally
@@ -316,7 +353,7 @@ module GameServices
 
     def start_phase!(phase, duration, fields = {})
       ends_at = duration && Time.now.to_f + duration.to_i
-      @room.atomic_set({ "game_state.phase" => phase, "game_state.phase_ends_at" => ends_at }.merge(fields))
+      @room.atomic_set({ "game_state.phase" => phase, "game_state.phase_ends_at" => ends_at, "game_state.skip" => nil }.merge(fields))
       @room.game_state
     end
 

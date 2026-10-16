@@ -295,4 +295,44 @@ class HauntedHouseTest < ActiveSupport::TestCase
     assert_equal House::GUEST, shown["out"].first["role"]
     assert_equal House::GHOST, shown["roles"][@ana.id.to_s]
   end
+
+  # ── Phases ───────────────────────────────────────────────────────────────
+
+  test "with two ghosts the night runs on until they agree on one victim" do
+    @eli, @fer, @gus = %w[Eli Fer Gus].map { |n| @room.players.create!(nickname: n) }
+    House.new(@room.reload).setup_game!
+    deal!(ghosts: [ @ana, @beto ], medium: nil)
+    night!
+    (@room.players.to_a - [ @ana, @beto ]).each { |p| svc.hide!(p.id, "attic") }
+    svc.ghost_pick!(@ana.id, @caro.id)
+    svc.ghost_pick!(@beto.id, @dani.id)
+    assert_not svc.night_done?
+
+    svc.ghost_pick!(@beto.id, @caro.id)
+    assert svc.night_done?
+  end
+
+  test "the host can skip only the discussion" do
+    deal!
+    night!
+    assert_not svc.skip!
+    svc.start_discussion!
+    assert svc.skip!
+    assert svc.skipped?("discussion")
+
+    vote_phase! # a new phase clears the skip
+    assert_not svc.skipped?("discussion")
+  end
+
+  test "the discussion lasts the room's setting, and every screen gets the seconds left" do
+    deal!
+    svc.start_discussion!
+    assert_in_delta 60, House.new(@room.reload).public_state["seconds_left"], 1
+  end
+
+  test "the loop's bookkeeping never goes to a screen" do
+    @room.atomic_set("game_state.loop_id" => "abc", "game_state.loop_beat" => 1.0)
+    shown = House.new(@room.reload).player_state(@caro.id)
+    assert_empty shown.keys & House::INTERNAL_KEYS
+  end
 end
