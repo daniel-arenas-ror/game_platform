@@ -1,4 +1,6 @@
 class Games::HauntedHouseChannel < ApplicationCable::Channel
+  include ApplicationCable::ClaimedLoop
+
   STREAM_PREFIX = "haunted_house_room_"
 
   # Seconds each phase lasts. The night and the vote end early once everyone has acted; the host
@@ -11,9 +13,6 @@ class Games::HauntedHouseChannel < ApplicationCable::Channel
   GRACE_PERIOD     = 1    # after a timer runs out, for taps still on their way
   EARLY_END_DELAY  = 1.5  # after the last player acts, so their tap shows before the phase moves on
   POLL_INTERVAL    = 0.25
-  # The loop writes a heartbeat; a loop silent for this long is dead (e.g. the server restarted),
-  # so the TV may start a new one.
-  LOOP_TIMEOUT = 10
 
   def subscribed
     @room   = Room.find_by(code: params[:room_code])
@@ -149,6 +148,8 @@ class Games::HauntedHouseChannel < ApplicationCable::Channel
   # winner (a player leaving can end the game at any time) or for the loop to be replaced.
   # Returns false when the loop must stop.
   def phase(svc, loop_id, seconds, early: nil)
+    return false unless current_loop?(loop_id) # Play Again may have replaced this loop meanwhile
+
     yield if block_given?
     send_state(svc)
     decided = svc.winner # a morning or verdict that settles the game still shows in full
@@ -180,28 +181,6 @@ class Games::HauntedHouseChannel < ApplicationCable::Channel
 
   def broadcast_acted(svc)
     broadcast({ action: "acted", acted: svc.acted_tonight })
-  end
-
-  # One loop per game, whichever TV connection started it. Takes over when there's no loop or the
-  # last one stopped writing its heartbeat. Returns the new loop id, or nil when one is running.
-  def claim_loop
-    loop_id = SecureRandom.hex(6)
-    stale   = Time.now.to_f - LOOP_TIMEOUT
-    claimed = Room.collection.update_one(
-      { "code" => params[:room_code], "status" => "playing",
-        "$or" => [ { "game_state.loop_id" => nil }, { "game_state.loop_beat" => { "$lt" => stale } } ] },
-      { "$set" => { "game_state.loop_id" => loop_id, "game_state.loop_beat" => Time.now.to_f } }
-    )
-    claimed.modified_count == 1 ? loop_id : nil
-  end
-
-  # True while this loop is still the room's loop (Play Again or a takeover replaces it). Also
-  # writes the heartbeat.
-  def current_loop?(loop_id)
-    Room.collection.update_one(
-      { "code" => params[:room_code], "status" => "playing", "game_state.loop_id" => loop_id },
-      { "$set" => { "game_state.loop_beat" => Time.now.to_f } }
-    ).matched_count == 1
   end
 
   def ghost_ids(room)

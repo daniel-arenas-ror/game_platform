@@ -86,6 +86,11 @@ module GameServices
 
     # ── Drawing rounds ───────────────────────────────────────────────────────
 
+    # The theme intro before the first round, and the short "pass it on" pause between rounds.
+    def start_interlude!(phase, duration)
+      start_phase!(phase, duration)
+    end
+
     # Starts round `round` (0 head, 1 body, 2 legs): one drawing per player, on their monster.
     def start_round!(round, duration)
       @room.reload

@@ -154,16 +154,13 @@ class Games::HauntedHouseChannelTest < ActionCable::Channel::TestCase
 
   test "one loop per game, even when the TV reloads; a dead loop is taken over" do
     subscribe(room_code: @room.code, player_id: "")
-    perform :start_game_loop
-    first = @room.reload.game_state["loop_id"]
-    assert first
+    @room.atomic_set("game_state.loop_id" => "live", "game_state.loop_beat" => Time.now.to_f)
+    perform :start_game_loop # the TV reloaded while a loop runs
+    assert_equal "live", @room.reload.game_state["loop_id"]
 
-    perform :start_game_loop # the TV reloaded while the loop runs
-    assert_equal first, @room.reload.game_state["loop_id"]
-
-    @room.atomic_set("game_state.loop_beat" => Time.now.to_f - 60) # e.g. the server restarted
+    @room.atomic_set("game_state.loop_id" => "dead", "game_state.loop_beat" => Time.now.to_f - 60) # e.g. the server restarted
     perform :start_game_loop
-    assert_not_equal first, @room.reload.game_state["loop_id"]
+    assert_not_includes [ "live", "dead" ], @room.reload.game_state["loop_id"]
   ensure
     perform :restart_game # stops the loop
   end
