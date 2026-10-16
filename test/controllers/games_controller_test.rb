@@ -114,7 +114,7 @@ class GamesControllerTest < ActionDispatch::IntegrationTest
     files = Dir[Rails.root.join("db/seeds/games/*.yml")]
     slugs = files.map { |f| YAML.load_file(f).fetch("slug") }
 
-    assert_equal 11, files.size
+    assert_equal 12, files.size
     assert_equal slugs.uniq, slugs
     assert(slugs.all? { |s| s.match?(/\A[a-z0-9]+(?:-[a-z0-9]+)*\z/) })
     assert_includes slugs, "how-to-be-a-billionaire"

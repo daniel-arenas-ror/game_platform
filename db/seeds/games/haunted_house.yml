@@ -1,0 +1,90 @@
+# Slug is a public URL (/games/haunted-house) — never change it once live.
+name: Haunted House
+slug: haunted-house
+# Halloween: first in the catalog for the season. Remove the position after Halloween.
+position: 1
+description: A spooky social deduction game. Secret ghosts scare players out of the house each
+  night, and everyone else has to find them and vote them out before it's too late.
+tagline: Someone in this house is a ghost. Maybe it's you.
+category: social
+min_players: 4
+max_players: 12
+players_note: >-
+  4 players can play: one ghost, the Medium and two trick-or-treaters. It's at its best with 6 to
+  12, when there's more to argue about and, from 8 players, two ghosts working together.
+duration_minutes: 15
+age: 10
+long_description: >-
+  Haunted House is a Halloween party game of secret roles, bluffing and very loud accusations. Every
+  phone gets a hidden role. The ghosts know each other and, each night, quietly pick someone to scare
+  out of the house. The Medium checks one player a night and learns whether they're a ghost. Everyone
+  else is a trick-or-treater, hiding in the attic, the basement or the kitchen. When morning comes,
+  the big screen tells who was scared away and where they were hiding. Then the whole room argues,
+  points fingers and votes someone out. Catch every ghost and the trick-or-treaters win. Let the
+  ghosts match your numbers and the house is theirs.
+how_to_play:
+  - Everyone joins on their phone and gets a secret role. Ghosts, a Medium, and trick-or-treaters. Don't show your screen!
+  - At night, the ghosts pick someone to scare out of the house, the Medium checks if one player is a ghost, and trick-or-treaters pick a place to hide.
+  - In the morning, the TV shows who was scared out and where they were hiding.
+  - Talk it over out loud. Who's acting suspicious? Then everyone votes on their phone. The most votes leaves the house; a tie and nobody does.
+  - Trick-or-treaters win when every ghost is out. Ghosts win when they're as many as everyone left in the house.
+tips:
+  - "Ghosts: pick your victim with your partner. If you don't agree, chance decides between your two picks."
+  - "Medium: don't reveal yourself too early. The ghosts will come for you next."
+  - "Trick-or-treaters: listen for anyone who knows too much, or defends someone too hard."
+  - Everyone taps something at night, so a busy phone doesn't give a ghost away. Look at faces instead.
+  - "Out of the house? You can still watch, but keep quiet. No hints from beyond the grave!"
+perfect_for: [party, family, work, video_call]
+faq:
+  - q: How many players do you need for Haunted House?
+    a: At least 4, but it's best with 6 to 12. With 8 or more players there are two ghosts, and the host can also choose 1 or 2 ghosts in the settings.
+  - q: How do the ghosts talk to each other without being noticed?
+    a: They don't need to. Each ghost sees the other ghosts and their picks on their own phone, so they can agree on a victim in silence.
+  - q: What does the Medium do?
+    a: Each night the Medium picks one player and learns at once whether they're a ghost. The host can turn the Medium off in the settings for a simpler game.
+  - q: What happens to players who are out?
+    a: They stay in the room as spectators. They can watch the TV but can't vote, and at the end everyone's role is revealed.
+  - q: Can we play Haunted House over a video call?
+    a: Yes. Share the host screen on the call and everyone plays from their phone. The discussion happens out loud, just like in the same room.
+
+# Spanish. Same fields as above; anything missing falls back to English.
+translations:
+  es:
+    name: Casa Embrujada
+    description: Un juego de deducción social de miedo. Fantasmas secretos asustan a un jugador
+      cada noche, y los demás tienen que encontrarlos y sacarlos con su voto antes de que sea tarde.
+    tagline: Alguien en esta casa es un fantasma. Quizás seas tú.
+    players_note: >-
+      Se puede jugar con 4: un fantasma, la Médium y dos buscadulces. Es mejor de 6 a 12, cuando hay
+      más para discutir y, desde 8 jugadores, dos fantasmas trabajando juntos.
+    long_description: >-
+      Casa Embrujada es un juego de Halloween de roles secretos, faroles y acusaciones a gritos. Cada
+      celular recibe un rol oculto. Los fantasmas se conocen entre sí y, cada noche, eligen en silencio
+      a alguien para asustarlo y sacarlo de la casa. La Médium revisa a un jugador por noche y sabe si
+      es un fantasma. Todos los demás son buscadulces, escondidos en el ático, el sótano o la cocina.
+      Al amanecer, la pantalla grande cuenta a quién asustaron y dónde se escondía. Luego toda la sala
+      discute, señala con el dedo y vota para sacar a alguien. Atrapen a todos los fantasmas y ganan
+      los buscadulces. Si los fantasmas igualan en número a los demás, la casa es suya.
+    how_to_play:
+      - Todos se unen con su celular y reciben un rol secreto. Fantasmas, una Médium y buscadulces. ¡No muestres tu pantalla!
+      - De noche, los fantasmas eligen a quién asustar, la Médium revisa si un jugador es fantasma y los buscadulces eligen dónde esconderse.
+      - Al amanecer, la TV muestra a quién asustaron y dónde se escondía.
+      - Hablen en voz alta. ¿Quién actúa raro? Después todos votan en su celular. El más votado sale de la casa; si hay empate, nadie sale.
+      - Los buscadulces ganan cuando no queda ningún fantasma. Los fantasmas ganan cuando son tantos como los que quedan en la casa.
+    tips:
+      - "Fantasmas: elijan a su víctima junto a su compañero. Si no se ponen de acuerdo, el azar decide entre las dos."
+      - "Médium: no te reveles demasiado pronto. Los fantasmas irán por ti después."
+      - "Buscadulces: presten atención a quien sabe demasiado, o defiende a alguien con demasiada fuerza."
+      - De noche todos tocan algo en su celular, así que un celular ocupado no delata a un fantasma. Mejor miren las caras.
+      - "¿Ya saliste de la casa? Puedes seguir mirando, pero en silencio. ¡Nada de pistas desde el más allá!"
+    faq:
+      - q: ¿Cuántos jugadores se necesitan para Casa Embrujada?
+        a: Al menos 4, pero es mejor de 6 a 12. Con 8 o más jugadores hay dos fantasmas, y el anfitrión también puede elegir 1 o 2 fantasmas en la configuración.
+      - q: ¿Cómo se comunican los fantasmas sin que los descubran?
+        a: No necesitan hablar. Cada fantasma ve en su celular a los demás fantasmas y lo que eligieron, así que pueden ponerse de acuerdo en silencio.
+      - q: ¿Qué hace la Médium?
+        a: Cada noche la Médium elige a un jugador y sabe al instante si es un fantasma. El anfitrión puede quitar la Médium en la configuración para un juego más simple.
+      - q: ¿Qué pasa con los jugadores que salen de la casa?
+        a: Se quedan en la sala como espectadores. Pueden mirar la TV pero no votar, y al final se revelan los roles de todos.
+      - q: ¿Se puede jugar Casa Embrujada por videollamada?
+        a: Sí. Comparte la pantalla del anfitrión en la llamada y todos juegan desde su celular. La discusión es en voz alta, igual que en la misma sala.

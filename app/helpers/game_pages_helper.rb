@@ -155,6 +155,14 @@ module GamePagesHelper
     "#{path}?v=#{version}"
   end
 
+  # Games whose image is a picture only, with no rules written on it. The lobby shows their steps
+  # under the image. New images are made without text, so add each new game here.
+  TEXT_FREE_IMAGES = %w[haunted_house].freeze
+
+  def game_image_text_free?(game)
+    TEXT_FREE_IMAGES.include?(game.code)
+  end
+
   def game_instruction_image?(game)
     File.exist?(Rails.public_path.join("games", game.code, "instructions.png"))
   end

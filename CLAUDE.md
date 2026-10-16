@@ -63,6 +63,7 @@ A real-time multiplayer game platform. A host creates a **Room**, shares a QR co
 | `mind_match` | Mind Match | Word-matching telepathy game |
 | `soup_of_numbers` | Soup of Numbers | Digit word-search race; first to tap the host's number scores |
 | `doodle_dash` | Doodle Dash | Drawing + guessing: artist draws on their phone, the drawing shows on the TV only |
+| `haunted_house` | Haunted House | Halloween Werewolf-style: secret roles (ghosts, Medium, trick-or-treaters), night moves + day vote; loop id + heartbeat in `game_state`, TV sounds made with Web Audio |
 | `impostor` | Impostor | TODO stub in GameFactory |
 
 FIFA World Cup has data models only (no game logic).
@@ -94,7 +95,7 @@ Each game service implements at minimum:
 7. *(Optional)* **`app/views/rooms/games/{code}/_edit.html.erb`** — Pre-game config pickers.
 8. **`db/seeds/games/{code}.yml`** + add `{code}` to `GAME_CODES` in `db/seeds.rb` — name, `slug` (public URL `/games/{slug}`, never change it once live), description and the game page content (tagline, long_description, min/max_players, players_note, duration_minutes, age, category, how_to_play, tips, perfect_for, faq). Write it from the real rules in the service/channel, then the Spanish version of the text fields under `translations: es:` (see *Languages*). `games_controller_test.rb` checks every file is complete in both languages.
 9. **Winner celebration (required)** — the player controller's game-over handler must call the shared celebration for the winner(s). See *Winner Celebration* below.
-10. **Game page assets** — add the game's accent to `GamePagesHelper::ACCENTS`, then run `bin/rails games:webp ONLY={code}` (the WebP copies pages actually show: 400/640 px, full and top-cropped "card"; needs libvips) and `bin/rails games:og_images ONLY={code}` (`og.png`, the 1200×630 share image; needs ImageMagick + pngquant). Both are made from `instructions.png`. Show game images with `game_image_tag` (srcset + `?v=` digest, since public files are cached for a year), never `image_tag` on the PNG.
+10. **Game page assets** — add the game's accent to `GamePagesHelper::ACCENTS`, then run `bin/rails games:webp ONLY={code}` (the WebP copies pages actually show: 400/640 px, full and top-cropped "card"; needs libvips) and `bin/rails games:og_images ONLY={code}` (`og.png`, the 1200×630 share image; needs ImageMagick + pngquant). Both are made from `instructions.png`. Show game images with `game_image_tag` (srcset + `?v=` digest, since public files are cached for a year), never `image_tag` on the PNG. New images have no text on them (rules are never drawn in, so one image works in every language): add the game to `GamePagesHelper::TEXT_FREE_IMAGES`, and the lobby shows the steps under it.
 
 ### ActionCable — Two-Layer Model
 

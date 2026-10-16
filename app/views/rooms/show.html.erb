@@ -18,6 +18,11 @@
           <% elsif game_instruction_image?(@game) %>
             <%= game_image_tag @game, alt: t(".image_alt", game: @game.name), priority: true, sizes: "(min-width: 768px) 360px, 90vw",
                   class: "w-full h-auto max-w-sm" %>
+            <% if game_image_text_free?(@game) %>
+              <ol class="list-decimal list-inside space-y-2 text-left text-slate-800 text-sm max-w-sm p-2 mt-3">
+                <% @game.how_to_play.each do |step| %><li><%= step %></li><% end %>
+              </ol>
+            <% end %>
           <% else %>
             <%# No instruction image yet: the game's steps instead %>
             <ol class="list-decimal list-inside space-y-2 text-left text-slate-800 text-sm max-w-xs p-2">

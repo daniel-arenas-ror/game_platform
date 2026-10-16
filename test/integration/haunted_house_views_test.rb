@@ -37,4 +37,12 @@ class HauntedHouseViewsTest < ActionDispatch::IntegrationTest
     assert_select "[data-controller=haunted-house-player][data-look-tv='Mira la pantalla']"
     assert_select "[data-controller=haunted-house-host]", 0
   end
+
+  test "the lobby shows the steps under the text-free image, in the room's language" do
+    @game.update!(how_to_play: %w[One Two], translations: { "es" => { "how_to_play" => %w[Uno Dos] } })
+    post submit_join_path(@room.code, locale: nil), params: { nickname: "Ana" }
+    get room_path(@room.code, locale: nil)
+    assert_select "ol li", text: "Uno"
+    assert_select "ol li", text: "Dos"
+  end
 end
