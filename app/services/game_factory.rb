@@ -23,6 +23,8 @@ class GameFactory
       GameServices::MatchingPairs.new(room)
     when 'doodle_dash'
       GameServices::DoodleDash.new(room)
+    when 'haunted_house'
+      GameServices::HauntedHouse.new(room)
     when 'impostor'
       ## TODO
     else
