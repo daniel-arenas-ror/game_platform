@@ -1,0 +1,77 @@
+# Monster Mash content per room language. Themes are shown to everyone at the start of a game.
+# Monster names are made from a title, a name and a place: "Sir Wobblefang of the Swamp".
+# Spanish names avoid adjectives so they work for any monster ("Doña Babitas del Pantano").
+en:
+  themes:
+    - A monster that lives under your bed
+    - A monster that lives in your fridge
+    - The scariest teacher ever
+    - A monster that eats only socks
+    - The ghost of a very old cat
+    - A vampire on vacation
+    - A monster made of candy
+    - A pumpkin that came to life
+    - A zombie who loves to dance
+    - The monster in the school bathroom
+    - A witch's grumpy pet
+    - A monster that hates Mondays
+    - A creature from the bottom of the sea
+    - A monster that lives in your phone
+    - The neighbour nobody has ever seen
+    - A skeleton at the gym
+    - A werewolf at the hairdresser
+    - A monster that is afraid of kids
+    - An alien who came for Halloween
+    - A mummy that ran out of bandages
+    - The monster that steals your homework
+    - A very polite dragon
+    - A spider that knits sweaters
+    - A haunted teddy bear
+    - A monster made of leftovers
+    - A ghost that is bad at scaring
+    - A monster that lives in the attic
+    - A bat who is afraid of the dark
+    - A swamp monster on a date
+    - A robot monster from the future
+  names:
+    titles: [Sir, Lady, Count, Countess, Baron, Captain, Professor, Doctor, Little, Big, Old, Aunt, Uncle, King, Queen]
+    first: [Wobble, Slime, Grumble, Fuzz, Snaggle, Gloom, Squish, Boo, Snot, Wiggle, Grim, Bonk, Goo, Creep, Muddle]
+    second: [fang, toes, belly, snout, claw, bottom, beard, eyes, ears, tooth, nose, horns, socks, tail, chops]
+    places: [of the Swamp, of the Attic, from the Basement, of the Crypt, from Under the Bed, of the Woods, from the Fridge, of the Fog, from Mars, of the Graveyard]
+es:
+  themes:
+    - Un monstruo que vive debajo de tu cama
+    - Un monstruo que vive en tu refrigerador
+    - El profesor más terrorífico del mundo
+    - Un monstruo que solo come calcetines
+    - El fantasma de un gato muy viejo
+    - Un vampiro de vacaciones
+    - Un monstruo hecho de dulces
+    - Una calabaza que cobró vida
+    - Un zombi al que le encanta bailar
+    - El monstruo del baño de la escuela
+    - La mascota gruñona de una bruja
+    - Un monstruo que odia los lunes
+    - Una criatura del fondo del mar
+    - Un monstruo que vive en tu celular
+    - El vecino que nadie ha visto nunca
+    - Un esqueleto en el gimnasio
+    - Un hombre lobo en la peluquería
+    - Un monstruo que le tiene miedo a los niños
+    - Un extraterrestre que vino por Halloween
+    - Una momia que se quedó sin vendas
+    - El monstruo que se roba tu tarea
+    - Un dragón muy educado
+    - Una araña que teje suéteres
+    - Un osito de peluche embrujado
+    - Un monstruo hecho de sobras de comida
+    - Un fantasma que no sabe asustar
+    - Un monstruo que vive en el ático
+    - Un murciélago que le tiene miedo a la oscuridad
+    - Un monstruo del pantano en una cita
+    - Un monstruo robot del futuro
+  names:
+    titles: [Don, Doña, Conde, Condesa, Barón, Capitán, Profesor, Doctora, Tía, Tío, Rey, Reina, Señor, Señora, Abuela]
+    first: [Bab, Moc, Gruñ, Pelus, Colmill, Sust, Pat, Bur, Grum, Tembl, Mug, Ronc, Chifl, Tirit, Garr]
+    second: [itas, ón, ete, illos, olín, azo, ucho, ito, ota, ín, ejo, osa, uelo, ancio, acho]
+    places: [del Pantano, del Ático, del Sótano, de la Cripta, de Debajo de la Cama, del Bosque, del Refrigerador, de la Niebla, de Marte, del Cementerio]

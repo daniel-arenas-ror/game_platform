@@ -25,6 +25,8 @@ class GameFactory
       GameServices::DoodleDash.new(room)
     when 'haunted_house'
       GameServices::HauntedHouse.new(room)
+    when 'monster_mash'
+      GameServices::MonsterMash.new(room)
     when 'impostor'
       ## TODO
     else
