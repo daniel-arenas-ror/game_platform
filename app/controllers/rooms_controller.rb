@@ -1,4 +1,8 @@
 class RoomsController < ApplicationController
+  # Game screens need import maps, CSS nesting and :has. Only here: public pages must load for
+  # every browser and crawler (AdSense's reviewer sends an old Chrome user agent and got a 406).
+  allow_browser versions: :modern
+
   # Rooms and join links are temporary and private — keep them out of search results.
   before_action { response.set_header("X-Robots-Tag", "noindex, nofollow") }
   before_action :redirect_removed_player, only: %i[show playing]
