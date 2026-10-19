@@ -6,12 +6,24 @@ import { Application, Graphics, Container } from "pixi.js"
 
 const WALL_COLORS  = { brick: 0xc0392b, steel: 0x7f8c8d, water: 0x2471a3, trees: 0x1e8449 }
 const TANK_COLORS  = { yellow: 0xf1c40f, green: 0x2ecc71, white: 0xecf0f1, red: 0xe74c3c, silver: 0x95a5a6 }
-const BASE_COLOR   = { alive: 0xf39c12, dead: 0x4a4a4a }
 const BULLET_COLOR = 0xffffff
 const BG_COLOR     = 0x0d0d1a
 
 // Explosion palette: yellow → orange → red as age increases
 const EXP_COLORS = [0xffd700, 0xffa500, 0xff6600, 0xcc3300]
+
+// The server works on a grid: a tank moves one cell every 4 ticks (240 ms), a bullet one cell
+// every tick (60 ms). The TV slides between cells over a little longer than that, so a tank
+// driving straight never stops between cells even when an update arrives a bit late.
+const MOVE_MS     = 250
+const BULLET_MS   = 64
+const TURN_MS     = 90
+const RECOIL_MS   = 140
+const FLASH_MS    = 90
+const SPAWN_MS    = 300
+const SHAKE_MS    = 280
+const ANGLES      = { up: 0, right: Math.PI / 2, down: Math.PI, left: -Math.PI / 2 }
+const DIRS        = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] }
 
 function darkenColor(hex, factor = 0.55) {
   const r = Math.round(((hex >> 16) & 0xff) * factor)
@@ -20,13 +32,21 @@ function darkenColor(hex, factor = 0.55) {
   return (r << 16) | (g << 8) | b
 }
 
+const clamp01 = (v) => Math.max(0, Math.min(1, v))
+const easeOut = (k) => 1 - (1 - k) * (1 - k)
+const mod     = (a, n) => ((a % n) + n) % n
+
 export default class extends Controller {
   static values = { roomCode: String }
 
   async connect() {
     this.state      = null
     this.pixiReady  = false
-    this.explosions = []   // [{x, y, age, maxAge, color}]
+    this.explosions = []          // [{x, y, start, duration, color, scale}] in cells / ms
+    this.tanks      = new Map()   // id → sprite + its slide/turn animation
+    this.bullets    = new Map()   // id → {fromX, fromY, toX, toY, x, y, t0, direction}
+    this.shakeAt    = -Infinity
+    this.calm       = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
 
     const app = new Application()
     this.app  = app
@@ -45,17 +65,20 @@ export default class extends Controller {
 
     this.element.appendChild(this.app.canvas)
 
-    // Two render layers: game content below, effects (explosions) above
-    this.gameLayer = new Container()
-    this.fxLayer   = new Container()
-    this.app.stage.addChild(this.gameLayer)
-    this.app.stage.addChild(this.fxLayer)
+    // world (shakes on explosions) → map, tanks, bullets, effects
+    this.world       = new Container()
+    this.staticLayer = new Graphics()
+    this.tankLayer   = new Container()
+    this.bulletLayer = new Graphics()
+    this.fxLayer     = new Graphics()
+    this.world.addChild(this.staticLayer, this.tankLayer, this.bulletLayer, this.fxLayer)
+    this.app.stage.addChild(this.world)
 
-    // Explosion ticker — runs independently of server updates
-    this.app.ticker.add(() => this.animateFX())
+    // Every frame: positions come from the animations, not straight from the server cells.
+    this.app.ticker.add(() => this.frame(performance.now()))
 
     this.pixiReady = true
-    if (this.state) this.render()
+    if (this.state) this.buildScene()
 
     this.subscribe()
   }
@@ -78,7 +101,6 @@ export default class extends Controller {
       player_id: ""
     }, {
       connected: () => {
-        console.log("[BattleCity] host connected — starting game loop")
         this.channel.perform("start_game_loop", { room_code: this.roomCodeValue })
       },
       received: (data) => this.handleMessage(data)
@@ -89,7 +111,7 @@ export default class extends Controller {
     switch (data.action) {
       case "state_snapshot":
         this.state = data.state
-        if (this.pixiReady) this.render()
+        if (this.pixiReady) this.buildScene()
         break
 
       case "state_delta":
@@ -116,33 +138,34 @@ export default class extends Controller {
 
   applyDelta(delta) {
     if (!this.state) return
+    const now = performance.now()
+
+    // Bullets first, so a shot fired this tick kicks back its tank's barrel.
+    if (delta.bullets) {
+      this.state.bullets = delta.bullets
+      if (this.pixiReady) this.syncBullets(delta.bullets, now)
+    }
 
     if (delta.tanks) {
-      Object.entries(delta.tanks).forEach(([pid, newTank]) => {
-        const prev = this.state.tanks[pid]
-        // Detect kill — spawn explosion at last known position
-        if (prev?.alive && !newTank.alive) {
-          this.spawnExplosion(prev.x, prev.y, prev.color)
-        }
+      Object.entries(delta.tanks).forEach(([id, tank]) => {
+        if (this.pixiReady) this.updateTank(id, tank, now)
       })
       Object.assign(this.state.tanks, delta.tanks)
     }
 
-    if (delta.bullets)         this.state.bullets = delta.bullets
     if (delta.walls_destroyed) {
       delta.walls_destroyed.forEach(k => {
-        // Small flash at destroyed brick position
         const [x, y] = k.split(",").map(Number)
-        this.spawnExplosion(x, y, null)   // null color → brick dust
+        this.spawnExplosion(x, y, null, now)   // null color → brick dust
         delete this.state.walls[k]
       })
+      if (this.pixiReady) this.renderStatic()
     }
+
     if (delta.scores) {
       Object.assign(this.state.scores, delta.scores)
       this.updateScoreboard(delta.scores)
     }
-
-    if (this.pixiReady) this.render()
   }
 
   updateScoreboard(scores) {
@@ -152,51 +175,257 @@ export default class extends Controller {
     })
   }
 
-  // ── Explosions ───────────────────────────────────────────────────────────
+  // ── Scene ────────────────────────────────────────────────────────────────
 
-  spawnExplosion(x, y, tankColor) {
-    this.explosions.push({
-      x,
-      y,
-      age:    0,
-      maxAge: tankColor ? 22 : 10,   // tank kill → longer; brick → short flash
-      color:  tankColor ? (TANK_COLORS[tankColor] ?? 0xffffff) : 0xc0392b
+  get cellSize() {
+    return Math.floor(520 / (this.state?.map_cols || 26))
+  }
+
+  // Full rebuild from a snapshot (first load, reconnect). Everything snaps into place.
+  buildScene() {
+    if (!this.state || !this.pixiReady) return
+    this.renderStatic()
+
+    this.tankLayer.removeChildren().forEach(c => c.destroy({ children: true }))
+    this.tanks.clear()
+    const now = performance.now()
+    Object.entries(this.state.tanks || {}).forEach(([id, tank]) => { this.addTank(id, tank, now).spawnAt = -Infinity })
+
+    this.bullets.clear()
+    ;(this.state.bullets || []).forEach(b => this.bullets.set(b.id, {
+      fromX: b.x, fromY: b.y, toX: b.x, toY: b.y, x: b.x, y: b.y, t0: -Infinity, direction: b.direction
+    }))
+  }
+
+  frame(now) {
+    if (!this.state || !this.pixiReady) return
+    this.tanks.forEach(tank => this.animateTank(tank, now))
+    this.drawBullets(now)
+    this.drawFX(now)
+    this.shake(now)
+  }
+
+  // ── Tanks ────────────────────────────────────────────────────────────────
+
+  // A tank is drawn once, facing up around (0, 0); moving and turning only change its
+  // position and rotation. Treads, barrel and muzzle flash are separate so they can animate.
+  addTank(id, tank, now) {
+    const cs   = this.cellSize
+    const sw   = cs - 2
+    const h    = sw / 2
+    const col  = TANK_COLORS[tank.color] ?? 0xffffff
+    const dk   = darkenColor(col)
+    const tw   = Math.max(2, Math.floor(sw * 0.22))
+    const view = new Container()
+
+    const hull = new Graphics()
+    hull.rect(-h, -h, tw, sw).fill(dk)
+    hull.rect(h - tw, -h, tw, sw).fill(dk)
+    hull.rect(-h + tw + 1, -h + 1, sw - (tw + 1) * 2, sw - 2).fill(col)
+    const turW = Math.max(3, Math.floor(sw * 0.3))
+    hull.rect(-turW / 2, -turW / 2, turW, turW).fill(dk)
+    if (id.startsWith("bot_")) {
+      // Bot indicator — small red crosshair on the turret
+      hull.rect(-1, -turW / 2, 2, turW).fill(0xe74c3c)
+      hull.rect(-turW / 2, -1, turW, 2).fill(0xe74c3c)
+    }
+
+    const treads = new Graphics()
+    const barW   = Math.max(2, Math.floor(sw * 0.15))
+    const barrel = new Graphics().rect(-barW / 2, -h, barW, Math.floor(sw * 0.4)).fill(dk)
+    const flash  = new Graphics().circle(0, -h - 1, Math.max(2, cs * 0.18)).fill({ color: 0xffe066 })
+    flash.alpha  = 0
+
+    view.addChild(hull, treads, barrel, flash)
+    this.tankLayer.addChild(view)
+
+    const sprite = {
+      view, treads, barrel, flash, h, tw, sw, ridge: darkenColor(col, 0.75),
+      fromX: tank.x, fromY: tank.y, toX: tank.x, toY: tank.y, x: tank.x, y: tank.y, t0: -Infinity,
+      fromAngle: ANGLES[tank.direction] ?? 0, toAngle: ANGLES[tank.direction] ?? 0, a0: -Infinity,
+      travel: 0, firedAt: -Infinity, spawnAt: now, alive: tank.alive, color: tank.color
+    }
+    view.visible = tank.alive
+    this.tanks.set(id, sprite)
+    this.drawTreads(sprite)
+    this.animateTank(sprite, now)
+    return sprite
+  }
+
+  updateTank(id, tank, now) {
+    const sprite = this.tanks.get(id)
+    if (!sprite) return this.addTank(id, tank, now)
+
+    if (sprite.alive && !tank.alive) {
+      // Killed: the explosion goes where the tank is drawn right now.
+      this.spawnExplosion(sprite.x, sprite.y, sprite.color, now)
+      this.shakeAt = now
+    }
+
+    const respawned = !sprite.alive && tank.alive
+    const jump      = Math.abs(tank.x - sprite.x) + Math.abs(tank.y - sprite.y) > 1.5
+    if (respawned || jump) {
+      Object.assign(sprite, { fromX: tank.x, fromY: tank.y, toX: tank.x, toY: tank.y, t0: -Infinity })
+      if (respawned) sprite.spawnAt = now
+    } else if (tank.x !== sprite.toX || tank.y !== sprite.toY) {
+      // Slide on from wherever it is drawn now, so a late update never makes it jump back.
+      Object.assign(sprite, { fromX: sprite.x, fromY: sprite.y, toX: tank.x, toY: tank.y, t0: now })
+    }
+
+    const target = ANGLES[tank.direction] ?? 0
+    const angle  = sprite.view.rotation
+    const diff   = mod(target - angle + Math.PI, Math.PI * 2) - Math.PI   // shortest way round
+    if (Math.abs(diff) > 0.001) {
+      sprite.fromAngle = respawned ? target : angle
+      sprite.toAngle   = angle + diff
+      sprite.a0        = respawned ? -Infinity : now
+    }
+
+    sprite.alive        = tank.alive
+    sprite.view.visible = tank.alive
+  }
+
+  animateTank(s, now) {
+    const k  = clamp01((now - s.t0) / MOVE_MS)
+    const x  = s.fromX + (s.toX - s.fromX) * k
+    const y  = s.fromY + (s.toY - s.fromY) * k
+    const cs = this.cellSize
+
+    const moved = Math.abs(x - s.x) + Math.abs(y - s.y)
+    s.x = x
+    s.y = y
+    s.view.position.set((x + 0.5) * cs, (y + 0.5) * cs)
+    if (moved > 0) {
+      s.travel += moved * cs
+      this.drawTreads(s)
+    }
+
+    const a = easeOut(clamp01((now - s.a0) / TURN_MS))
+    s.view.rotation = s.fromAngle + (s.toAngle - s.fromAngle) * a
+
+    // Fired: the barrel kicks back and a flash shows at its tip.
+    s.barrel.y    = Math.round(2 * (1 - clamp01((now - s.firedAt) / RECOIL_MS)))
+    s.flash.alpha = 1 - clamp01((now - s.firedAt) / FLASH_MS)
+
+    // Respawn: fades and grows in.
+    const sp = easeOut(clamp01((now - s.spawnAt) / SPAWN_MS))
+    s.view.alpha = sp
+    s.view.scale.set(0.6 + 0.4 * sp)
+  }
+
+  // Tread marks roll along with the distance driven.
+  drawTreads(s) {
+    const g       = s.treads.clear()
+    const spacing = s.sw / 4
+    for (let i = 0; i < 4; i++) {
+      const y = -s.h + mod(i * spacing - s.travel, s.sw)
+      if (y < -s.h + 1) continue
+      g.rect(-s.h, y, s.tw, 1).fill(s.ridge)
+      g.rect(s.h - s.tw, y, s.tw, 1).fill(s.ridge)
+    }
+  }
+
+  // ── Bullets ──────────────────────────────────────────────────────────────
+
+  syncBullets(list, now) {
+    const seen = new Set()
+    list.forEach(b => {
+      seen.add(b.id)
+      const cur = this.bullets.get(b.id)
+      if (cur) {
+        if (cur.toX !== b.x || cur.toY !== b.y) {
+          Object.assign(cur, { fromX: cur.x, fromY: cur.y, toX: b.x, toY: b.y, t0: now })
+        }
+        return
+      }
+      // New shot: it leaves from the tip of the barrel.
+      const owner    = this.tanks.get(b.owner_id)
+      const [dx, dy] = DIRS[b.direction] ?? [0, 0]
+      const sx = owner ? owner.x + dx * 0.5 : b.x - dx
+      const sy = owner ? owner.y + dy * 0.5 : b.y - dy
+      if (owner) owner.firedAt = now
+      this.bullets.set(b.id, { fromX: sx, fromY: sy, toX: b.x, toY: b.y, x: sx, y: sy, t0: now, direction: b.direction })
+    })
+
+    // Gone: it hit something at the edge of the next cell.
+    this.bullets.forEach((b, id) => {
+      if (seen.has(id)) return
+      const [dx, dy] = DIRS[b.direction] ?? [0, 0]
+      this.spawnSpark(b.x + dx * 0.5, b.y + dy * 0.5, now)
+      this.bullets.delete(id)
     })
   }
 
-  animateFX() {
-    if (!this.explosions.length) {
-      if (this.fxLayer.children.length) this.fxLayer.removeChildren()
-      return
-    }
+  drawBullets(now) {
+    const g    = this.bulletLayer.clear()
+    const cs   = this.cellSize
+    const size = Math.max(3, Math.floor(cs * 0.22))
 
-    this.fxLayer.removeChildren()
+    this.bullets.forEach(b => {
+      const k = clamp01((now - b.t0) / BULLET_MS)
+      b.x = b.fromX + (b.toX - b.fromX) * k
+      b.y = b.fromY + (b.toY - b.fromY) * k
+
+      const [dx, dy] = DIRS[b.direction] ?? [0, 0]
+      const px = (b.x + 0.5) * cs - size / 2
+      const py = (b.y + 0.5) * cs - size / 2
+
+      // Fading streak behind it
+      for (let i = 3; i >= 1; i--) {
+        g.rect(px - dx * i * size, py - dy * i * size, size, size).fill({ color: 0xffd700, alpha: 0.1 * (4 - i) })
+      }
+      // Glow ring
+      g.rect(px - 1, py - 1, size + 2, size + 2).fill({ color: 0xffd700, alpha: 0.4 })
+      // Core
+      g.rect(px, py, size, size).fill(BULLET_COLOR)
+    })
+  }
+
+  // ── Explosions ───────────────────────────────────────────────────────────
+
+  spawnExplosion(x, y, tankColor, now = performance.now()) {
+    this.explosions.push({
+      x, y, start: now,
+      duration: tankColor ? 370 : 170,   // tank kill → longer; brick → short flash
+      color:    tankColor ? (TANK_COLORS[tankColor] ?? 0xffffff) : WALL_COLORS.brick,
+      scale:    1
+    })
+  }
+
+  spawnSpark(x, y, now) {
+    this.explosions.push({ x, y, start: now, duration: 120, color: 0xffd700, scale: 0.35 })
+  }
+
+  drawFX(now) {
+    const g  = this.fxLayer.clear()
     const cs = this.cellSize
 
-    this.explosions = this.explosions.filter(exp => {
-      exp.age++
-      return exp.age < exp.maxAge
-    })
-
-    const g = new Graphics()
+    this.explosions = this.explosions.filter(exp => now - exp.start < exp.duration)
     this.explosions.forEach(exp => {
-      const t       = exp.age / exp.maxAge           // 0 → 1
-      const alpha   = Math.max(0, 1 - t * 1.2)
-      const radius  = (cs * 0.5) + (cs * 0.9 * t)   // expands outward
-      const cx      = exp.x * cs + cs / 2
-      const cy      = exp.y * cs + cs / 2
+      const t      = (now - exp.start) / exp.duration   // 0 → 1
+      const alpha  = Math.max(0, 1 - t * 1.2)
+      const radius = ((cs * 0.5) + (cs * 0.9 * t)) * exp.scale
+      const cx     = (exp.x + 0.5) * cs
+      const cy     = (exp.y + 0.5) * cs
 
       // Outer ring — palette shifts from yellow to red as age increases
       const colorIdx = Math.min(EXP_COLORS.length - 1, Math.floor(t * EXP_COLORS.length))
-      g.circle(cx, cy, radius)
-      g.fill({ color: EXP_COLORS[colorIdx], alpha: alpha * 0.85 })
+      g.circle(cx, cy, radius).fill({ color: EXP_COLORS[colorIdx], alpha: alpha * 0.85 })
 
       // Bright core
-      g.circle(cx, cy, radius * 0.45)
-      g.fill({ color: 0xffffff, alpha: alpha * 0.6 })
+      g.circle(cx, cy, radius * 0.45).fill({ color: 0xffffff, alpha: alpha * 0.6 })
     })
+  }
 
-    this.fxLayer.addChild(g)
+  // A short shake of the whole map when a tank blows up.
+  shake(now) {
+    const k = 1 - clamp01((now - this.shakeAt) / SHAKE_MS)
+    if (k <= 0 || this.calm) {
+      this.world.position.set(0, 0)
+      return
+    }
+    const amp = 4 * k
+    this.world.position.set(Math.round((Math.random() * 2 - 1) * amp), Math.round((Math.random() * 2 - 1) * amp))
   }
 
   // ── Countdown overlay ────────────────────────────────────────────────────
@@ -258,23 +487,15 @@ export default class extends Controller {
     overlay.classList.remove("hidden")
   }
 
-  // ── Rendering ────────────────────────────────────────────────────────────
+  // ── Map: walls + base (redrawn only when a brick breaks) ────────────────
 
-  get cellSize() {
-    return Math.floor(520 / (this.state?.map_cols || 26))
+  renderStatic() {
+    const g = this.staticLayer.clear()
+    this.renderWalls(g)
+    this.renderBase(g)
   }
 
-  render() {
-    if (!this.state || !this.pixiReady) return
-    this.gameLayer.removeChildren()
-    this.renderWalls()
-    this.renderBase()
-    this.renderTanks()
-    this.renderBullets()
-  }
-
-  renderWalls() {
-    const g  = new Graphics()
+  renderWalls(g) {
     const cs = this.cellSize
 
     Object.entries(this.state.walls).forEach(([key, type]) => {
@@ -293,8 +514,6 @@ export default class extends Controller {
         g.fill(WALL_COLORS[type] ?? 0x888888)
       }
     })
-
-    this.gameLayer.addChild(g)
   }
 
   renderBrick(g, ox, oy, cs) {
@@ -355,12 +574,11 @@ export default class extends Controller {
     g.fill({ color: 0x2ecc71, alpha: 0.85 })
   }
 
-  renderBase() {
+  renderBase(g) {
     const base = this.state.base
     if (!base) return
 
     const cs = this.cellSize
-    const g  = new Graphics()
     const ox = base.x * cs
     const oy = base.y * cs
 
@@ -390,99 +608,5 @@ export default class extends Controller {
       g.rect(ox + cs - rs - 1, oy + cs - rs - 1, rs, rs).fill(0x3a3a3a)
       g.rect(ox + Math.floor(cs / 2) - 1, oy + Math.floor(cs / 2) - 1, 3, 3).fill(0x555555)
     }
-
-    this.gameLayer.addChild(g)
-  }
-
-  renderTanks() {
-    const cs = this.cellSize
-
-    Object.entries(this.state.tanks).forEach(([tankId, tank]) => {
-      if (!tank.alive) return
-      this.renderTankSprite(tank, cs, tankId.startsWith("bot_"))
-    })
-  }
-
-  renderTankSprite(tank, cs, isBot = false) {
-    const p   = 1                               // outer padding
-    const ox  = tank.x * cs + p
-    const oy  = tank.y * cs + p
-    const sw  = cs - p * 2                      // sprite width
-    const sh  = cs - p * 2                      // sprite height
-    const col = TANK_COLORS[tank.color] ?? 0xffffff
-    const dk  = darkenColor(col)                // track color
-
-    const g  = new Graphics()
-    const tw = Math.max(2, Math.floor(sw * 0.22))  // track width
-
-    // ── Tracks ────────────────────────────────────────────────
-    g.rect(ox,             oy, tw, sh).fill(dk)
-    g.rect(ox + sw - tw,   oy, tw, sh).fill(dk)
-
-    // Tread ridges (lighter horizontal marks)
-    const ridges  = 4
-    const ridgeH  = 1
-    const ridgeC  = darkenColor(col, 0.75)
-    for (let i = 1; i < ridges; i++) {
-      const ry = oy + Math.floor(sh / ridges * i)
-      g.rect(ox,           ry, tw, ridgeH).fill(ridgeC)
-      g.rect(ox + sw - tw, ry, tw, ridgeH).fill(ridgeC)
-    }
-
-    // ── Body ──────────────────────────────────────────────────
-    const bodyX = ox + tw + 1
-    const bodyW = sw - (tw + 1) * 2
-    g.rect(bodyX, oy + 1, bodyW, sh - 2).fill(col)
-
-    // ── Turret ────────────────────────────────────────────────
-    const turW = Math.max(3, Math.floor(sw * 0.3))
-    const turH = Math.max(3, Math.floor(sh * 0.3))
-    const turX = ox + Math.floor((sw - turW) / 2)
-    const turY = oy + Math.floor((sh - turH) / 2)
-    g.rect(turX, turY, turW, turH).fill(dk)
-
-    // ── Barrel ────────────────────────────────────────────────
-    const barW   = Math.max(2, Math.floor(sw * 0.15))
-    const barLen = Math.floor(sw * 0.4)
-    const bcx    = ox + Math.floor((sw - barW) / 2)
-    const bcy    = oy + Math.floor((sh - barW) / 2)
-
-    switch (tank.direction) {
-      case "up":    g.rect(bcx, oy,                barW, barLen).fill(dk); break
-      case "down":  g.rect(bcx, oy + sh - barLen,  barW, barLen).fill(dk); break
-      case "left":  g.rect(ox,           bcy, barLen, barW).fill(dk); break
-      case "right": g.rect(ox + sw - barLen, bcy, barLen, barW).fill(dk); break
-    }
-
-    // Bot indicator — small red crosshair on the turret
-    if (isBot) {
-      const cx = turX + Math.floor(turW / 2)
-      const cy = turY + Math.floor(turH / 2)
-      g.rect(cx - 1, turY,     2, turH).fill(0xe74c3c)
-      g.rect(turX,   cy - 1,  turW, 2).fill(0xe74c3c)
-    }
-
-    this.gameLayer.addChild(g)
-  }
-
-  renderBullets() {
-    if (!this.state.bullets?.length) return
-
-    const g    = new Graphics()
-    const cs   = this.cellSize
-    const size = Math.max(3, Math.floor(cs * 0.22))
-
-    this.state.bullets.forEach(bullet => {
-      const offset = Math.floor((cs - size) / 2)
-      const bx     = bullet.x * cs + offset
-      const by     = bullet.y * cs + offset
-
-      // Glow ring
-      g.rect(bx - 1, by - 1, size + 2, size + 2).fill({ color: 0xffd700, alpha: 0.4 })
-      // Core
-      g.rect(bx, by, size, size).fill(BULLET_COLOR)
-    })
-
-    this.gameLayer.addChild(g)
   }
 }

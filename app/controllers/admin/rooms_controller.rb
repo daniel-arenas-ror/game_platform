@@ -20,7 +20,6 @@ module Admin
       @pages = [ (@total / PER_PAGE.to_f).ceil, 1 ].max
       @games = Game.order_by(name: :asc).to_a
       @game_names     = @games.to_h { |g| [ g.id, g.name ] }
-      @player_counts = count_by(Player, "room_id", "room_id" => { "$in" => @rooms.map(&:id) })
       @players_joined = count_by(Event, "room_id", "kind" => "player_joined", "room_id" => { "$in" => @rooms.map(&:id) })
       @games_played  = count_by(Event, "room_id", "kind" => "game_started", "room_id" => { "$in" => @rooms.map(&:id) })
       @status_counts = count_by(Room, "status")
