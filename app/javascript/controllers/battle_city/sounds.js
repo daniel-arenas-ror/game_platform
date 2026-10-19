@@ -7,7 +7,7 @@ const FILES = {
   calm:  "/games/sounds/tank_calm.mp3",
   drive: "/games/sounds/tank_acceleration.mp3",
   fire:  "/games/sounds/tank_fire.mp3",
-  boom:  "/games/sounds/explotion.mp3",
+  boom:  "/games/sounds/tank_explotion.mp3",
   brick: "/games/sounds/explotion_earth.mp3"
 }
 // Engine loops: volume, and how much of each end to leave out of the loop (the drive sound dips
@@ -15,7 +15,7 @@ const FILES = {
 const LOOPS        = { calm: { volume: 0.6, trim: 0.05 }, drive: { volume: 0.45, trim: 0.15 } }
 const FIRE_VOLUME  = 1
 const BOOM_VOLUME  = 1
-const BRICK_VOLUME = 0.8
+const BRICK_VOLUME = 0.6    // the earth file is louder than the tank one; a tank should sound bigger
 const FADE_SECONDS = 0.08
 const FIRE_GAP_MS  = 150    // holding Fire against a close wall shoots every tick; don't rattle
 const MUTED_KEY    = "battle_city_muted"
