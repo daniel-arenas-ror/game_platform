@@ -40,7 +40,9 @@ class AdminTest < ActionDispatch::IntegrationTest
       get admin_root_path(range: range)
       assert_response :success
       assert_select "nav[aria-label=Period] a[aria-current=page][href$='range=#{range}']"
-      assert_select "svg[role=img] rect", AdminStats::CHART_DAYS * 3
+      bars = css_select("details tbody tr").size
+      assert_operator bars, :positive?
+      assert_select "svg[role=img] rect", bars * 3
       assert_select "h2#popular"
     end
   end

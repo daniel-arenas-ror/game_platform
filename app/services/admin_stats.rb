@@ -6,7 +6,9 @@
 class AdminStats
   RANGES = { "today" => "Today", "7d" => "7 days", "30d" => "30 days", "all" => "All time" }.freeze
   DEFAULT_RANGE = "7d".freeze
-  CHART_DAYS = 30
+  # Most bars on a chart: all time counts per day, then per week, then per month, keeping the last ones.
+  MAX_BARS = 60
+  STEPS = { "hour" => 1.hour, "day" => 1.day, "week" => 1.week, "month" => 1.month }.freeze
 
   attr_reader :range, :now
 
@@ -38,17 +40,39 @@ class AdminStats
 
   def previous_label = range == "today" ? "yesterday" : "previous #{label}"
 
-  # One row per day for the last CHART_DAYS days, oldest first; today is the last, partial day.
-  def daily
-    @daily ||= begin
-      start  = now.beginning_of_day - (CHART_DAYS - 1).days
-      counts = aggregate(start, now, { "day" => { "$dateTrunc" => { "date" => "$created_at", "unit" => "day" } }, "kind" => "$kind" })
-               .to_h { |row| [ [ row["_id"]["day"].to_date, row["_id"]["kind"] ], row["count"] ] }
+  # The charts' bar size for the period: hours today, days for 7 and 30 days, and for all time days,
+  # weeks or months, whichever first fits everything recorded in MAX_BARS bars.
+  def chart_unit
+    @chart_unit ||=
+      case range
+      when "today" then "hour"
+      when "7d", "30d" then "day"
+      else %w[day week].find { |unit| truncate(first_event_at, unit) >= truncate(now, unit) - (MAX_BARS - 1) * STEPS[unit] } || "month"
+      end
+  end
 
-      (0...CHART_DAYS).map do |i|
-        day = (start + i.days).to_date
-        { day: day, rooms: counts.fetch([ day, "room_created" ], 0), games: counts.fetch([ day, "game_started" ], 0),
-          players: counts.fetch([ day, "player_joined" ], 0) }
+  # One row per chart_unit for the period, oldest first, empty ones included; the last is the
+  # current, partial one. "7 days" is the last 7 UTC days counting today.
+  def chart
+    @chart ||= begin
+      unit  = chart_unit
+      last  = truncate(now, unit)
+      first =
+        case range
+        when "today" then now.beginning_of_day
+        when "7d"    then last - 6.days
+        when "30d"   then last - 29.days
+        else [ truncate(first_event_at, unit), last - (MAX_BARS - 1) * STEPS[unit] ].max
+        end
+      bucket = { "$dateTrunc" => { "date" => "$created_at", "unit" => unit, "startOfWeek" => "monday" } }
+      counts = aggregate(first, now, { "at" => bucket, "kind" => "$kind" })
+               .to_h { |row| [ [ row["_id"]["at"].to_i, row["_id"]["kind"] ], row["count"] ] }
+
+      starts = [ first ]
+      starts << starts.last + STEPS[unit] while starts.last < last
+      starts.map do |at|
+        { at: at, rooms: counts.fetch([ at.to_i, "room_created" ], 0), games: counts.fetch([ at.to_i, "game_started" ], 0),
+          players: counts.fetch([ at.to_i, "player_joined" ], 0) }
       end
     end
   end
@@ -78,6 +102,11 @@ class AdminStats
   # When game starts and player joins began to be recorded (rooms are rebuilt from older data).
   def tracking_since = Event.where(kind: "game_started").order_by(created_at: :asc).only(:created_at).first&.created_at
 
+  # The oldest event of any kind (rooms are rebuilt from older data), or now when there are none.
+  def first_event_at
+    @first_event_at ||= Event.order_by(created_at: :asc).only(:created_at).first&.created_at&.utc || now
+  end
+
   # Percent change from the previous window: nil when there's nothing to compare with.
   def change(key)
     before = previous_totals&.dig(key)
@@ -106,6 +135,16 @@ class AdminStats
       { "$match" => { "created_at" => window } },
       { "$group" => { "_id" => group, "count" => { "$sum" => 1 }, "players" => { "$sum" => { "$ifNull" => [ "$players", 0 ] } } } }
     ]).to_a
+  end
+
+  # Start of the hour, day, week (Monday) or month `time` is in, in UTC.
+  def truncate(time, unit)
+    case unit
+    when "hour"  then time.beginning_of_hour
+    when "day"   then time.beginning_of_day
+    when "week"  then time.beginning_of_week(:monday)
+    when "month" then time.beginning_of_month
+    end
   end
 
   def average(sum, count) = count.to_i.zero? ? nil : (sum.to_f / count).round(1)

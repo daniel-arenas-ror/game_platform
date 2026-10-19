@@ -1,5 +1,5 @@
 module AdminHelper
-  # The metrics on the dashboard: label and the bar color of their daily chart.
+  # The metrics on the dashboard: label and the bar color of their chart.
   ADMIN_METRICS = {
     rooms:   { label: "Rooms created",  bar: "fill-purple-400" },
     games:   { label: "Games played",   bar: "fill-green-400" },
@@ -41,9 +41,22 @@ module AdminHelper
     tag.span(text, class: "rounded-md px-1.5 py-0.5 text-xs font-bold tabular-nums #{style}")
   end
 
-  # A server-drawn bar chart of one metric per day. Each bar has a hover tooltip; the exact numbers
-  # are also in the table under the charts. Today's bar is lighter: the day isn't over yet.
-  def admin_daily_chart(days, key)
+  # The current hour, day, week or month, under the last bar of a chart.
+  ADMIN_CHART_NOW = { "hour" => "Now", "day" => "Today", "week" => "This week", "month" => "This month" }.freeze
+
+  # A chart bar's start, the way its unit reads: "14:00", "Mon Oct 5", "Week of Oct 5", "Oct 2026".
+  def admin_chart_label(at, unit)
+    case unit
+    when "hour"  then at.strftime("%H:%M")
+    when "week"  then at.strftime("Week of %b %-d")
+    when "month" then at.strftime("%b %Y")
+    else at.strftime("%a %b %-d")
+    end
+  end
+
+  # A server-drawn bar chart of one metric per hour, day, week or month. Each bar has a hover tooltip;
+  # the exact numbers are also in the table under the charts. The last bar is lighter: it isn't over yet.
+  def admin_chart(days, key, unit)
     width, height, gap = 600.0, 96.0, 3.0
     max  = [ days.map { _1[key] }.max.to_i, 1 ].max
     step = width / days.size
@@ -53,12 +66,12 @@ module AdminHelper
       h     = value.zero? ? 1.5 : [ (value.to_f / max) * height, 3 ].max
       tag.rect(x: (i * step + gap / 2).round(2), y: (height - h).round(2), width: (step - gap).round(2), height: h.round(2), rx: 2,
                class: "#{value.zero? ? 'fill-slate-700' : ADMIN_METRICS.dig(key, :bar)}#{' opacity-60' if i == days.size - 1}") do
-        tag.title("#{row[:day].strftime('%a %b %-d')}: #{value}")
+        tag.title("#{admin_chart_label(row[:at], unit)}: #{value}")
       end
     end
 
     tag.svg(safe_join(bars), viewBox: "0 0 #{width.to_i} #{height.to_i}", preserveAspectRatio: "none",
                              class: "block h-24 w-full", role: "img",
-                             aria: { label: "#{ADMIN_METRICS.dig(key, :label)} per day, highest #{max}" })
+                             aria: { label: "#{ADMIN_METRICS.dig(key, :label)} per #{unit}, highest #{max}" })
   end
 end

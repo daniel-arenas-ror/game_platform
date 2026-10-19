@@ -47,7 +47,6 @@
           <th class="px-5 py-3 font-black">Code</th>
           <th class="py-3 font-black">Game</th>
           <th class="py-3 font-black">Status</th>
-          <th class="py-3 text-right font-black">Players now</th>
           <th class="py-3 text-right font-black">Players joined</th>
           <th class="py-3 text-right font-black">Games played</th>
           <th class="py-3 pl-6 font-black">Language</th>
@@ -62,8 +61,7 @@
             </td>
             <td class="py-3 text-white"><%= @game_names[room.game_id] || "—" %></td>
             <td class="py-3"><%= admin_room_status(room.status) %></td>
-            <td class="py-3 text-right text-white"><%= @player_counts[room.id].to_i %></td>
-            <td class="py-3 text-right text-slate-300"><%= @players_joined[room.id].to_i %></td>
+            <td class="py-3 text-right text-white"><%= @players_joined[room.id].to_i %></td>
             <td class="py-3 text-right text-slate-300"><%= @games_played[room.id].to_i %></td>
             <td class="py-3 pl-6 uppercase text-slate-400"><%= room.locale %></td>
             <td class="py-3 pr-5 text-slate-400"><%= admin_time(room.created_at) %></td>
@@ -86,7 +84,6 @@
   <% end %>
 <% end %>
 <p class="mt-3 text-xs text-slate-500">
-  Players leave the room 30 seconds after closing the page, so "Players now" counts only who is still in it;
-  "Players joined" counts everyone who ever joined, including who left.
+  Players joined counts everyone who ever joined the room, including who left.
   Games played counts every Start, including "play again", since <%= AdminStats.new.tracking_since&.strftime("%b %-d, %Y") || "today" %>.
 </p>

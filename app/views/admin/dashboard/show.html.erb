@@ -1,5 +1,5 @@
 <% content_for :title, "Stats" %>
-<% totals, days = @stats.totals, @stats.daily %>
+<% totals, days, unit = @stats.totals, @stats.chart, @stats.chart_unit %>
 
 <div class="flex flex-wrap items-end justify-between gap-4">
   <div>
@@ -38,11 +38,14 @@
   <% end %>
 </div>
 
-<%# Per day %>
-<section class="mt-10" aria-labelledby="per-day">
+<%# Per hour, day, week or month %>
+<section class="mt-10" aria-labelledby="per-unit">
   <div class="flex flex-wrap items-baseline justify-between gap-2">
-    <h2 id="per-day" class="text-xl font-extrabold text-white">Per day</h2>
-    <p class="text-xs text-slate-500">Last <%= AdminStats::CHART_DAYS %> days · today is the lighter bar</p>
+    <h2 id="per-unit" class="text-xl font-extrabold text-white">Per <%= unit %></h2>
+    <p class="text-xs text-slate-500">
+      <%= @stats.range == "all" && days.first[:at] > @stats.first_event_at ? "Last #{days.size} #{unit.pluralize}" : @stats.label %>
+      · the last bar is lighter: it isn't over yet
+    </p>
   </div>
 
   <div class="mt-4 grid gap-4 lg:grid-cols-3">
@@ -50,12 +53,12 @@
       <div class="rounded-2xl border border-slate-800 bg-slate-900 p-4 sm:p-5">
         <div class="flex items-baseline justify-between gap-2">
           <p class="text-sm font-bold text-slate-200"><%= metric[:label] %></p>
-          <p class="text-xs text-slate-500 tabular-nums">max <%= days.map { _1[key] }.max %>/day</p>
+          <p class="text-xs text-slate-500 tabular-nums">max <%= days.map { _1[key] }.max %>/<%= unit %></p>
         </div>
-        <div class="mt-3"><%= admin_daily_chart(days, key) %></div>
+        <div class="mt-3"><%= admin_chart(days, key, unit) %></div>
         <div class="mt-1.5 flex justify-between text-[0.7rem] text-slate-500 tabular-nums">
-          <span><%= days.first[:day].strftime("%b %-d") %></span>
-          <span>Today</span>
+          <span><%= days.size > 1 ? admin_chart_label(days.first[:at], unit) : "" %></span>
+          <span><%= AdminHelper::ADMIN_CHART_NOW[unit] %></span>
         </div>
       </div>
     <% end %>
@@ -67,14 +70,14 @@
       <table class="w-full text-sm tabular-nums">
         <thead class="sticky top-0 bg-slate-900 text-left text-xs uppercase tracking-widest text-slate-500">
           <tr>
-            <th class="py-2 font-black">Day</th>
+            <th class="py-2 font-black"><%= unit.capitalize %></th>
             <% AdminHelper::ADMIN_METRICS.each_value do |metric| %><th class="py-2 text-right font-black"><%= metric[:label] %></th><% end %>
           </tr>
         </thead>
         <tbody class="divide-y divide-slate-800">
           <% days.reverse_each do |row| %>
             <tr>
-              <td class="py-1.5 text-slate-400"><%= row[:day].strftime("%a %b %-d") %></td>
+              <td class="py-1.5 text-slate-400"><%= admin_chart_label(row[:at], unit) %></td>
               <% AdminHelper::ADMIN_METRICS.each_key do |key| %><td class="py-1.5 text-right text-white"><%= row[key] %></td><% end %>
             </tr>
           <% end %>

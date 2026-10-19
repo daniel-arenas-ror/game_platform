@@ -57,17 +57,51 @@ class AdminStatsTest < ActiveSupport::TestCase
     assert_nil stats("all").change(:games)
   end
 
-  test "one row per UTC day for the chart, with empty days" do
+  test "the charts have one bar per UTC day of the period, with empty days" do
     event :room_created, @now.beginning_of_day + 1.minute
     event :room_created, @now.beginning_of_day - 1.minute
+    event :player_joined, @now - 6.days
     event :player_joined, @now - 29.days
 
-    days = stats("7d").daily
-    assert_equal AdminStats::CHART_DAYS, days.size
-    assert_equal @now.to_date, days.last[:day]
-    assert_equal [ 1, 1 ], days.last(2).map { _1[:rooms] }.reverse
-    assert_equal 1, days.first[:players]
-    assert_equal 0, days[10][:rooms]
+    week = stats("7d")
+    assert_equal "day", week.chart_unit
+    assert_equal 7, week.chart.size
+    assert_equal @now.beginning_of_day, week.chart.last[:at]
+    assert_equal [ 1, 1 ], week.chart.last(2).map { _1[:rooms] }
+    assert_equal 1, week.chart.first[:players]
+    assert_equal 0, week.chart[2][:rooms]
+
+    month = stats("30d").chart
+    assert_equal 30, month.size
+    assert_equal [ 1, 1 ], month.values_at(0, 23).map { _1[:players] }
+  end
+
+  test "today's chart has one bar per hour so far" do
+    event :game_started, @now.beginning_of_day + 30.minutes, players: 2
+    event :game_started, @now - 1.minute, players: 2 # 14:59
+    event :game_started, @now - 1.day, players: 2
+
+    today = stats("today")
+    assert_equal "hour", today.chart_unit
+    assert_equal 16, today.chart.size # 00:00 to 15:00
+    assert_equal [ 1, 0, 1 ], today.chart.values_at(0, 1, -2).map { _1[:games] }
+  end
+
+  test "all time counts per day, week or month, whichever fits" do
+    # Other tests' events are older than this one's, so the first event is set by hand.
+    all = stats("all")
+    all.instance_variable_set(:@first_event_at, @now - 20.days)
+    assert_equal "day", all.chart_unit
+
+    all = stats("all")
+    all.instance_variable_set(:@first_event_at, @now - 200.days)
+    assert_equal "week", all.chart_unit
+
+    all = stats("all")
+    all.instance_variable_set(:@first_event_at, @now - 10.years)
+    assert_equal "month", all.chart_unit
+    assert_equal AdminStats::MAX_BARS, all.chart.size
+    assert_equal @now.beginning_of_month, all.chart.last[:at]
   end
 
   test "the most played game comes first, with its share of the games" do

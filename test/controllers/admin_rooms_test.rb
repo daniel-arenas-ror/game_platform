@@ -56,12 +56,11 @@ class AdminRoomsTest < ActionDispatch::IntegrationTest
     assert_select "tbody tr", 1
   end
 
-  test "the list counts players now and everyone who joined, including who left" do
+  test "the list counts everyone who joined, including who left" do
     @room.players.create!(nickname: "Beto", connected: false).delete
     log_in
     get admin_rooms_path(game: @game.id)
-    assert_select "tbody tr td:nth-child(4)", "1"
-    assert_select "tbody tr td:nth-child(5)", "2"
+    assert_select "tbody tr td:nth-child(4)", "2"
   end
 
   test "a room's details show its players, history and game state" do
