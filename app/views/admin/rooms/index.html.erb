@@ -51,8 +51,7 @@
           <th class="py-3 text-right font-black">Players joined</th>
           <th class="py-3 text-right font-black">Games played</th>
           <th class="py-3 pl-6 font-black">Language</th>
-          <th class="py-3 font-black">Created</th>
-          <th class="px-5 py-3 font-black">Last activity</th>
+          <th class="py-3 pr-5 font-black">Created</th>
         </tr>
       </thead>
       <tbody class="divide-y divide-slate-800">
@@ -67,8 +66,7 @@
             <td class="py-3 text-right text-slate-300"><%= @players_joined[room.id].to_i %></td>
             <td class="py-3 text-right text-slate-300"><%= @games_played[room.id].to_i %></td>
             <td class="py-3 pl-6 uppercase text-slate-400"><%= room.locale %></td>
-            <td class="py-3 text-slate-400"><%= admin_time(room.created_at) %></td>
-            <td class="px-5 py-3 text-slate-400"><%= admin_time(room.updated_at) %></td>
+            <td class="py-3 pr-5 text-slate-400"><%= admin_time(room.created_at) %></td>
           </tr>
         <% end %>
       </tbody>
