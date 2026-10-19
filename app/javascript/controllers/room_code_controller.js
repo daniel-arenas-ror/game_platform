@@ -22,7 +22,10 @@ export default class extends Controller {
   type() {
     delete this.element.dataset.error
     this.render()
-    if (this.inputTarget.value.length === this.lengthValue) this.element.requestSubmit()
+    if (this.inputTarget.value.length === this.lengthValue) {
+      this.slotTargets.forEach((slot) => { slot.dataset.state = "done" })
+      this.element.requestSubmit()
+    }
   }
 
   focus() {
@@ -42,6 +45,12 @@ export default class extends Controller {
     this.submitTarget.textContent = t("room_code.joining")
   }
 
+  pop(slot) {
+    slot.classList.remove("animate-pop-in")
+    void slot.offsetWidth // restart the animation
+    slot.classList.add("animate-pop-in")
+  }
+
   render() {
     const value = this.inputTarget.value.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, this.lengthValue)
     if (this.inputTarget.value !== value) this.inputTarget.value = value
@@ -49,6 +58,8 @@ export default class extends Controller {
     const focused = this.element.dataset.focused !== undefined
     const active = Math.min(value.length, this.lengthValue - 1)
     this.slotTargets.forEach((slot, i) => {
+      // A character that just arrived pops in
+      if (value[i] && slot.textContent !== value[i]) this.pop(slot)
       slot.textContent = value[i] || ""
       slot.dataset.state = focused && i === active ? "active" : (value[i] ? "filled" : "empty")
     })

@@ -1,82 +1,120 @@
-<div data-controller="game-subscription" 
+<%# The lobby. The host's screen (TV) shows the room code and QR big enough to read across the
+    room, and players popping in as they join. A player's phone shows "You're in!", how to play and
+    who else is here. game_subscription_controller adds and removes the player rows live. %>
+<%
+  host = current_player.nil?
+  accent = game_accent(@game)
+%>
+
+<div data-controller="game-subscription"
      data-game-subscription-room-code-value="<%= @room.code %>"
      data-game-subscription-user-id-value="<%= current_player&.id %>"
-     data-game-subscription-host-value="<%= current_player.nil? %>"
+     data-game-subscription-host-value="<%= host %>"
      data-game-subscription-players-url-value="<%= players_room_path(@room.code) %>">
 
-  <div class="bg-slate-900 min-h-screen text-white p-8 flex flex-col items-center">
-    <div class="max-w-4xl w-full grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-      
-      <!-- Left Side: Game Info & QR -->
-      <div class="text-center md:text-left">
-        <h1 class="text-4xl font-black mb-2"><%= @game.name %></h1>
-        <p class="text-purple-400 font-mono text-2xl mb-8"><%= t(".room", code: @room.code) %></p>
-        
-        <div class="bg-white p-4 rounded-2xl inline-block mb-4 shadow-2xl">
-          <% if current_player.nil? %>
-            <%= @svg.html_safe %>
-          <% elsif game_instruction_image?(@game) %>
-            <%= game_image_tag @game, alt: t(".image_alt", game: @game.name), priority: true, sizes: "(min-width: 768px) 360px, 90vw",
-                  class: "w-full h-auto max-w-sm" %>
-            <% if game_image_text_free?(@game) %>
-              <ol class="list-decimal list-inside space-y-2 text-left text-slate-800 text-sm max-w-sm p-2 mt-3">
-                <% @game.how_to_play.each do |step| %><li><%= step %></li><% end %>
-              </ol>
+  <div class="bg-slate-900 min-h-screen text-white px-4 sm:px-8 py-8 sm:py-12 overflow-x-clip">
+    <% players = @room.players.to_a %>
+
+    <% if host %>
+      <%# ── Host: the TV ───────────────────────────────────────────────────── %>
+      <div class="max-w-6xl mx-auto grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] gap-10 lg:gap-16 items-center">
+        <section class="text-center lg:text-left">
+          <p class="eyebrow <%= accent[:text] %>"><%= game_category_label(@game) %></p>
+          <h1 class="mt-2 text-display text-5xl lg:text-6xl text-white text-balance"><%= @game.name %></h1>
+
+          <p class="mt-8 eyebrow text-slate-400"><%= t(".code_label") %></p>
+          <%# Read across the room: one big tile per character %>
+          <p class="mt-3 flex justify-center lg:justify-start gap-2 sm:gap-3" aria-label="<%= t(".room", code: @room.code) %>">
+            <% @room.code.each_char.with_index do |ch, i| %>
+              <span aria-hidden="true" class="grid place-items-center size-16 sm:size-20 lg:size-24 rounded-3xl border-[3px] border-purple-400 bg-slate-950 font-mono font-black text-4xl sm:text-5xl text-white shadow-[0_5px_0_var(--color-purple-900)] motion-safe:animate-pop-in" style="animation-delay: <%= i * 90 %>ms"><%= ch %></span>
             <% end %>
-          <% else %>
-            <%# No instruction image yet: the game's steps instead %>
-            <ol class="list-decimal list-inside space-y-2 text-left text-slate-800 text-sm max-w-xs p-2">
-              <% @game.how_to_play.each do |step| %><li><%= step %></li><% end %>
-            </ol>
-          <% end %>
-        </div>
-        
-        <p class="text-slate-400"><%= t(".scan") %></p>
-        <p class="text-xs text-slate-500 mt-2"><%= @join_url %></p>
-      </div>
+          </p>
 
-      <!-- Right Side: Player List (ActionCable will update this later) -->
-      <div class="bg-slate-800 rounded-3xl p-8 border border-slate-700 shadow-xl min-h-[400px]">
-        <h2 class="text-xl font-bold mb-6 flex justify-between">
-          <%= t(".players") %>
-          <span class="bg-purple-600 text-xs py-1 px-3 rounded-full"><%= t(".waiting") %></span>
-        </h2>
-        <div id="player-list" data-room-code="<%= @room.code %>" class="space-y-4">
-          <!-- We will inject players here with ActionCable -->
-          <% @room.players.each do |player| %>
-            <div id="player-<%= player.id %>" class="flex items-center space-x-4 bg-slate-700 p-4 rounded-xl border border-slate-600">
-              <div class="w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center font-bold">
-                <%= player.nickname[0].upcase %>
+          <div class="mt-10 flex flex-col sm:flex-row items-center lg:items-end gap-6 sm:gap-8 justify-center lg:justify-start">
+            <%# The QR on a tilted block of house purple %>
+            <div class="relative shrink-0">
+              <div aria-hidden="true" class="absolute inset-0 -rotate-6 rounded-[2rem] bg-purple-600"></div>
+              <div class="relative rounded-[2rem] bg-white p-4 shadow-2xl shadow-black/50 [&>svg]:block [&>svg]:size-48 lg:[&>svg]:size-56">
+                <%= @svg.html_safe %>
               </div>
-              <div class="text-white font-bold flex-1 min-w-0 truncate"><%= player.nickname %></div>
-              <% if current_player.nil? %>
-                <button type="button" data-action="game-subscription#remove"
-                        data-player-id="<%= player.id %>" data-nickname="<%= player.nickname %>"
-                        aria-label="<%= t(".remove_player", name: player.nickname) %>"
-                        class="ml-auto shrink-0 rounded-lg border border-red-500/40 bg-red-500/10 px-3 py-1.5 text-sm font-bold text-red-300 hover:bg-red-500/20 disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-red-400"><%= t(".remove") %></button>
-              <% end %>
             </div>
-          <% end %>
-          <div class="flex items-center space-x-4 bg-slate-700/50 p-4 rounded-xl border border-slate-600 animate-pulse">
-            <div class="w-10 h-10 bg-slate-600 rounded-full"></div>
-            <div class="h-4 w-32 bg-slate-600 rounded"></div>
+            <div class="text-center sm:text-left">
+              <p class="font-display text-2xl font-extrabold text-white"><%= t(".scan") %></p>
+              <p class="mt-2 text-slate-400"><%= t(".or_go_to") %></p>
+              <p class="mt-1 inline-block rounded-xl bg-slate-800 border border-slate-700 px-3 py-1.5 font-mono font-bold text-purple-300 break-all"><%= @join_url.sub(%r{\Ahttps?://}, "") %></p>
+            </div>
           </div>
-        </div>
+        </section>
 
-        <% if current_player.nil? %>
-          <%= button_to start_room_path(@room.code), 
-              method: :post, 
-              remote: true, 
-              class: "w-full mt-12 bg-green-500 hover:bg-green-400 text-slate-900 font-black py-4 rounded-xl uppercase tracking-widest transition-all text-center block" do %>
-            <%= t(".start") %>
-          <% end %>
-        <% end %>
+        <section class="rounded-[2rem] border border-slate-700 bg-slate-800 p-6 lg:p-8 shadow-2xl shadow-black/40 min-h-[26rem] flex flex-col" aria-labelledby="lobby-players">
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
+            <h2 id="lobby-players" class="font-display text-3xl font-extrabold"><%= t(".players") %></h2>
+            <span id="player-count" class="rounded-full bg-purple-600 px-3.5 py-1 font-bold text-sm" aria-live="polite"><%= t(".players_count", count: players.size) %></span>
+          </div>
+
+          <div id="player-list" data-room-code="<%= @room.code %>" class="grid sm:grid-cols-2 gap-3 content-start">
+            <%= render partial: "rooms/lobby_player", collection: players, as: :player, locals: { host: host } %>
+          </div>
+          <div class="mt-3 flex items-center justify-center gap-3 rounded-2xl border-2 border-dashed border-slate-700 p-4 text-slate-400 font-semibold">
+            <%= t(".waiting_players") %><%= render "shared/bouncing_dots" %>
+          </div>
+
+          <div class="mt-auto pt-10">
+            <%= button_to start_room_path(@room.code), method: :post, remote: true,
+                  class: "btn btn-lg btn-go w-full uppercase tracking-widest" do %>
+              <%= t(".start") %>
+            <% end %>
+          </div>
+        </section>
       </div>
 
-    </div>
+    <% else %>
+      <%# ── Player: the phone ──────────────────────────────────────────────── %>
+      <div class="max-w-sm mx-auto">
+        <section class="relative overflow-hidden rounded-[2rem] bg-purple-600 px-6 py-8 text-center shadow-2xl shadow-black/40">
+          <span aria-hidden="true" class="absolute -right-8 -top-8 size-28 rounded-full bg-purple-500"></span>
+          <span aria-hidden="true" class="absolute -left-6 -bottom-10 size-24 rounded-full bg-purple-700"></span>
+          <div class="relative">
+            <span aria-hidden="true" class="mx-auto grid place-items-center size-24 rounded-full border-4 border-white <%= player_avatar_color(current_player.nickname) %> font-display text-5xl font-extrabold text-white motion-safe:animate-pop-in"><%= current_player.nickname[0].upcase %></span>
+            <p class="mt-4 eyebrow text-purple-100"><%= t(".you_are_in") %></p>
+            <h1 class="mt-1 text-display text-4xl text-white break-words"><%= current_player.nickname %></h1>
+            <p class="mt-2 font-semibold text-purple-100"><%= @game.name %> · <span class="font-mono"><%= @room.code %></span></p>
+            <p class="mt-6 inline-flex items-center gap-2.5 rounded-full bg-black/20 px-4 py-2 text-sm font-bold text-white">
+              <%= t(".waiting_host") %><%= render "shared/bouncing_dots" %>
+            </p>
+          </div>
+        </section>
+
+        <section class="mt-8" aria-labelledby="lobby-how-to-play">
+          <h2 id="lobby-how-to-play" class="font-display text-2xl font-extrabold"><%= t(".how_to_play") %></h2>
+          <% if game_instruction_image?(@game) && game_image_text_free?(@game) %>
+            <%= game_image_tag @game, alt: t(".image_alt", game: @game.name), priority: true, sizes: "(min-width: 400px) 384px, 90vw",
+                  class: "mt-4 w-full h-auto rounded-3xl border border-slate-700" %>
+          <% end %>
+          <ol class="mt-4 space-y-3">
+            <% @game.how_to_play.each_with_index do |step, i| %>
+              <li class="flex gap-3 items-start">
+                <span aria-hidden="true" class="grid place-items-center size-9 shrink-0 rounded-xl <%= accent[:solid] %> <%= accent[:ink] %> font-display font-extrabold"><%= i + 1 %></span>
+                <p class="flex-1 rounded-2xl border border-slate-700 bg-slate-800 px-4 py-2.5 text-slate-200 text-pretty"><%= step %></p>
+              </li>
+            <% end %>
+          </ol>
+        </section>
+
+        <section class="mt-8" aria-labelledby="lobby-players">
+          <div class="flex items-center justify-between gap-3 mb-4">
+            <h2 id="lobby-players" class="font-display text-2xl font-extrabold"><%= t(".players") %></h2>
+            <span id="player-count" class="rounded-full bg-slate-800 border border-slate-700 px-3 py-1 font-bold text-sm" aria-live="polite"><%= t(".players_count", count: players.size) %></span>
+          </div>
+          <div id="player-list" data-room-code="<%= @room.code %>" class="grid gap-2">
+            <%= render partial: "rooms/lobby_player", collection: players, as: :player, locals: { host: host } %>
+          </div>
+        </section>
+      </div>
+    <% end %>
 
     <%# Under the whole lobby, far from the Start Game button %>
-    <%= ad_slot :lobby, css: "mt-16 max-w-4xl w-full" %>
+    <%= ad_slot :lobby, css: "mt-16 max-w-4xl w-full mx-auto" %>
   </div>
 </div>
 <%= render "shared/room_players", room: @room %>

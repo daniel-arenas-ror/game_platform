@@ -5,8 +5,8 @@
   <div class="w-full max-w-5xl mx-auto grid lg:grid-cols-[minmax(0,28rem)_minmax(0,1fr)] gap-12 lg:gap-20 items-center">
 
     <section aria-labelledby="join-title" class="w-full max-w-md mx-auto lg:mx-0">
-      <h1 id="join-title" class="text-4xl sm:text-5xl font-extrabold tracking-tight text-white text-balance"><%= t(".heading") %></h1>
-      <p class="mt-3 text-slate-400 text-lg text-pretty"><%= t(".intro") %></p>
+      <h1 id="join-title" class="text-display text-5xl sm:text-6xl text-white text-balance"><%= t(".heading") %></h1>
+      <p class="mt-4 text-slate-400 text-lg text-pretty"><%= t(".intro") %></p>
 
       <%= form_with url: find_room_path, method: :get,
             class: "group mt-8",
@@ -32,12 +32,13 @@
                         group-data-[enhanced]:absolute group-data-[enhanced]:inset-0 group-data-[enhanced]:h-full group-data-[enhanced]:opacity-0 group-data-[enhanced]:cursor-text" %>
 
           <%# Visual slots, driven by room_code_controller. Screen readers use the real input above. %>
-          <div class="hidden group-data-[enhanced]:grid grid-cols-4 gap-3 pointer-events-none" aria-hidden="true">
+          <%# Slots pop as they fill, shake on a wrong code and turn green when complete. %>
+          <div class="hidden group-data-[enhanced]:grid grid-cols-4 gap-3 pointer-events-none group-data-[error]:animate-shake" aria-hidden="true">
             <% 4.times do %>
               <div data-room-code-target="slot" data-state="empty"
-                   class="h-20 sm:h-24 flex items-center justify-center rounded-2xl border-2 bg-slate-950 font-mono font-black text-4xl sm:text-5xl text-white transition-colors duration-150
-                          border-slate-700 data-[state=filled]:border-slate-500 data-[state=active]:border-purple-400 data-[state=active]:bg-purple-500/10
-                          group-data-[error]:border-red-400/70"></div>
+                   class="h-24 sm:h-28 flex items-center justify-center rounded-3xl border-[3px] bg-slate-950 font-mono font-black text-4xl sm:text-5xl text-white transition-colors duration-150
+                          border-slate-700 shadow-[0_5px_0_var(--color-slate-950)] data-[state=filled]:border-slate-500 data-[state=active]:border-purple-400 data-[state=active]:bg-purple-500/10
+                          data-[state=done]:border-green-400 data-[state=done]:bg-green-500/10 group-data-[error]:border-red-400/70! group-data-[error]:bg-red-500/10!"></div>
             <% end %>
           </div>
         </div>
@@ -50,13 +51,13 @@
 
         <%= f.button t(".submit"), name: nil,
               data: { room_code_target: "submit", label: t(".submit") },
-              class: "mt-6 w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 disabled:opacity-70 disabled:cursor-wait text-white text-lg font-black py-4 rounded-xl transition-transform active:scale-[0.98] cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-400" %>
+              class: "btn btn-lg mt-6 w-full" %>
       <% end %>
 
-      <ul class="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm text-slate-300">
+      <ul class="mt-8 flex flex-wrap gap-2">
         <% t("perks").values_at(:no_app, :no_sign_up, :free).each do |perk| %>
-          <li class="flex items-center gap-2">
-            <svg class="size-4 text-purple-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+          <li class="chip">
+            <svg class="size-4 text-green-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
             <%= perk %>
           </li>
         <% end %>
@@ -64,31 +65,32 @@
     </section>
 
     <aside aria-labelledby="where-title" class="w-full max-w-md mx-auto lg:max-w-none">
-      <h2 id="where-title" class="text-lg font-bold text-white"><%= t(".where_title") %></h2>
+      <h2 id="where-title" class="text-2xl font-extrabold text-white"><%= t(".where_title") %></h2>
       <p class="mt-2 text-slate-400 text-pretty"><%= t(".where_text") %></p>
 
       <%# A miniature of the host lobby, with the room code called out %>
       <figure class="mt-6">
-        <div class="rounded-2xl border border-slate-700 bg-slate-800 p-2 shadow-2xl">
-          <div class="aspect-video rounded-xl bg-slate-950 p-4 sm:p-6 flex items-center gap-4 sm:gap-6 overflow-hidden">
+        <div class="rounded-3xl border border-slate-700 bg-slate-800 p-2.5 shadow-2xl shadow-black/40 -rotate-1">
+          <div class="aspect-video rounded-2xl bg-slate-950 p-4 sm:p-6 flex items-center gap-4 sm:gap-6 overflow-hidden">
             <div class="flex-1 min-w-0">
-              <p class="text-white font-black text-sm sm:text-xl truncate"><%= t("mock_game_name") %></p>
-              <p class="mt-1 sm:mt-2 inline-block font-mono font-bold text-purple-400 text-sm sm:text-xl rounded-md ring-2 ring-purple-400/70 ring-offset-4 ring-offset-slate-950 px-1"><%= t("home.index.mock_room", code: Room::EXAMPLE_CODE) %></p>
+              <p class="font-display text-white font-extrabold text-sm sm:text-xl truncate"><%= t("mock_game_name") %></p>
+              <p class="relative mt-2 sm:mt-3 inline-block font-mono font-bold text-purple-300 text-sm sm:text-xl rounded-lg border-2 border-purple-400 px-2 py-0.5">
+                <span aria-hidden="true" class="absolute -inset-0.5 rounded-lg border-2 border-purple-400 motion-safe:animate-ping"></span>
+                <%= t("home.index.mock_room", code: Room::EXAMPLE_CODE) %>
+              </p>
               <div class="mt-4 sm:mt-6 space-y-1.5" aria-hidden="true">
                 <div class="h-2 w-3/4 rounded-full bg-slate-800"></div>
                 <div class="h-2 w-1/2 rounded-full bg-slate-800"></div>
               </div>
             </div>
-            <div class="shrink-0 rounded-lg bg-white p-1.5 sm:p-2.5">
-              <svg class="size-16 sm:size-24 text-slate-950" viewBox="0 0 21 21" fill="currentColor" shape-rendering="crispEdges" aria-hidden="true">
-                <path d="M0 0h7v7H0zM1 1v5h5V1zM2 2h3v3H2zM14 0h7v7h-7zm1 1v5h5V1zm1 1h3v3h-3zM0 14h7v7H0zm1 1v5h5v-5zm1 1h3v3H2z"/>
-                <path d="M8 0h1v2H8zM10 1h2v1h-2zM9 3h2v2H9zM12 4h1v3h-1zM8 6h2v1H8zM8 8h3v1H8zM0 8h2v1H0zM3 9h3v1H3zM12 8h2v2h-2zM16 8h2v1h-2zM19 9h2v2h-2zM1 11h2v2H1zM5 11h3v1H5zM9 10h2v3H9zM13 11h3v1h-3zM17 12h2v2h-2zM8 14h2v2H8zM11 14h1v3h-1zM13 13h1v2h-1zM15 15h3v1h-3zM19 15h2v3h-2zM8 17h2v1H8zM13 17h2v2h-2zM16 18h2v3h-2zM9 19h3v2H9zM19 19h1v2h-1z"/>
-              </svg>
-            </div>
+            <div class="shrink-0 rounded-lg bg-white p-1.5 sm:p-2.5"><%= render "home/qr", css: "size-16 sm:size-24" %></div>
           </div>
         </div>
-        <figcaption class="mt-4 text-sm text-slate-400 text-pretty">
-          <%= t(".faster_html") %>
+        <figcaption class="mt-6 flex items-start gap-4 rounded-3xl border border-slate-700 bg-slate-800 p-5 text-slate-400 text-pretty">
+          <span class="grid place-items-center size-11 shrink-0 rounded-2xl bg-pink-600 text-white" aria-hidden="true">
+            <svg class="size-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
+          </span>
+          <span class="pt-1"><%= t(".faster_html") %></span>
         </figcaption>
       </figure>
 

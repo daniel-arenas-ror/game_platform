@@ -1,0 +1,12 @@
+<%# A player in the lobby list. game_subscription_controller#addPlayer builds the same row for
+    players who join later; keep the two in step. %>
+<div id="player-<%= player.id %>" class="flex items-center gap-3 rounded-2xl border-2 border-slate-700 bg-slate-900 p-3 motion-safe:animate-pop-in">
+  <span class="size-10 shrink-0 rounded-full <%= player_avatar_color(player.nickname) %> font-display font-extrabold text-white text-lg flex items-center justify-center" aria-hidden="true"><%= player.nickname[0].upcase %></span>
+  <span class="flex-1 min-w-0 truncate font-bold text-white"><%= player.nickname %></span>
+  <% if host %>
+    <button type="button" data-action="game-subscription#remove"
+            data-player-id="<%= player.id %>" data-nickname="<%= player.nickname %>"
+            aria-label="<%= t("rooms.show.remove_player", name: player.nickname) %>"
+            class="shrink-0 rounded-lg border border-red-500/40 bg-red-500/10 px-3 py-1.5 text-sm font-bold text-red-300 hover:bg-red-500/20 disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-red-400"><%= t("rooms.show.remove") %></button>
+  <% end %>
+</div>

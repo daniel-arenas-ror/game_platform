@@ -1,27 +1,31 @@
-<!-- app/views/rooms/edit.html.erb -->
-<div class="max-w-2xl mx-auto pt-6 mb-4">
-  <%# Players already in the room (came from "Change Game"): go back to picking a game for this room %>
-  <% if @room.players.exists? %>
-    <%= link_to t(".pick_another"), games_path(room: @room.code), class: "inline-block py-2 text-purple-400 hover:text-purple-300 text-sm font-semibold transition-colors rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-400" %>
-  <% else %>
-    <%= link_to t(".back"), games_path, class: "inline-block py-2 text-purple-400 hover:text-purple-300 text-sm font-semibold transition-colors rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-400" %>
-  <% end %>
-</div>
+<%# Room settings before a game: the game's own pickers (rooms/games/<code>/_edit) under a header
+    with its art. Reached from Start game, and from "Change Game" when players are already in. %>
+<% accent = game_accent(@room.game) %>
+<div class="bg-slate-900 min-h-screen px-4 pt-6 pb-16">
+  <div class="max-w-2xl mx-auto">
+    <%# Players already in the room (came from "Change Game"): go back to picking a game for this room %>
+    <% back_link = "inline-block py-2 text-purple-300 hover:text-white text-sm font-semibold transition-colors rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-400" %>
+    <% if @room.players.exists? %>
+      <%= link_to t(".pick_another"), games_path(room: @room.code), class: back_link %>
+    <% else %>
+      <%= link_to t(".back"), games_path, class: back_link %>
+    <% end %>
 
-<div class="max-w-2xl mx-auto bg-slate-800 p-8 rounded-3xl border border-slate-700 shadow-2xl">
-  <h1 class="text-3xl font-black text-white mb-6 uppercase italic"><%= t(".title") %></h1>
+    <header class="mt-4 mb-8 flex items-center gap-5">
+      <%= game_art_tag @room.game, alt: "", card: true, sizes: "96px",
+            class: "size-20 sm:size-24 shrink-0 rounded-3xl object-cover object-top border-4 border-slate-800 -rotate-3" %>
+      <div class="min-w-0">
+        <p class="eyebrow <%= accent[:text] %>"><%= t(".configuration", game: @room.game.name) %></p>
+        <h1 class="mt-1 text-display text-4xl sm:text-5xl text-white"><%= t(".title") %></h1>
+      </div>
+    </header>
 
-  <%= form_with model: @room, local: true, class: "space-y-8" do |f| %>
+    <%= form_with model: @room, local: true, class: "space-y-8" do |f| %>
+      <div id="game-specific-settings" class="rounded-[2rem] border border-slate-700 bg-slate-800 p-5 sm:p-8 shadow-2xl shadow-black/40">
+        <%= render "rooms/games/#{@room.game.code}/edit", f: f %>
+      </div>
 
-    <!-- DYNAMIC GAME CONFIGURATION -->
-    <div id="game-specific-settings">
-      <h3 class="text-purple-400 font-bold mb-4 flex items-center">
-        <span class="mr-2">⚙️</span> <%= t(".configuration", game: @room.game.name) %>
-      </h3>
-
-      <%= render "rooms/games/#{@room.game.code}/edit", f: f %>
-    </div>
-
-    <%= f.submit t(".save"), class: "w-full bg-gradient-to-r from-green-500 to-emerald-600 text-slate-900 font-black py-4 rounded-xl shadow-lg cursor-pointer hover:scale-105 transition-transform" %>
-  <% end %>
+      <%= f.submit t(".save"), class: "btn btn-lg btn-go w-full" %>
+    <% end %>
+  </div>
 </div>
