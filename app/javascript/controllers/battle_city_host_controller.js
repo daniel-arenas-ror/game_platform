@@ -140,7 +140,9 @@ export default class extends Controller {
     if (!this.state) return
     const now = performance.now()
 
-    // Bullets first, so a shot fired this tick kicks back its tank's barrel.
+    // Shots kick back the barrel, even a bullet that hit something in the same tick.
+    ;(delta.shots || []).forEach(id => { const tank = this.tanks.get(id); if (tank) tank.firedAt = now })
+
     if (delta.bullets) {
       this.state.bullets = delta.bullets
       if (this.pixiReady) this.syncBullets(delta.bullets, now)
@@ -343,7 +345,6 @@ export default class extends Controller {
       const [dx, dy] = DIRS[b.direction] ?? [0, 0]
       const sx = owner ? owner.x + dx * 0.5 : b.x - dx
       const sy = owner ? owner.y + dy * 0.5 : b.y - dy
-      if (owner) owner.firedAt = now
       this.bullets.set(b.id, { fromX: sx, fromY: sy, toX: b.x, toY: b.y, x: sx, y: sy, t0: now, direction: b.direction })
     })
 

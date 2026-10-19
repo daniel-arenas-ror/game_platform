@@ -2,6 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 import consumer from "channels/consumer"
 import { celebrateWin } from "controllers/shared/celebration"
 import { t } from "controllers/shared/i18n"
+import { TankSounds } from "controllers/battle_city/sounds"
 
 const COLOR_HEX = {
   yellow: "#f1c40f",
@@ -13,13 +14,20 @@ const COLOR_HEX = {
 export default class extends Controller {
   static values  = { roomCode: String, playerId: String }
   static targets = ["score", "colorBadge", "statusText", "dpad", "countdownOverlay",
-                    "gameOverOverlay", "gameOverTitle", "gameOverSub", "finalScore"]
+                    "gameOverOverlay", "gameOverTitle", "gameOverSub", "finalScore", "soundButton"]
 
   connect() {
     console.log("[BattleCity Player] controller connected", this.roomCodeValue, this.playerIdValue)
     this.currentDir = null
     this.firing     = false
     this.moveTimer  = null
+    this.playing    = false
+    this.alive      = false
+    this.sounds     = new TankSounds()
+    this.unlockSound = () => this.sounds.unlock()
+    // Phones allow sound only after a touch; any tap on the screen turns it on.
+    ;["pointerdown", "pointerup", "touchend"].forEach(e => this.element.addEventListener(e, this.unlockSound, true))
+    this.showSoundState()
     this.subscribe()
     this.bindDpad()
   }
@@ -27,7 +35,35 @@ export default class extends Controller {
   disconnect() {
     this.channel?.unsubscribe()
     clearInterval(this.moveTimer)
+    ;["pointerdown", "pointerup", "touchend"].forEach(e => this.element.removeEventListener(e, this.unlockSound, true))
+    this.sounds.close()
   }
+
+  // ── Sound ─────────────────────────────────────────────────────────────────
+
+  toggleSound() {
+    this.sounds.setMuted(!this.sounds.muted)
+    this.showSoundState()
+  }
+
+  showSoundState() {
+    if (!this.hasSoundButtonTarget) return
+    this.soundButtonTarget.textContent = this.sounds.muted ? "🔇" : "🔊"
+    this.soundButtonTarget.setAttribute("aria-pressed", String(!this.sounds.muted))
+  }
+
+  // My tank was hit: boom (one, even when we took each other out), and a short buzz on phones that can vibrate (unless sound is off).
+  onDestroyed() {
+    this.sounds.explode()
+    if (!this.sounds.muted) navigator.vibrate?.([120, 60, 220])
+  }
+
+  // The engine idles while my tank stands still and revs while a direction is held.
+  refreshEngine() {
+    const engine = !this.playing || !this.alive ? "off" : (this.currentDir ? "drive" : "calm")
+    this.sounds.setEngine(engine)
+  }
+
 
   // ── ActionCable ───────────────────────────────────────────────────────────
 
@@ -48,7 +84,7 @@ export default class extends Controller {
       case "state_snapshot": this.applySnapshot(data.state); break
       case "state_delta":    this.applyDelta(data.delta);    break
       case "countdown":      this.showCountdown(data.count); break
-      case "game_over":      this.showGameOver(data);        break
+      case "game_over":      this.playing = false; this.refreshEngine(); this.showGameOver(data); break
       case "game_restarted": window.location.reload();       break
       case "game_changed":   window.location.href = `/rooms/${this.roomCodeValue}`; break
     }
@@ -61,22 +97,40 @@ export default class extends Controller {
       this.colorBadgeTarget.style.backgroundColor = COLOR_HEX[tank.color] ?? "#888"
     }
     this.updateScore(this.myScore)
-    if (tank) this.updateAliveState(tank.alive)
+    if (tank) this.updateAliveState(tank.alive, this.isOut(tank))
+    this.playing   = state.status === "playing"
+    this.refreshEngine()
   }
 
   applyDelta(delta) {
+    // Scores only go up by destroying a tank, so a higher score means I just got one.
     const myScore = delta.scores?.[this.playerIdValue]
+    const scored  = myScore !== undefined && myScore > (this.myScore ?? 0)
     if (myScore !== undefined) {
       this.myScore = myScore
       this.updateScore(myScore)
     }
 
-    const myTank = delta.tanks?.[this.playerIdValue]
-    if (myTank !== undefined) this.updateAliveState(myTank.alive)
+    const myTank    = delta.tanks?.[this.playerIdValue]
+    const destroyed = myTank !== undefined && this.alive && !myTank.alive
+    if (myTank !== undefined) this.updateAliveState(myTank.alive, this.isOut(myTank))
+
+    if (destroyed) this.onDestroyed()
+    else if (scored) this.sounds.explode()
+    else if (delta.bricks_by?.includes(this.playerIdValue)) this.sounds.brick()
+    // The shot sounds when the server fires it (pressing Fire while a bullet is still flying does nothing).
+    if (delta.shots?.includes(this.playerIdValue)) this.sounds.fire()
   }
 
-  // Dim the dpad and show "Respawning…" when tank is dead
-  updateAliveState(alive) {
+  // Base-only survival: a destroyed tank has no respawn time, it's out until the next game.
+  isOut(tank) {
+    return !tank.alive && tank.respawn_tick == null
+  }
+
+  // Dim the dpad and show "Respawning…" (or "You're out") when tank is dead
+  updateAliveState(alive, out = false) {
+    this.alive = alive
+    this.refreshEngine()
     if (!this.hasDpadTarget) return
     if (alive) {
       this.dpadTarget.style.opacity  = "1"
@@ -86,14 +140,15 @@ export default class extends Controller {
     } else {
       this.dpadTarget.style.opacity  = "0.35"
       this.dpadTarget.style.filter   = "grayscale(1)"
-      if (!this.dpadTarget.querySelector("[data-respawn-label]")) {
-        const label = document.createElement("p")
+      let label = this.dpadTarget.querySelector("[data-respawn-label]")
+      if (!label) {
+        label = document.createElement("p")
         label.setAttribute("data-respawn-label", "")
-        label.textContent  = t("battle_city.respawning")
         label.style.cssText = "position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#94a3b8;letter-spacing:.1em;pointer-events:none;"
         this.dpadTarget.style.position = "relative"
         this.dpadTarget.appendChild(label)
       }
+      label.textContent = out ? t("battle_city.out") : t("battle_city.respawning")
     }
   }
 
@@ -186,6 +241,7 @@ export default class extends Controller {
   }
 
   sendInput() {
+    this.refreshEngine()
     this.channel?.perform("player_input", {
       direction: this.currentDir,
       firing:    this.firing

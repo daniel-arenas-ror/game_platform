@@ -69,6 +69,8 @@ module GameServices
     def tick!(state, inputs)
       state["tick"] = state["tick"].to_i + 1
       changed_tanks = {}
+      @shots        = []
+      @bricks_by    = []
 
       # ── 1. Player movement + firing ───────────────────────────────────────────
       inputs.each do |player_id, input|
@@ -105,7 +107,7 @@ module GameServices
 
       # ── 4. Apply kills + scoring ───────────────────────────────────────────────
       kills.each do |killed_id, killer_id|
-        kill_tank!(state, killed_id)
+        kill_tank!(state, killed_id, respawn: respawns?(state, killed_id))
         changed_tanks[killed_id] = state["tanks"][killed_id].dup
         # Only award score to human players (not bots)
         if state["scores"].key?(killer_id)
@@ -120,9 +122,14 @@ module GameServices
       if base_hit
         state["status"]           = "game_over"
         state["game_over_reason"] = "base_destroyed"
-      elsif human_tank_count(state) > 1 && alive_human_count(state) <= 1
-        state["status"]           = "game_over"
-        state["game_over_reason"] = "last_tank_standing"
+      elsif survival?(state)
+        # Base only: destroyed players are out, the last one still driving wins.
+        alive = state["tanks"].select { |id, t| !bot_id?(id) && t["alive"] }
+        if alive.size <= 1
+          state["status"]           = "game_over"
+          state["game_over_reason"] = "last_tank_standing"
+          state["winner_id"]        = alive.keys.first
+        end
       else
         kills_to_win = state["kills_to_win"].to_i
         if kills_to_win > 0
@@ -142,6 +149,8 @@ module GameServices
       delta["bullets"]         = state["bullets"]    if bullets_changed
       delta["walls_destroyed"] = walls_destroyed      unless walls_destroyed.empty?
       delta["scores"]          = state["scores"].dup  unless kills.empty?
+      delta["shots"]           = @shots               unless @shots.empty?   # who fired (sounds, recoil)
+      delta["bricks_by"]       = @bricks_by           unless @bricks_by.empty?  # who broke a brick (sound)
       delta
     end
 
@@ -251,6 +260,9 @@ module GameServices
         "y"         => by,
         "direction" => tank["direction"]
       }
+      # A bullet can hit something in this same tick and never show up in a delta, so shots are
+      # reported on their own.
+      @shots&.push(player_id)
     end
 
     # ── Bullet advancement ────────────────────────────────────────────────────
@@ -277,6 +289,7 @@ module GameServices
           if wall_type == "brick"
             state["walls"].delete(wall_key)
             walls_destroyed << wall_key
+            @bricks_by&.push(bullet["owner_id"])
           end
           next
         end
@@ -314,10 +327,20 @@ module GameServices
 
     # ── Kill / Respawn ────────────────────────────────────────────────────────
 
-    def kill_tank!(state, tank_id)
+    def kill_tank!(state, tank_id, respawn: true)
       tank                  = state["tanks"][tank_id]
       tank["alive"]         = false
-      tank["respawn_tick"]  = state["tick"] + RESPAWN_TICKS
+      tank["respawn_tick"]  = respawn ? state["tick"] + RESPAWN_TICKS : nil
+    end
+
+    # "Base only" (0 kills to win) with 2+ players is a survival game: no respawns for players.
+    # With a kill target, every tank comes back, so one kill never ends the game.
+    def survival?(state)
+      state["kills_to_win"].to_i.zero? && human_tank_count(state) > 1
+    end
+
+    def respawns?(state, tank_id)
+      bot_id?(tank_id) || !survival?(state)
     end
 
     def check_respawns!(state)
@@ -359,10 +382,6 @@ module GameServices
 
     def human_tank_count(state)
       state["tanks"].count { |id, _| !bot_id?(id) }
-    end
-
-    def alive_human_count(state)
-      state["tanks"].count { |id, t| !bot_id?(id) && t["alive"] }
     end
 
     def build_walls(preset)
