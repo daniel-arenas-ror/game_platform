@@ -1,21 +1,23 @@
 # The public game pages (/games/:slug). Each game page is lit with its game's set accent.
 module GamePagesHelper
   # Full class names, so Tailwind finds them when it scans this file. hex (the 300 step) is for
-  # the share images made by `bin/rails games:og_images`.
+  # the share images made by `bin/rails games:og_images`. solid is the game's solid fill (art
+  # placeholder, step numbers) and ink the text that reads on it; var is the accent as a CSS
+  # colour variable, for arbitrary values like `hover:border-(--accent)` (style="--accent: var(…)").
   ACCENTS = {
-    "fisherman"              => { text: "text-purple-400",  soft: "text-purple-300",  tint: "bg-purple-500/10",  border: "border-purple-500/40",  dot: "bg-purple-400", hex: "#d8b4fe" },
-    "how_want_be_billionare" => { text: "text-blue-400",    soft: "text-blue-300",    tint: "bg-blue-500/10",    border: "border-blue-500/40",    dot: "bg-blue-400", hex: "#93c5fd" },
-    "battle_city"            => { text: "text-amber-400",   soft: "text-amber-300",   tint: "bg-amber-500/10",   border: "border-amber-500/40",   dot: "bg-amber-400", hex: "#fcd34d" },
-    "guess_the_color"        => { text: "text-orange-400",  soft: "text-orange-300",  tint: "bg-orange-500/10",  border: "border-orange-500/40",  dot: "bg-orange-400", hex: "#fdba74" },
-    "count_birds"            => { text: "text-sky-400",     soft: "text-sky-300",     tint: "bg-sky-500/10",     border: "border-sky-500/40",     dot: "bg-sky-400", hex: "#7dd3fc" },
-    "sequence_memory"        => { text: "text-indigo-400",  soft: "text-indigo-300",  tint: "bg-indigo-500/10",  border: "border-indigo-500/40",  dot: "bg-indigo-400", hex: "#a5b4fc" },
-    "submarine_combat"       => { text: "text-cyan-400",    soft: "text-cyan-300",    tint: "bg-cyan-500/10",    border: "border-cyan-500/40",    dot: "bg-cyan-400", hex: "#67e8f9" },
-    "mind_match"             => { text: "text-violet-400",  soft: "text-violet-300",  tint: "bg-violet-500/10",  border: "border-violet-500/40",  dot: "bg-violet-400", hex: "#c4b5fd" },
-    "soup_of_numbers"        => { text: "text-emerald-400", soft: "text-emerald-300", tint: "bg-emerald-500/10", border: "border-emerald-500/40", dot: "bg-emerald-400", hex: "#6ee7b7" },
-    "matching_pairs"         => { text: "text-rose-400",    soft: "text-rose-300",    tint: "bg-rose-500/10",    border: "border-rose-500/40",    dot: "bg-rose-400", hex: "#fda4af" },
-    "doodle_dash"            => { text: "text-lime-400",    soft: "text-lime-300",    tint: "bg-lime-500/10",    border: "border-lime-500/40",    dot: "bg-lime-400", hex: "#bef264" },
-    "haunted_house"          => { text: "text-orange-500",  soft: "text-orange-300",  tint: "bg-orange-600/10",  border: "border-orange-600/40",  dot: "bg-orange-500", hex: "#fb923c" },
-    "monster_mash"           => { text: "text-green-400",   soft: "text-green-300",   tint: "bg-green-500/10",   border: "border-green-500/40",   dot: "bg-green-400", hex: "#86efac" }
+    "fisherman"              => { text: "text-purple-400",  soft: "text-purple-300",  tint: "bg-purple-500/10",  border: "border-purple-500/40",  dot: "bg-purple-400", solid: "bg-purple-600", ink: "text-white", var: "--color-purple-400", hex: "#d8b4fe" },
+    "how_want_be_billionare" => { text: "text-blue-400",    soft: "text-blue-300",    tint: "bg-blue-500/10",    border: "border-blue-500/40",    dot: "bg-blue-400", solid: "bg-blue-600", ink: "text-white", var: "--color-blue-400", hex: "#93c5fd" },
+    "battle_city"            => { text: "text-amber-400",   soft: "text-amber-300",   tint: "bg-amber-500/10",   border: "border-amber-500/40",   dot: "bg-amber-400", solid: "bg-amber-500", ink: "text-slate-950", var: "--color-amber-400", hex: "#fcd34d" },
+    "guess_the_color"        => { text: "text-orange-400",  soft: "text-orange-300",  tint: "bg-orange-500/10",  border: "border-orange-500/40",  dot: "bg-orange-400", solid: "bg-orange-500", ink: "text-slate-950", var: "--color-orange-400", hex: "#fdba74" },
+    "count_birds"            => { text: "text-sky-400",     soft: "text-sky-300",     tint: "bg-sky-500/10",     border: "border-sky-500/40",     dot: "bg-sky-400", solid: "bg-sky-500", ink: "text-slate-950", var: "--color-sky-400", hex: "#7dd3fc" },
+    "sequence_memory"        => { text: "text-indigo-400",  soft: "text-indigo-300",  tint: "bg-indigo-500/10",  border: "border-indigo-500/40",  dot: "bg-indigo-400", solid: "bg-indigo-500", ink: "text-white", var: "--color-indigo-400", hex: "#a5b4fc" },
+    "submarine_combat"       => { text: "text-cyan-400",    soft: "text-cyan-300",    tint: "bg-cyan-500/10",    border: "border-cyan-500/40",    dot: "bg-cyan-400", solid: "bg-cyan-500", ink: "text-slate-950", var: "--color-cyan-400", hex: "#67e8f9" },
+    "mind_match"             => { text: "text-violet-400",  soft: "text-violet-300",  tint: "bg-violet-500/10",  border: "border-violet-500/40",  dot: "bg-violet-400", solid: "bg-violet-600", ink: "text-white", var: "--color-violet-400", hex: "#c4b5fd" },
+    "soup_of_numbers"        => { text: "text-emerald-400", soft: "text-emerald-300", tint: "bg-emerald-500/10", border: "border-emerald-500/40", dot: "bg-emerald-400", solid: "bg-emerald-500", ink: "text-slate-950", var: "--color-emerald-400", hex: "#6ee7b7" },
+    "matching_pairs"         => { text: "text-rose-400",    soft: "text-rose-300",    tint: "bg-rose-500/10",    border: "border-rose-500/40",    dot: "bg-rose-400", solid: "bg-rose-500", ink: "text-white", var: "--color-rose-400", hex: "#fda4af" },
+    "doodle_dash"            => { text: "text-lime-400",    soft: "text-lime-300",    tint: "bg-lime-500/10",    border: "border-lime-500/40",    dot: "bg-lime-400", solid: "bg-lime-500", ink: "text-slate-950", var: "--color-lime-400", hex: "#bef264" },
+    "haunted_house"          => { text: "text-orange-500",  soft: "text-orange-300",  tint: "bg-orange-600/10",  border: "border-orange-600/40",  dot: "bg-orange-500", solid: "bg-orange-600", ink: "text-white", var: "--color-orange-500", hex: "#fb923c" },
+    "monster_mash"           => { text: "text-green-400",   soft: "text-green-300",   tint: "bg-green-500/10",   border: "border-green-500/40",   dot: "bg-green-400", solid: "bg-green-500", ink: "text-slate-950", var: "--color-green-400", hex: "#86efac" }
   }.freeze
 
   CATEGORIES = %w[social trivia action perception memory puzzle strategy drawing].freeze
@@ -162,6 +164,17 @@ module GamePagesHelper
 
   def game_image_text_free?(game)
     TEXT_FREE_IMAGES.include?(game.code)
+  end
+
+  # The game's picture where the site shows game art. Images with English rules drawn on them
+  # don't suit every language, so until a game gets its text-free image it shows a placeholder
+  # in its set colour (shared/_game_art_placeholder). `class:` sizes either one.
+  def game_art_tag(game, sizes:, card: false, priority: false, **options)
+    if game_image_text_free?(game) && game_instruction_image?(game)
+      game_image_tag(game, sizes: sizes, card: card, priority: priority, **options)
+    else
+      render "shared/game_art_placeholder", game: game, css: options[:class]
+    end
   end
 
   def game_instruction_image?(game)

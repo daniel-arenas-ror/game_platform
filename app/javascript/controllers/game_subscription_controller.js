@@ -2,8 +2,9 @@ import { Controller } from "@hotwired/stimulus"
 import consumer from "channels/consumer"
 import { t } from "controllers/shared/i18n"
 import { confirmRemove, removePlayer } from "controllers/shared/remove_player"
+import { avatar } from "controllers/shared/avatar"
 
-const REMOVE_CLASS = "ml-auto shrink-0 rounded-lg border border-red-500/40 bg-red-500/10 px-3 py-1.5 text-sm font-bold text-red-300 hover:bg-red-500/20 disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-red-400"
+const REMOVE_CLASS = "shrink-0 rounded-lg border border-red-500/40 bg-red-500/10 px-3 py-1.5 text-sm font-bold text-red-300 hover:bg-red-500/20 disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-red-400"
 
 export default class extends Controller {
   static values = { roomCode: String, userId: String, host: Boolean, playersUrl: String }
@@ -48,6 +49,7 @@ export default class extends Controller {
             break;
           case "player_left":
             document.getElementById(`player-${data.player_id}`)?.remove();
+            this.updateCount()
             break;
           default:
             console.warn(`Unhandled action: ${data.action}`, data);
@@ -56,6 +58,7 @@ export default class extends Controller {
     })
   }
 
+  // Same row as rooms/_lobby_player; it pops in at the top of the list.
   // Nicknames are typed by players, so they go in as text, never as HTML.
   addPlayer(data) {
     const playerList = document.getElementById("player-list")
@@ -63,19 +66,24 @@ export default class extends Controller {
 
     const row = document.createElement("div")
     row.id = `player-${data.player_id}`
-    row.className = "flex items-center space-x-4 bg-slate-700 p-4 rounded-xl border border-purple-500/30 animate-pulse"
+    row.className = "flex items-center gap-3 rounded-2xl border-2 border-purple-400 bg-slate-900 p-3 motion-safe:animate-pop-in transition-colors duration-1000"
 
-    const avatar = document.createElement("div")
-    avatar.className = "w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center font-bold"
-    avatar.textContent = (data.nickname || "?")[0].toUpperCase()
-
-    const name = document.createElement("div")
-    name.className = "text-white font-bold flex-1 min-w-0 truncate"
+    const name = document.createElement("span")
+    name.className = "flex-1 min-w-0 truncate font-bold text-white"
     name.textContent = data.nickname
 
-    row.append(avatar, name)
+    row.append(avatar(data.nickname, "size-10 text-lg"), name)
     if (this.hostValue) row.append(this.removeButton(data))
     playerList.prepend(row)
+    // Lit purple as it arrives, then settles like the others
+    setTimeout(() => row.classList.replace("border-purple-400", "border-slate-700"), 1200)
+    this.updateCount()
+  }
+
+  updateCount() {
+    const count = document.querySelectorAll("#player-list > [id^='player-']").length
+    const badge = document.getElementById("player-count")
+    if (badge) badge.textContent = t("room_players.players_count", { count })
   }
 
   removeButton(data) {

@@ -48,7 +48,8 @@ class RoomsController < ApplicationController
       shape_rendering: "crispEdges",
       module_size: 11,
       standalone: true,
-      use_path: true
+      use_path: true,
+      viewbox: true # no fixed size: the lobby sizes it with CSS
     )
   end
 

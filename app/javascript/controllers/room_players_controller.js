@@ -2,6 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 import consumer from "channels/consumer"
 import { t } from "controllers/shared/i18n"
 import { confirmRemove, removePlayer } from "controllers/shared/remove_player"
+import { avatar } from "controllers/shared/avatar"
 
 // The shared "Players" panel (shared/_room_players) on the lobby and every game screen.
 // Host: lists the room's players and removes the ones who aren't playing.
@@ -70,11 +71,7 @@ export default class extends Controller {
   // Nicknames are typed by players: they go in as text, never as HTML.
   row(player) {
     const li = document.createElement("li")
-    li.className = "flex items-center gap-3 rounded-xl border border-slate-700 bg-slate-800 px-3 py-2"
-
-    const avatar = document.createElement("span")
-    avatar.className = "flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-purple-500 font-bold"
-    avatar.textContent = (player.nickname || "?")[0].toUpperCase()
+    li.className = "flex items-center gap-3 rounded-2xl border-2 border-slate-700 bg-slate-800 p-3"
 
     const name = document.createElement("span")
     name.className = "min-w-0 flex-1"
@@ -96,7 +93,7 @@ export default class extends Controller {
     remove.setAttribute("aria-label", t("room_players.remove_player", { name: player.nickname }))
     remove.addEventListener("click", () => this.remove(player, remove))
 
-    li.append(avatar, name, remove)
+    li.append(avatar(player.nickname, "size-9"), name, remove)
     return li
   }
 

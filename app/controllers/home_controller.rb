@@ -12,7 +12,8 @@ class HomeController < ApplicationController
 
     games = Game.where(:code.in => USE_CASE_GAMES.values.flatten).index_by(&:code)
     @use_case_games = USE_CASE_GAMES.transform_values { |codes| codes.filter_map { |code| games[code] } }
-    @games_count = Game.visible.count
+    @strip_games = Game.catalog
+    @games_count = @strip_games.size
   end
 
   def sitemap
