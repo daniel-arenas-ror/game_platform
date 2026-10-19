@@ -73,7 +73,7 @@
   <div data-controller="battle-city-player"
        data-battle-city-player-room-code-value="<%= @room.code %>"
        data-battle-city-player-player-id-value="<%= session[:player_id] %>"
-       class="relative flex flex-col min-h-screen bg-slate-950 text-white select-none overflow-hidden"
+       class="relative flex flex-col min-h-dvh bg-slate-950 text-white select-none overflow-hidden"
        style="touch-action: none;">
 
     <%# Countdown overlay %>
@@ -103,7 +103,7 @@
     </div>
 
     <%# Header — color badge, nickname, kill score %>
-    <div class="flex items-center justify-between px-6 pt-6 pb-2">
+    <div class="flex items-center justify-between px-6 pt-6 pb-2 landscape:pt-3">
       <div class="flex items-center gap-3">
         <div data-battle-city-player-target="colorBadge"
              class="w-5 h-5 rounded-full border-2 border-slate-600"
@@ -117,35 +117,32 @@
       </div>
     </div>
 
-    <%# D-pad %>
-    <div class="flex-1 flex items-center justify-center" data-battle-city-player-target="dpad">
-      <div class="grid gap-3"
-           style="grid-template-columns: repeat(3, 88px); grid-template-rows: repeat(3, 88px);">
+    <%# Controls: directions under the left thumb, fire under the right — upright or sideways.
+        Sized from the screen so both fit a phone held either way. %>
+    <% dir_btn = "rounded-2xl bg-slate-800 border-2 border-slate-600 active:bg-slate-700 flex items-center justify-center font-black text-white" %>
+    <% dir_style = "font-size: calc(var(--bc-cell) * 0.42); touch-action: none; -webkit-user-select: none; user-select: none;" %>
+    <div class="flex-1 flex items-center justify-between gap-4 px-4 sm:px-10" data-battle-city-player-target="dpad"
+         style="--bc-cell: min(18vw, 22vh, 88px); --bc-fire: min(28vw, 40vh, 150px);">
+      <div class="grid gap-2"
+           style="grid-template-columns: repeat(3, var(--bc-cell)); grid-template-rows: repeat(3, var(--bc-cell));">
+        <div></div>
+        <button class="<%= dir_btn %>" data-direction="up" style="<%= dir_style %>">▲</button>
+        <div></div>
+
+        <button class="<%= dir_btn %>" data-direction="left" style="<%= dir_style %>">◀</button>
+        <div></div>
+        <button class="<%= dir_btn %>" data-direction="right" style="<%= dir_style %>">▶</button>
 
         <div></div>
-        <button class="rounded-2xl bg-slate-800 border-2 border-slate-600 flex items-center justify-center text-4xl font-black text-white"
-                data-direction="up"
-                style="touch-action: none; -webkit-user-select: none; user-select: none;">▲</button>
-        <div></div>
-
-        <button class="rounded-2xl bg-slate-800 border-2 border-slate-600 flex items-center justify-center text-4xl font-black text-white"
-                data-direction="left"
-                style="touch-action: none; -webkit-user-select: none; user-select: none;">◀</button>
-        <button class="rounded-2xl border-2 flex items-center justify-center"
-                data-fire="true"
-                style="background: #c0392b; border-color: #e74c3c; touch-action: none; -webkit-user-select: none; user-select: none;">
-          <span style="font-size: 32px;">🔥</span>
-        </button>
-        <button class="rounded-2xl bg-slate-800 border-2 border-slate-600 flex items-center justify-center text-4xl font-black text-white"
-                data-direction="right"
-                style="touch-action: none; -webkit-user-select: none; user-select: none;">▶</button>
-
-        <div></div>
-        <button class="rounded-2xl bg-slate-800 border-2 border-slate-600 flex items-center justify-center text-4xl font-black text-white"
-                data-direction="down"
-                style="touch-action: none; -webkit-user-select: none; user-select: none;">▼</button>
+        <button class="<%= dir_btn %>" data-direction="down" style="<%= dir_style %>">▼</button>
         <div></div>
       </div>
+
+      <button class="shrink-0 rounded-full border-4 flex items-center justify-center active:scale-95 transition-transform"
+              data-fire="true"
+              style="width: var(--bc-fire); height: var(--bc-fire); background: #c0392b; border-color: #e74c3c; box-shadow: 0 0 30px rgba(231,76,60,.35); touch-action: none; -webkit-user-select: none; user-select: none;">
+        <span style="font-size: calc(var(--bc-fire) * 0.36);">🔥</span>
+      </button>
     </div>
 
     <p class="text-center text-slate-800 text-[10px] font-mono pb-4"><%= t(".room") %> <%= @room.code %></p>
