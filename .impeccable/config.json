@@ -18,6 +18,12 @@
         "value": "mm-wobble",
         "createdAt": "2026-10-16T17:35:07.051Z",
         "reason": "Claude triage: mm-wobble is a slow ease-in-out ±2° idle sway of the TV's zombie icon, not a bounce or elastic curve"
+      },
+      {
+        "rule": "bounce-easing",
+        "value": "cubic-bezier(0.34, 1.56, 0.64, 1)",
+        "createdAt": "2026-10-19T21:05:30.280Z",
+        "reason": "DESIGN.md already documents this spring curve for in-game badge pop-ins; reused as --ease-spring for pop-in reveals"
       }
     ]
   }

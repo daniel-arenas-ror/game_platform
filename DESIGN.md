@@ -27,12 +27,12 @@ colors:
   set-blue: "oklch(37.9% .146 265.522)"
 typography:
   display:
-    fontFamily: "ui-sans-serif, system-ui, sans-serif"
+    fontFamily: "Bricolage Grotesque, ui-sans-serif, system-ui, sans-serif"
     fontSize: "3rem"
     fontWeight: 900
     lineHeight: 1
   headline:
-    fontFamily: "ui-sans-serif, system-ui, sans-serif"
+    fontFamily: "Bricolage Grotesque, ui-sans-serif, system-ui, sans-serif"
     fontSize: "2.25rem"
     fontWeight: 900
     lineHeight: 1.11
@@ -173,7 +173,7 @@ The palette is a dark studio floor with one house light, a gold spotlight, and a
 - **House Purple** (`purple-600`): The brand's voice. Status pills, the hover fill of the catalog's "Play Now" / "Switch to this game" buttons, and player avatar discs (in its lighter step, `purple-500`). It also starts the purple→pink CTA sweep.
 - **House Purple Lit** (`purple-500`): Hover state for purple buttons, focus borders on inputs (`focus:border-purple-500`), and the active game-card border.
 - **House Purple Glow** (`purple-400`): Accent text on dark backgrounds, such as room codes, "← Back to games" links, step numbers and inline links.
-- **House Pink** (`pink-600`): Only appears as the end of the purple→pink gradient on the primary CTAs (Start a game, Join, Join game, Enter Lobby). It never appears on its own.
+- **House Pink** (`pink-600`): The second house light. The Join button on the Join page and the "You're in!" moment. Used as a solid fill, never blended with purple.
 
 ### Secondary
 - **Spotlight Gold** (`yellow-400`): The most-used accent inside games. It marks scores, point gains, the current round, winners, highlighted cells and leaderboard leaders. `yellow-500` is its deeper fill.
@@ -203,11 +203,11 @@ These are the set accents, one per game. A game's accent owns its selected-picke
 
 **The One Set Light Rule.** Each game view uses its own set accent plus the shared gold and green/red feedback colors. Never borrow another game's accent, and never use house purple for in-game selection inside a game that has its own set light.
 
-**The Gradient Is a Signature Rule.** The purple→pink sweep is reserved for the one primary "get into a room" CTA in each view (Start a game, Join game, Enter Lobby). It isn't a general fill, and it never colors text. The secondary CTA beside it is always the tonal button.
+**The No-Gradient Rule.** Every fill is one solid colour. Energy comes from saturated solid blocks (house purple, pink, gold, each game's set light), big display type and motion, never from colour blends. (Older in-game views still have a few; don't add new ones.)
 
 ## Typography
 
-**Display Font:** System UI sans (`ui-sans-serif, system-ui, sans-serif`)
+**Display Font:** Bricolage Grotesque (variable 200–800, self-hosted in `app/assets/fonts`, latin + latin-ext; the latin file is preloaded). `font-display` / `text-display`. Every h1–h3 inside `main` on public pages (`body.site-page`) uses it.
 **Body Font:** The same system UI sans
 **Label/Mono Font:** System monospace (`ui-monospace, SFMono-Regular, Menlo, monospace`)
 
@@ -269,9 +269,9 @@ The chrome is clean and calm. Controls are clear and unadorned so the game momen
 ### Buttons
 - **Shape:** Gently rounded (12px).
 - **Primary (tonal):** The catalog's repeated action ("Play Now", "Switch to this game"). At rest it's a 15% House Purple Lit tint with a 30% purple border and `purple-100` semibold label. On hover it fills solid House Purple with white text. Nine of these sit on one page, so they stay quiet until pointed at. 12px × 16px padding, full width inside cards.
-- **Primary sweep:** A purple→pink gradient with a white black-weight label, used only for the primary "get in the room" action (Start a game, Join game, Enter Lobby). On hover each end steps one shade lighter. On Home it pairs with a tonal "Join a game" at the same size (18px label, 16px × 32px padding).
+- **Buzzer buttons (`btn`):** a solid fill on a darker solid 5px edge, set in the display face at 800. Hover lifts it 2px; pressing pushes it down onto the edge. Variants: default house purple (edge `purple-900`), `btn-secondary` (Set Panel, edge Studio Black), `btn-pink`, `btn-go` (Go Green, Stage Floor text); sizes `btn-sm`, `btn-lg`. Used for Start a game, Join, Join game, Enter Lobby, the lobby Start and Save. A primary and a `btn-secondary` can sit side by side.
 - **Go (host start):** Go Green fill, Stage Floor text, black-weight uppercase label at `tracking-widest`, 16px vertical padding, full width.
-- **Hover / Press:** Color transitions at 150–200ms. Primary CTAs press down to 95% scale on `:active`.
+- **Hover / Press:** Tonal buttons use colour transitions at 150–200ms; buzzer buttons move (see above).
 - **Text links:** House Purple Glow, brightening to `purple-300` on hover. Footer links go from Ink Muted to white.
 
 ### Chips
@@ -279,7 +279,8 @@ The chrome is clean and calm. Controls are clear and unadorned so the game momen
 - **Badge on media:** The same pill, absolutely positioned top-right on a game card ("Current game").
 
 ### Cards / Containers
-- **Game card:** An `<article>` with a Set Panel background, 16px radius, 1px Rig Line border, no shadow, 192px media well (Set Panel Raised) holding the game's instruction image, 24px body padding, 24px grid gap. On hover the border turns 70% House Purple Lit and the image eases to 103% over 500ms.
+- **Game card** (`games/_card`, catalog and "You might also like"): Set Panel, 28px radius, 2px Rig Line border; a 16:10 art well with the category pill (Studio Black 80%) top-left; display-face name (stretched link to the game page), tagline, players + minutes with icons in the set accent, and a full-width buzzer Play Now. On hover it lifts 6px, the border takes the game's accent (`--accent` from `ACCENTS[:var]`) and the art zooms to 105%. Put `data-reveal` on a wrapper, never on the card.
+- **Catalog filter:** type pills (`chip`; pressed = white with Studio Black text) above the grid, shown only with JS (`catalog_filter_controller`); matching cards pop back in one after another, and a polite status line reads "Showing N games".
 - **Lobby panel:** Set Panel background, 24px radius, 32px padding, 1px Rig Line border, at least 400px tall.
 - **Config section:** A translucent Stage Floor (`slate-900/50`) well with 16px radius and 24px padding that groups each picker.
 
@@ -302,28 +303,46 @@ The document declares `color-scheme: dark`, so scrollbars and native controls st
 ### Product Mock (signature component)
 These are miniatures of the real host screen, built in HTML instead of images: a Set Panel bezel around a Studio Black 16:9 screen with the game name, `ROOM: K7QX` in House Purple Glow mono, a white QR plate and a players list. Home overlaps a tilted phone showing the 4-slot code and "You're in!". The Join page circles the room code with a `purple-400` ring. The sample code is always `Room::EXAMPLE_CODE`, which can never be a real room. Mocks are `aria-hidden` or `role="img"` with a plain description.
 
+### Home Page
+Top to bottom: hero (display headline with a rotating word in a solid colour block, `word_cycle_controller`; the lobby miniature replays a join, `lobby_demo_controller`; players and a "+100" float around it), the games strip ("N games. One big screen.", every catalog game as a tilted card in an endless `marquee`), use-case blocks, "More than a game" (leaderboard demo + benefit cards), ad, "Nothing to install" (chips, two cards, and the orbit: screens circling a phone, `home/_orbit`), "How it works" (big `01 02 03` numbers; on desktop the step picture stays pinned and switches as each step's text crosses the middle, `steps_controller`; on phones each step shows its picture inline), and a closing solid house-purple block with `btn-light` + `btn-secondary`.
+
 ### Use-Case Row
-On Home, each setting (Classrooms, Work teams, Family & friends) is a row. On the left is a `purple-300` label, a 24–30px bold headline and Ink Muted copy. On the right are three 2:3 instruction-image thumbnails of games that suit it, from `HomeController::USE_CASE_GAMES`, each linking to its game page. Rows are separated by 1px `slate-800` dividers. It isn't a card grid.
+On Home, each setting (Classrooms, Work teams, Family & friends) is a solid colour block (house purple, house pink, emerald-400 with Studio Black text), 32px radius, with a big faded icon in the corner, an eyebrow label, a headline and copy. At the bottom, its three games from `HomeController::USE_CASE_GAMES` are rows on a 15% black wash (art thumb, name, arrow), each linking to its game page. The blocks pop in one after another.
 
 ### Game Page (`/games/:slug`)
-A public page per game, lit with that game's accent from `GamePagesHelper::ACCENTS`. Games without a set light in their views get one here: Battle City amber, Guess the Color orange, Count Birds sky, Sequence Memory indigo, Matching Pairs rose, and The Fisherman stays house purple. The accent is used for section labels, the tagline (300 step), step numbers, badge icons and the player meter. The Start game button is still the purple→pink sweep.
+A public page per game, lit with that game's accent from `GamePagesHelper::ACCENTS` (`text`/`soft` for labels and the tagline, `solid` + `ink` for filled tiles, `var` as `--accent` for hover and open borders). Hero: eyebrow category, a 72px display name, tagline in the display face, chips, the buzzer Start game, and the art leaning on a tilted block of the solid set colour (`tilt` on the art) with a white players pill and a gold minutes pill floating beside it. Then: "What is…?", how to play as solid-colour numbered tiles on a vertical line beside a sticky heading (Studio Black band), the players meter (a 96px display number and dots that pop in), tip cards with solid icon tiles, "Perfect for…" (fits get the accent border and a solid icon tile; the rest dashed and dimmed), an FAQ whose answers slide open (`details.faq`, `::details-content`) with the chevron disc filling with the accent, related game cards, and a closing house-purple block with a `btn-light` Start game.
 
 The sections run from top to bottom: hero (category label, name, tagline, description, at-a-glance pills, Start game, the instruction image tilted 2° that straightens on hover), an ad, "What is…?", numbered step cards on a 60% Studio Black band, a player meter (mono range plus a row of dots lit from the minimum up), tip cards, "Perfect for…" (all five settings, with the ones that don't fit dashed and dimmed), a `<details>` FAQ, an ad, related games, and a closing CTA. Icons are 2px-stroke SVGs, never emojis. Sections fade up 16px as they scroll in (`reveal_controller.js`), which is skipped for reduced motion and leaves content visible without JS. The share image (`public/games/<code>/og.png`) is generated by `bin/rails games:og_images`.
 
 ### Benefit List
-This is a definition list in two columns. Each item has a 1px Rig Line top rule, an 18px bold white title and one line of Ink Muted copy. No icons and no cards. A sticky heading column sits beside it on desktop.
+Stacked Stage Floor cards on a Studio Black band, each with a 48px solid-colour icon tile (purple, pink, sky, emerald, orange), a display-face title and one line of Ink Muted copy. Beside them (sticky on desktop) is the live leaderboard demo (`home/_leaderboard_demo`, `leaderboard_demo_controller`): players score, a gold "+points" pops and the rows spring into their new order; the leader gets the gold ring and crown.
 
 ### Option Picker (signature component)
 This is the pre-game config control. A grid of three radio tiles uses Set Panel fill and a 2px Rig Line border at 12px radius. Each tile has a big black-weight value (1.5rem) with a small Ink Faint caption ("Quick", "Standard", "Marathon"). The selected tile's border takes the game's set accent, and the tile gets a 10% tint of that accent as its fill.
 
 ### Room-Code Slots (signature component)
-This is the Join page's code entry. Four 80–96px Studio Black slots with 2px Rig Line borders and 16px radius show the code in black-weight 2.25–3rem monospace. They sit over one real, invisible text input that keeps paste, autofill and screen readers working. The next slot to fill gets a `purple-400` border and a 10% purple tint, filled slots get `slate-500`, and every slot turns 70% Miss Red on an error. The form submits on its own at the 4th character, and without JS the plain input shows instead.
+This is the Join page's code entry. Four 96–112px Studio Black slots with 3px Rig Line borders, 24px radius and a solid Studio Black edge show the code in black-weight 2.25–3rem monospace. They sit over one real, invisible text input that keeps paste, autofill and screen readers working. Each character pops in as it is typed; the next slot to fill gets a `purple-400` border and a 10% purple tint, filled slots get `slate-500`. On the 4th character every slot turns green and the form submits; a wrong code shakes the row and turns every slot red. Without JS the plain input shows instead.
 
 ### Player Row (signature component)
-This is the lobby roster entry. It's a Set Panel Raised row with a 1px Rig Line Strong border, 12px radius and 16px padding. A 40px House Purple Lit avatar disc shows the nickname's initial in bold, followed by the nickname in white bold. While players are joining, a pulsing skeleton row sits at the end of the list.
+This is the lobby roster entry (`rooms/_lobby_player`, built the same way in `game_subscription_controller#addPlayer`). A Stage Floor row with a 2px Rig Line border, 16px radius and 12px padding: a 40px solid avatar disc (display-face initial) and the nickname in white bold. Avatar colours come from the nickname (`RoomsHelper#player_avatar_color`, `controllers/shared/avatar.js`, same list), so a player keeps one colour in the lobby, the Players panel and the join-form preview. New rows pop in at the top with a purple border that settles to grey; the count pill ("3 players") updates live. A dashed "Waiting for players to join" row with bouncing dots sits under the list.
+
+### Lobby (`rooms/show`)
+Host (TV): category eyebrow and the display-face game name; the room code as four 96px tiles (purple border, solid purple edge) that pop in; the QR on a tilted house-purple block; "Scan to join" with the join address as a mono chip; the players panel (28px radius) with the go-green buzzer Start. Player (phone): a house-purple "You're in!" card with their big avatar disc, nickname and "Waiting for the host to start" with bouncing dots; how to play as solid set-colour numbered tiles; the roster. The join form (`rooms/join`) shows the game art, the room code as small tiles and an avatar preview that fills in as the nickname is typed (`nickname_preview_controller`). Room settings (`rooms/edit`) put the game art and a display-face title above the game's pickers in one panel.
 
 ### Toasts and Reveals (game-side)
-In-game feedback is injected per game. Toasts slide in and out, badges pop in on a spring curve (`cubic-bezier(0.34, 1.56, 0.64, 1)`), groups and categories enter with a short slide-up, and misses shake. These motions belong to game moments only. Site chrome does not bounce.
+In-game feedback is injected per game. Toasts slide in and out, badges pop in on a spring curve (`cubic-bezier(0.34, 1.56, 0.64, 1)`), groups and categories enter with a short slide-up, and misses shake. These motions belong to game moments.
+
+### Site Motion
+Public pages move too, but every effect has a reduced-motion fallback and content is visible without JS.
+- **Reveal** (`reveal_controller.js`): `[data-reveal]` fades up 24px; `data-reveal="scale"` pops in on the spring curve; a `[data-reveal-stagger="80"]` group staggers its children.
+- **Marquee** (`marquee_controller.js`): an endless strip; the items are cloned once (inert, `aria-hidden`) and the track slides -50%. It pauses on hover/focus; reduced motion leaves a scrollable row.
+- **Tilt** (`tilt_controller.js`): cards lean toward a mouse pointer with a Motion spring. Not on touch.
+- **Header** (`site_header_controller.js`): sticky, clear at the top, a 95% Stage Floor bar with a blur and a rule once scrolled. The current nav link is underlined in `purple-400`; others draw the underline on hover.
+- **Motion library:** `motion` (motion.dev) is vendored as one file (`vendor/javascript/motion.min.js`) and pinned with `preload: false`; controllers `await import("motion")` when they need springs.
+- Tokens: `--ease-spring`, `--ease-out-expo`, `animate-float`, `animate-pop-in`, `animate-wiggle`, `animate-marquee`.
+
+### Game Art Placeholder
+Game pictures go through `game_art_tag`. Games whose image has English rules drawn on it show a placeholder instead: the game's solid set colour (`ACCENTS[:solid]`), a faint dot texture (`art-dots`) and a floating white gamepad. Text-free illustrations (`TEXT_FREE_IMAGES`) replace them one by one.
 
 ## Do's and Don'ts
 
@@ -340,6 +359,6 @@ In-game feedback is injected per game. Toasts slide in and out, badges pop in on
 - **Don't** introduce a light theme or white surfaces. The only white surface is the QR code plate.
 - **Don't** look like a casino: no flashing lights, slot-machine glare, stacked neon glows or everything-animating-at-once.
 - **Don't** go childish or cartoonish: no mascots, bubbly comic fonts or toy-like chrome. The studio has to suit colleagues and classrooms as well as families.
-- **Don't** use the purple→pink gradient beyond the primary start/join CTA, never twice side by side, and never as gradient text.
+- **Don't** use gradients: no gradient fills, borders or text (The No-Gradient Rule).
 - **Don't** let two set accents, or house purple plus a set accent, compete inside one game view.
 - **Don't** use type smaller than 0.75rem, or put Ink Faint text on Set Panel Raised, where contrast drops too low.
