@@ -10,3 +10,6 @@ pin_all_from "app/javascript/channels", under: "channels"
 # Vendored single-file build (dist/pixi.min.mjs). esm.sh splits pixi into many modules and
 # breaks its extension registry (app.ticker undefined, "batcher already has a handler").
 pin "pixi.js", to: "pixi.min.js" # @8.21.0
+# Vendored single-file build of Motion (esm.sh motion.bundle.mjs); jspm splits it into chunks
+# importmap can't resolve. Not preloaded: only the site pages' motion controllers import it.
+pin "motion", to: "motion.min.js", preload: false # @12.23.12

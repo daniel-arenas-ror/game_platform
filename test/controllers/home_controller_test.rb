@@ -21,12 +21,17 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
   test "home explains the idea and suggests games per setting" do
     game = Game.create!(name: "Mind Match", code: "mind_match", description: "Words")
     get root_url
-    assert_select "h1", /fun touch/
+    assert_select "h1", /Instant fun for/
+    assert_select "h1 .sr-only", "classrooms, work teams, families and friends"
+    assert_select "[data-controller=word-cycle][data-word-cycle-words-value*=?]", "your team"
+    # Every game slides past in the strip, linked to its page
+    assert_select ".marquee-track a", text: /Mind Match/
     assert_select "h2", "Made for any room"
     assert_select "dt", "Wake up your brain"
     assert_select "a[href=?]", games_path, text: "Start a game", count: 2
     assert_select "a[href=?]", find_room_path, text: "Join a game", count: 2
-    assert_select "img[src^=?][srcset]", "/games/mind_match/instructions-640.webp?v="
+    # Its image has English rules on it, so the placeholder in its set colour stands in
+    assert_select "li a .art-dots.bg-violet-600"
   ensure
     game&.delete
   end

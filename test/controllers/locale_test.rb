@@ -123,7 +123,7 @@ end
 
 class SpanishPagesTest < ActionDispatch::IntegrationTest
   test "the public pages are in Spanish under /es" do
-    { root_path(locale: :es) => "Dale un toque divertido a cualquier reunión.",
+    { root_path(locale: :es) => /\ADiversión al instante para clases, equipos de trabajo, familias y amigos/,
       games_path(locale: :es) => "Elige un juego",
       find_room_path(locale: :es) => "¿Tienes un código de sala?",
       about_path(locale: :es) => "Acerca de Grouparty",

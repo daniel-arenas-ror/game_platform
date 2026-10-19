@@ -35,7 +35,9 @@ class GamesControllerTest < ActionDispatch::IntegrationTest
     assert_select "details summary", text: /Do players need to download an app\?/
     assert_select "li", text: /Classrooms\s*Great fit/
     assert_select "li", text: /Video calls\s*Best in the same room/
-    assert_select "a[href=?]", game_path(other), text: /One more light/
+    assert_select "article", text: /One more light/ do
+      assert_select "a[href=?]", game_path(other), text: "Sequence Memory"
+    end
     assert_select "button", text: "Start game", count: 2
   ensure
     other&.delete
@@ -102,6 +104,19 @@ class GamesControllerTest < ActionDispatch::IntegrationTest
     assert_select "a[href=?]", game_path(@game), 0
   ensure
     room&.delete
+  end
+
+  test "catalog filters games by type" do
+    @game.update!(category: "puzzle")
+    other = Game.create!(name: "Sequence Memory", code: "sequence_memory", description: "Remember", category: "memory")
+    get games_url
+    # The pills show with JS only; each card carries its category
+    assert_select "[data-catalog-filter-target=pills][hidden] button[aria-pressed=true]", "All"
+    assert_select "button[data-category=puzzle]", "Puzzle"
+    assert_select "button[data-category=memory]", "Memory"
+    assert_select "[data-catalog-filter-target=card][data-category=puzzle]", text: /Soup of Numbers/
+  ensure
+    other&.delete
   end
 
   test "slug defaults to the parameterized name" do

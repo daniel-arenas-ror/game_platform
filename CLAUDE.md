@@ -225,6 +225,10 @@ English and Spanish (`config/initializers/locale.rb`). Strings live in `config/l
 - **Stimulus** auto-loaded via `eagerLoadControllersFrom("controllers", application)` — no manual registration.
 - **Importmap** — no Node/bundler. Use ES6 `import` only.
 - Turbo is available but game views use direct DOM manipulation via Stimulus, not Turbo Frames.
+- **No gradients** anywhere new: solid colours only (DESIGN.md "The No-Gradient Rule").
+- **Site styles** (`app/assets/tailwind/application.css`): buzzer buttons `btn` (+ `btn-secondary` / `btn-pink` / `btn-go`, `btn-sm` / `btn-lg`), `chip`, `eyebrow`, `text-display`; display face Bricolage Grotesque (`font-display`, self-hosted in `app/assets/fonts`; public-page h1–h3 get it automatically). A new folder under `app/assets` needs a server restart before Propshaft serves it.
+- **Site motion:** `reveal` (`data-reveal`, `data-reveal="scale"`, `data-reveal-stagger`), `marquee`, `tilt`, `site-header` controllers. Motion (motion.dev) is pinned as `motion` (single vendored file, not preloaded); import it inside the controller that needs it.
+- **Game art:** show game pictures with `game_art_tag` (not `game_image_tag` directly) on public pages: images with English text on them show a solid set-colour placeholder until the game is in `TEXT_FREE_IMAGES`.
 
 ### Infrastructure
 

@@ -38,7 +38,7 @@ class RoomLocaleFlowTest < ActionDispatch::IntegrationTest
 
   test "lobby is in Spanish" do
     get room_path(@room.code)
-    assert_select "p", "SALA: #{@room.code}"
+    assert_select "p[aria-label=?]", "SALA: #{@room.code}"
     assert_select "h1", "Trivia ES"
     assert_select "button", /Empezar juego/
   end

@@ -32,6 +32,9 @@ es:
       about: "Acerca de"
       contact: "Contacto"
       privacy: "Política de privacidad"
+      play: "Jugar"
+      info: "Información"
+      blurb: "Juegos de fiesta gratis con una pantalla compartida y el móvil de cada uno. Sin app ni registro."
     ad_slot:
       label: "Publicidad"
 
@@ -48,7 +51,6 @@ es:
 
   home:
     index:
-      hero_title: "Dale un toque divertido a cualquier reunión."
       hero_text: >-
         Juegos de fiesta gratis para salones de clase, equipos de trabajo y reuniones familiares.
         Pon una pantalla donde todos la vean — los jugadores se unen desde su celular en segundos.
@@ -59,6 +61,15 @@ es:
       mock_players: "JUGADORES"
       mock_room_code: "CÓDIGO DE SALA"
       mock_joined: "¡Ya estás!"
+      hero_lead: "Diversión al instante para"
+      hero_words: ["tu clase", "tu equipo", "la familia", "tus amigos"]
+      hero_words_all: "clases, equipos de trabajo, familias y amigos"
+      strip_title: "%{count} juegos. Una pantalla grande."
+      see_all_games: "Ver todos los juegos"
+      mock_leaderboard: "Clasificación"
+      leaderboard_figure: "Una clasificación en vivo: los jugadores cambian de puesto al sumar puntos."
+      orbit_figure: "Juega en una TV, un proyector, un portátil o una videollamada, cada uno con su móvil."
+      steps_figure: "Lo que muestran las pantallas en cada paso."
       any_room_title: "Hecho para cualquier lugar"
       any_room_text: "Cada uno tiene su propio control, así que nadie espera turno y nadie se queda solo mirando."
       use_cases:
@@ -140,12 +151,24 @@ es:
       configure: "Configurar"
       switch: "Cambiar a este juego"
       play_now: "Jugar ahora"
+      filter_label: "Filtrar juegos por tipo"
+      filters:
+        all: "Todos"
+        social: "Sociales"
+        trivia: "Trivia"
+        action: "Acción"
+        perception: "Vista rápida"
+        memory: "Memoria"
+        puzzle: "Puzle"
+        strategy: "Estrategia"
+        drawing: "Dibujo"
       empty_html: "Aún no hay juegos. Ejecuta %{command} para añadirlos."
     show:
       title: "%{game} – Juego de fiesta gratis"
       breadcrumb: "Ruta de navegación"
       at_a_glance: "De un vistazo"
       about_minutes: "Unos %{count} min"
+      minutes_short: "%{count} min"
       ages: "Desde %{age} años"
       on_your_phone: "Se juega con el celular"
       start_game: "Empezar juego"
@@ -243,6 +266,15 @@ es:
       start: "Empezar juego"
       remove: "Sacar"
       remove_player: "Sacar a %{name}"
+      code_label: "Código de sala"
+      or_go_to: "o entra en"
+      you_are_in: "¡Ya estás!"
+      waiting_host: "Esperando a que el anfitrión empiece"
+      how_to_play: "Cómo se juega"
+      waiting_players: "Esperando a que se unan los jugadores"
+      players_count:
+        one: "%{count} jugador"
+        other: "%{count} jugadores"
     join:
       title: "Únete a %{game}"
       room_code: "Código de sala:"
@@ -250,6 +282,7 @@ es:
       nickname_placeholder: "ej. Jugador 1"
       submit: "ENTRAR A LA SALA"
       wait: "Espera a que el anfitrión empiece el juego"
+      preview_label: "Este eres tú"
     games:
       change_game:
         link: "Cambiar juego"
@@ -398,6 +431,9 @@ es:
   js:
     room_players:
       remove_player: "Sacar a %{name}"
+      players_count:
+        one: "%{count} jugador"
+        other: "%{count} jugadores"
       remove: "Sacar"
       removing: "Sacando…"
       confirm: "¿Sacar a %{name} de la sala?"
@@ -406,3 +442,7 @@ es:
       error: "No se pudieron cargar los jugadores. Inténtalo otra vez."
     room_code:
       joining: "Entrando…"
+    games:
+      showing:
+        one: "Mostrando %{count} juego"
+        other: "Mostrando %{count} juegos"

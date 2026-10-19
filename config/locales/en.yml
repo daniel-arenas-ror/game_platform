@@ -38,6 +38,9 @@ en:
       about: "About"
       contact: "Contact"
       privacy: "Privacy Policy"
+      play: "Play"
+      info: "Info"
+      blurb: "Free party games for one shared screen and everyone's phone. No app, no sign-up."
     ad_slot:
       label: "Advertisement"
 
@@ -56,7 +59,6 @@ en:
 
   home:
     index:
-      hero_title: "Give any gathering a fun touch."
       hero_text: >-
         Free party games for classrooms, work teams and family get-togethers.
         Put one screen where everyone can see it — players join from their phones in seconds.
@@ -67,6 +69,15 @@ en:
       mock_players: "PLAYERS"
       mock_room_code: "ROOM CODE"
       mock_joined: "You're in!"
+      hero_lead: "Instant fun for"
+      hero_words: ["your class", "your team", "family night", "your friends"]
+      hero_words_all: "classrooms, work teams, families and friends"
+      strip_title: "%{count} games. One big screen."
+      see_all_games: "See all games"
+      mock_leaderboard: "Leaderboard"
+      leaderboard_figure: "A live leaderboard: players swap places as they score points."
+      orbit_figure: "Play on a TV, projector, laptop or video call, with everyone on their phone."
+      steps_figure: "What the screens show at each step."
       any_room_title: "Made for any room"
       any_room_text: "Everyone holds their own controller, so nobody waits for a turn and nobody is left just watching."
       use_cases:
@@ -148,12 +159,24 @@ en:
       configure: "Configure"
       switch: "Switch to this game"
       play_now: "Play Now"
+      filter_label: "Filter games by type"
+      filters:
+        all: "All"
+        social: "Social"
+        trivia: "Trivia"
+        action: "Action"
+        perception: "Quick eyes"
+        memory: "Memory"
+        puzzle: "Puzzle"
+        strategy: "Strategy"
+        drawing: "Drawing"
       empty_html: "No games yet. Run %{command} to add them."
     show:
       title: "%{game} – Free Party Game"
       breadcrumb: "Breadcrumb"
       at_a_glance: "At a glance"
       about_minutes: "About %{count} min"
+      minutes_short: "%{count} min"
       ages: "Ages %{age}+"
       on_your_phone: "Play on your phone"
       start_game: "Start game"
@@ -253,6 +276,15 @@ en:
       start: "Start Game"
       remove: "Remove"
       remove_player: "Remove %{name}"
+      code_label: "Room code"
+      or_go_to: "or go to"
+      you_are_in: "You're in!"
+      waiting_host: "Waiting for the host to start"
+      how_to_play: "How to play"
+      waiting_players: "Waiting for players to join"
+      players_count:
+        one: "%{count} player"
+        other: "%{count} players"
     join:
       title: "Join %{game}"
       room_code: "Room Code:"
@@ -260,6 +292,7 @@ en:
       nickname_placeholder: "e.g. Player 1"
       submit: "ENTER LOBBY"
       wait: "Wait for the host to start the game"
+      preview_label: "This is you"
     games:
       change_game:
         link: "Change Game"
@@ -410,6 +443,9 @@ en:
   js:
     room_players:
       remove_player: "Remove %{name}"
+      players_count:
+        one: "%{count} player"
+        other: "%{count} players"
       remove: "Remove"
       removing: "Removing…"
       confirm: "Remove %{name} from the room?"
@@ -418,3 +454,7 @@ en:
       error: "Couldn't load the players. Try again."
     room_code:
       joining: "Joining…"
+    games:
+      showing:
+        one: "Showing %{count} game"
+        other: "Showing %{count} games"

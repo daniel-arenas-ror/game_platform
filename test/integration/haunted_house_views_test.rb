@@ -42,7 +42,7 @@ class HauntedHouseViewsTest < ActionDispatch::IntegrationTest
     @game.update!(how_to_play: %w[One Two], translations: { "es" => { "how_to_play" => %w[Uno Dos] } })
     post submit_join_path(@room.code, locale: nil), params: { nickname: "Ana" }
     get room_path(@room.code, locale: nil)
-    assert_select "ol li", text: "Uno"
-    assert_select "ol li", text: "Dos"
+    assert_select "ol li p", text: "Uno"
+    assert_select "ol li p", text: "Dos"
   end
 end
