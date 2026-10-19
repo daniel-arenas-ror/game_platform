@@ -11,10 +11,12 @@ en:
           your_kills: "Your kills"
           waiting_restart: "Waiting for host to restart…"
           kills: "Kills"
+          sound: "Sound on/off"
   js:
     battle_city:
       go: "GO!"
       respawning: "Respawning…"
+      out: "You're out — watch the TV"
       you_win: "YOU WIN!"
       game_over: "GAME OVER"
       player: "Player %{n}"

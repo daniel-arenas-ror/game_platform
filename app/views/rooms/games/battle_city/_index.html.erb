@@ -109,6 +109,9 @@
              class="w-5 h-5 rounded-full border-2 border-slate-600"
              style="background-color: #888;"></div>
         <span class="font-black text-lg tracking-wide"><%= session[:nickname] %></span>
+        <button type="button" data-battle-city-player-target="soundButton" data-action="battle-city-player#toggleSound"
+                aria-label="<%= t(".sound") %>" aria-pressed="true"
+                class="w-10 h-10 rounded-full bg-slate-800 border border-slate-700 text-lg cursor-pointer active:scale-95 transition-transform">🔊</button>
       </div>
       <div class="text-right">
         <p class="text-[10px] text-slate-600 uppercase tracking-widest"><%= t(".kills") %></p>

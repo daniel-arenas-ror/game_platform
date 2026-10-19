@@ -22,7 +22,7 @@ how_to_play:
   - Your phone becomes a controller. Steer with the arrow pad and press Fire to shoot.
   - Hit another tank to score a point. Tagged tanks come back after 3 seconds.
   - Brick walls break when you shoot them, steel walls don't, and trees hide you as you drive through.
-  - The first player to reach the target wins, or the last tank standing. If the base is hit, the game ends right away.
+  - The first player to reach the target wins. In "Base only" mode, tagged tanks don't come back and the last tank standing wins. If the base is hit, the game ends right away.
 tips:
   - Trees are the best hiding spot. Wait inside and surprise anyone who drives past.
   - Shoot through brick to open new paths, or leave it standing as cover.
@@ -58,7 +58,7 @@ translations:
       - Tu celular se convierte en control. Muévete con las flechas y pulsa Disparar.
       - Acierta a otro tanque para sumar un punto. Los tanques alcanzados vuelven a los 3 segundos.
       - Los muros de ladrillo se rompen con los disparos, los de acero no, y los árboles te esconden mientras pasas.
-      - Gana el primero en llegar a la meta, o el último tanque en pie. Si la base recibe un disparo, el juego termina de inmediato.
+      - Gana el primero en llegar a la meta. En el modo "Solo base", los tanques alcanzados no vuelven y gana el último tanque en pie. Si la base recibe un disparo, el juego termina de inmediato.
     tips:
       - Los árboles son el mejor escondite. Espera adentro y sorprende al que pase.
       - Dispara al ladrillo para abrir caminos nuevos, o déjalo en pie como protección.

@@ -10,10 +10,12 @@ es:
           your_kills: "Tus impactos"
           waiting_restart: "Esperando a que el anfitrión reinicie…"
           kills: "Impactos"
+          sound: "Activar/desactivar sonido"
   js:
     battle_city:
       go: "¡YA!"
       respawning: "Reapareciendo…"
+      out: "Quedaste fuera — mira la TV"
       you_win: "¡GANASTE!"
       game_over: "FIN DEL JUEGO"
       player: "Jugador %{n}"
