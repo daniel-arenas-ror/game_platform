@@ -1,0 +1,28 @@
+<%# A pretend live leaderboard (leaderboard_demo_controller): rows are h-14 with a 2 gap = 64px,
+    the controller's ROW_HEIGHT. The leader gets the gold ring and crown (The Spotlight Rule). %>
+<% rows = [["Ana", "bg-purple-500", 850], ["Leo", "bg-pink-500", 720], ["Mía", "bg-sky-500", 640], ["Sam", "bg-emerald-500", 520], ["Zoe", "bg-orange-500", 410]] %>
+<figure role="img" aria-label="<%= t("home.index.leaderboard_figure") %>" data-controller="leaderboard-demo"
+        class="rounded-[2rem] border border-slate-700 bg-slate-800 p-5 sm:p-7 shadow-2xl shadow-black/40">
+  <div aria-hidden="true">
+    <p class="flex items-center gap-2.5 font-display text-2xl font-extrabold text-white">
+      <svg class="size-7 text-yellow-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+      <%= t("home.index.mock_leaderboard") %>
+    </p>
+    <ol data-leaderboard-demo-target="list" class="mt-5 flex flex-col gap-2">
+      <% rows.each do |name, color, score| %>
+        <li data-leaderboard-demo-target="row" data-score="<%= score %>"
+            class="group h-14 flex items-center gap-3 rounded-2xl border-2 border-slate-700 bg-slate-900 px-3 transition-colors duration-300 data-leader:border-yellow-400">
+          <span class="relative size-9 shrink-0 rounded-full <%= color %> font-display font-extrabold text-white flex items-center justify-center">
+            <%= name[0] %>
+            <svg class="absolute -top-3 left-1/2 -translate-x-1/2 size-5 text-yellow-400 opacity-0 scale-50 transition duration-300 group-data-leader:opacity-100 group-data-leader:scale-100" viewBox="0 0 24 24" fill="currentColor"><path d="M2 8l5 4 5-7 5 7 5-4-2 11H4z"/></svg>
+          </span>
+          <span class="flex-1 font-bold text-white"><%= name %></span>
+          <span class="relative font-mono text-lg font-black text-white group-data-leader:text-yellow-400 tabular-nums">
+            <span data-score-value><%= score %></span>
+            <span data-bump class="absolute right-full mr-2 top-0 font-mono text-sm font-black text-yellow-400 opacity-0"></span>
+          </span>
+        </li>
+      <% end %>
+    </ol>
+  </div>
+</figure>

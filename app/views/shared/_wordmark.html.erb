@@ -1,0 +1,13 @@
+<%# The Grouparty mark (the "G" from icon.svg on solid house purple) + name. The mark wiggles
+    when its link is hovered (the link needs the `group` class). `compact` drops the name on narrow
+    phones (the link carries it as its label). %>
+<% compact = local_assigns[:compact] %>
+<span class="inline-flex items-center gap-2.5">
+  <svg class="size-8 shrink-0 group-hover:animate-wiggle" viewBox="0 0 512 512" aria-hidden="true">
+    <rect width="512" height="512" rx="128" fill="var(--color-purple-600)"/>
+    <path d="M329.4 151.2A128 128 0 1 0 384 256" fill="none" stroke="#fff" stroke-width="68"/>
+    <circle cx="329.4" cy="151.2" r="34" fill="#fff"/>
+    <path d="M290 222H414V290H290A34 34 0 0 1 290 222Z" fill="#fff"/>
+  </svg>
+  <span class="<%= "max-[419px]:hidden" if compact %> font-display text-xl font-extrabold tracking-tight text-white"><%= SeoHelper::SITE_NAME %></span>
+</span>

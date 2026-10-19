@@ -1,0 +1,4 @@
+<%# Three dots hopping one after another: "still waiting". Still for reduced motion. %>
+<span class="inline-flex gap-1" aria-hidden="true">
+  <% 3.times do |i| %><span class="size-1.5 rounded-full bg-current motion-safe:animate-bounce" style="animation-delay: <%= i * 150 %>ms"></span><% end %>
+</span>

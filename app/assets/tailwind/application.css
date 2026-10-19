@@ -3,6 +3,71 @@
 /* A phone turned sideways: little height, so layouts go side by side (Doodle Dash drawing) */
 @custom-variant short-landscape (@media (orientation: landscape) and (max-height: 500px));
 
+/* Display face for headings (self-hosted, app/assets/fonts). Body text stays on the system face. */
+@font-face {
+  font-family: "Bricolage Grotesque";
+  font-style: normal;
+  font-weight: 200 800;
+  font-display: swap;
+  src: url("/bricolage-grotesque-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "Bricolage Grotesque";
+  font-style: normal;
+  font-weight: 200 800;
+  font-display: swap;
+  src: url("/bricolage-grotesque-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@theme {
+  --font-display: "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+
+  /* Springy overshoot for things that pop in; long soft settle for things that slide in */
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --animate-marquee: marquee var(--marquee-duration, 40s) linear infinite;
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-pop-in: pop-in 0.5s var(--ease-spring) both;
+  --animate-wiggle: wiggle 0.5s ease-in-out;
+  --animate-shake: shake 0.4s ease-in-out;
+  --animate-orbit: orbit var(--orbit-duration, 40s) linear infinite;
+  --animate-orbit-reverse: orbit var(--orbit-duration, 40s) linear infinite reverse;
+
+  @keyframes marquee {
+    to { transform: translateX(-50%); }
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0) rotate(var(--float-rotate, 0deg)); }
+    50% { transform: translateY(-10px) rotate(var(--float-rotate, 0deg)); }
+  }
+
+  @keyframes pop-in {
+    from { opacity: 0; transform: scale(0.6); }
+    to { opacity: 1; transform: none; }
+  }
+
+  @keyframes orbit {
+    to { transform: rotate(360deg); }
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-8px); }
+    40%, 80% { transform: translateX(8px); }
+  }
+
+  @keyframes wiggle {
+    0%, 100% { transform: rotate(0); }
+    25% { transform: rotate(-6deg); }
+    75% { transform: rotate(6deg); }
+  }
+}
+
 /* Browser surfaces follow the always-dark studio (see DESIGN.md) */
 @layer base {
   html {
@@ -21,17 +86,230 @@
   }
 }
 
-/* Game pages: content fades up on scroll (reveal_controller.js) */
+/* Public pages set their headings in the display face; game screens keep the system face */
+@layer base {
+  .site-page main :is(h1, h2, h3) {
+    font-family: var(--font-display);
+    letter-spacing: -0.025em;
+  }
+}
+
+/* ---- Site components (public pages and room chrome; DESIGN.md "Components") ---- */
+
+/* Big display headings: the display face, heavy and tight */
+@utility text-display {
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 0.95;
+}
+
+/* Small uppercase section label above a heading */
+@utility eyebrow {
+  font-size: var(--text-xs);
+  line-height: var(--text-xs--line-height);
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* Buzzer buttons: a solid fill sitting on a darker solid edge. Pressing pushes it down onto the
+   edge. Colour comes from --btn / --btn-hover / --btn-edge / --btn-ink (set by the variants). */
+@utility btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: var(--radius-2xl);
+  padding: 0.875rem 1.75rem;
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--btn-ink, var(--color-white));
+  background-color: var(--btn, var(--color-purple-600));
+  box-shadow: 0 5px 0 var(--btn-edge, var(--color-purple-900));
+  transform: translateY(0);
+  transition: transform 150ms var(--ease-out-expo), box-shadow 150ms var(--ease-out-expo), background-color 150ms;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+
+  @media (hover: hover) {
+    &:hover {
+      background-color: var(--btn-hover, var(--color-purple-500));
+      transform: translateY(-2px);
+      box-shadow: 0 7px 0 var(--btn-edge, var(--color-purple-900));
+    }
+  }
+
+  &:active {
+    transform: translateY(4px);
+    box-shadow: 0 1px 0 var(--btn-edge, var(--color-purple-900));
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-purple-300);
+    outline-offset: 4px;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: wait;
+    transform: none;
+  }
+}
+
+@utility btn-secondary {
+  --btn: var(--color-slate-800);
+  --btn-hover: var(--color-slate-700);
+  --btn-edge: var(--color-slate-950);
+  border: 1px solid var(--color-slate-700);
+}
+
+@utility btn-pink {
+  --btn: var(--color-pink-600);
+  --btn-hover: var(--color-pink-500);
+  --btn-edge: var(--color-pink-900);
+}
+
+/* On a solid house-purple block */
+@utility btn-light {
+  --btn: var(--color-white);
+  --btn-hover: var(--color-purple-50);
+  --btn-edge: var(--color-purple-950);
+  --btn-ink: var(--color-purple-700);
+}
+
+@utility btn-go {
+  --btn: var(--color-green-500);
+  --btn-hover: var(--color-green-400);
+  --btn-edge: var(--color-green-800);
+  --btn-ink: var(--color-slate-950);
+}
+
+@utility btn-sm {
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-xl);
+  font-size: var(--text-sm);
+  box-shadow: 0 3px 0 var(--btn-edge, var(--color-purple-900));
+
+  @media (hover: hover) {
+    &:hover { box-shadow: 0 4px 0 var(--btn-edge, var(--color-purple-900)); }
+  }
+
+  &:active {
+    transform: translateY(2px);
+    box-shadow: 0 1px 0 var(--btn-edge, var(--color-purple-900));
+  }
+}
+
+@utility btn-lg {
+  padding: 1.125rem 2.25rem;
+  font-size: var(--text-lg);
+  border-radius: var(--radius-3xl);
+}
+
+/* Rounded pill tag */
+@utility chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  border-radius: 9999px;
+  padding: 0.375rem 0.875rem;
+  font-size: var(--text-sm);
+  font-weight: 700;
+  border: 1px solid var(--color-slate-700);
+  background-color: var(--color-slate-800);
+  color: var(--color-slate-200);
+}
+
+/* Game art placeholder: the game's solid set colour with a faint dot pattern
+   (shared/_game_art, until the text-free illustrations arrive) */
+@utility art-dots {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Ccircle cx='2' cy='2' r='1.5' fill='%23000' fill-opacity='.18'/%3E%3C/svg%3E");
+}
+
+/* ---- Motion ---- */
+
+/* Content fades up on scroll (reveal_controller.js). data-reveal="scale" pops in instead.
+   Without JS, or with reduced motion, everything is simply visible. */
 @media (prefers-reduced-motion: no-preference) {
   .reveal-ready [data-reveal] {
     opacity: 0;
-    transform: translateY(16px);
-    transition: opacity 0.5s ease-out, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    transform: translateY(24px);
+    transition: opacity 0.6s ease-out, transform 0.8s var(--ease-out-expo);
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+
+  .reveal-ready [data-reveal="scale"] {
+    transform: scale(0.85);
+    transition: opacity 0.4s ease-out, transform 0.6s var(--ease-spring);
     transition-delay: var(--reveal-delay, 0ms);
   }
 
   .reveal-ready [data-reveal].is-revealed {
     opacity: 1;
     transform: none;
+  }
+}
+
+/* "How it works" pinned picture (steps_controller.js): only the active step's picture shows */
+.steps-stage [data-step-visual] {
+  opacity: 0;
+  transform: translateY(16px) scale(0.94);
+  transition: opacity 0.4s ease-out, transform 0.6s var(--ease-out-expo);
+}
+
+.steps-stage[data-active="1"] [data-step-visual="1"],
+.steps-stage[data-active="2"] [data-step-visual="2"],
+.steps-stage[data-active="3"] [data-step-visual="3"] {
+  opacity: 1;
+  transform: none;
+}
+
+/* FAQ answers slide open where the browser can animate to height: auto (others just open) */
+@media (prefers-reduced-motion: no-preference) {
+  details.faq {
+    interpolate-size: allow-keywords;
+  }
+
+  details.faq::details-content {
+    block-size: 0;
+    overflow: hidden;
+    transition: block-size 0.35s var(--ease-out-expo), content-visibility 0.35s allow-discrete;
+  }
+
+  details.faq[open]::details-content {
+    block-size: auto;
+  }
+}
+
+/* Endless horizontal strip (marquee_controller.js duplicates the items once, so -50% loops) */
+.marquee-track {
+  display: flex;
+  width: max-content;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .marquee-track.is-looping {
+    animation: var(--animate-marquee);
+  }
+
+  .marquee:hover .marquee-track.is-looping,
+  .marquee:focus-within .marquee-track.is-looping {
+    animation-play-state: paused;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee {
+    overflow-x: auto;
+  }
+
+  .animate-float,
+  .animate-pop-in,
+  .animate-orbit,
+  .animate-orbit-reverse {
+    animation: none;
   }
 }

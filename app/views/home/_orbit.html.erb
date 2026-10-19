@@ -1,0 +1,48 @@
+<%# Where you can play: screens circling a phone. The outer ring turns one way and the players
+    the other; each tile turns back against its ring so it stays upright. Still for reduced motion. %>
+<%
+  devices = [
+    ["bg-purple-600", '<rect width="20" height="15" x="2" y="7" rx="2"/><path d="m17 2-5 5-5-5"/>', "top-0 left-1/2"],
+    ["bg-pink-600", '<path d="M20 16V7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v9m16 0H4m16 0 1.28 2.55a1 1 0 0 1-.9 1.45H3.62a1 1 0 0 1-.9-1.45L4 16"/>', "top-1/2 left-full"],
+    ["bg-sky-600", '<path d="M5 7 3 5M9 6V3M13 7l2-2"/><circle cx="9" cy="13" r="3"/><path d="M11.83 12H20a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h2.17M16 16h2"/>', "top-full left-1/2"],
+    ["bg-emerald-600", '<path d="m16 13 5.2 3.5a.5.5 0 0 0 .8-.4V7.9a.5.5 0 0 0-.8-.4L16 11"/><rect x="2" y="6" width="14" height="12" rx="2"/>', "top-1/2 left-0"]
+  ]
+  players = [["A", "bg-purple-500", "top-0 left-1/2"], ["L", "bg-pink-500", "top-3/4 left-[93%]"], ["Z", "bg-orange-500", "top-3/4 left-[7%]"]]
+%>
+<figure role="img" aria-label="<%= t("home.index.orbit_figure") %>" class="relative mx-auto size-72 sm:size-96 my-8">
+  <div aria-hidden="true">
+    <div class="absolute inset-0 rounded-full border-2 border-dashed border-slate-700"></div>
+    <div class="absolute inset-[22%] rounded-full border-2 border-dashed border-slate-800"></div>
+
+    <div class="absolute inset-0 animate-orbit [--orbit-duration:48s]">
+      <% devices.each do |color, icon, position| %>
+        <span class="absolute <%= position %> -translate-x-1/2 -translate-y-1/2">
+          <span class="block animate-orbit-reverse [--orbit-duration:48s]">
+            <span class="size-14 sm:size-16 rounded-2xl <%= color %> border-4 border-slate-900 text-white flex items-center justify-center shadow-lg shadow-black/40">
+              <svg class="size-7 sm:size-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><%= icon.html_safe %></svg>
+            </span>
+          </span>
+        </span>
+      <% end %>
+    </div>
+
+    <div class="absolute inset-[22%] animate-orbit-reverse [--orbit-duration:32s]">
+      <% players.each do |initial, color, position| %>
+        <span class="absolute <%= position %> -translate-x-1/2 -translate-y-1/2">
+          <span class="block animate-orbit [--orbit-duration:32s]">
+            <span class="size-9 sm:size-10 rounded-full <%= color %> border-4 border-slate-900 font-display font-extrabold text-white flex items-center justify-center"><%= initial %></span>
+          </span>
+        </span>
+      <% end %>
+    </div>
+
+    <%# The phone in the middle, with four answer buttons %>
+    <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-20 sm:w-24 rounded-[1.4rem] border-[5px] border-slate-700 bg-slate-950 p-2 shadow-2xl shadow-black/60">
+      <div class="grid grid-cols-2 gap-1.5">
+        <% %w[bg-purple-600 bg-pink-600 bg-sky-600 bg-emerald-600].each do |color| %>
+          <span class="aspect-square rounded-lg <%= color %>"></span>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</figure>

@@ -1,0 +1,10 @@
+<%# Stands in for a game's picture until its text-free illustration is made (see game_art_tag):
+    the game's solid set colour, a dot texture and a floating gamepad. Decorative only. %>
+<div aria-hidden="true"
+     class="relative flex items-center justify-center overflow-hidden art-dots <%= game_accent(game)[:solid] %> <%= css %>">
+  <svg class="w-1/4 max-w-24 min-w-10 aspect-square text-white/85 drop-shadow-[0_6px_0_rgb(0_0_0/0.18)] animate-float [--float-rotate:-6deg]"
+       viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M6 11h4M8 9v4M15 12h.01M18 10h.01"/>
+    <path d="M17.32 5H6.68a4 4 0 0 0-3.978 3.59l-.9 8.06A2.12 2.12 0 0 0 3.91 19c.6 0 1.17-.26 1.57-.71L8 15.5h8l2.52 2.79c.4.45.97.71 1.57.71a2.12 2.12 0 0 0 2.11-2.35l-.9-8.06A4 4 0 0 0 17.32 5Z"/>
+  </svg>
+</div>
