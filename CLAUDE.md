@@ -234,6 +234,7 @@ English and Spanish (`config/initializers/locale.rb`). Strings live in `config/l
 
 - **MongoDB** via Docker Compose. `config/mongoid.yml` for connection.
 - **ActionCable** uses `async` adapter in dev, **Redis** (`REDIS_URL`) in production (`config/cable.yml`).
+- **Google Analytics** (`AnalyticsHelper#google_analytics_tag`, first in `<head>` of `layouts/application`): production only, ID from the `GA_MEASUREMENT_ID` env var (unset = no tag). Mentioned in the privacy pages (section 4).
 - **CI** (GitHub Actions): RuboCop → Brakeman/bundler-audit → unit tests → system tests.
 
 ### Known Issues
