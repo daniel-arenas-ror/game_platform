@@ -50,7 +50,7 @@
           </ul>
 
           <div class="flex flex-col sm:flex-row sm:items-center gap-4">
-            <%= button_to t(".start_game"), rooms_path(game_id: @game.id), method: :post, class: start_cta %>
+            <%= button_to t(".start_game"), rooms_path(game_id: @game.id), method: :post, class: start_cta, form: select_game_analytics(@game) %>
             <a href="#how-to-play" class="text-center text-purple-300 hover:text-white font-semibold px-4 py-3 transition-colors <%= link_css %>"><%= t(".how_to_play_link") %></a>
           </div>
           <p class="mt-4 text-sm text-slate-500"><%= t(".free_note") %></p>
@@ -240,7 +240,8 @@
       <div class="relative">
         <h2 class="text-display text-4xl sm:text-6xl text-white text-balance mb-5"><%= t(".ready", game: @game.name) %></h2>
         <p class="text-lg sm:text-xl text-purple-100 text-pretty mb-10"><%= t(".ready_text") %></p>
-        <%= button_to t(".start_game"), rooms_path(game_id: @game.id), method: :post, class: "btn btn-lg btn-light w-full sm:w-auto", form_class: "flex justify-center" %>
+        <%= button_to t(".start_game"), rooms_path(game_id: @game.id), method: :post, class: "btn btn-lg btn-light w-full sm:w-auto", form_class: "flex justify-center",
+              form: select_game_analytics(@game) %>
       </div>
     </div>
   </section>

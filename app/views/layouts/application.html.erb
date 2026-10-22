@@ -61,5 +61,6 @@
     </main>
     <%# Game screens fill the whole display, so they skip the footer %>
     <%= render "shared/footer" unless controller_name == "rooms" && action_name == "playing" %>
+    <%= queued_analytics_events_tag %>
   </body>
 </html>

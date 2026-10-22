@@ -22,6 +22,10 @@ class Room
   after_create { Game.where(_id: game_id).inc(rooms_count: 1) }
   after_create { Event.record(:room_created, room: self) }
 
+  # Google Analytics: the host's screen hears these on RoomChannel and sends them
+  # (room_players_controller), so each room counts once, not once per phone.
+  after_update :broadcast_analytics, if: -> { previous_changes.key?("status") }
+
   # Shown in the join page's "where's the code?" illustration, so it must never be a real room.
   EXAMPLE_CODE = "K7QX".freeze
 
@@ -44,6 +48,21 @@ class Room
 
   def enough_players?
     players.count >= game.min_players_to_start
+  end
+
+  def broadcast_analytics
+    event =
+      case status
+      when "playing"  then previous_changes["status"].first == "lobby" ? "game_started" : "play_again"
+      when "finished" then "game_finished"
+      end
+    return unless event
+
+    ActionCable.server.broadcast(RoomChannel.stream_for_room(code), {
+      action: "analytics", event: event, params: { game_name: game.slug, player_count: players.count }
+    })
+  rescue StandardError => e # analytics must never break a game
+    Rails.logger.error("Room#broadcast_analytics failed: #{e.class}: #{e.message}")
   end
 
   def game_stream_name
