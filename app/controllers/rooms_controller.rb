@@ -12,6 +12,7 @@ class RoomsController < ApplicationController
     session[:player_id] = nil
     @game = Game.find(params[:game_id])
     @room = Room.create!(game: @game, locale: I18n.locale)
+    track_analytics("room_created", game_name: @game.slug)
 
     redirect_to edit_room_path(@room.code)
   end

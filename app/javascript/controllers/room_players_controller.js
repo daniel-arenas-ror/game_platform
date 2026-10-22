@@ -3,10 +3,12 @@ import consumer from "channels/consumer"
 import { t } from "controllers/shared/i18n"
 import { confirmRemove, removePlayer } from "controllers/shared/remove_player"
 import { avatar } from "controllers/shared/avatar"
+import { track } from "controllers/shared/analytics"
 
 // The shared "Players" panel (shared/_room_players) on the lobby and every game screen.
 // Host: lists the room's players and removes the ones who aren't playing.
 // Player: listens on RoomChannel and goes to the join page when the host removes them.
+// Host: also sends the room's Google Analytics events (game_started, play_again, game_finished).
 export default class extends Controller {
   static values  = { roomCode: String, playerId: String, playersUrl: String, removedUrl: String }
   static targets = ["dialog", "list", "count"]
@@ -28,6 +30,11 @@ export default class extends Controller {
   }
 
   received(data) {
+    // Google Analytics funnel events (Room#broadcast_analytics): only the host sends them.
+    if (data.action === "analytics") {
+      if (this.isHost) track(data.event, data.params)
+      return
+    }
     if (data.action === "player_left" && data.player_id === this.playerIdValue) {
       window.location.href = this.removedUrlValue
       return
