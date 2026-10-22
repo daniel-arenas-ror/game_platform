@@ -1,10 +1,10 @@
 <% content_for :title, "Política de privacidad" %>
-<% content_for :description, "Cómo maneja Grouparty tus datos: qué guardamos cuando juegas, las cookies que usamos y cómo Google AdSense muestra anuncios." %>
+<% content_for :description, "Cómo maneja Grouparty tus datos: qué guardamos cuando juegas, las cookies que usamos, Google Analytics y cómo Google AdSense muestra anuncios." %>
 <% link = "text-purple-400 hover:text-purple-300 underline" %>
 
 <div class="min-h-screen py-12 px-4 sm:px-6">
   <article class="max-w-3xl mx-auto text-slate-300 leading-relaxed space-y-8">
-    <%= render "pages/header", title: "Política de privacidad", subtitle: "Última actualización: 9 de octubre de 2026" %>
+    <%= render "pages/header", title: "Política de privacidad", subtitle: "Última actualización: 21 de octubre de 2026" %>
 
     <section class="space-y-4">
       <p>
@@ -32,6 +32,7 @@
       <ul class="list-disc pl-6 space-y-2">
         <li><strong class="text-white">Cookies esenciales:</strong> una cookie de sesión recuerda qué jugador eres en una sala, para que puedas recargar la página o reconectarte sin perder tu lugar. El juego no funciona sin ella.</li>
         <li><strong class="text-white">Cookie de preferencia:</strong> recuerda el idioma que elegiste (inglés o español), para que el sitio se abra en ese idioma la próxima vez.</li>
+        <li><strong class="text-white">Cookies de analítica:</strong> las coloca Google Analytics para contar las visitas y ver cómo se usa el sitio (ver la sección 4).</li>
         <li><strong class="text-white">Cookies publicitarias:</strong> las colocan Google y sus socios cuando se muestran anuncios (ver la siguiente sección).</li>
       </ul>
       <p>Puedes bloquear o borrar las cookies en la configuración de tu navegador. Si bloqueas las cookies esenciales, no podrás unirte a un juego.</p>
@@ -56,17 +57,33 @@
     </section>
 
     <section class="space-y-4">
-      <h2 class="text-2xl font-bold text-white">4. Cómo usamos la información</h2>
+      <h2 class="text-2xl font-bold text-white">4. Analítica (Google Analytics)</h2>
+      <p>
+        Usamos Google Analytics para entender cómo se usa <%= SeoHelper::SITE_NAME %>: cuántas personas lo visitan,
+        qué páginas y juegos abren, cuánto tiempo se quedan, y el tipo de dispositivo, el navegador y el país
+        aproximado desde el que entran. Esto nos ayuda a corregir problemas y decidir qué juegos mejorar. Google
+        Analytics usa cookies y recopila esta información en nombre de Google; no recibe tu apodo ni lo que haces
+        dentro de un juego.
+      </p>
+      <ul class="list-disc pl-6 space-y-2">
+        <li>Más información en <%= link_to "Cómo utiliza Google la información de los sitios o aplicaciones que usan sus servicios", "https://policies.google.com/technologies/partner-sites?hl=es", class: link, target: "_blank", rel: "noopener" %>.</li>
+        <li>Puedes impedir que Google Analytics recopile datos sobre ti con el <%= link_to "complemento de inhabilitación para navegadores de Google Analytics", "https://tools.google.com/dlpage/gaoptout?hl=es", class: link, target: "_blank", rel: "noopener" %>, o bloqueando las cookies en tu navegador.</li>
+      </ul>
+    </section>
+
+    <section class="space-y-4">
+      <h2 class="text-2xl font-bold text-white">5. Cómo usamos la información</h2>
       <ul class="list-disc pl-6 space-y-2">
         <li>Para crear salas, conectar a los jugadores y hacer funcionar los juegos en tiempo real.</li>
         <li>Para mostrar puntajes, resultados y tablas de posiciones a las personas de la misma sala.</li>
         <li>Para mantener el sitio seguro, encontrar errores y mejorar los juegos.</li>
+        <li>Para medir cuántas personas nos visitan y qué juegos juegan (Google Analytics).</li>
         <li>Para mostrar anuncios que ayudan a pagar el servicio.</li>
       </ul>
     </section>
 
     <section class="space-y-4">
-      <h2 class="text-2xl font-bold text-white">5. Cuánto tiempo la guardamos</h2>
+      <h2 class="text-2xl font-bold text-white">6. Cuánto tiempo la guardamos</h2>
       <p>
         Los jugadores que salen de una sala se eliminan de ella poco después de desconectarse. Los datos de la sala
         (código, configuración, apodos y puntajes) quedan en nuestra base de datos cuando termina el juego, y solo se
@@ -77,16 +94,16 @@
     </section>
 
     <section class="space-y-4">
-      <h2 class="text-2xl font-bold text-white">6. Con quién la compartimos</h2>
+      <h2 class="text-2xl font-bold text-white">7. Con quién la compartimos</h2>
       <p>
         No vendemos ni alquilamos tu información. Los datos solo se comparten con los proveedores que nos ayudan a
-        operar el sitio (proveedores de alojamiento y de base de datos), con Google para la publicidad como se describe
+        operar el sitio (proveedores de alojamiento y de base de datos), con Google para la analítica y la publicidad como se describe
         arriba, o cuando la ley lo exige.
       </p>
     </section>
 
     <section class="space-y-4">
-      <h2 class="text-2xl font-bold text-white">7. Menores de edad</h2>
+      <h2 class="text-2xl font-bold text-white">8. Menores de edad</h2>
       <p>
         <%= SeoHelper::SITE_NAME %> es un sitio web para público general y no está dirigido a menores de 13 años. No
         recopilamos a sabiendas información personal de menores. Los juegos suelen jugarse en familia; en ese caso, un
@@ -96,7 +113,7 @@
     </section>
 
     <section class="space-y-4">
-      <h2 class="text-2xl font-bold text-white">8. Tus derechos</h2>
+      <h2 class="text-2xl font-bold text-white">9. Tus derechos</h2>
       <p>
         Según dónde vivas (por ejemplo, bajo el RGPD en Europa o la CCPA en California), puedes tener derecho a acceder,
         corregir o borrar tu información personal, o a oponerte a cómo se usa. Para hacer una solicitud, escribe a
@@ -105,7 +122,7 @@
     </section>
 
     <section class="space-y-4">
-      <h2 class="text-2xl font-bold text-white">9. Cambios en esta política</h2>
+      <h2 class="text-2xl font-bold text-white">10. Cambios en esta política</h2>
       <p>
         Podemos actualizar esta Política de privacidad de vez en cuando. La fecha al inicio de esta página indica cuándo
         se cambió por última vez.
