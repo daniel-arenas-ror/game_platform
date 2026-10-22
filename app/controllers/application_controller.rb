@@ -24,6 +24,12 @@ class ApplicationController < ActionController::Base
 
   private
 
+  # A Google Analytics event for the next page this browser shows (AnalyticsHelper), for actions
+  # that end in a redirect.
+  def track_analytics(name, **params)
+    flash[:analytics_events] = Array(flash[:analytics_events]) + [ { "name" => name, "params" => params.stringify_keys } ]
+  end
+
   # The URL decides the language. Controllers that work inside a room override #room_locale,
   # so everyone in that room gets the room's language whatever link they came from.
   def switch_locale(&action)
