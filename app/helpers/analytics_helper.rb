@@ -3,7 +3,7 @@
 # Admin pages use their own layout and never load it.
 module AnalyticsHelper
   def google_analytics_tag
-    measurement_id = ENV["GA_MEASUREMENT_ID"]
+    measurement_id = ENV["GA_MEASUREMENT_ID"].presence || Rails.application.credentials.ga_measurement_id
     return unless Rails.env.production? && measurement_id.present?
 
     safe_join([
