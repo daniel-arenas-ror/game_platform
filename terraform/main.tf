@@ -17,6 +17,7 @@ locals {
     SSM_MONGO_PASSWORD=${aws_ssm_parameter.mongo_password.name}
     DATA_VOLUME_ID=${aws_ebs_volume.data.id}
     COMPOSE_VERSION=${var.docker_compose_version}
+    GA_MEASUREMENT_ID=${var.ga_measurement_id}
   EOT
 
   cloud_init = {

@@ -98,3 +98,9 @@ variable "docker_compose_version" {
   type        = string
   default     = "v2.29.7"
 }
+
+variable "ga_measurement_id" {
+  description = "ga event measure"
+  type        = string
+  default     = ""
+}
