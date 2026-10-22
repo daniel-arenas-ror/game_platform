@@ -39,6 +39,11 @@ class Game
     end
   end
 
+  # Players needed in the lobby before the host can start (at least 1, even with no min_players).
+  def min_players_to_start
+    [ min_players.to_i, 1 ].max
+  end
+
   # Settings a game page can recommend it for.
   PERFECT_FOR = %w[party family classroom work video_call].freeze
 

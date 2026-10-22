@@ -42,6 +42,10 @@ class Room
     "monster_mash"           => "monster_mash_room_"
   }.freeze
 
+  def enough_players?
+    players.count >= game.min_players_to_start
+  end
+
   def game_stream_name
     "#{GAME_STREAM_PREFIXES[game.code] || "#{game.code}_room_"}#{code}"
   end

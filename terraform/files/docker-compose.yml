@@ -22,6 +22,7 @@ services:
       RAILS_MASTER_KEY: ${RAILS_MASTER_KEY}
       MONGODB_URI: mongodb://${MONGO_USER}:${MONGO_PASSWORD}@mongo:27017/game_platform_production?authSource=admin
       RAILS_LOG_LEVEL: info
+      GA_MEASUREMENT_ID: ${GA_MEASUREMENT_ID}
     depends_on:
       mongo:
         condition: service_healthy

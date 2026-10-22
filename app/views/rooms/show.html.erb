@@ -10,7 +10,8 @@
      data-game-subscription-room-code-value="<%= @room.code %>"
      data-game-subscription-user-id-value="<%= current_player&.id %>"
      data-game-subscription-host-value="<%= host %>"
-     data-game-subscription-players-url-value="<%= players_room_path(@room.code) %>">
+     data-game-subscription-players-url-value="<%= players_room_path(@room.code) %>"
+     data-game-subscription-min-players-value="<%= @game.min_players_to_start %>">
 
   <div class="bg-slate-900 min-h-screen text-white px-4 sm:px-8 py-8 sm:py-12 overflow-x-clip">
     <% players = @room.players.to_a %>
@@ -60,7 +61,13 @@
           </div>
 
           <div class="mt-auto pt-10">
+            <%# Shown when the host tries to start without enough players (JS, or the server's redirect) %>
+            <p id="start-warning" role="alert"
+               class="<%= "hidden" unless flash[:alert] %> mb-4 rounded-2xl border border-amber-400/40 bg-amber-400/10 px-4 py-3 text-center font-semibold text-amber-200 text-pretty">
+              <%= flash[:alert] || t(".need_players", count: @game.min_players_to_start) %>
+            </p>
             <%= button_to start_room_path(@room.code), method: :post, remote: true,
+                  form: { data: { action: "submit->game-subscription#start" } },
                   class: "btn btn-lg btn-go w-full uppercase tracking-widest" do %>
               <%= t(".start") %>
             <% end %>

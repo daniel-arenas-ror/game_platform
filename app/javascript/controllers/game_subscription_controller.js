@@ -3,11 +3,12 @@ import consumer from "channels/consumer"
 import { t } from "controllers/shared/i18n"
 import { confirmRemove, removePlayer } from "controllers/shared/remove_player"
 import { avatar } from "controllers/shared/avatar"
+import { pop } from "controllers/shared/celebration"
 
 const REMOVE_CLASS = "shrink-0 rounded-lg border border-red-500/40 bg-red-500/10 px-3 py-1.5 text-sm font-bold text-red-300 hover:bg-red-500/20 disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-red-400"
 
 export default class extends Controller {
-  static values = { roomCode: String, userId: String, host: Boolean, playersUrl: String }
+  static values = { roomCode: String, userId: String, host: Boolean, playersUrl: String, minPlayers: Number }
 
   connect() {
     this.subscribe()
@@ -81,9 +82,25 @@ export default class extends Controller {
   }
 
   updateCount() {
-    const count = document.querySelectorAll("#player-list > [id^='player-']").length
+    const count = this.playerCount()
     const badge = document.getElementById("player-count")
     if (badge) badge.textContent = t("room_players.players_count", { count })
+    if (count >= this.minPlayersValue) document.getElementById("start-warning")?.classList.add("hidden")
+  }
+
+  playerCount() {
+    return document.querySelectorAll("#player-list > [id^='player-']").length
+  }
+
+  // Host's Start Game: with too few players, say so instead of starting an empty game.
+  // The server checks again (rooms#start), so this is only the quick answer.
+  start(event) {
+    if (this.playerCount() >= this.minPlayersValue) return
+
+    event.preventDefault()
+    const warning = document.getElementById("start-warning")
+    warning?.classList.remove("hidden")
+    pop(warning)
   }
 
   removeButton(data) {

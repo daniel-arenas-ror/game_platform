@@ -86,6 +86,10 @@ class RoomsController < ApplicationController
 
   def start
     @room = Room.find_by!(code: params[:id].upcase)
+    unless @room.enough_players?
+      return redirect_to room_path(@room.code), alert: t("rooms.show.need_players", count: @room.game.min_players_to_start)
+    end
+
     game_manager = GameFactory.build(@room)
 
     if game_manager.setup_game!

@@ -285,6 +285,9 @@ en:
       players_count:
         one: "%{count} player"
         other: "%{count} players"
+      need_players:
+        one: "Nobody is in the lobby yet. You need at least 1 player to start: share the code or the QR."
+        other: "Not enough players yet. You need at least %{count} players to start this game."
     join:
       title: "Join %{game}"
       room_code: "Room Code:"
