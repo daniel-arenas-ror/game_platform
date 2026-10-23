@@ -2,7 +2,6 @@
 name: Haunted House
 slug: haunted-house
 # Halloween: first in the catalog for the season. Remove the position after Halloween.
-position: 1
 description: A spooky social deduction game. Secret ghosts scare players out of the house each
   night, and everyone else has to find them and vote them out before it's too late.
 tagline: Someone in this house is a ghost. Maybe it's you.

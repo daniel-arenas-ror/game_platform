@@ -2,7 +2,6 @@
 name: Monster Mash
 slug: monster-mash
 # Halloween: right after Haunted House in the catalog for the season. Remove the position after Halloween.
-position: 2
 description: A Halloween drawing relay. Everyone draws a head, a body and legs for monsters that
   get passed around, without seeing the rest. Then the big screen reveals the creatures you made.
 tagline: You drew a head. Someone gave it chicken legs.
