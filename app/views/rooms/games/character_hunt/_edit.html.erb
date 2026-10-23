@@ -1,6 +1,24 @@
 <% hunt  = GameServices::CharacterHunt %>
 <% state = @room.game_state %>
 
+<%# Theme: the scenes and what the crowd wears %>
+<div class="space-y-4 bg-slate-900/50 p-6 rounded-2xl border border-slate-700">
+  <label class="block text-xs font-bold text-slate-400 mb-3 tracking-widest"><%= t(".theme") %></label>
+  <div class="grid grid-cols-2 gap-3">
+    <% theme = hunt::THEMES.include?(state["theme"]) ? state["theme"] : hunt::DEFAULT_THEME %>
+    <% hunt::THEMES.each do |name| %>
+      <label class="relative cursor-pointer">
+        <input type="radio" name="room[game_state][theme]" value="<%= name %>" class="peer hidden" <%= "checked" if theme == name %>>
+        <div class="h-full text-center py-3 px-2 bg-slate-800 border-2 border-slate-700 rounded-xl text-white
+                    peer-checked:border-yellow-400 peer-checked:bg-yellow-400/10 transition-all">
+          <p class="font-bold"><%= t(".theme_#{name}") %></p>
+          <p class="text-xs text-slate-400 mt-1"><%= t(".theme_#{name}_desc") %></p>
+        </div>
+      </label>
+    <% end %>
+  </div>
+</div>
+
 <%# Difficulty: how many people, how many lookalikes %>
 <div class="space-y-4 bg-slate-900/50 p-6 rounded-2xl border border-slate-700">
   <label class="block text-xs font-bold text-slate-400 mb-3 tracking-widest"><%= t(".difficulty") %></label>

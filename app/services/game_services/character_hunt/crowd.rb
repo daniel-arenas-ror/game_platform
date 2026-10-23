@@ -17,6 +17,20 @@ module GameServices::CharacterHunt::Crowd
     "extra" => "extras", "extra_color" => "colors", "beard" => "beards"
   }.freeze
 
+  # Each theme's values for every trait (indexes), from characters.yml's `themes:`.
+  THEMES = CATALOG["themes"].to_h do |theme, pools|
+    [ theme, TRAITS.to_h do |key, list|
+      values = CATALOG.fetch(list)
+      [ key, pools[list] ? pools[list].map { |v| values.index(v) || raise("#{theme}: no #{v} in #{list}") } : (0...values.size).to_a ]
+    end ]
+  end.freeze
+
+  # Parts that hide others: a pumpkin head covers hair, glasses and face.
+  HEAD_COVERS = %w[pumpkin].freeze
+  # Parts drawn in their own colours (no colour trait).
+  FIXED_COLOR_HATS   = %w[none pumpkin].freeze
+  FIXED_COLOR_EXTRAS = %w[none broom candy_bucket].freeze
+
   # Chance of none (index 0) for the optional parts.
   NONE_CHANCE = { "pattern" => 0.45, "hat" => 0.45, "glasses" => 0.65, "extra" => 0.6, "beard" => 0.75 }.freeze
 
@@ -41,9 +55,10 @@ module GameServices::CharacterHunt::Crowd
   # people when the scene is full; the target and decoys are always there.
   def build(scene_id, count:, decoys:, size: 1.0)
     scene  = SCENES.fetch(scene_id)
-    target = random_traits
-    looks  = decoys_of(target, decoys)
-    people = [ target, *looks ] + Array.new(count - 1 - looks.size) { filler_for(target) }
+    theme  = scene.fetch("theme")
+    target = random_traits(theme)
+    looks  = decoys_of(target, decoys, theme)
+    people = [ target, *looks ] + Array.new(count - 1 - looks.size) { filler_for(target, theme) }
 
     placed = []
     people.each_with_index do |traits, i|
@@ -68,20 +83,22 @@ module GameServices::CharacterHunt::Crowd
 
   # ── Traits ───────────────────────────────────────────────────────────────
 
-  def random_traits
-    traits = TRAITS.keys.to_h { |key| [ key, random_value(key) ] }
-    traits["pattern_color"] = other_value("pattern_color", traits["top"])
+  def random_traits(theme = "classic")
+    traits = TRAITS.keys.to_h { |key| [ key, random_value(key, theme) ] }
+    traits["pattern_color"] = other_value("pattern_color", traits["top"], theme)
     normalize(traits)
   end
 
-  # Drops the traits nobody can see (a bald head's hair colour, a plain top's pattern colour…), so
-  # two characters that look the same have equal traits.
+  # Drops the traits nobody can see (a bald head's hair colour, a plain top's pattern colour, the
+  # hair under a pumpkin…), so two characters that look the same have equal traits.
   def normalize(traits)
     traits = traits.dup
-    traits.delete("hair_color") if traits["hair"].zero? && traits["beard"].zero?
-    traits.delete("pattern_color") if traits["pattern"].zero?
-    traits.delete("hat_color") if traits["hat"].zero?
-    traits.delete("extra_color") if traits["extra"].zero?
+    name   = ->(key) { CATALOG[TRAITS[key]][traits[key].to_i] }
+    traits.except!("hair", "hair_color", "glasses", "beard") if HEAD_COVERS.include?(name.("hat"))
+    traits.delete("hair_color") if name.("hair") == "bald" && %w[mustache beard].exclude?(name.("beard"))
+    traits.delete("pattern_color") if name.("pattern") == "plain"
+    traits.delete("hat_color") if FIXED_COLOR_HATS.include?(name.("hat"))
+    traits.delete("extra_color") if FIXED_COLOR_EXTRAS.include?(name.("extra"))
     traits
   end
 
@@ -92,15 +109,15 @@ module GameServices::CharacterHunt::Crowd
 
   # `count` different lookalikes, each with one thing changed (two when the change shows a new
   # part: a hat appears with its colour).
-  def decoys_of(target, count)
+  def decoys_of(target, count, theme = "classic")
     decoys = []
     (count * 30).times do
       break if decoys.size == count
 
       key = (DECOY_CHANGES & target.keys).sample
-      decoy = target.merge(key => other_value(key, target[key]))
-      TRAITS.each_key { |k| decoy[k] ||= random_value(k, none: false) }
-      decoy["pattern_color"] = other_value("pattern_color", decoy["top"]) if decoy["pattern_color"] == decoy["top"]
+      decoy = target.merge(key => other_value(key, target[key], theme))
+      TRAITS.each_key { |k| decoy[k] ||= random_value(k, theme, none: false) }
+      decoy["pattern_color"] = other_value("pattern_color", decoy["top"], theme) if decoy["pattern_color"] == decoy["top"]
       decoy = normalize(decoy)
       next if decoy == target || decoys.include?(decoy) || distance(decoy, target) > 2
 
@@ -109,23 +126,23 @@ module GameServices::CharacterHunt::Crowd
     decoys
   end
 
-  def filler_for(target)
+  def filler_for(target, theme = "classic")
     loop do
-      traits = random_traits
+      traits = random_traits(theme)
       return traits if distance(traits, target) >= FILLER_DISTANCE
     end
   end
 
-  def random_value(key, none: true)
-    size = CATALOG.fetch(TRAITS[key]).size
+  def random_value(key, theme = "classic", none: true)
+    pool = THEMES.fetch(theme).fetch(key)
     return 0 if none && NONE_CHANCE.key?(key) && rand < NONE_CHANCE[key]
 
-    NONE_CHANCE.key?(key) ? rand(1...size) : rand(size)
+    NONE_CHANCE.key?(key) ? (pool - [ 0 ]).sample : pool.sample
   end
 
-  # Any other value of `key` (for a pattern colour: any colour but the top's).
-  def other_value(key, value)
-    ((0...CATALOG.fetch(TRAITS[key]).size).to_a - [ value ]).sample
+  # Any other value of `key` in the theme (for a pattern colour: any colour but the top's).
+  def other_value(key, value, theme = "classic")
+    (THEMES.fetch(theme).fetch(key) - [ value ]).sample
   end
 
   # ── Placement ────────────────────────────────────────────────────────────

@@ -55,14 +55,52 @@ class CharacterHuntTest < ActiveSupport::TestCase
   test "bad settings fall back to the defaults" do
     @room.update!(game_state: { "total_rounds" => "99", "round_time" => "7", "difficulty" => "insane" })
     Hunt.new(@room).setup_game!
-    assert_equal [ 5, 90, "normal" ], state.values_at("total_rounds", "round_time", "difficulty")
+    assert_equal [ 5, 90, "normal", "classic" ], state.values_at("total_rounds", "round_time", "difficulty", "theme")
   end
 
   test "scenes never repeat twice in a row and all are used before any repeats" do
-    order = Hunt.scene_order(8)
-    assert_equal 8, order.size
-    assert(order.each_cons(2).none? { |a, b| a == b })
-    assert_equal Crowd::SCENES.keys.sort, order.first(Crowd::SCENES.size).sort
+    Hunt::THEMES.each do |theme|
+      scenes = Crowd::SCENES.select { |_, s| s["theme"] == theme }.keys
+      order  = Hunt.scene_order(8, theme)
+      assert_operator scenes.size, :>=, 3, theme
+      assert_equal 8, order.size
+      assert(order.each_cons(2).none? { |a, b| a == b })
+      assert_equal scenes.sort, order.first(scenes.size).sort
+    end
+  end
+
+  test "a Halloween game uses the Halloween scenes; a bad theme falls back to classic" do
+    @room.update!(game_state: { "theme" => "halloween" })
+    Hunt.new(@room).setup_game!
+    assert_equal "halloween", state["theme"]
+    assert(state["scene_order"].all? { |id| Crowd::SCENES[id]["theme"] == "halloween" })
+
+    @room.update!(game_state: { "theme" => "christmas" })
+    Hunt.new(@room).setup_game!
+    assert_equal "classic", state["theme"]
+  end
+
+  test "each theme's crowd wears only that theme's clothes" do
+    names = ->(traits, key) { Crowd::CATALOG[Crowd::TRAITS[key]][traits[key]] if traits.key?(key) }
+    { "plaza" => "classic", "graveyard" => "halloween" }.each do |scene_id, theme|
+      people = Crowd.build(scene_id, count: 150, decoys: 4, size: 0.85)["scene"]["characters"].map { _1["traits"] }
+      people.each do |t|
+        t.each { |key, value| assert_includes Crowd::THEMES[theme][key], value, "#{theme} #{key}" }
+      end
+      hats = people.filter_map { names.(_1, "hat") }.uniq
+      if theme == "halloween"
+        assert_operator (hats & %w[witch horns cat_ears pumpkin]).size, :>=, 3
+      else
+        assert_empty hats & %w[witch horns cat_ears pumpkin]
+      end
+    end
+  end
+
+  test "a pumpkin head hides the hair, glasses and face" do
+    pumpkin = Crowd::CATALOG["hats"].index("pumpkin")
+    traits  = Crowd.normalize({ "hat" => pumpkin, "hat_color" => 1, "hair" => 2, "hair_color" => 1, "glasses" => 1,
+                                "beard" => 1, "pattern" => 0, "extra" => 0 })
+    assert_equal({ "hat" => pumpkin, "pattern" => 0, "extra" => 0 }, traits)
   end
 
   # ── The crowd ────────────────────────────────────────────────────────────

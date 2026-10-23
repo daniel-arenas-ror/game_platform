@@ -21,9 +21,11 @@ long_description: >-
   spot them. The first to find them scores 3 points, the second 2 and the third 1, and then the round
   ends. Careful with lucky guesses: tap the wrong person and your phone freezes for 3 seconds. Watch
   out for lookalikes too, people dressed almost the same with just a different hat or no glasses. At
-  the end of each round the big screen zooms in on where the person was hiding.
+  the end of each round the big screen zooms in on where the person was hiding. For Halloween, switch
+  to the spooky theme: a graveyard, a pumpkin patch and a haunted street, with a crowd of witches,
+  vampires, skeletons and pumpkin heads.
 how_to_play:
-  - "The host picks the difficulty (60, 100 or 150 people, with up to 4 lookalikes), the number of rounds and the time to search."
+  - "The host picks the theme (Classic or Halloween), the difficulty (60, 100 or 150 people, with up to 4 lookalikes), the number of rounds and the time to search."
   - Each round starts with the person to find, on the big screen and on every phone. Remember their clothes, hat and glasses.
   - Then the scene appears on your phone. Pinch to zoom, drag to look around, and tap the person when you find them.
   - The first three to find them score 3, 2 and 1 points. A wrong tap freezes your phone for 3 seconds.
@@ -44,6 +46,8 @@ faq:
     a: On Normal and Hard, the crowd hides 2 or 4 people dressed almost like the person you're looking for, with one or two things changed, like a different hat colour or no glasses.
   - q: Is the crowd the same on every phone?
     a: Yes. The big screen and every phone show exactly the same scene, so it's a fair race. Each round has a new crowd and a new person to find.
+  - q: Is there a Halloween version?
+    a: Yes. Pick the Halloween theme before you start. The rounds move to a graveyard, a pumpkin patch and a haunted street, and the crowd dresses up as witches, vampires, cats, devils, skeletons, mummies and pumpkin heads.
 
 # Spanish. Same fields as above; anything missing falls back to English.
 translations:
@@ -64,9 +68,11 @@ translations:
       puntos, el segundo 2 y el tercero 1, y ahí termina la ronda. Cuidado con tocar al azar: si tocas a
       la persona equivocada, tu celular se congela 3 segundos. Y ojo con los parecidos, gente vestida casi
       igual pero con otro sombrero o sin lentes. Al final de cada ronda la pantalla grande se acerca a
-      donde estaba escondida.
+      donde estaba escondida. Para Halloween, cambia al tema de miedo: un cementerio, un campo de
+      calabazas y una calle embrujada, con una multitud de brujas, vampiros, esqueletos y cabezas de
+      calabaza.
     how_to_play:
-      - "El anfitrión elige la dificultad (60, 100 o 150 personas, con hasta 4 parecidos), el número de rondas y el tiempo para buscar."
+      - "El anfitrión elige el tema (Clásico o Halloween), la dificultad (60, 100 o 150 personas, con hasta 4 parecidos), el número de rondas y el tiempo para buscar."
       - Cada ronda empieza mostrando a la persona que hay que encontrar, en la pantalla grande y en cada celular. Recuerda su ropa, su sombrero y sus lentes.
       - Luego aparece la escena en tu celular. Pellizca para acercar, arrastra para moverte y tócala cuando la encuentres.
       - Los tres primeros en encontrarla suman 3, 2 y 1 puntos. Si tocas a la persona equivocada, tu celular se congela 3 segundos.
@@ -86,3 +92,5 @@ translations:
         a: En Normal y Difícil, la multitud esconde a 2 o 4 personas vestidas casi igual que la que buscas, con una o dos cosas distintas, como otro color de sombrero o sin lentes.
       - q: ¿La multitud es la misma en todos los celulares?
         a: Sí. La pantalla grande y todos los celulares muestran exactamente la misma escena, así que la carrera es justa. Cada ronda trae una multitud nueva y otra persona que buscar.
+      - q: ¿Hay una versión de Halloween?
+        a: Sí. Elige el tema Halloween antes de empezar. Las rondas pasan a un cementerio, un campo de calabazas y una calle embrujada, y la multitud se disfraza de brujas, vampiros, gatos, diablos, esqueletos, momias y cabezas de calabaza.

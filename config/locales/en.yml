@@ -377,6 +377,11 @@ en:
           draw_time_option: "%{count} sec"
       character_hunt:
         edit:
+          theme: "THEME"
+          theme_classic: "🏙️ Classic"
+          theme_classic_desc: "Park, beach and town square"
+          theme_halloween: "🎃 Halloween"
+          theme_halloween_desc: "Graveyard, pumpkin patch and haunted street, everyone in costume"
           difficulty: "DIFFICULTY"
           easy: "Easy"
           normal: "Normal"

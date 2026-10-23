@@ -366,6 +366,11 @@ es:
           draw_time_option: "%{count} seg"
       character_hunt:
         edit:
+          theme: "TEMA"
+          theme_classic: "🏙️ Clásico"
+          theme_classic_desc: "Parque, playa y plaza"
+          theme_halloween: "🎃 Halloween"
+          theme_halloween_desc: "Cementerio, campo de calabazas y calle embrujada, todos disfrazados"
           difficulty: "DIFICULTAD"
           easy: "Fácil"
           normal: "Normal"

@@ -1,23 +1,45 @@
 # The places a round can happen in. Each is drawn in code (controllers/character_hunt/scene.js);
-# this file says where people may stand. Coordinates are fractions of the scene (x of its width,
-# y of its height); `ratio` is width / height.
+# this file says where people may stand and which theme the scene belongs to (the crowd dresses
+# for it, see characters.yml). Coordinates are fractions of the scene (x of its width, y of its
+# height); `ratio` is width / height.
 #
 # areas:  rectangles [x0, y0, x1, y1] where a character's feet may be
 # holes:  rectangles inside the areas where nobody stands (a pond, a fountain)
 # heights: a character's height (fraction of the scene height) at the top of the areas and at
 #          the bottom of the scene: people further away are smaller
 park:
+  theme: classic
   ratio: 1.6
   areas: [[0.02, 0.30, 0.98, 0.99]]
   holes: [[0.58, 0.40, 0.84, 0.64]]
   heights: [0.065, 0.12]
 beach:
+  theme: classic
   ratio: 1.6
   areas: [[0.02, 0.36, 0.98, 0.99]]
   holes: []
   heights: [0.065, 0.12]
 plaza:
+  theme: classic
   ratio: 1.6
   areas: [[0.02, 0.34, 0.98, 0.99]]
   holes: [[0.38, 0.52, 0.62, 0.78]]
+  heights: [0.065, 0.12]
+graveyard:
+  theme: halloween
+  ratio: 1.6
+  areas: [[0.02, 0.33, 0.98, 0.99]]
+  holes: [[0.42, 0.36, 0.58, 0.47]] # the crypt's steps
+  heights: [0.065, 0.12]
+pumpkin_patch:
+  theme: halloween
+  ratio: 1.6
+  areas: [[0.02, 0.34, 0.98, 0.99]]
+  holes: [[0.06, 0.62, 0.2, 0.8]] # the hay bales
+  heights: [0.065, 0.12]
+haunted_street:
+  theme: halloween
+  ratio: 1.6
+  areas: [[0.02, 0.36, 0.98, 0.99]]
+  holes: []
   heights: [0.065, 0.12]

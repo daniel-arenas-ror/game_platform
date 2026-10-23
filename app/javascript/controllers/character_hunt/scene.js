@@ -76,6 +76,7 @@ export function drawCharacter(ctx, x, y, h, flip, t, cat) {
   ctx.lineCap     = "round"
   ctx.strokeStyle = OUTLINE
 
+  if (extra === "cape") shape(ctx, color(t.extra_color), c => { c.moveTo(-0.17, -0.8); c.lineTo(0.17, -0.8); c.lineTo(0.29, -0.1); c.lineTo(-0.29, -0.1); c.closePath() })
   if (extra === "backpack") shape(ctx, color(t.extra_color), c => roundRect(c, -0.25, -0.77, 0.3, 0.32, 0.05))
   if (cat.hair_styles[t.hair] === "long") shape(ctx, hair, c => roundRect(c, -0.15, -0.95, 0.3, 0.26, 0.06))
   if (cat.hair_styles[t.hair] === "ponytail") shape(ctx, hair, c => c.ellipse(-0.17, -0.84, 0.05, 0.1, 0.4, 0, Math.PI * 2))
@@ -84,6 +85,8 @@ export function drawCharacter(ctx, x, y, h, flip, t, cat) {
 
   // Arms (sleeves and hands), then the body over them.
   shape(ctx, top, c => { roundRect(c, -0.235, -0.77, 0.09, 0.3, 0.04); roundRect(c, 0.145, -0.77, 0.09, 0.3, 0.04) })
+  if (extra === "broom") drawBroom(ctx)
+  if (extra === "candy_bucket") drawCandyBucket(ctx)
   shape(ctx, skin, c => { c.arc(-0.19, -0.45, 0.042, 0, Math.PI * 2); c.moveTo(0.232, -0.45); c.arc(0.19, -0.45, 0.042, 0, Math.PI * 2) })
   shape(ctx, top, c => roundRect(c, -0.165, -0.79, 0.33, 0.4, 0.06))
   drawPattern(ctx, cat.patterns[t.pattern], color(t.pattern_color))
@@ -94,6 +97,12 @@ export function drawCharacter(ctx, x, y, h, flip, t, cat) {
     line(ctx, [ [ 0.09, -0.78 ], [ 0.09, -0.52 ] ])
     ctx.strokeStyle = OUTLINE
     ctx.lineWidth   = 0.022
+  }
+  if (extra === "cape") {
+    shape(ctx, color(t.extra_color), c => {
+      c.moveTo(-0.15, -0.79); c.lineTo(-0.04, -0.79); c.lineTo(-0.17, -0.95); c.closePath()
+      c.moveTo(0.15, -0.79); c.lineTo(0.04, -0.79); c.lineTo(0.17, -0.95); c.closePath()
+    })
   }
 
   // Neck and head.
@@ -136,6 +145,17 @@ function drawPattern(ctx, pattern, color) {
     })
   } else if (pattern === "split") {
     ctx.fillRect(0, -0.8, 0.2, 0.42)
+  } else if (pattern === "bones") {
+    ctx.fillRect(-0.015, -0.77, 0.03, 0.36)
+    ;[ -0.72, -0.64, -0.56 ].forEach(y => ctx.fillRect(-0.12, y, 0.24, 0.03))
+    ctx.beginPath()
+    ctx.ellipse(0, -0.46, 0.08, 0.035, 0, 0, Math.PI * 2)
+    ctx.fill()
+  } else if (pattern === "bandages") {
+    ctx.save()
+    ctx.rotate(-0.25)
+    for (let y = -0.85; y < -0.2; y += 0.075) ctx.fillRect(-0.4, y, 0.8, 0.05)
+    ctx.restore()
   }
   ctx.restore()
   ctx.beginPath()
@@ -177,6 +197,14 @@ function drawHair(ctx, style, color) {
 function drawFace(ctx, beard, hair, glasses) {
   if (beard === "beard") shape(ctx, hair, c => c.arc(0, -0.85, 0.11, Math.PI * 0.05, Math.PI * 0.95))
   if (beard === "mustache") shape(ctx, hair, c => c.ellipse(0, -0.835, 0.055, 0.018, 0, 0, Math.PI * 2))
+  if (beard === "fangs") {
+    ctx.lineWidth = 0.01
+    shape(ctx, "#ffffff", c => {
+      c.moveTo(-0.04, -0.835); c.lineTo(-0.015, -0.835); c.lineTo(-0.0275, -0.8); c.closePath()
+      c.moveTo(0.015, -0.835); c.lineTo(0.04, -0.835); c.lineTo(0.0275, -0.8); c.closePath()
+    })
+    ctx.lineWidth = 0.022
+  }
 
   ctx.fillStyle = OUTLINE
   ;[ -0.045, 0.045 ].forEach(ex => { ctx.beginPath(); ctx.arc(ex, -0.89, 0.016, 0, Math.PI * 2); ctx.fill() })
@@ -219,7 +247,66 @@ function drawHat(ctx, hat, color) {
       shape(ctx, color, c => { c.moveTo(-0.09, -0.97); c.lineTo(0.0, -1.2); c.lineTo(0.09, -0.97); c.closePath() })
       shape(ctx, "#facc15", c => c.arc(0, -1.2, 0.03, 0, Math.PI * 2))
       break
+    case "witch":
+      shape(ctx, color, c => c.ellipse(0, -0.96, 0.23, 0.04, 0, 0, Math.PI * 2))
+      shape(ctx, color, c => { c.moveTo(-0.11, -0.97); c.lineTo(0.03, -1.2); c.lineTo(0.15, -1.26); c.lineTo(0.08, -1.18); c.lineTo(0.11, -0.97); c.closePath() })
+      shape(ctx, "#facc15", c => c.rect(-0.03, -1.02, 0.06, 0.04))
+      break
+    case "horns":
+      shape(ctx, color, c => {
+        c.moveTo(-0.1, -0.96); c.quadraticCurveTo(-0.15, -1.05, -0.12, -1.11); c.quadraticCurveTo(-0.07, -1.03, -0.04, -0.99); c.closePath()
+        c.moveTo(0.1, -0.96); c.quadraticCurveTo(0.15, -1.05, 0.12, -1.11); c.quadraticCurveTo(0.07, -1.03, 0.04, -0.99); c.closePath()
+      })
+      break
+    case "cat_ears":
+      shape(ctx, color, c => {
+        c.moveTo(-0.12, -0.94); c.lineTo(-0.1, -1.08); c.lineTo(-0.02, -0.99); c.closePath()
+        c.moveTo(0.12, -0.94); c.lineTo(0.1, -1.08); c.lineTo(0.02, -0.99); c.closePath()
+      })
+      fill(ctx, "#f9a8d4", c => {
+        c.moveTo(-0.1, -0.96); c.lineTo(-0.095, -1.04); c.lineTo(-0.05, -0.99); c.closePath()
+        c.moveTo(0.1, -0.96); c.lineTo(0.095, -1.04); c.lineTo(0.05, -0.99); c.closePath()
+      })
+      break
+    case "pumpkin":
+      // Covers the whole head (the crowd builder drops the hair and face underneath).
+      shape(ctx, "#16a34a", c => c.rect(-0.015, -1.06, 0.03, 0.05))
+      shape(ctx, "#f97316", c => c.ellipse(0, -0.89, 0.16, 0.14, 0, 0, Math.PI * 2))
+      ctx.lineWidth = 0.012
+      ctx.beginPath(); ctx.ellipse(0, -0.89, 0.07, 0.14, 0, 0, Math.PI * 2); ctx.stroke()
+      ctx.lineWidth = 0.022
+      fill(ctx, "#1c1917", c => {
+        c.moveTo(-0.08, -0.9); c.lineTo(-0.04, -0.9); c.lineTo(-0.06, -0.95); c.closePath()
+        c.moveTo(0.08, -0.9); c.lineTo(0.04, -0.9); c.lineTo(0.06, -0.95); c.closePath()
+        c.moveTo(-0.08, -0.84); c.lineTo(0.08, -0.84); c.lineTo(0.05, -0.8); c.lineTo(0.02, -0.83)
+        c.lineTo(-0.01, -0.8); c.lineTo(-0.04, -0.83); c.lineTo(-0.06, -0.8); c.closePath()
+      })
+      break
   }
+}
+
+function drawBroom(ctx) {
+  ctx.strokeStyle = "#78350f"
+  ctx.lineWidth   = 0.03
+  line(ctx, [ [ 0.24, -0.98 ], [ 0.17, -0.18 ] ])
+  ctx.strokeStyle = OUTLINE
+  ctx.lineWidth   = 0.022
+  shape(ctx, "#eab308", c => { c.moveTo(0.13, -0.2); c.lineTo(0.21, -0.2); c.lineTo(0.27, 0); c.lineTo(0.06, 0); c.closePath() })
+}
+
+// A pumpkin pail hanging from the hand.
+function drawCandyBucket(ctx) {
+  ctx.lineWidth = 0.012
+  ctx.beginPath()
+  ctx.arc(0.235, -0.38, 0.07, Math.PI * 1.05, Math.PI * 1.95)
+  ctx.stroke()
+  ctx.lineWidth = 0.022
+  shape(ctx, "#f97316", c => roundRect(c, 0.16, -0.39, 0.15, 0.13, 0.04))
+  fill(ctx, "#1c1917", c => {
+    c.moveTo(0.19, -0.35); c.lineTo(0.215, -0.35); c.lineTo(0.2025, -0.375); c.closePath()
+    c.moveTo(0.255, -0.35); c.lineTo(0.28, -0.35); c.lineTo(0.2675, -0.375); c.closePath()
+    c.rect(0.2, -0.32, 0.07, 0.02)
+  })
 }
 
 function drawBalloon(ctx, color) {
@@ -342,6 +429,154 @@ const BACKGROUNDS = {
       fill(ctx, "#fde68a", c => c.arc(lx, 0.295, 0.012, 0, Math.PI * 2))
     })
   }
+}
+
+// ── Halloween places ───────────────────────────────────────────────────────
+
+Object.assign(BACKGROUNDS, {
+  graveyard(ctx, w) {
+    const rand = seeded(53)
+    nightSky(ctx, w, 0.3, rand)
+    fill(ctx, "#312e81", c => { c.moveTo(0, 0.3); c.quadraticCurveTo(w * 0.25, 0.2, w * 0.5, 0.28); c.quadraticCurveTo(w * 0.8, 0.19, w, 0.27); c.lineTo(w, 0.32); c.lineTo(0, 0.32); c.closePath() })
+    fill(ctx, "#6b8f4e", c => c.rect(0, 0.31, w, 0.69))
+    // Bare trees in the corners.
+    ctx.strokeStyle = "#292524"
+    ;[ [ 0.12, 0.33 ], [ w - 0.12, 0.33 ] ].forEach(([ x, y ]) => {
+      ctx.lineWidth = 0.022
+      line(ctx, [ [ x, y ], [ x + 0.01, y - 0.2 ] ])
+      ctx.lineWidth = 0.01
+      line(ctx, [ [ x + 0.005, y - 0.1 ], [ x - 0.07, y - 0.19 ], [ x - 0.1, y - 0.2 ] ])
+      line(ctx, [ [ x + 0.008, y - 0.14 ], [ x + 0.08, y - 0.22 ] ])
+      line(ctx, [ [ x + 0.01, y - 0.2 ], [ x - 0.02, y - 0.26 ] ])
+    })
+    // The iron fence, then the crypt in front of it.
+    ctx.strokeStyle = "#111827"
+    ctx.lineWidth   = 0.006
+    line(ctx, [ [ 0, 0.25 ], [ w, 0.25 ] ])
+    line(ctx, [ [ 0, 0.3 ], [ w, 0.3 ] ])
+    for (let x = 0.01; x < w; x += 0.03) line(ctx, [ [ x, 0.32 ], [ x, 0.23 ] ])
+    fill(ctx, "#6b7280", c => c.rect(0.7, 0.17, 0.2, 0.2))
+    fill(ctx, "#4b5563", c => { c.moveTo(0.68, 0.17); c.lineTo(0.8, 0.09); c.lineTo(0.92, 0.17); c.closePath() })
+    fill(ctx, "#1f2937", c => { c.moveTo(0.77, 0.37); c.lineTo(0.77, 0.27); c.arc(0.8, 0.27, 0.03, Math.PI, 0); c.lineTo(0.83, 0.37); c.closePath() })
+    ;[ 0.37, 0.4, 0.43 ].forEach((y, i) => fill(ctx, i % 2 ? "#9ca3af" : "#a8a29e", c => c.rect(0.69 - i * 0.02, y, 0.22 + i * 0.04, 0.03)))
+    // Gravestones.
+    for (let i = 0; i < 22; i++) {
+      const x = 0.05 + rand() * (w - 0.1), y = 0.36 + rand() * 0.62
+      const s = 0.6 + (y - 0.36) * 0.9
+      if (x > 0.62 && x < 0.98 && y < 0.5) continue // the crypt's steps
+      ctx.strokeStyle = "#57534e"
+      ctx.lineWidth   = 0.004
+      if (i % 4 === 0) {
+        fill(ctx, "#a8a29e", c => { c.rect(x - 0.006 * s, y - 0.07 * s, 0.012 * s, 0.07 * s); c.rect(x - 0.022 * s, y - 0.055 * s, 0.044 * s, 0.012 * s) })
+      } else {
+        shape(ctx, "#a8a29e", c => { c.moveTo(x - 0.022 * s, y); c.lineTo(x - 0.022 * s, y - 0.04 * s); c.arc(x, y - 0.04 * s, 0.022 * s, Math.PI, 0); c.lineTo(x + 0.022 * s, y); c.closePath() })
+        fill(ctx, "#78716c", c => c.rect(x - 0.01 * s, y - 0.045 * s, 0.02 * s, 0.004 * s))
+      }
+    }
+    // Low mist.
+    ;[ [ 0.3, 0.55 ], [ 1.1, 0.7 ], [ 0.6, 0.88 ] ].forEach(([ x, y ]) => fill(ctx, "rgba(226, 232, 240, 0.18)", c => c.ellipse(x, y, 0.3, 0.025, 0, 0, Math.PI * 2)))
+  },
+
+  pumpkin_patch(ctx, w) {
+    const rand = seeded(71)
+    fill(ctx, "#a78bfa", c => c.rect(0, 0, w, 0.1))
+    fill(ctx, "#fdba74", c => c.rect(0, 0.1, w, 0.24))
+    fill(ctx, "#f97316", c => c.arc(w * 0.7, 0.27, 0.07, Math.PI, Math.PI * 2))
+    // The barn and the corn.
+    fill(ctx, "#b91c1c", c => c.rect(0.12, 0.13, 0.24, 0.2))
+    fill(ctx, "#7f1d1d", c => { c.moveTo(0.1, 0.13); c.lineTo(0.24, 0.05); c.lineTo(0.38, 0.13); c.closePath() })
+    fill(ctx, "#f8fafc", c => c.rect(0.2, 0.22, 0.08, 0.11))
+    ctx.strokeStyle = "#b91c1c"
+    ctx.lineWidth   = 0.008
+    line(ctx, [ [ 0.2, 0.22 ], [ 0.28, 0.33 ] ])
+    line(ctx, [ [ 0.28, 0.22 ], [ 0.2, 0.33 ] ])
+    for (let x = 0.45; x < w; x += 0.025) {
+      ctx.strokeStyle = "#a16207"
+      ctx.lineWidth   = 0.006
+      line(ctx, [ [ x, 0.34 ], [ x + 0.004, 0.22 + rand() * 0.03 ] ])
+      fill(ctx, "#eab308", c => c.ellipse(x + 0.004, 0.25, 0.006, 0.015, 0, 0, Math.PI * 2))
+    }
+    fill(ctx, "#b07a45", c => c.rect(0, 0.33, w, 0.67))
+    ctx.strokeStyle = "#9a6a3c"
+    ctx.lineWidth   = 0.006
+    for (let y = 0.38; y < 1; y += 0.07) line(ctx, [ [ 0, y ], [ w, y + 0.02 ] ])
+    // The hay bales (Crowd's hole).
+    ;[ [ 0.11, 0.66 ], [ 0.2, 0.66 ], [ 0.15, 0.6 ] ].forEach(([ x, y ]) => {
+      ctx.strokeStyle = "#a16207"
+      ctx.lineWidth   = 0.005
+      shape(ctx, "#eab308", c => c.rect(x, y, 0.1, 0.07))
+      line(ctx, [ [ x, y + 0.035 ], [ x + 0.1, y + 0.035 ] ])
+    })
+    // Pumpkins with their vines, small at the back.
+    for (let i = 0; i < 45; i++) {
+      const x = 0.03 + rand() * (w - 0.06), y = 0.36 + rand() * 0.63
+      if (x > 0.08 && x < 0.34 && y > 0.56 && y < 0.82) continue
+      const s = 0.5 + (y - 0.36) * 1.1
+      ctx.strokeStyle = "#4d7c0f"
+      ctx.lineWidth   = 0.005
+      line(ctx, [ [ x - 0.05 * s, y + 0.01 ], [ x, y - 0.005 ], [ x + 0.05 * s, y + 0.012 ] ])
+      ctx.strokeStyle = "#9a3412"
+      ctx.lineWidth   = 0.004
+      shape(ctx, "#f97316", c => c.ellipse(x, y - 0.018 * s, 0.03 * s, 0.022 * s, 0, 0, Math.PI * 2))
+      fill(ctx, "#4d7c0f", c => c.rect(x - 0.003 * s, y - 0.046 * s, 0.006 * s, 0.01 * s))
+    }
+  },
+
+  haunted_street(ctx, w) {
+    const rand = seeded(97)
+    nightSky(ctx, w, 0.36, rand)
+    // Crooked houses, with the haunted one in the middle.
+    const walls = [ "#4c1d95", "#374151", "#14532d", "#581c87", "#1e3a8a", "#3f3f46" ]
+    let x = 0
+    for (let i = 0; x < w; i++) {
+      const big = Math.abs(x + 0.15 - w / 2) < 0.15
+      const bw  = big ? 0.3 : 0.18 + rand() * 0.06
+      const top = big ? 0.07 : 0.13 + rand() * 0.06
+      fill(ctx, walls[i % walls.length], c => c.rect(x, top, bw, 0.36 - top))
+      fill(ctx, "#1f2937", c => { c.moveTo(x - 0.01, top); c.lineTo(x + bw * (0.4 + rand() * 0.2), top - 0.07); c.lineTo(x + bw + 0.01, top); c.closePath() })
+      for (let wy = top + 0.03; wy < 0.28; wy += 0.06) {
+        for (let wx = x + 0.025; wx < x + bw - 0.03; wx += 0.055) {
+          fill(ctx, rand() < 0.6 ? "#fde047" : "#111827", c => c.rect(wx, wy, 0.022, 0.03))
+        }
+      }
+      fill(ctx, "#111827", c => c.rect(x + bw / 2 - 0.02, 0.29, 0.04, 0.07))
+      x += bw
+    }
+    fill(ctx, "#6b7280", c => c.rect(0, 0.35, w, 0.03))
+    fill(ctx, "#a1a1aa", c => c.rect(0, 0.38, w, 0.62))
+    ctx.strokeStyle = "#8e8e96"
+    ctx.lineWidth   = 0.004
+    for (let y = 0.42, row = 0; y < 1; y += 0.045, row++) {
+      line(ctx, [ [ 0, y ], [ w, y ] ])
+      for (let bx = (row % 2) * 0.04; bx < w; bx += 0.08) line(ctx, [ [ bx, y ], [ bx, y + 0.045 ] ])
+    }
+    // Street lamps and jack-o'-lanterns on the pavement.
+    ;[ 0.2, 0.6, 1.0, 1.4 ].forEach(lx => {
+      fill(ctx, "rgba(253, 224, 71, 0.25)", c => c.arc(lx, 0.3, 0.04, 0, Math.PI * 2))
+      ctx.strokeStyle = "#111827"
+      ctx.lineWidth   = 0.008
+      line(ctx, [ [ lx, 0.38 ], [ lx, 0.3 ] ])
+      fill(ctx, "#fde047", c => c.arc(lx, 0.3, 0.013, 0, Math.PI * 2))
+    })
+    for (let i = 0; i < 9; i++) {
+      const jx = 0.08 + i * 0.18 + rand() * 0.05
+      fill(ctx, "#f97316", c => c.ellipse(jx, 0.365, 0.016, 0.013, 0, 0, Math.PI * 2))
+      fill(ctx, "#fde047", c => { c.rect(jx - 0.008, 0.362, 0.005, 0.004); c.rect(jx + 0.003, 0.362, 0.005, 0.004) })
+    }
+  }
+})
+
+// Night sky down to `horizon`: stars, a moon and a few bats.
+function nightSky(ctx, w, horizon, rand) {
+  fill(ctx, "#1e1b4b", c => c.rect(0, 0, w, horizon))
+  for (let i = 0; i < 70; i++) fill(ctx, "#e0e7ff", c => c.arc(rand() * w, rand() * horizon * 0.8, 0.002 + rand() * 0.002, 0, Math.PI * 2))
+  fill(ctx, "#fef9c3", c => c.arc(w * 0.82, 0.08, 0.05, 0, Math.PI * 2))
+  fill(ctx, "#1e1b4b", c => c.arc(w * 0.82 + 0.02, 0.07, 0.045, 0, Math.PI * 2))
+  ctx.strokeStyle = "#0f172a"
+  ctx.lineWidth   = 0.005
+  ;[ [ 0.3, 0.06 ], [ 0.38, 0.1 ], [ 1.05, 0.05 ] ].forEach(([ bx, by ]) => {
+    line(ctx, [ [ bx - 0.02, by - 0.006 ], [ bx - 0.01, by ], [ bx, by - 0.004 ], [ bx + 0.01, by ], [ bx + 0.02, by - 0.006 ] ])
+  })
 }
 
 // ── Helpers ────────────────────────────────────────────────────────────────

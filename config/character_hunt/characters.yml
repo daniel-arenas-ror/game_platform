@@ -2,15 +2,32 @@
 # into these lists, so the server (which picks the crowd, GameServices::CharacterHunt::Crowd) and
 # the browser (which draws it, controllers/character_hunt/scene.js) always agree.
 # Index 0 of hats, glasses, extras, beards and patterns means "none" / "plain".
-skin: ["#fde0c5", "#f1c09a", "#d99c6b", "#b0713f", "#7d4b28", "#4f2f1a"]
+# Add new values at the end: the indexes of the others must not move.
+skin: ["#fde0c5", "#f1c09a", "#d99c6b", "#b0713f", "#7d4b28", "#4f2f1a", "#a3c86b", "#ddd6fe"]
 hair_colors: ["#1c1917", "#5c3a1e", "#a16207", "#facc15", "#c2410c", "#d1d5db"]
 hair_styles: [bald, short, long, curly, ponytail, spiky, bun]
-# Tops, hats, bags, scarves and balloons.
+# Tops, hats, bags, scarves, capes and balloons.
 colors: ["#ef4444", "#f97316", "#facc15", "#22c55e", "#14b8a6", "#3b82f6", "#1e3a8a", "#a855f7", "#ec4899", "#f8fafc", "#27272a", "#92400e"]
-patterns: [plain, stripes, dots, split]
+patterns: [plain, stripes, dots, split, bones, bandages]
 legs: [pants, shorts, skirt]
 leg_colors: ["#2563eb", "#27272a", "#d6b98c", "#6b7280", "#7c2d12", "#166534", "#b91c1c"]
-hats: [none, cap, beanie, top_hat, cowboy, party]
+hats: [none, cap, beanie, top_hat, cowboy, party, witch, horns, cat_ears, pumpkin]
 glasses: [none, round, sunglasses]
-extras: [none, backpack, balloon, scarf]
-beards: [none, mustache, beard]
+extras: [none, backpack, balloon, scarf, cape, broom, candy_bucket]
+beards: [none, mustache, beard, fangs]
+
+# What each theme's crowd wears, by value. A list a theme doesn't name uses every value.
+themes:
+  classic:
+    skin: ["#fde0c5", "#f1c09a", "#d99c6b", "#b0713f", "#7d4b28", "#4f2f1a"]
+    patterns: [plain, stripes, dots, split]
+    hats: [none, cap, beanie, top_hat, cowboy, party]
+    extras: [none, backpack, balloon, scarf]
+    beards: [none, mustache, beard]
+  halloween:
+    # Zombie green and vampire pale join the usual skin tones.
+    colors: ["#ef4444", "#f97316", "#facc15", "#22c55e", "#14b8a6", "#a855f7", "#ec4899", "#f8fafc", "#27272a", "#92400e"]
+    patterns: [plain, stripes, bones, bandages]
+    hats: [none, top_hat, witch, horns, cat_ears, pumpkin]
+    extras: [none, balloon, cape, broom, candy_bucket]
+    beards: [none, mustache, fangs]

@@ -13,6 +13,9 @@ module GameServices
       "hard"   => { count: 150, decoys: 4, size: 0.85 }
     }.freeze
     DEFAULT_DIFFICULTY = "normal".freeze
+    # Which scenes the rounds use, and what the crowd wears (config/character_hunt/*.yml).
+    THEMES             = %w[classic halloween].freeze
+    DEFAULT_THEME      = "classic".freeze
     ROUND_CHOICES      = [ 3, 5, 8 ].freeze
     DEFAULT_ROUNDS     = 5
     ROUND_TIMES        = [ 60, 90, 120 ].freeze
@@ -37,6 +40,7 @@ module GameServices
       state  = @room.game_state
       ids    = @players.map { |p| p.id.to_s }
       rounds = self.class.pick(state["total_rounds"], ROUND_CHOICES, DEFAULT_ROUNDS)
+      theme  = THEMES.include?(state["theme"]) ? state["theme"] : DEFAULT_THEME
 
       @room.update!(
         status: "playing",
@@ -46,7 +50,8 @@ module GameServices
           "total_rounds"      => rounds,
           "round_time"        => self.class.pick(state["round_time"], ROUND_TIMES, DEFAULT_ROUND_TIME),
           "difficulty"        => DIFFICULTIES.key?(state["difficulty"]) ? state["difficulty"] : DEFAULT_DIFFICULTY,
-          "scene_order"       => self.class.scene_order(rounds),
+          "theme"             => theme,
+          "scene_order"       => self.class.scene_order(rounds, theme),
           "scene"             => nil,
           "target"            => nil,
           "target_index"      => nil,
@@ -71,9 +76,9 @@ module GameServices
       choices.include?(value.to_i) ? value.to_i : default
     end
 
-    # One scene per round, every scene before any repeats, never the same twice in a row.
-    def self.scene_order(rounds)
-      scenes = Crowd::SCENES.keys
+    # One scene of the theme per round, every scene before any repeats, never the same twice in a row.
+    def self.scene_order(rounds, theme = DEFAULT_THEME)
+      scenes = Crowd::SCENES.select { |_, scene| scene["theme"] == theme }.keys
       order  = []
       order += (scenes.shuffle.then { |s| s.first == order.last ? s.rotate : s }) while order.size < rounds
       order.first(rounds)
