@@ -1,0 +1,159 @@
+<% is_host = session[:player_id].blank? %>
+<% catalog = GameServices::CharacterHunt::Crowd::CATALOG.to_json %>
+
+<% if is_host %>
+  <%# ================================================================= %>
+  <%# HOST VIEW — TV: who to find, the whole scene, who found them      %>
+  <%# ================================================================= %>
+  <div data-controller="character-hunt-host"
+       data-character-hunt-host-room-code-value="<%= @room.code %>"
+       data-character-hunt-host-catalog-value="<%= catalog %>"
+       class="flex flex-col h-dvh bg-slate-950 text-white overflow-hidden">
+
+    <%# Header %>
+    <div class="flex items-center justify-between gap-6 px-6 pt-5 pb-4">
+      <h1 class="text-2xl font-black tracking-widest uppercase text-yellow-400">🔎 <%= t(".title") %></h1>
+      <p data-character-hunt-host-target="roundLabel" class="text-slate-300 font-bold text-lg"></p>
+      <div class="flex items-center gap-4">
+        <button type="button" data-action="character-hunt-host#toggleSound" data-character-hunt-host-target="soundButton"
+                class="rounded-full border border-slate-700 bg-slate-900 px-3 py-1 text-xs font-bold text-slate-300 hover:text-white cursor-pointer">
+          🔊 <%= t(".sound") %>
+        </button>
+        <p class="text-slate-500 text-xs font-mono tracking-widest">
+          <%= t("rooms.games.shared.room") %> <span class="text-white font-bold"><%= @room.code %></span>
+        </p>
+      </div>
+    </div>
+
+    <%# Bottom padding keeps the scene clear of the Players button. %>
+    <div class="flex-1 min-h-0 flex gap-6 px-6 pb-16">
+      <%# The scene %>
+      <div class="relative flex-1 min-w-0 rounded-2xl overflow-hidden border border-slate-800 bg-slate-950">
+        <canvas data-character-hunt-host-target="scene" class="block w-full h-full"></canvas>
+
+        <%# Who to find (before the search starts) %>
+        <div data-character-hunt-host-target="intro" class="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-slate-950 text-center">
+          <p data-character-hunt-host-target="introKicker" class="text-yellow-300 text-sm uppercase tracking-[0.3em] font-mono"></p>
+          <h2 data-character-hunt-host-target="introTitle" class="font-black text-5xl text-balance"><%= t(".get_ready") %></h2>
+          <canvas data-character-hunt-host-target="introPortrait" class="hidden w-56 h-80 rounded-3xl border-4 border-yellow-400 ch-pop"></canvas>
+          <p data-character-hunt-host-target="introCountdown" class="font-mono font-black text-6xl tabular-nums min-h-[4rem]"></p>
+        </div>
+
+        <p data-character-hunt-host-target="banner"
+           class="hidden absolute top-4 left-1/2 -translate-x-1/2 rounded-full bg-yellow-400 px-6 py-2 text-slate-950 font-black text-2xl shadow-lg ch-pop"></p>
+        <div data-character-hunt-host-target="toasts" class="absolute bottom-4 right-4 flex flex-col items-end gap-2"></div>
+      </div>
+
+      <%# Who to find, the clock, who found them %>
+      <aside class="w-72 shrink-0 flex flex-col gap-4">
+        <div class="rounded-2xl bg-slate-800 border border-slate-700 p-4">
+          <p class="text-xs font-bold text-slate-400 tracking-widest uppercase mb-3"><%= t(".find") %></p>
+          <canvas data-character-hunt-host-target="sidePortrait" class="block w-full aspect-[3/4] rounded-xl"></canvas>
+        </div>
+        <p data-character-hunt-host-target="countdown" class="text-center font-mono font-black text-6xl tabular-nums min-h-[4rem]"></p>
+        <ol data-character-hunt-host-target="finders" class="space-y-2"></ol>
+        <button type="button" data-character-hunt-host-target="skipButton" data-action="character-hunt-host#skip"
+                class="hidden rounded-xl border border-slate-600 bg-slate-800 px-6 py-2 font-bold text-slate-200 hover:text-white cursor-pointer">
+          <%= t(".skip") %>
+        </button>
+      </aside>
+    </div>
+
+    <%# Game over %>
+    <div data-character-hunt-host-target="phaseGameOver"
+         class="hidden absolute inset-0 z-30 overflow-y-auto bg-slate-950 px-8 py-10">
+      <div class="flex flex-col items-center text-center">
+        <p class="text-7xl mb-3">🏆</p>
+        <h2 data-character-hunt-host-target="gameOverTitle" class="text-5xl font-black text-yellow-400 tracking-wide"></h2>
+        <p data-character-hunt-host-target="gameOverHint" class="text-slate-300 text-xl mt-2"></p>
+        <div data-character-hunt-host-target="finalScores" class="w-full max-w-md mt-6 space-y-2"></div>
+        <div class="flex flex-col items-center mt-6">
+          <button data-action="character-hunt-host#restart"
+                  class="bg-yellow-400 hover:bg-yellow-300 text-slate-950 font-black px-10 py-3 rounded-xl uppercase tracking-widest text-lg transition-colors cursor-pointer">
+            <%= t("rooms.games.shared.play_again") %>
+          </button>
+          <%= render partial: "rooms/games/change_game", locals: { room: @room, games: @games } %>
+        </div>
+        <%= game_over_ad %>
+      </div>
+    </div>
+  </div>
+
+<% else %>
+  <%# ================================================================= %>
+  <%# PLAYER VIEW — phone: zoom around the scene and tap the person     %>
+  <%# ================================================================= %>
+  <% current_player %>
+  <div data-controller="character-hunt-player"
+       data-character-hunt-player-room-code-value="<%= @room.code %>"
+       data-character-hunt-player-player-id-value="<%= session[:player_id] %>"
+       data-character-hunt-player-catalog-value="<%= catalog %>"
+       data-look-tv="<%= t(".look_tv") %>"
+       class="fixed inset-0 flex flex-col bg-slate-950 text-white overflow-hidden select-none [-webkit-touch-callout:none]">
+
+    <%# Header %>
+    <div class="flex items-center justify-between gap-3 px-4 pt-4 pb-2">
+      <p class="font-black text-lg tracking-wide leading-tight truncate"><%= session[:nickname] %></p>
+      <p data-character-hunt-player-target="score" class="text-yellow-300 font-bold tabular-nums"></p>
+      <p data-character-hunt-player-target="countdown" class="font-mono font-black text-2xl tabular-nums"></p>
+    </div>
+
+    <div class="relative flex-1 min-h-0">
+      <canvas data-character-hunt-player-target="scene" class="absolute inset-0 block w-full h-full" style="touch-action: none"></canvas>
+
+      <%# Frozen after a wrong tap: you can still look around, not tap %>
+      <div data-character-hunt-player-target="frozen"
+           class="hidden pointer-events-none absolute inset-0 flex flex-col items-center justify-center bg-sky-300/30 border-4 border-sky-300 text-center">
+        <p class="text-7xl ch-shake">❄️</p>
+        <p class="font-black text-2xl mt-2 text-white [text-shadow:0_2px_4px_rgb(0_0_0/0.6)]"><%= t(".frozen") %></p>
+        <p data-character-hunt-player-target="frozenSeconds" class="font-mono font-black text-5xl tabular-nums text-white [text-shadow:0_2px_4px_rgb(0_0_0/0.6)]"></p>
+      </div>
+
+      <%# Who to find / get ready %>
+      <div data-character-hunt-player-target="intro" class="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-slate-950 px-6 text-center">
+        <p data-character-hunt-player-target="introKicker" class="text-yellow-300 text-xs uppercase tracking-[0.3em] font-mono"></p>
+        <p data-character-hunt-player-target="introTitle" class="font-black text-3xl text-balance"><%= t(".get_ready") %></p>
+        <canvas data-character-hunt-player-target="introPortrait" class="hidden w-44 h-64 rounded-3xl border-4 border-yellow-400 ch-pop"></canvas>
+        <p data-character-hunt-player-target="introHint" class="text-slate-300 text-sm text-balance"></p>
+      </div>
+
+      <%# A result: found, too late, the reveal %>
+      <div data-character-hunt-player-target="message"
+           class="hidden absolute inset-x-3 bottom-3 rounded-2xl bg-slate-800 border border-slate-700 px-4 py-3 text-center shadow-lg ch-pop">
+        <p data-character-hunt-player-target="messageTitle" class="font-black text-xl text-balance"></p>
+        <p data-character-hunt-player-target="messageHint" class="text-slate-300 text-sm mt-1 text-balance"></p>
+      </div>
+
+      <p data-character-hunt-player-target="toast"
+         class="hidden pointer-events-none absolute top-3 left-1/2 -translate-x-1/2 max-w-[90%] rounded-full bg-slate-900/90 px-4 py-1.5 text-sm font-bold text-center"></p>
+
+      <div data-character-hunt-player-target="zoomButtons" class="hidden absolute right-3 top-14 flex flex-col gap-2">
+        <button type="button" data-action="character-hunt-player#zoomIn" aria-label="<%= t(".zoom_in") %>"
+                class="size-11 rounded-xl bg-slate-900/90 border border-slate-600 text-2xl font-black cursor-pointer active:scale-95">+</button>
+        <button type="button" data-action="character-hunt-player#zoomOut" aria-label="<%= t(".zoom_out") %>"
+                class="size-11 rounded-xl bg-slate-900/90 border border-slate-600 text-2xl font-black cursor-pointer active:scale-95">−</button>
+        <button type="button" data-action="character-hunt-player#fit" aria-label="<%= t(".fit") %>"
+                class="size-11 rounded-xl bg-slate-900/90 border border-slate-600 text-lg cursor-pointer active:scale-95">⤢</button>
+      </div>
+    </div>
+
+    <%# Who to find, always in sight %>
+    <div class="flex items-center gap-3 px-4 py-3 border-t border-slate-800">
+      <canvas data-character-hunt-player-target="portrait" class="w-12 h-16 rounded-lg shrink-0"></canvas>
+      <div class="min-w-0">
+        <p class="text-xs text-slate-400 uppercase tracking-widest"><%= t(".find") %></p>
+        <p data-character-hunt-player-target="progress" class="font-bold truncate"></p>
+      </div>
+      <p class="ml-auto text-slate-600 text-[10px] font-mono"><%= t("rooms.games.shared.room") %> <%= @room.code %></p>
+    </div>
+
+    <%# Game over %>
+    <div data-character-hunt-player-target="phaseGameOver"
+         class="hidden fixed inset-0 z-30 flex flex-col items-center justify-center bg-slate-950 text-center px-6 py-10">
+      <p class="text-6xl mb-3">🏆</p>
+      <p data-character-hunt-player-target="gameOverTitle" class="font-black text-3xl tracking-wide mb-2"></p>
+      <p data-character-hunt-player-target="gameOverHint" class="text-yellow-300 font-bold"></p>
+      <p class="text-slate-600 text-xs mt-6 font-mono"><%= t("rooms.games.shared.waiting_restart") %></p>
+    </div>
+  </div>
+<% end %>

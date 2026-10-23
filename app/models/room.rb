@@ -43,7 +43,8 @@ class Room
     "matching_pairs"         => "matching_pairs_room_",
     "doodle_dash"            => "doodle_dash_room_",
     "haunted_house"          => "haunted_house_room_",
-    "monster_mash"           => "monster_mash_room_"
+    "monster_mash"           => "monster_mash_room_",
+    "character_hunt"         => "character_hunt_room_"
   }.freeze
 
   def enough_players?

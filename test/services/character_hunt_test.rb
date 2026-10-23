@@ -163,7 +163,8 @@ class CharacterHuntTest < ActiveSupport::TestCase
     assert_equal [ "wrong", other ], result.values_at("result", "index")
     assert_equal "frozen", find!(ana)["result"]
     assert_equal 1, state["wrong"][pid(ana)]
-    assert_equal result["until"], svc.player_state(pid(ana))["frozen_until"]
+    assert_equal 3, result["seconds"]
+    assert_in_delta 3, svc.player_state(pid(ana))["frozen_seconds"], 0.5
 
     @room.atomic_set("game_state.frozen.#{pid(ana)}" => Time.now.to_f - 1)
     assert_equal "found", find!(ana)["result"]

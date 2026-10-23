@@ -99,9 +99,9 @@ module GameServices
 
     # A phone taps the scene at x, y (fractions of it). Returns { "result" => … }:
     #   found   — the target: "place" (1–3), "points", "time" (seconds into the search)
-    #   wrong   — someone else ("index"); the phone is frozen "until" (epoch seconds)
+    #   wrong   — someone else ("index"); the phone is frozen for "seconds"
     #   miss    — nobody there (no penalty: zooming fingers slip)
-    #   frozen  — still frozen from a wrong tap
+    #   frozen  — still frozen from a wrong tap, for "seconds" more
     #   already — this player found the target already
     #   closed  — not searching, or the round is full
     def tap!(player_id, x, y)
@@ -113,7 +113,8 @@ module GameServices
       return { "result" => "already" } if state["finders"].to_a.any? { |f| f["id"] == pid }
 
       now = Time.now.to_f
-      return { "result" => "frozen", "until" => state["frozen"][pid] } if state["frozen"].to_h[pid].to_f > now
+      frozen = frozen_seconds(state, pid, now)
+      return { "result" => "frozen", "seconds" => frozen } if frozen.positive?
 
       index = Crowd.hit(state["scene"], x, y)
       return { "result" => "miss" } unless index
@@ -176,8 +177,9 @@ module GameServices
 
     def host_state = public_state
 
+    # Seconds rather than a time: a phone's clock may not match the server's.
     def player_state(player_id)
-      public_state.merge("frozen_until" => @room.game_state["frozen"].to_h[player_id.to_s])
+      public_state.merge("frozen_seconds" => frozen_seconds(@room.game_state, player_id.to_s, Time.now.to_f))
     end
 
     private
@@ -186,7 +188,11 @@ module GameServices
       frozen_until = now + FREEZE_SECONDS
       apply({ "_id" => @room.id, "game_state.phase" => "search", "game_state.round" => round },
             "$set" => { "game_state.frozen.#{pid}" => frozen_until }, "$inc" => { "game_state.wrong.#{pid}" => 1 })
-      { "result" => "wrong", "index" => index, "until" => frozen_until }
+      { "result" => "wrong", "index" => index, "seconds" => FREEZE_SECONDS }
+    end
+
+    def frozen_seconds(state, pid, now)
+      [ state["frozen"].to_h[pid].to_f - now, 0 ].max.round(1)
     end
 
     # Only the first three count, even when taps arrive at the same moment.

@@ -82,7 +82,7 @@ class Games::CharacterHuntChannel < ApplicationCable::Channel
       broadcast({ action: "found", player_id: @player.id.to_s, scores: svc.room.game_state["scores"] }
                   .merge(result.slice("place", "points", "time")))
     when "wrong"
-      broadcast({ action: "frozen", player_id: @player.id.to_s, until: result["until"] })
+      broadcast({ action: "frozen", player_id: @player.id.to_s, seconds: result["seconds"] })
     end
   end
 

@@ -115,7 +115,7 @@ class Games::CharacterHuntChannelTest < ActionCable::Channel::TestCase
     assert_equal [ "frozen", @beto.id.to_s ], messages.last.values_at("action", "player_id")
 
     perform :sync
-    assert_in_delta result["until"], transmissions.last.dig("state", "frozen_until"), 0.001
+    assert_in_delta result["seconds"], transmissions.last.dig("state", "frozen_seconds"), 0.5
   end
 
   test "taps outside the search do nothing" do

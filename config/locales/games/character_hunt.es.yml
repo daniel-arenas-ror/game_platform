@@ -1,0 +1,45 @@
+# Busca al Personaje: pantalla del juego y su JS.
+es:
+  rooms:
+    games:
+      character_hunt:
+        index:
+          title: "Busca al Personaje"
+          sound: "Sonido"
+          skip: "Siguiente ⏭"
+          get_ready: "Prepárate…"
+          find: "Encuentra a esta persona"
+          look_tv: "Mira la pantalla"
+          frozen: "¡Persona equivocada!"
+          zoom_in: "Acercar"
+          zoom_out: "Alejar"
+          fit: "Ver toda la escena"
+  js:
+    character_hunt:
+      round: "Ronda %{round} de %{total}"
+      get_ready: "Prepárate…"
+      find_this: "¡Encuentra a esta persona!"
+      search_hint: "Pellizca para acercar y tócala. Si fallas, te congelas 3 segundos."
+      places:
+        "1": "🥇 1.º"
+        "2": "🥈 2.º"
+        "3": "🥉 3.º"
+      seconds: "%{time} s"
+      points:
+        one: "%{count} punto"
+        other: "%{count} puntos"
+      plus_points:
+        one: "+%{count} punto"
+        other: "+%{count} puntos"
+      found_by: "¡%{name} la encontró!"
+      found_you: "¡La encontraste!"
+      found_count: "%{found} de %{total} la encontraron"
+      frozen_tv: "%{name} tocó a la persona equivocada"
+      nobody_there: "Ahí no hay nadie: acerca y toca a una persona"
+      too_late: "¡Tarde! Tres jugadores la encontraron antes."
+      reveal_title: "¡Aquí estaba!"
+      nobody_found: "¡Nadie la encontró!"
+      not_found: "Esta vez no. ¡A la próxima!"
+      game_over: "¡Fin del juego!"
+      winners: "Ganador: %{names}"
+      error: "Algo salió mal. Empieza una partida nueva."

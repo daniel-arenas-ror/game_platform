@@ -28,6 +28,19 @@ export function hitTest(scene, x, y) {
   return null
 }
 
+// A ring around a character: who was tapped, or where the target was.
+export function drawMark(ctx, scene, index, color, width = 0.12) {
+  const c = scene.characters[index]
+  if (!c) return
+  ctx.save()
+  ctx.strokeStyle = color
+  ctx.lineWidth   = c.h * width
+  ctx.beginPath()
+  ctx.ellipse(c.x * scene.ratio, c.y - c.h * 0.55, c.h * 0.42, c.h * 0.72, 0, 0, Math.PI * 2)
+  ctx.stroke()
+  ctx.restore()
+}
+
 // One character, big, on its own canvas: who to find.
 export function drawPortrait(canvas, traits, catalog, background = "#e0f2fe") {
   const ratio = window.devicePixelRatio || 1

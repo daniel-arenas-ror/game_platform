@@ -364,6 +364,21 @@ es:
         edit:
           draw_time: "TIEMPO PARA DIBUJAR CADA PARTE"
           draw_time_option: "%{count} seg"
+      character_hunt:
+        edit:
+          difficulty: "DIFICULTAD"
+          easy: "Fácil"
+          normal: "Normal"
+          hard: "Difícil"
+          people: "%{count} personas"
+          lookalikes:
+            zero: "Sin parecidos"
+            one: "%{count} parecido"
+            other: "%{count} parecidos"
+          rounds: "RONDAS"
+          rounds_option: "%{count} rondas"
+          round_time: "TIEMPO PARA BUSCAR EN CADA RONDA"
+          round_time_option: "%{count} seg"
       guess_the_color:
         edit:
           rounds: "RONDAS"

@@ -375,6 +375,21 @@ en:
         edit:
           draw_time: "DRAWING TIME PER PART"
           draw_time_option: "%{count} sec"
+      character_hunt:
+        edit:
+          difficulty: "DIFFICULTY"
+          easy: "Easy"
+          normal: "Normal"
+          hard: "Hard"
+          people: "%{count} people"
+          lookalikes:
+            zero: "No lookalikes"
+            one: "%{count} lookalike"
+            other: "%{count} lookalikes"
+          rounds: "ROUNDS"
+          rounds_option: "%{count} rounds"
+          round_time: "TIME TO SEARCH EACH ROUND"
+          round_time_option: "%{count} sec"
       guess_the_color:
         edit:
           rounds: "ROUNDS"

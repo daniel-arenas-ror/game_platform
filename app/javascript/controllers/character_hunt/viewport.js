@@ -1,13 +1,13 @@
 // Pinch-zoom and drag for a canvas that shows a scene (see scene.js). One finger drags, two pinch,
 // a mouse wheel zooms, and a short tap that didn't move calls onTap with the spot in the scene
 // (fractions of its width and height). The page itself never zooms: the canvas needs
-// `touch-action: none`.
+// `touch-action: none`. With `interactive: false` (the TV) it only shows the scene and focus().
 
 const TAP_MOVE = 10  // css px a finger may slide and still tap
 const TAP_TIME = 400 // ms
 
 export class Viewport {
-  constructor(canvas, { ratio, draw, onTap = () => {}, maxZoom = 8, background = "#0f172a" }) {
+  constructor(canvas, { ratio, draw, onTap = () => {}, maxZoom = 8, background = "#0f172a", interactive = true }) {
     Object.assign(this, { canvas, ratio, draw, onTap, maxZoom, background })
     this.ctx      = canvas.getContext("2d")
     this.pointers = new Map()
@@ -21,6 +21,7 @@ export class Viewport {
       pointercancel: e => this.pointers.delete(e.pointerId),
       wheel:         e => this.wheel(e)
     }
+    if (!interactive) this.listeners = {}
     Object.entries(this.listeners).forEach(([ name, fn ]) => canvas.addEventListener(name, fn, { passive: false }))
     this.observer = new ResizeObserver(() => this.resize())
     this.observer.observe(canvas)
@@ -50,11 +51,17 @@ export class Viewport {
     this.paint() // resizing cleared the canvas: draw now, not on the next frame
   }
 
-  // Back to the whole scene.
-  reset() {
-    this.zoom = 1
+  // Back to the whole scene (or to `zoom`, centred).
+  reset(zoom = 1) {
+    this.zoom = Math.min(Math.max(zoom, 1), this.maxZoom)
     this.centerOn(this.ratio / 2, 0.5)
     this.render()
+  }
+
+  // The zoom at which the scene fills the canvas with no empty bands (e.g. its height on a phone
+  // held upright).
+  get coverZoom() {
+    return Math.max(this.width / this.ratio, this.height) / this.fitScale
   }
 
   // Zooms by `factor` around a point on the canvas (css px; the middle by default).

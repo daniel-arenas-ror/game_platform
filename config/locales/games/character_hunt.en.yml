@@ -1,0 +1,45 @@
+# Character Hunt: in-game screen and its JS.
+en:
+  rooms:
+    games:
+      character_hunt:
+        index:
+          title: "Character Hunt"
+          sound: "Sound"
+          skip: "Next ⏭"
+          get_ready: "Get ready…"
+          find: "Find this person"
+          look_tv: "Look at the TV"
+          frozen: "Wrong person!"
+          zoom_in: "Zoom in"
+          zoom_out: "Zoom out"
+          fit: "Show the whole scene"
+  js:
+    character_hunt:
+      round: "Round %{round} of %{total}"
+      get_ready: "Get ready…"
+      find_this: "Find this person!"
+      search_hint: "Pinch to zoom, then tap them. A wrong tap freezes you for 3 seconds."
+      places:
+        "1": "🥇 1st"
+        "2": "🥈 2nd"
+        "3": "🥉 3rd"
+      seconds: "%{time}s"
+      points:
+        one: "%{count} point"
+        other: "%{count} points"
+      plus_points:
+        one: "+%{count} point"
+        other: "+%{count} points"
+      found_by: "%{name} found them!"
+      found_you: "You found them!"
+      found_count: "%{found} of %{total} found"
+      frozen_tv: "%{name} picked the wrong person"
+      nobody_there: "Nobody there: zoom in and tap a person"
+      too_late: "Too late! Three players found them first."
+      reveal_title: "Here they were!"
+      nobody_found: "Nobody found them!"
+      not_found: "Not this time. Next round!"
+      game_over: "Game over!"
+      winners: "Winner: %{names}"
+      error: "Something went wrong. Start a new game."

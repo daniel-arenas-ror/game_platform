@@ -1,0 +1,55 @@
+<% hunt  = GameServices::CharacterHunt %>
+<% state = @room.game_state %>
+
+<%# Difficulty: how many people, how many lookalikes %>
+<div class="space-y-4 bg-slate-900/50 p-6 rounded-2xl border border-slate-700">
+  <label class="block text-xs font-bold text-slate-400 mb-3 tracking-widest"><%= t(".difficulty") %></label>
+  <div class="grid grid-cols-3 gap-3">
+    <% current = hunt::DIFFICULTIES.key?(state["difficulty"]) ? state["difficulty"] : hunt::DEFAULT_DIFFICULTY %>
+    <% hunt::DIFFICULTIES.each do |level, settings| %>
+      <label class="relative cursor-pointer">
+        <input type="radio" name="room[game_state][difficulty]" value="<%= level %>" class="peer hidden" <%= "checked" if current == level %>>
+        <div class="h-full text-center py-3 px-2 bg-slate-800 border-2 border-slate-700 rounded-xl text-white
+                    peer-checked:border-yellow-400 peer-checked:bg-yellow-400/10 transition-all">
+          <p class="font-bold"><%= t(".#{level}") %></p>
+          <p class="text-xs text-slate-400 mt-1"><%= t(".people", count: settings[:count]) %></p>
+          <p class="text-xs text-slate-400"><%= t(".lookalikes", count: settings[:decoys]) %></p>
+        </div>
+      </label>
+    <% end %>
+  </div>
+</div>
+
+<%# Rounds %>
+<div class="space-y-4 bg-slate-900/50 p-6 rounded-2xl border border-slate-700">
+  <label class="block text-xs font-bold text-slate-400 mb-3 tracking-widest"><%= t(".rounds") %></label>
+  <div class="grid grid-cols-3 gap-3">
+    <% hunt::ROUND_CHOICES.each do |rounds| %>
+      <label class="relative cursor-pointer">
+        <input type="radio" name="room[game_state][total_rounds]" value="<%= rounds %>" class="peer hidden"
+               <%= "checked" if hunt.pick(state["total_rounds"], hunt::ROUND_CHOICES, hunt::DEFAULT_ROUNDS) == rounds %>>
+        <div class="text-center py-3 bg-slate-800 border-2 border-slate-700 rounded-xl text-white font-bold
+                    peer-checked:border-yellow-400 peer-checked:bg-yellow-400/10 transition-all">
+          <%= t(".rounds_option", count: rounds) %>
+        </div>
+      </label>
+    <% end %>
+  </div>
+</div>
+
+<%# Time to search each round %>
+<div class="space-y-4 bg-slate-900/50 p-6 rounded-2xl border border-slate-700">
+  <label class="block text-xs font-bold text-slate-400 mb-3 tracking-widest"><%= t(".round_time") %></label>
+  <div class="grid grid-cols-3 gap-3">
+    <% hunt::ROUND_TIMES.each do |seconds| %>
+      <label class="relative cursor-pointer">
+        <input type="radio" name="room[game_state][round_time]" value="<%= seconds %>" class="peer hidden"
+               <%= "checked" if hunt.pick(state["round_time"], hunt::ROUND_TIMES, hunt::DEFAULT_ROUND_TIME) == seconds %>>
+        <div class="text-center py-3 bg-slate-800 border-2 border-slate-700 rounded-xl text-white font-bold
+                    peer-checked:border-yellow-400 peer-checked:bg-yellow-400/10 transition-all">
+          <%= t(".round_time_option", count: seconds) %>
+        </div>
+      </label>
+    <% end %>
+  </div>
+</div>
