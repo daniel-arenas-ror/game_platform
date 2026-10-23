@@ -6,6 +6,7 @@ BattleCity::MapPreset.destroy_all
 GAME_CODES = %w[
   fisherman how_want_be_billionare battle_city guess_the_color count_birds
   sequence_memory submarine_combat mind_match soup_of_numbers matching_pairs doodle_dash haunted_house monster_mash
+  character_hunt
 ].freeze
 
 Game.not_in(code: GAME_CODES).destroy_all
