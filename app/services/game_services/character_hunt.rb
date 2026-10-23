@@ -24,6 +24,9 @@ module GameServices
     FREEZE_SECONDS = 3
 
     attr_reader :room
+    # Set by the channel's game loop: its phase changes then only land while it's still the room's
+    # loop, so a loop that Play Again replaced can't overwrite the new game.
+    attr_accessor :loop_id
 
     def initialize(room)
       @room    = room
@@ -54,6 +57,7 @@ module GameServices
           "winners"           => nil,
           "phase_ends_at"     => nil,
           "search_started_at" => nil,
+          "skip"              => nil,
           "loop_id"           => nil,
           "loop_beat"         => nil
         )
@@ -143,6 +147,15 @@ module GameServices
       winners
     end
 
+    # The host's Skip: ends the reveal early.
+    def skip!
+      apply({ "_id" => @room.id, "game_state.phase" => "reveal" }, "$set" => { "game_state.skip" => true })
+    end
+
+    def skipped?
+      fresh_state["skip"] == true
+    end
+
     def seconds_left
       ends_at = @room.game_state["phase_ends_at"]
       ends_at && [ (ends_at - Time.now.to_f).ceil, 0 ].max
@@ -150,7 +163,7 @@ module GameServices
 
     # ── What each screen may see ─────────────────────────────────────────────
 
-    INTERNAL_KEYS = %w[loop_id loop_beat scene_order frozen].freeze
+    INTERNAL_KEYS = %w[loop_id loop_beat scene_order frozen skip].freeze
 
     # Everything but where the target stands, until the reveal.
     def public_state
@@ -199,7 +212,13 @@ module GameServices
 
     def start_phase!(phase, duration, fields = {})
       ends_at = duration && Time.now.to_f + duration.to_i
-      @room.atomic_set({ "game_state.phase" => phase, "game_state.phase_ends_at" => ends_at }.merge(fields))
+      fields  = { "game_state.phase" => phase, "game_state.phase_ends_at" => ends_at, "game_state.skip" => nil }.merge(fields)
+      if loop_id
+        apply({ "_id" => @room.id, "game_state.loop_id" => loop_id }, "$set" => fields)
+        @room.reload
+      else
+        @room.atomic_set(fields)
+      end
       @room.game_state
     end
 
