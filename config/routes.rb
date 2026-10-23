@@ -11,6 +11,9 @@ Rails.application.routes.draw do
 
   get "up" => "rails/health#show", as: :rails_health_check
 
+  # Playground for a game's scene while it's being built (open it on a phone on the same network).
+  get "dev/character_hunt", to: "dev/character_hunt#show", as: :dev_character_hunt if Rails.env.development?
+
   # Hidden super admin. Its address is a secret kept in the encrypted credentials (admin_path), so
   # nothing in the code or on the site points to it; any other address is the normal 404.
   # Without the credential, production has no admin at all.

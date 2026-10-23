@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Character Hunt prototype</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+    <%= stylesheet_link_tag :app %>
+    <%= javascript_importmap_tags %>
+  </head>
+  <body class="bg-slate-950 text-white overflow-hidden overscroll-none select-none">
+    <canvas id="scene" class="fixed inset-0 w-full h-full" style="touch-action: none"></canvas>
+
+    <div class="fixed top-3 left-3 flex items-center gap-3 rounded-xl bg-slate-800/90 border border-slate-700 p-2 pr-4">
+      <canvas id="portrait" class="w-14 h-20 rounded-lg"></canvas>
+      <div>
+        <p class="text-xs text-slate-400">Find this person</p>
+        <p id="status" class="font-bold">Pinch to zoom, tap to pick</p>
+      </div>
+    </div>
+
+    <div class="fixed top-3 right-3 flex flex-col gap-2">
+      <button id="zoom-in" class="btn btn-sm">+</button>
+      <button id="zoom-out" class="btn btn-sm btn-secondary">−</button>
+      <button id="reset" class="btn btn-sm btn-secondary">⤢</button>
+    </div>
+
+    <div class="fixed bottom-3 left-1/2 -translate-x-1/2 flex flex-wrap justify-center gap-2 text-xs">
+      <% GameServices::CharacterHunt::Crowd::SCENES.each_key do |id| %>
+        <%= link_to id, dev_character_hunt_path(scene: id, difficulty: @difficulty), class: "chip #{'ring-2 ring-white' if id == @scene_id}" %>
+      <% end %>
+      <% GameServices::CharacterHunt::DIFFICULTIES.each_key do |d| %>
+        <%= link_to d, dev_character_hunt_path(scene: @scene_id, difficulty: d), class: "chip #{'ring-2 ring-white' if d == @difficulty}" %>
+      <% end %>
+      <a id="reveal" href="#" class="chip">reveal</a>
+    </div>
+
+    <script type="application/json" id="data"><%= raw json_escape({ crowd: @crowd, catalog: @catalog }.to_json) %></script>
+    <script type="module">
+      import { drawScene, drawPortrait, hitTest } from "controllers/character_hunt/scene"
+      import { Viewport } from "controllers/character_hunt/viewport"
+
+      const { crowd, catalog } = JSON.parse(document.getElementById("data").textContent)
+      const scene  = crowd.scene
+      const target = scene.characters[crowd.target_index]
+      const status = document.getElementById("status")
+      let marks = []
+
+      const view = new Viewport(document.getElementById("scene"), {
+        ratio: scene.ratio,
+        draw: ctx => {
+          drawScene(ctx, scene, catalog)
+          marks.forEach(({ index, color }) => {
+            const c = scene.characters[index]
+            ctx.strokeStyle = color
+            ctx.lineWidth = c.h * 0.06
+            ctx.strokeRect(c.x * scene.ratio - 0.22 * c.h, c.y - 1.1 * c.h, 0.44 * c.h, 1.1 * c.h)
+          })
+        },
+        onTap: (x, y) => {
+          const index = hitTest(scene, x, y)
+          if (index === null) { status.textContent = "Nobody there"; return }
+          const found = index === crowd.target_index
+          status.textContent = found ? "Found! 🎉" : "Wrong person ❄️"
+          marks = [ { index, color: found ? "#22c55e" : "#ef4444" } ]
+          view.render()
+        }
+      })
+
+      drawPortrait(document.getElementById("portrait"), target.traits, catalog)
+      document.getElementById("zoom-in").onclick  = () => view.zoomBy(1.6)
+      document.getElementById("zoom-out").onclick = () => view.zoomBy(1 / 1.6)
+      document.getElementById("reset").onclick    = () => view.reset()
+      document.getElementById("reveal").onclick   = e => {
+        e.preventDefault()
+        marks = [ { index: crowd.target_index, color: "#facc15" } ]
+        view.focus(target.x, target.y - target.h / 2, 5)
+      }
+    </script>
+  </body>
+</html>
