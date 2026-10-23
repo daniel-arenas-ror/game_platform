@@ -1,6 +1,13 @@
 module SeoHelper
   SITE_NAME = "Grouparty".freeze
 
+  # Our profiles: footer icons, and `sameAs` on the Organization in the game pages' JSON-LD.
+  SOCIAL_LINKS = {
+    instagram:   "https://www.instagram.com/groupartyapp/",
+    facebook:    "https://www.facebook.com/people/Grouparty/61595250658170/",
+    producthunt: "https://www.producthunt.com/products/grouparty"
+  }.freeze
+
   # Views set these with `content_for :title` / `content_for :description`.
   def page_title
     content_for?(:title) ? "#{content_for(:title)} | #{SITE_NAME}" : t("seo.default_title", site: SITE_NAME)

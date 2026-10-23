@@ -41,6 +41,11 @@ en:
       play: "Play"
       info: "Info"
       blurb: "Free party games for one shared screen and everyone's phone. No app, no sign-up."
+      follow: "Follow Grouparty"
+      social:
+        instagram: "Grouparty on Instagram"
+        facebook: "Grouparty on Facebook"
+        producthunt: "Grouparty on Product Hunt"
     ad_slot:
       label: "Advertisement"
 

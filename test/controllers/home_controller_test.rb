@@ -18,6 +18,13 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     assert_select "nav[aria-label=Main] a[aria-current=page]", "Home"
   end
 
+  test "the footer links to our social profiles" do
+    get root_url
+    SeoHelper::SOCIAL_LINKS.each_value do |url|
+      assert_select "footer a[href=?][target=_blank][aria-label]", url
+    end
+  end
+
   test "home explains the idea and suggests games per setting" do
     game = Game.create!(name: "Mind Match", code: "mind_match", description: "Words")
     get root_url

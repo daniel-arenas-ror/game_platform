@@ -44,7 +44,11 @@ module GamePagesHelper
     briefcase: '<rect width="20" height="14" x="2" y="7" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>',
     video:     '<path d="m22 8-6 4 6 4V8Z"/><rect width="14" height="12" x="2" y="6" rx="2"/>',
     check:     '<path d="M20 6 9 17l-5-5"/>',
-    chevron:   '<path d="m6 9 6 6 6-6"/>'
+    chevron:   '<path d="m6 9 6 6 6-6"/>',
+    # Social profiles (footer), drawn in the same outline style
+    instagram:   '<rect width="20" height="20" x="2" y="2" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.5 6.5h.01"/>',
+    facebook:    '<path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>',
+    producthunt: '<circle cx="12" cy="12" r="10"/><path d="M10 17V7h3.5a2.5 2.5 0 0 1 0 5H10"/>'
   }.freeze
 
   def game_accent(game)
@@ -97,7 +101,8 @@ module GamePagesHelper
       "typicalAgeRange" => ("#{game.age}-" if game.age),
       "timeRequired" => ("PT#{game.duration_minutes}M" if game.duration_minutes),
       "offers" => { "@type" => "Offer", "price" => "0", "priceCurrency" => "USD" },
-      "publisher" => { "@type" => "Organization", "name" => SeoHelper::SITE_NAME, "url" => root_url }
+      "publisher" => { "@type" => "Organization", "name" => SeoHelper::SITE_NAME, "url" => root_url,
+                       "sameAs" => SeoHelper::SOCIAL_LINKS.values }
     }.compact
 
     how_to = if game.how_to_play.any?

@@ -35,6 +35,11 @@ es:
       play: "Jugar"
       info: "Información"
       blurb: "Juegos de fiesta gratis con una pantalla compartida y el móvil de cada uno. Sin app ni registro."
+      follow: "Sigue a Grouparty"
+      social:
+        instagram: "Grouparty en Instagram"
+        facebook: "Grouparty en Facebook"
+        producthunt: "Grouparty en Product Hunt"
     ad_slot:
       label: "Publicidad"
 
