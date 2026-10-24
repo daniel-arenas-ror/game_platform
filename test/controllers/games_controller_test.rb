@@ -59,7 +59,10 @@ class GamesControllerTest < ActionDispatch::IntegrationTest
     assert_equal({ "@type" => "QuantitativeValue", "minValue" => 1, "maxValue" => 12 }, game["numberOfPlayers"])
     assert_equal "PT10M", game["timeRequired"]
     assert_equal %w[One Two], how_to["step"].map { |s| s["text"] }
-    assert_includes faq["mainEntity"].map { |q| q["name"] }, "How many points?"
+    questions = faq["mainEntity"].to_h { |q| [ q["name"], q.dig("acceptedAnswer", "text") ] }
+    assert_includes questions.keys, "How many points?"
+    assert_equal "1–12 players.", questions["How many players can play Soup of Numbers?"]
+    assert_match find_room_url, questions["How do we start a game of Soup of Numbers?"]
     assert_equal [ "Home", "Games", "Soup of Numbers" ], breadcrumb["itemListElement"].map { |i| i["name"] }
   end
 

@@ -1,40 +1,101 @@
+<% games = Game.visible.to_a.reject { |g| g.slug.blank? }.sort_by(&:name) %>
+<% min_players, max_players = site_players_range(games) %>
+<% join_link  = link_to find_room_url.sub(%r{\Ahttps?://}, ""), find_room_path, class: "text-purple-400 hover:text-purple-300 underline" %>
+<% games_link = link_to games_url.sub(%r{\Ahttps?://}, ""), games_path, class: "text-purple-400 hover:text-purple-300 underline" %>
+<%# Se muestra en la página y va como datos estructurados FAQPage, así ambos dicen siempre lo mismo. %>
+<% faq = [
+     [ "¿Qué es #{SeoHelper::SITE_NAME}?",
+       "#{SeoHelper::SITE_NAME} es un sitio web gratuito de juegos de fiesta para grupos. Una pantalla compartida, como una TV o un portátil, muestra el juego, y cada jugador juega desde el navegador de su propio celular." ],
+     [ "¿Cuántas personas pueden jugar?",
+       "De #{min_players} a #{max_players} jugadores, según el juego. La página de cada juego dice para cuántos jugadores es." ],
+     [ "¿Hay que descargar una app o crear una cuenta?",
+       "No. No hay nada que instalar y nadie se registra, ni siquiera el anfitrión. Los jugadores escanean un código QR con la cámara del celular y escriben un apodo." ],
+     [ "¿Cómo se empieza una partida?",
+       "Abre #{games_url} en la pantalla compartida, elige un juego y toca Empezar juego. Los jugadores escanean el código QR de esa pantalla, o abren #{find_room_url} y escriben el código de sala de 4 letras, y luego ponen un apodo. El anfitrión toca Empezar juego cuando están todos." ],
+     [ "¿Todos tienen que estar en el mismo lugar?",
+       "Está hecho para grupos en el mismo lugar mirando una pantalla. Los jugadores se unen por internet con el código de sala, así que también funciona en una videollamada si el anfitrión comparte su pantalla." ],
+     [ "¿Qué dispositivos funcionan?",
+       "Cualquier dispositivo con un navegador moderno: celulares iPhone y Android, tabletas, portátiles y computadores de escritorio. Para la pantalla compartida, un portátil conectado a una TV funciona muy bien." ],
+     [ "¿#{SeoHelper::SITE_NAME} es gratis?",
+       "Sí. Todos los juegos son gratis, sin pagos ni compras dentro del juego. El sitio puede mostrar anuncios para ayudar a pagar los servidores." ]
+   ] %>
 <% content_for :title, "Acerca de" %>
-<% content_for :description, "Grouparty es una colección gratuita de juegos de fiesta para jugar juntos: una pantalla compartida y cada uno se une desde su propio celular. Hecho por diversión por Daniel Arenas." %>
+<% content_for :description, "#{SeoHelper::SITE_NAME} es un sitio web gratuito de juegos de fiesta para #{min_players} a #{max_players} jugadores: una pantalla compartida muestra el juego y todos juegan con su celular. Sin instalar nada y sin registro." %>
+<% content_for :head do %>
+  <script type="application/ld+json"><%= raw json_escape(about_structured_data(faq).to_json) %></script>
+<% end %>
 
 <div class="min-h-screen py-12 px-4 sm:px-6">
-  <article class="max-w-3xl mx-auto text-slate-300 leading-relaxed space-y-6">
-    <%= render "pages/header", title: "Acerca de #{SeoHelper::SITE_NAME}", subtitle: "Juegos de fiesta para una pantalla grande y los celulares de todos." %>
+  <article class="max-w-3xl mx-auto text-slate-300 leading-relaxed space-y-10">
+    <div>
+      <%= render "pages/header", title: "Acerca de #{SeoHelper::SITE_NAME}", subtitle: "Juegos de fiesta para una pantalla grande y los celulares de todos." %>
+      <p class="text-lg text-white">
+        <strong><%= SeoHelper::SITE_NAME %> es un sitio web gratuito de juegos de fiesta para grupos de <%= min_players %> a <%= max_players %> jugadores.</strong>
+        Una pantalla compartida, como una TV o un portátil, muestra el juego, y cada uno juega desde el navegador de su propio celular.
+        No hay nada que instalar y no hace falta registrarse.
+      </p>
+    </div>
 
-    <section class="space-y-4">
-      <h2 class="text-2xl font-bold text-white">¿Qué es <%= SeoHelper::SITE_NAME %>?</h2>
-      <p>
-        <%= SeoHelper::SITE_NAME %> es una colección gratuita de juegos de fiesta multijugador hecha para grupos en el mismo lugar.
-        Una persona abre un juego en una TV, un portátil o una tableta: esa es la pantalla principal que todos miran.
-        Los demás escanean el código QR con su celular, escriben un apodo y juegan desde su propio dispositivo.
-      </p>
-      <p>
-        No hay nada que instalar ni cuentas que crear. Funciona en cualquier navegador moderno, así que una cena
-        familiar, una pausa en clase o una noche con amigos se puede convertir en un juego en menos de un minuto.
-      </p>
+    <section class="space-y-4" aria-labelledby="facts-title">
+      <h2 id="facts-title" class="text-2xl font-bold text-white">Datos rápidos</h2>
+      <dl class="grid sm:grid-cols-[11rem_1fr] gap-x-6 gap-y-3 bg-slate-800 border border-slate-700 rounded-2xl p-6">
+        <% [
+             [ "Qué es", "Una colección gratuita de #{games.size} juegos de fiesta multijugador que funcionan en el navegador." ],
+             [ "Jugadores", "De #{min_players} a #{max_players}, según el juego. La página de cada juego dice su rango." ],
+             [ "Precio", "Gratis. Sin pagos y sin compras dentro del juego." ],
+             [ "Instalación", "Nada que instalar. Ninguna app en los celulares ni en la pantalla compartida." ],
+             [ "Registro", "Ninguno. Nadie crea una cuenta, ni siquiera el anfitrión. Los jugadores solo escriben un apodo." ],
+             [ "Qué necesitas", "Una pantalla que todos puedan ver (TV, portátil, tableta o computador) y un celular con internet por jugador." ],
+             [ "Idiomas", "Español e inglés." ],
+             [ "Tiempo para empezar", "Menos de un minuto." ]
+           ].each do |term, detail| %>
+          <dt class="font-bold text-white"><%= term %></dt>
+          <dd><%= detail %></dd>
+        <% end %>
+      </dl>
     </section>
 
-    <section class="space-y-4">
-      <h2 class="text-2xl font-bold text-white">Los juegos</h2>
+    <section class="space-y-4" aria-labelledby="start-title">
+      <h2 id="start-title" class="text-2xl font-bold text-white">Cómo empezar una partida</h2>
+      <ol class="list-decimal pl-6 space-y-2">
+        <li>En la pantalla que todos van a mirar, abre <%= games_link %> y elige un juego.</li>
+        <li>Toca <strong class="text-white">Empezar juego</strong>, elige la configuración del juego y toca <strong class="text-white">Guardar y listo</strong>. La pantalla muestra un código QR y un código de sala de 4 letras.</li>
+        <li>Cada jugador escanea el código QR con la cámara del celular, o abre <%= join_link %> y escribe el código de sala.</li>
+        <li>Los jugadores escriben un apodo y ya están dentro.</li>
+        <li>Cuando se hayan unido todos, el anfitrión toca <strong class="text-white">Empezar juego</strong>. Al terminar, toca Jugar de nuevo o elige otro juego: nadie tiene que volver a unirse.</li>
+      </ol>
+    </section>
+
+    <section class="space-y-4" aria-labelledby="games-title">
+      <h2 id="games-title" class="text-2xl font-bold text-white">Los juegos</h2>
       <p>
-        La colección mezcla formas de jugar muy distintas: trivia contra el reloj, deducción social, retos de memoria,
-        adivinar colores, buscar números, coincidir palabras, batallas de tanques y combate de submarinos. Cada juego
-        está pensado para que la pantalla compartida cuente la historia mientras cada celular se vuelve un control
-        privado, así que pueden guardar secretos, competir entre ustedes y ver los resultados juntos.
+        La colección mezcla formas de jugar muy distintas: trivia contra el reloj, deducción social, dibujo, retos de memoria,
+        adivinar colores, buscar números, coincidir palabras, batallas de tanques y combate de submarinos. La pantalla
+        compartida cuenta la historia mientras cada celular es un control privado, así que pueden guardar secretos,
+        competir entre ustedes y ver los resultados juntos.
       </p>
-      <% if (games = Game.visible.to_a.sort_by(&:name)).any? %>
+      <% if games.any? %>
         <ul class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <% games.each do |game| %>
             <li class="bg-slate-800 border border-slate-700 rounded-xl px-4 py-3">
-              <p class="text-white font-bold"><%= game.name %></p>
-              <p class="text-slate-400 text-sm"><%= game.description %></p>
+              <p><%= link_to game.name, game_path(game), class: "text-white font-bold hover:text-purple-300" %></p>
+              <p class="text-slate-400 text-xs font-semibold mt-0.5">
+                <%= game_players_label(game) %><% if game.duration_minutes %> · <%= t("games.show.about_minutes", count: game.duration_minutes) %><% end %>
+              </p>
+              <p class="text-slate-400 text-sm mt-1"><%= game.description %></p>
             </li>
           <% end %>
         </ul>
+      <% end %>
+    </section>
+
+    <section class="space-y-4" aria-labelledby="faq-title">
+      <h2 id="faq-title" class="text-2xl font-bold text-white">Preguntas</h2>
+      <% faq.each do |question, answer| %>
+        <div>
+          <h3 class="font-bold text-white"><%= question %></h3>
+          <p><%= answer %></p>
+        </div>
       <% end %>
     </section>
 

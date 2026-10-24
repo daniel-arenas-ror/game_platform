@@ -176,6 +176,7 @@ es:
       minutes_short: "%{count} min"
       ages: "Desde %{age} años"
       on_your_phone: "Se juega con el celular"
+      free_no_signup: "Gratis, sin registro"
       start_game: "Empezar juego"
       how_to_play_link: "Cómo se juega ↓"
       free_note: "Gratis y sin registro. Ábrelo en una TV o portátil y todos se unen desde su celular."
@@ -236,9 +237,14 @@ es:
       one: "%{count} jugador"
       other: "%{count} jugadores"
     players_range: "%{min}–%{max} jugadores"
+    players_faq:
+      q: "¿Cuántos jugadores pueden jugar %{game}?"
+      a: "%{players}."
     general_faq:
+      - q: "¿Cómo se empieza una partida de %{game}?"
+        a: "Abre esta página en una TV o un portátil que todos puedan ver y toca Empezar juego. Los jugadores escanean el código QR de esa pantalla con su celular, o abren %{join} y escriben el código de sala de 4 letras, y luego ponen un apodo. El anfitrión toca Empezar juego cuando están todos."
       - q: "¿Los jugadores necesitan descargar una app?"
-        a: "No. Los jugadores escanean el código QR de la pantalla principal con la cámara del celular y juegan en el navegador. Sin app y sin cuenta."
+        a: "No. Los jugadores escanean el código QR de la pantalla principal con la cámara del celular y juegan en el navegador. Sin app, sin cuenta y sin registro, ni siquiera para el anfitrión."
       - q: "¿Es gratis?"
         a: "Sí, todos los juegos de %{site} son gratis."
     platform: "Navegador web"

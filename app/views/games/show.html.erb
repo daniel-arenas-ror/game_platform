@@ -43,7 +43,8 @@
                  [ :users, game_players_label(@game) ],
                  ([ :clock, t(".about_minutes", count: @game.duration_minutes) ] if @game.duration_minutes),
                  ([ :cake, t(".ages", age: @game.age) ] if @game.age),
-                 [ :phone, t(".on_your_phone") ]
+                 [ :phone, t(".on_your_phone") ],
+                 [ :check, t(".free_no_signup") ]
                ].compact.each do |icon, label| %>
               <li class="chip py-2 px-4"><%= game_page_icon(icon, css: "size-4 #{accent[:text]}") %><%= label %></li>
             <% end %>

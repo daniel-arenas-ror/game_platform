@@ -1,0 +1,36 @@
+<% min_players, max_players = site_players_range(@games) -%>
+# <%= SeoHelper::SITE_NAME %>
+
+> <%= SeoHelper::SITE_NAME %> is a free website of party games for groups of <%= min_players %> to <%= max_players %> players. One shared screen (a TV, laptop or tablet) shows the game, and everyone plays from the web browser on their own phone. Nothing to install, no sign-up, no account, not even for the host.
+
+## Quick facts
+
+- Players: <%= min_players %> to <%= max_players %>, depending on the game (each game below lists its range).
+- Price: free. No payments, no in-game purchases. The site may show ads.
+- Install: nothing. Everything runs in the web browser, on the shared screen and on the phones.
+- Sign-up: none. Players only type a nickname.
+- What you need: one screen everyone can see and a phone with internet for each player.
+- Languages: English and Spanish (Spanish pages live under <%= root_url(locale: "es") %>).
+- Made for groups in the same room; players join over the internet with a room code, so it also works on a video call when the host shares their screen.
+
+## How to start a game
+
+1. On the screen everyone will watch, open <%= games_url %> and pick a game.
+2. Press "Start game", choose the settings and press "Save & Ready". The screen shows a QR code and a 4-letter room code.
+3. Each player scans the QR code with their phone camera, or opens <%= find_room_url %> and types the room code.
+4. Players type a nickname. When everyone is in, the host presses "Start Game".
+5. After a game, "Play Again" or pick another game; nobody has to join again.
+
+## Games
+
+<% @games.each do |game| -%>
+- [<%= game.name %>](<%= game_url(game) %>): <%= game.description.squish %> <%= game_players_label(game) %><%= ", about #{game.duration_minutes} min" if game.duration_minutes %><%= ", ages #{game.age}+" if game.age %>. Spanish: <%= game_url(game, locale: "es") %>
+<% end -%>
+
+## More
+
+- [About <%= SeoHelper::SITE_NAME %>](<%= about_url %>): what it is, quick facts, how to start, FAQ.
+- [All games](<%= games_url %>)
+- [Join a room](<%= find_room_url %>): players type the 4-letter room code here.
+- [Contact](<%= contact_url %>)
+- [Privacy Policy](<%= privacy_url %>)

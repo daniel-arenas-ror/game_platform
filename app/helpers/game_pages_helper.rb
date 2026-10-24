@@ -76,10 +76,16 @@ module GamePagesHelper
     t("game_pages.players_range", min: game.min_players, max: game.max_players)
   end
 
-  # The game's own questions, then the ones every game page answers.
+  # The game's own questions, then how many can play and the ones every game page answers, in plain
+  # words that people and AI assistants can quote.
   def game_faq(game)
-    general = t("game_pages.general_faq").map { |f| { "q" => f[:q], "a" => format(f[:a], site: SeoHelper::SITE_NAME) } }
-    game.faq + general
+    vars    = { site: SeoHelper::SITE_NAME, game: game.name, games: games_url, join: find_room_url }
+    general = t("game_pages.general_faq").map { |f| { "q" => format(f[:q], vars), "a" => format(f[:a], vars) } }
+    players = if game.min_players && game.max_players
+      [ { "q" => t("game_pages.players_faq.q", game: game.name),
+          "a" => [ t("game_pages.players_faq.a", players: game_players_label(game)), game.players_note ].compact_blank.join(" ") } ]
+    end
+    game.faq + players.to_a + general
   end
 
   # schema.org JSON-LD for a game page: the game, its rules, its FAQ and the breadcrumb.

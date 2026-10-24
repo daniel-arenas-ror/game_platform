@@ -184,6 +184,7 @@ en:
       minutes_short: "%{count} min"
       ages: "Ages %{age}+"
       on_your_phone: "Play on your phone"
+      free_no_signup: "Free, no sign-up"
       start_game: "Start game"
       how_to_play_link: "How to play ↓"
       free_note: "Free, no sign-up. Open it on a TV or laptop and everyone joins from their phone."
@@ -246,9 +247,14 @@ en:
       one: "%{count} player"
       other: "%{count} players"
     players_range: "%{min}–%{max} players"
+    players_faq:
+      q: "How many players can play %{game}?"
+      a: "%{players}."
     general_faq:
+      - q: "How do we start a game of %{game}?"
+        a: "Open this page on a TV or laptop everyone can see and press Start game. Players scan the QR code on that screen with their phone, or open %{join} and type the 4-letter room code, then enter a nickname. The host presses Start Game when everyone is in."
       - q: "Do players need to download an app?"
-        a: "No. Players scan the QR code on the host screen with their phone camera and play in the browser. No app, no account."
+        a: "No. Players scan the QR code on the host screen with their phone camera and play in the browser. No app, no account, no sign-up, not even for the host."
       - q: "Is it free?"
         a: "Yes, every game on %{site} is free to play."
     platform: "Web browser"

@@ -23,4 +23,10 @@ class HomeController < ApplicationController
   def robots
     expires_in 1.day, public: true
   end
+
+  # In English (no locale prefix), with the Spanish pages linked.
+  def llms
+    expires_in 1.day, public: true
+    @games = Game.catalog.reject { |g| g.slug.blank? }
+  end
 end

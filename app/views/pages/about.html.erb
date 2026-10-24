@@ -1,40 +1,100 @@
+<% games = Game.visible.order(name: :asc).to_a.reject { |g| g.slug.blank? } %>
+<% min_players, max_players = site_players_range(games) %>
+<% join_link  = link_to find_room_url.sub(%r{\Ahttps?://}, ""), find_room_path, class: "text-purple-400 hover:text-purple-300 underline" %>
+<% games_link = link_to games_url.sub(%r{\Ahttps?://}, ""), games_path, class: "text-purple-400 hover:text-purple-300 underline" %>
+<%# Shown on the page and sent as FAQPage structured data, so both always say the same. %>
+<% faq = [
+     [ "What is #{SeoHelper::SITE_NAME}?",
+       "#{SeoHelper::SITE_NAME} is a free website of party games for groups. One shared screen, like a TV or laptop, shows the game, and every player plays from the web browser on their own phone." ],
+     [ "How many people can play?",
+       "From #{min_players} to #{max_players} players, depending on the game. Each game's page shows how many players it suits." ],
+     [ "Do we need to download an app or create an account?",
+       "No. There is nothing to install and nobody signs up, not even the host. Players scan a QR code with their phone camera and type a nickname." ],
+     [ "How do we start a game?",
+       "Open #{games_url} on the shared screen, pick a game and press Start game. Players scan the QR code on that screen, or open #{find_room_url} and type the 4-letter room code, then enter a nickname. The host presses Start when everyone is in." ],
+     [ "Does everyone have to be in the same room?",
+       "It's made for groups in the same room looking at one screen. Players join over the internet with the room code, so it also works on a video call if the host shares their screen." ],
+     [ "Which devices work?",
+       "Any device with a modern web browser: iPhone and Android phones, tablets, laptops and desktop computers. For the shared screen, a laptop connected to a TV works well." ],
+     [ "Is #{SeoHelper::SITE_NAME} free?",
+       "Yes. Every game is free to play, with no payments or in-game purchases. The site may show ads to help pay for the servers." ]
+   ] %>
 <% content_for :title, "About" %>
-<% content_for :description, "Grouparty is a free collection of party games you play together: one shared screen, and everyone joins from their own phone. Built for fun by Daniel Arenas." %>
+<% content_for :description, "#{SeoHelper::SITE_NAME} is a free website of party games for #{min_players} to #{max_players} players: one shared screen shows the game and everyone plays on their phone. Nothing to install, no sign-up." %>
+<% content_for :head do %>
+  <script type="application/ld+json"><%= raw json_escape(about_structured_data(faq).to_json) %></script>
+<% end %>
 
 <div class="min-h-screen py-12 px-4 sm:px-6">
-  <article class="max-w-3xl mx-auto text-slate-300 leading-relaxed space-y-6">
-    <%= render "pages/header", title: "About #{SeoHelper::SITE_NAME}", subtitle: "Party games for one big screen and everyone's phones." %>
+  <article class="max-w-3xl mx-auto text-slate-300 leading-relaxed space-y-10">
+    <div>
+      <%= render "pages/header", title: "About #{SeoHelper::SITE_NAME}", subtitle: "Party games for one big screen and everyone's phones." %>
+      <p class="text-lg text-white">
+        <strong><%= SeoHelper::SITE_NAME %> is a free website of party games for groups of <%= min_players %> to <%= max_players %> players.</strong>
+        One shared screen, like a TV or a laptop, shows the game, and everyone plays from the web browser on their own phone.
+        There is nothing to install and no sign-up.
+      </p>
+    </div>
 
-    <section class="space-y-4">
-      <h2 class="text-2xl font-bold text-white">What is <%= SeoHelper::SITE_NAME %>?</h2>
-      <p>
-        <%= SeoHelper::SITE_NAME %> is a free collection of multiplayer party games made for groups in the same room.
-        One person opens a game on a TV, laptop or tablet: that is the host screen everybody watches.
-        Everyone else scans the QR code with their phone, types a nickname and plays from their own device.
-      </p>
-      <p>
-        There is nothing to install and no account to create. It works in any modern web browser, so a family
-        dinner, a classroom break or a night with friends can turn into a game in less than a minute.
-      </p>
+    <section class="space-y-4" aria-labelledby="facts-title">
+      <h2 id="facts-title" class="text-2xl font-bold text-white">Quick facts</h2>
+      <dl class="grid sm:grid-cols-[11rem_1fr] gap-x-6 gap-y-3 bg-slate-800 border border-slate-700 rounded-2xl p-6">
+        <% [
+             [ "What it is", "A free collection of #{games.size} multiplayer party games that run in the web browser." ],
+             [ "Players", "#{min_players} to #{max_players}, depending on the game. Each game's page shows its range." ],
+             [ "Price", "Free. No payments and no in-game purchases." ],
+             [ "Install", "Nothing to install. No app on the phones or the shared screen." ],
+             [ "Sign-up", "None. Nobody creates an account, not even the host. Players only type a nickname." ],
+             [ "What you need", "One screen everyone can see (TV, laptop, tablet or computer) and a phone with internet for each player." ],
+             [ "Languages", "English and Spanish." ],
+             [ "Time to start", "Less than a minute." ]
+           ].each do |term, detail| %>
+          <dt class="font-bold text-white"><%= term %></dt>
+          <dd><%= detail %></dd>
+        <% end %>
+      </dl>
     </section>
 
-    <section class="space-y-4">
-      <h2 class="text-2xl font-bold text-white">The games</h2>
+    <section class="space-y-4" aria-labelledby="start-title">
+      <h2 id="start-title" class="text-2xl font-bold text-white">How to start a game</h2>
+      <ol class="list-decimal pl-6 space-y-2">
+        <li>On the screen everyone will watch, open <%= games_link %> and pick a game.</li>
+        <li>Press <strong class="text-white">Start game</strong>, choose the game's settings and press <strong class="text-white">Save &amp; Ready</strong>. The screen shows a QR code and a 4-letter room code.</li>
+        <li>Each player scans the QR code with their phone camera, or opens <%= join_link %> and types the room code.</li>
+        <li>Players type a nickname, and they're in.</li>
+        <li>When everyone has joined, the host presses <strong class="text-white">Start Game</strong>. After the game, press Play Again or pick another game: nobody has to join again.</li>
+      </ol>
+    </section>
+
+    <section class="space-y-4" aria-labelledby="games-title">
+      <h2 id="games-title" class="text-2xl font-bold text-white">The games</h2>
       <p>
-        The collection mixes very different kinds of play: timed trivia, social deduction, memory challenges,
-        color guessing, number hunting, word matching, tank battles and submarine combat. Every game is designed so
-        the shared screen tells the story while each phone becomes a private controller, which means you can keep
-        secrets, race against each other and see the results together.
+        The collection mixes very different kinds of play: timed trivia, social deduction, drawing, memory challenges,
+        color guessing, number hunting, word matching, tank battles and submarine combat. The shared screen tells the
+        story while each phone is a private controller, so you can keep secrets, race each other and see the results together.
       </p>
-      <% if (games = Game.visible.order(name: :asc).to_a).any? %>
+      <% if games.any? %>
         <ul class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <% games.each do |game| %>
             <li class="bg-slate-800 border border-slate-700 rounded-xl px-4 py-3">
-              <p class="text-white font-bold"><%= game.name %></p>
-              <p class="text-slate-400 text-sm"><%= game.description %></p>
+              <p><%= link_to game.name, game_path(game), class: "text-white font-bold hover:text-purple-300" %></p>
+              <p class="text-slate-400 text-xs font-semibold mt-0.5">
+                <%= game_players_label(game) %><% if game.duration_minutes %> · <%= t("games.show.about_minutes", count: game.duration_minutes) %><% end %>
+              </p>
+              <p class="text-slate-400 text-sm mt-1"><%= game.description %></p>
             </li>
           <% end %>
         </ul>
+      <% end %>
+    </section>
+
+    <section class="space-y-4" aria-labelledby="faq-title">
+      <h2 id="faq-title" class="text-2xl font-bold text-white">Questions</h2>
+      <% faq.each do |question, answer| %>
+        <div>
+          <h3 class="font-bold text-white"><%= question %></h3>
+          <p><%= answer %></p>
+        </div>
       <% end %>
     </section>
 
