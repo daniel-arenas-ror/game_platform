@@ -1,6 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 import consumer from "channels/consumer"
 import { t } from "controllers/shared/i18n"
+import { avatarHtml } from "controllers/shared/avatar"
 
 const CELL_EMPTY  = "#1e293b"
 const CELL_MISSED = "#475569"
@@ -215,6 +216,7 @@ export default class extends Controller {
       .map(([id, pts]) => `
         <div class="flex items-center gap-3">
           <span class="w-3 h-3 rounded-full shrink-0" style="background:${this.colors[id] || CELL_MISSED}"></span>
+          ${avatarHtml(this.nicknames[id], "size-7")}
           <span class="flex-1 font-bold truncate">${this.esc(this.nicknames[id] || "?")}</span>
           <span class="font-mono font-black text-emerald-400">${pts}</span>
         </div>`).join("")
@@ -236,6 +238,7 @@ export default class extends Controller {
         <div class="flex items-center justify-between bg-slate-800 rounded-xl px-5 py-3">
           <span class="text-2xl w-8">${medals[i] || `#${i + 1}`}</span>
           <span class="w-3 h-3 rounded-full ml-2" style="background:${this.colors[id] || CELL_MISSED}"></span>
+          ${avatarHtml(nicknames?.[id] || "?", "size-10 ml-3")}
           <span class="flex-1 text-white font-bold ml-3 truncate">${this.esc(nicknames?.[id] || "?")}</span>
           <span class="font-mono font-black text-emerald-400 text-lg">${pts}</span>
         </div>`).join("")

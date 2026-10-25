@@ -2,6 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 import consumer from "channels/consumer"
 import { t } from "controllers/shared/i18n"
 import { escapeHtml } from "controllers/shared/html"
+import { avatarHtml } from "controllers/shared/avatar"
 import { Application, Graphics, Container } from "pixi.js"
 
 const WALL_COLORS  = { brick: 0xc0392b, steel: 0x7f8c8d, water: 0x2471a3, trees: 0x1e8449 }
@@ -465,13 +466,15 @@ export default class extends Controller {
 
       rankEl.innerHTML = sorted.map(([pid, score], idx) => {
         const tank     = this.state.tanks[pid]
-        const name     = escapeHtml(tank?.nickname ?? t("battle_city.player", { n: idx + 1 }))
+        const nickname = tank?.nickname ?? t("battle_city.player", { n: idx + 1 })
+        const name     = escapeHtml(nickname)
         const color    = COLORS[tank?.color] ?? "#ffffff"
         const medal    = ["🥇", "🥈", "🥉"][idx] ?? `${idx + 1}.`
         const isWinner = pid === data.winner_id || (idx === 0 && data.reason === "kills_limit")
         return `
           <div class="flex items-center justify-between py-1 px-2 rounded-lg ${isWinner ? "bg-yellow-400/10" : ""}">
             <span class="text-slate-400 w-6 text-sm">${medal}</span>
+            ${avatarHtml(nickname, "size-7 mr-2")}
             <span class="flex-1 font-bold text-sm" style="color:${color}">${name}</span>
             <span class="font-mono font-black text-lg" style="color:${color}">${score}</span>
           </div>`

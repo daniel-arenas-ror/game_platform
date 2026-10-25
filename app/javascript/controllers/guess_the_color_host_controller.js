@@ -2,6 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 import consumer from "channels/consumer"
 import { t } from "controllers/shared/i18n"
 import { escapeHtml } from "controllers/shared/html"
+import { avatarHtml } from "controllers/shared/avatar"
 
 export default class extends Controller {
   static values  = { roomCode: String }
@@ -134,7 +135,10 @@ export default class extends Controller {
         const roundPts   = data.round_scores[playerId] ?? 0
         return `
           <div class="flex items-center justify-between py-2 px-4 bg-slate-800 rounded-xl">
-            <span class="font-bold text-white text-sm">${escapeHtml(nickname)}</span>
+            <div class="flex items-center gap-2 min-w-0">
+              ${avatarHtml(nickname, "size-7")}
+              <span class="font-bold text-white text-sm truncate">${escapeHtml(nickname)}</span>
+            </div>
             <div class="text-right">
               <span class="text-yellow-400 font-mono font-black text-lg">${total}</span>
               <span class="text-slate-500 text-xs font-mono ml-2">(+${roundPts})</span>
@@ -160,6 +164,7 @@ export default class extends Controller {
                       ${idx === 0 ? "border border-yellow-500/50" : ""}">
             <div class="flex items-center gap-3">
               <span class="text-xl">${medal}</span>
+              ${avatarHtml(nickname, "size-10")}
               <span class="font-bold text-white">${escapeHtml(nickname)}</span>
             </div>
             <span class="text-yellow-400 font-mono font-black text-xl">${score}</span>

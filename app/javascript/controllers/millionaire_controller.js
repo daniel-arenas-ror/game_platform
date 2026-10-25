@@ -3,6 +3,7 @@ import consumer from "channels/consumer"
 import { celebrateWin, isTopScore } from "controllers/shared/celebration"
 import { t, num } from "controllers/shared/i18n"
 import { escapeHtml } from "controllers/shared/html"
+import { avatarHtml } from "controllers/shared/avatar"
 
 export default class extends Controller {
   static targets = [
@@ -249,7 +250,8 @@ export default class extends Controller {
     const medals = ["🥇", "🥈", "🥉"]
 
     this.leaderboardListTarget.innerHTML = Object.entries(leaderboard).map(([playerId, points], index) => {
-      const name  = escapeHtml((nicknames && nicknames[playerId]) || t("how_want_be_billionare.player", { n: index + 1 }))
+      const nickname = (nicknames && nicknames[playerId]) || t("how_want_be_billionare.player", { n: index + 1 })
+      const name  = escapeHtml(nickname)
       const isTop = index === 0
       const medal = medals[index] || `#${index + 1}`
 
@@ -261,6 +263,7 @@ export default class extends Controller {
                     p-4 rounded-2xl">
           <div class="flex items-center space-x-4">
             <span class="text-xl font-black ${isTop ? "text-yellow-400" : "text-slate-500"}">${medal}</span>
+            ${avatarHtml(nickname, "size-10")}
             <span class="font-bold ${isTop ? "text-slate-100" : "text-slate-300"}">${name}</span>
           </div>
           <span class="font-mono ${isTop

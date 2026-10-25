@@ -1,6 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 import consumer from "channels/consumer"
 import { t } from "controllers/shared/i18n"
+import { avatarHtml } from "controllers/shared/avatar"
 import {
   fitCanvas, clearCanvas, createPen, patternHtml, ranked, esc, secondsUntil,
   restartAnimation, injectStyles, MEDALS
@@ -328,6 +329,7 @@ export default class extends Controller {
       const away = this.offline.has(id)
       return `
         <div class="flex items-center gap-2 ${away ? "opacity-40" : ""}" ${away ? `title="${t("doodle_dash.offline")}"` : ""}>
+          ${avatarHtml(this.name(id), "size-7")}
           <span class="flex-1 font-bold truncate">${mark}${esc(this.name(id))}</span>
           <span data-score="${id}" class="inline-block font-mono font-black text-lime-400 w-14 text-right">${pts}</span>
         </div>`
@@ -338,6 +340,7 @@ export default class extends Controller {
     return ranked(scores).map(({ id, pts, place }) => `
       <div class="flex items-center justify-between bg-slate-800 rounded-xl px-5 py-3">
         <span class="text-2xl w-8">${MEDALS[place] || `#${place}`}</span>
+        ${avatarHtml(nicknames?.[id] || "?", "size-10 ml-3")}
         <span class="flex-1 text-white font-bold ml-3 truncate">${esc(nicknames?.[id] || "?")}</span>
         <span class="font-mono font-black text-lime-400 text-lg">${pts}</span>
       </div>`).join("")

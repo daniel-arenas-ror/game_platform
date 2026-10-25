@@ -1,6 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 import consumer from "channels/consumer"
 import { t } from "controllers/shared/i18n"
+import { avatar } from "controllers/shared/avatar"
 import { confetti } from "controllers/shared/celebration"
 import { startCountdown, stopCountdown, Sounds } from "controllers/haunted_house/common"
 import { drawScene, drawMark, drawPortrait } from "controllers/character_hunt/scene"
@@ -157,13 +158,14 @@ export default class extends Controller {
     const scores = Object.entries(this.state.scores || {}).sort((a, b) => b[1] - a[1])
     this.finalScoresTarget.replaceChildren(...scores.map(([ id, points ]) => {
       const row = document.createElement("div")
-      row.className = `flex justify-between rounded-xl px-4 py-2 font-bold ${winners.includes(id) ? "bg-yellow-400/20 text-yellow-200" : "bg-slate-800"}`
+      row.className = `flex items-center gap-3 rounded-xl px-4 py-2 font-bold ${winners.includes(id) ? "bg-yellow-400/20 text-yellow-200" : "bg-slate-800"}`
       const name = document.createElement("span")
+      name.className = "flex-1 truncate"
       name.textContent = this.name(id)
       const pts = document.createElement("span")
       pts.className = "tabular-nums"
       pts.textContent = points
-      row.append(name, pts)
+      row.append(avatar(this.name(id), "size-8"), name, pts)
       return row
     }))
     this.phaseGameOverTarget.classList.remove("hidden")

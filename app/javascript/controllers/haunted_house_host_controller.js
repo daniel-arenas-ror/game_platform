@@ -1,6 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 import consumer from "channels/consumer"
 import { t } from "controllers/shared/i18n"
+import { avatar } from "controllers/shared/avatar"
 import { confetti } from "controllers/shared/celebration"
 import { ROLE_ICON, roleName, placeName, startCountdown, stopCountdown, injectStyles, Sounds } from "controllers/haunted_house/common"
 
@@ -182,7 +183,7 @@ export default class extends Controller {
       role.className = "block text-sm text-slate-400"
       role.textContent = roles[id] ? roleName(roles[id]) : ""
       text.append(name, role)
-      li.append(icon, text)
+      li.append(avatar(this.nicknames[id], "size-10"), icon, text)
       return li
     }))
 

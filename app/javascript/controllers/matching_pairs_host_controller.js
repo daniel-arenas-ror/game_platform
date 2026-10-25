@@ -1,6 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 import consumer from "channels/consumer"
 import { t } from "controllers/shared/i18n"
+import { avatarHtml } from "controllers/shared/avatar"
 import {
   buildBoard, cardAt, showBack, showFace, ranked, esc, cascade, restartAnimation, injectStyles, MEDALS
 } from "controllers/matching_pairs/cards"
@@ -210,6 +211,7 @@ export default class extends Controller {
       return `
         <div>
           <div class="flex items-center gap-2">
+            ${avatarHtml(this.nicknames[id], "size-7")}
             <span class="flex-1 font-bold truncate">${done ? "✅ " : ""}${esc(this.nicknames[id] || "?")}</span>
             <span class="text-slate-500 text-xs font-mono">${matches}/${this.pairs}</span>
             <span data-score="${id}" class="inline-block font-mono font-black text-rose-400 w-14 text-right">${pts}</span>
@@ -225,6 +227,7 @@ export default class extends Controller {
     return ranked(scores).map(({ id, pts, place }) => `
       <div class="flex items-center justify-between bg-slate-800 rounded-xl px-5 py-3">
         <span class="text-2xl w-8">${MEDALS[place] || `#${place}`}</span>
+        ${avatarHtml(nicknames?.[id] || "?", "size-10 ml-3")}
         <span class="flex-1 text-white font-bold ml-3 truncate">${esc(nicknames?.[id] || "?")}</span>
         <span class="font-mono font-black text-rose-400 text-lg">${pts}</span>
       </div>`).join("")

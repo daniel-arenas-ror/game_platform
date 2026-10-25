@@ -2,6 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 import consumer from "channels/consumer"
 import { t } from "controllers/shared/i18n"
 import { escapeHtml } from "controllers/shared/html"
+import { avatarHtml } from "controllers/shared/avatar"
 
 const SHIP_COLORS = [
   { fill: "#06b6d4", border: "#0891b2" },
@@ -385,7 +386,7 @@ export default class extends Controller {
       const row  = document.createElement("div")
       row.className = "flex items-center justify-between px-4 py-3 bg-slate-800/60 rounded-xl"
       row.innerHTML = `
-        <span class="text-slate-200 font-bold">${i + 1}. ${escapeHtml(nick)}</span>
+        <span class="flex items-center gap-3 min-w-0 text-slate-200 font-bold">${i + 1}. ${avatarHtml(nick, "size-9")} <span class="truncate">${escapeHtml(nick)}</span></span>
         <span class="text-cyan-400 font-black tabular-nums">${t("submarine_combat.hits", { count: pts })}</span>
       `
       container.appendChild(row)

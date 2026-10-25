@@ -1,6 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 import consumer from "channels/consumer"
 import { t } from "controllers/shared/i18n"
+import { avatarHtml } from "controllers/shared/avatar"
 import { celebrateWin, isTopScore } from "controllers/shared/celebration"
 
 export default class extends Controller {
@@ -217,14 +218,15 @@ export default class extends Controller {
     this.finalScoresTarget.innerHTML = Object.entries(scores)
       .sort(([, a], [, b]) => b - a)
       .map(([id, pts], i) => {
-        const nick      = this.esc(this.nicknames[id] || id)
+        const name      = this.nicknames[id] || id
+        const nick      = this.esc(name)
         const isMe      = id === myId
         const medal     = i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : `${i + 1}.`
         const highlight = isMe ? "border border-violet-500/60 bg-violet-500/10" : "bg-slate-800"
         const youTag    = isMe ? ` <span class='text-violet-400 text-xs'>${t("mind_match.you")}</span>` : ""
         return `
           <div class="flex items-center justify-between px-5 py-3 ${highlight} rounded-xl">
-            <span class="text-base text-white font-semibold">${medal} ${nick}${youTag}</span>
+            <span class="flex items-center gap-2 min-w-0 text-base text-white font-semibold">${medal} ${avatarHtml(name, "size-8")} <span class="truncate">${nick}${youTag}</span></span>
             <span class="text-base text-violet-300 font-black">${pts}</span>
           </div>`
       }).join("")

@@ -1,8 +1,8 @@
 import { Controller } from "@hotwired/stimulus"
-import { avatarColor } from "controllers/shared/avatar"
+import { avatarSvg } from "controllers/shared/avatar"
 
-// Join form: the avatar disc fills in with the nickname's first letter, in the colour the player
-// will have in the lobby, as they type. Empty, it's a dashed "?" circle.
+// Join form: the avatar fills in with the player's blobatar (the face they'll have in the lobby and
+// on the leaderboards) as they type. Empty, it's a dashed "?" circle.
 const EMPTY = ["bg-slate-900", "border-dashed", "border-slate-600"]
 
 export default class extends Controller {
@@ -14,25 +14,18 @@ export default class extends Controller {
 
   update() {
     const nickname = this.inputTarget.value.trim()
-    const letter = nickname[0]?.toUpperCase() || "?"
     const disc = this.discTarget
-    const color = nickname ? avatarColor(nickname) : null
+    if (nickname === this.nickname) return
 
-    if (this.color) disc.classList.remove(this.color, "border-white")
-    disc.classList.toggle("border-dashed", !color)
-    if (color) {
-      disc.classList.remove(...EMPTY)
-      disc.classList.add(color, "border-white")
-    } else {
-      disc.classList.add(...EMPTY)
-    }
-    this.color = color
+    disc.classList.toggle("border-white", !!nickname)
+    EMPTY.forEach(cls => disc.classList.toggle(cls, !nickname))
+    disc.innerHTML = nickname ? avatarSvg(nickname) : "?"
 
-    if (disc.textContent !== letter && color && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    if (nickname && !this.nickname && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       disc.classList.remove("animate-pop-in")
       void disc.offsetWidth // restart the animation
       disc.classList.add("animate-pop-in")
     }
-    disc.textContent = letter
+    this.nickname = nickname
   }
 }

@@ -1,6 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 import consumer from "channels/consumer"
 import { t } from "controllers/shared/i18n"
+import { avatarHtml } from "controllers/shared/avatar"
 
 export default class extends Controller {
   static values  = { roomCode: String }
@@ -252,11 +253,12 @@ export default class extends Controller {
     return Object.entries(scores)
       .sort(([, a], [, b]) => b - a)
       .map(([id, pts], i) => {
-        const nick  = this.esc(this.nicknames[id] || id)
+        const name  = this.nicknames[id] || id
+        const nick  = this.esc(name)
         const medal = i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : `${i + 1}.`
         return `
           <div class="flex items-center justify-between px-5 py-3 bg-slate-800 rounded-xl">
-            <span class="${sizeClass} text-white font-semibold">${medal} ${nick}</span>
+            <span class="flex items-center gap-3 min-w-0 ${sizeClass} text-white font-semibold">${medal} ${avatarHtml(name, "size-9")} <span class="truncate">${nick}</span></span>
             <span class="${sizeClass} text-violet-300 font-black">${pts}</span>
           </div>`
       }).join("")

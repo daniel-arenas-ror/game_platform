@@ -1,6 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 import consumer from "channels/consumer"
 import { t } from "controllers/shared/i18n"
+import { avatarHtml } from "controllers/shared/avatar"
 
 // Bird drawn as a filled "M" silhouette using bezier curves
 // Each bird moves independently — no flocking
@@ -315,6 +316,7 @@ export default class extends Controller {
         return `
           <div class="flex items-center justify-between bg-slate-800 rounded-xl px-5 py-3">
             <span class="text-2xl w-8">${medal}</span>
+            ${avatarHtml(name, "size-10 ml-3")}
             <span class="flex-1 text-white font-bold ml-3 truncate">${this.esc(name)}</span>
             <span class="font-mono font-black text-yellow-400 text-lg">${pts}</span>
           </div>`
