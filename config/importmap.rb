@@ -13,3 +13,6 @@ pin "pixi.js", to: "pixi.min.js" # @8.21.0
 # Vendored single-file build of Motion (esm.sh motion.bundle.mjs); jspm splits it into chunks
 # importmap can't resolve. Not preloaded: only the site pages' motion controllers import it.
 pin "motion", to: "motion.min.js", preload: false # @12.23.12
+# Vendored dist/index.js of blobatar (self-contained, MIT): deterministic blob avatars from a
+# nickname. Used through controllers/shared/avatar.js only.
+pin "blobatar", to: "blobatar.js" # @2.7.0
