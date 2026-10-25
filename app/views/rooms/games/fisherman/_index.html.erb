@@ -102,7 +102,8 @@
                   <span class="text-2xl font-black <%= index == 0 ? 'text-yellow-400' : 'text-slate-500' %>">
                     #<%= index + 1 %>
                   </span>
-                  
+                  <%= player_avatar player.dig("nickname"), "size-12" %>
+
                   <div>
                     <p class="font-bold text-lg <%= index == 0 ? 'text-white' : 'text-slate-300' %>">
                       <%= player.dig("nickname") %>

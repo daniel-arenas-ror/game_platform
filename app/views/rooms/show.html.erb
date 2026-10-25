@@ -82,7 +82,7 @@
           <span aria-hidden="true" class="absolute -right-8 -top-8 size-28 rounded-full bg-purple-500"></span>
           <span aria-hidden="true" class="absolute -left-6 -bottom-10 size-24 rounded-full bg-purple-700"></span>
           <div class="relative">
-            <span aria-hidden="true" class="mx-auto grid place-items-center size-24 rounded-full border-4 border-white <%= player_avatar_color(current_player.nickname) %> font-display text-5xl font-extrabold text-white motion-safe:animate-pop-in"><%= current_player.nickname[0].upcase %></span>
+            <%= player_avatar current_player.nickname, "mx-auto block size-24 border-4 border-white motion-safe:animate-pop-in" %>
             <p class="mt-4 eyebrow text-purple-100"><%= t(".you_are_in") %></p>
             <h1 class="mt-1 text-display text-4xl text-white break-words"><%= current_player.nickname %></h1>
             <p class="mt-2 font-semibold text-purple-100"><%= @game.name %> · <span class="font-mono"><%= @room.code %></span></p>
