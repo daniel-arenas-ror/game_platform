@@ -93,9 +93,7 @@ export default class extends Controller {
   applySnapshot(state) {
     this.myScore = state.scores?.[this.playerIdValue] ?? 0
     const tank   = state.tanks?.[this.playerIdValue]
-    if (tank && this.hasColorBadgeTarget) {
-      this.colorBadgeTarget.style.backgroundColor = COLOR_HEX[tank.color] ?? "#888"
-    }
+    if (tank) this.paintTankColor(tank.color)
     this.updateScore(this.myScore)
     if (tank) this.updateAliveState(tank.alive, this.isOut(tank))
     this.playing   = state.status === "playing"
@@ -122,6 +120,16 @@ export default class extends Controller {
     if (delta.shots?.includes(this.playerIdValue)) this.sounds.fire()
   }
 
+  // The whole phone takes my tank's colour, so I can tell at a glance which tank on the TV is mine.
+  // Red is dark enough for white text; yellow, green and white need dark text.
+  paintTankColor(color) {
+    const hex = COLOR_HEX[color]
+    if (!hex) return
+    this.element.style.backgroundColor = hex
+    this.element.style.color = color === "red" ? "#ffffff" : "#0f172a"
+    if (this.hasColorBadgeTarget) this.colorBadgeTarget.style.backgroundColor = hex
+  }
+
   // Base-only survival: a destroyed tank has no respawn time, it's out until the next game.
   isOut(tank) {
     return !tank.alive && tank.respawn_tick == null
@@ -144,7 +152,7 @@ export default class extends Controller {
       if (!label) {
         label = document.createElement("p")
         label.setAttribute("data-respawn-label", "")
-        label.style.cssText = "position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#94a3b8;letter-spacing:.1em;pointer-events:none;"
+        label.style.cssText = "position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;color:inherit;letter-spacing:.1em;pointer-events:none;"
         this.dpadTarget.style.position = "relative"
         this.dpadTarget.appendChild(label)
       }

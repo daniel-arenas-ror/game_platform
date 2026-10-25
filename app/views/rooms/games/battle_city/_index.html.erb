@@ -106,7 +106,7 @@
     <div class="flex items-center justify-between px-6 pt-6 pb-2 landscape:pt-3">
       <div class="flex items-center gap-3">
         <div data-battle-city-player-target="colorBadge"
-             class="w-5 h-5 rounded-full border-2 border-slate-600"
+             class="w-5 h-5 rounded-full border-2 border-slate-900/40"
              style="background-color: #888;"></div>
         <span class="font-black text-lg tracking-wide"><%= session[:nickname] %></span>
         <button type="button" data-battle-city-player-target="soundButton" data-action="battle-city-player#toggleSound"
@@ -114,9 +114,9 @@
                 class="w-10 h-10 rounded-full bg-slate-800 border border-slate-700 text-lg cursor-pointer active:scale-95 transition-transform">🔊</button>
       </div>
       <div class="text-right">
-        <p class="text-[10px] text-slate-600 uppercase tracking-widest"><%= t(".kills") %></p>
+        <p class="text-[10px] font-bold opacity-70 uppercase tracking-widest"><%= t(".kills") %></p>
         <p data-battle-city-player-target="score"
-           class="font-mono font-black text-3xl text-white leading-none">0</p>
+           class="font-mono font-black text-3xl leading-none">0</p>
       </div>
     </div>
 
@@ -143,11 +143,11 @@
 
       <button class="shrink-0 rounded-full border-4 flex items-center justify-center active:scale-95 transition-transform"
               data-fire="true"
-              style="width: var(--bc-fire); height: var(--bc-fire); background: #c0392b; border-color: #e74c3c; box-shadow: 0 0 30px rgba(231,76,60,.35); touch-action: none; -webkit-user-select: none; user-select: none;">
+              style="width: var(--bc-fire); height: var(--bc-fire); background: #c0392b; border-color: #7b241c; box-shadow: 0 6px 20px rgba(15,23,42,.35); touch-action: none; -webkit-user-select: none; user-select: none;">
         <span style="font-size: calc(var(--bc-fire) * 0.36);">🔥</span>
       </button>
     </div>
 
-    <p class="text-center text-slate-800 text-[10px] font-mono pb-4"><%= t(".room") %> <%= @room.code %></p>
+    <p class="text-center opacity-60 text-[10px] font-mono pb-4"><%= t(".room") %> <%= @room.code %></p>
   </div>
 <% end %>
