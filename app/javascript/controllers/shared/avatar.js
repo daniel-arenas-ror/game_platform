@@ -1,21 +1,25 @@
-// Solid avatar discs for players, coloured from the nickname so a player keeps one colour on
-// every screen. Same list and order as RoomsHelper::AVATAR_COLORS (Ruby renders the first rows).
+// Player avatars: a blobatar (vendor/javascript/blobatar.js) made from the nickname, so a player
+// keeps the same face on every screen, from the join form preview to the final leaderboard.
+// Avatars drawn by ERB use avatar_controller.js (RoomsHelper#player_avatar).
 //
-//   import { avatar } from "controllers/shared/avatar"
-//   row.append(avatar(player.nickname, "size-10 text-lg"))
+//   import { avatar, avatarHtml } from "controllers/shared/avatar"
+//   row.append(avatar(player.nickname, "size-10"))                    // DOM element
+//   `<li>${avatarHtml(nickname, "size-8")} ${escapeHtml(nickname)}</li>`  // inside an HTML template
 
-const AVATAR_COLORS = [ "bg-purple-500", "bg-pink-500", "bg-sky-500", "bg-emerald-500", "bg-orange-500", "bg-violet-500", "bg-rose-500", "bg-cyan-600" ]
+import { blobatar } from "blobatar"
 
-export function avatarColor(nickname) {
-  const sum = [ ...String(nickname) ].reduce((total, ch) => total + ch.charCodeAt(0), 0)
-  return AVATAR_COLORS[sum % AVATAR_COLORS.length]
+// The SVG only holds shapes and colours (the nickname is hashed, never written into it), so it is
+// safe in innerHTML even though nicknames are typed by players.
+export function avatarSvg(nickname) {
+  return blobatar(String(nickname || "?"), { background: "circle" })
 }
 
-// The disc with the nickname's first letter (set as text: nicknames are typed by players).
+export function avatarHtml(nickname, size = "size-10") {
+  return `<span class="${size} shrink-0 inline-block rounded-full [&>svg]:size-full" aria-hidden="true">${avatarSvg(nickname)}</span>`
+}
+
 export function avatar(nickname, size = "size-10") {
-  const disc = document.createElement("span")
-  disc.className = `${size} shrink-0 rounded-full ${avatarColor(nickname)} font-display font-extrabold text-white flex items-center justify-center`
-  disc.setAttribute("aria-hidden", "true")
-  disc.textContent = (nickname || "?")[0].toUpperCase()
-  return disc
+  const template = document.createElement("template")
+  template.innerHTML = avatarHtml(nickname, size)
+  return template.content.firstElementChild
 }

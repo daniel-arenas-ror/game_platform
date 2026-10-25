@@ -1,11 +1,10 @@
 # Room screens: lobby, join form and settings.
 module RoomsHelper
-  # Solid avatar discs, picked from the nickname so a player keeps one colour on every screen,
-  # including the preview on the join form. Keep in step with AVATAR_COLORS in
-  # controllers/shared/avatar.js (same list, same order).
-  AVATAR_COLORS = %w[bg-purple-500 bg-pink-500 bg-sky-500 bg-emerald-500 bg-orange-500 bg-violet-500 bg-rose-500 bg-cyan-600].freeze
-
-  def player_avatar_color(nickname)
-    AVATAR_COLORS[nickname.to_s.each_char.sum(&:ord) % AVATAR_COLORS.size]
+  # The player's blobatar, made from the nickname (same face as controllers/shared/avatar.js
+  # draws in the games). avatar_controller.js fills it in. `classes` sets the size, plus `block`
+  # when it isn't inside a flex row.
+  def player_avatar(nickname, classes = "size-10")
+    tag.span class: "#{classes} shrink-0 rounded-full [&>svg]:size-full", aria: { hidden: true },
+             data: { controller: "avatar", avatar_name_value: nickname }
   end
 end
