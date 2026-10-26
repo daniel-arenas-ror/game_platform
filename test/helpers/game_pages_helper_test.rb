@@ -32,14 +32,14 @@ class GamePagesHelperTest < ActionView::TestCase
     assert_includes html, 'fetchpriority="high"'
   end
 
-  test "game art shows text-free images and a placeholder for images with rules written on them" do
+  test "game art shows text-free images and a placeholder for games without one" do
     html = game_art_tag(Game.new(code: "haunted_house"), sizes: "300px", alt: "", class: "w-full")
     assert_match %r{<img [^>]*src="/games/haunted_house/instructions-640\.webp}, html
 
-    html = game_art_tag(Game.new(code: "battle_city"), sizes: "300px", alt: "", class: "w-full")
+    html = game_art_tag(Game.new(code: "new_game"), sizes: "300px", alt: "", class: "w-full")
     assert_no_match(/<img/, html)
     assert_match(/aria-hidden="true"/, html)
-    assert_match(/art-dots bg-amber-500 w-full/, html)
+    assert_match(/art-dots bg-purple-600 w-full/, html)
   end
 
   test "a game without WebP copies falls back to its PNG" do

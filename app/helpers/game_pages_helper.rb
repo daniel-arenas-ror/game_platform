@@ -172,15 +172,19 @@ module GamePagesHelper
 
   # Games whose image is a picture only, with no rules written on it. The lobby shows their steps
   # under the image. New images are made without text, so add each new game here.
-  TEXT_FREE_IMAGES = %w[haunted_house monster_mash].freeze
+  TEXT_FREE_IMAGES = %w[
+    battle_city character_hunt count_birds doodle_dash fisherman guess_the_color haunted_house
+    how_want_be_billionare matching_pairs mind_match monster_mash sequence_memory soup_of_numbers
+    submarine_combat
+  ].freeze
 
   def game_image_text_free?(game)
     TEXT_FREE_IMAGES.include?(game.code)
   end
 
-  # The game's picture where the site shows game art. Images with English rules drawn on them
-  # don't suit every language, so until a game gets its text-free image it shows a placeholder
-  # in its set colour (shared/_game_art_placeholder). `class:` sizes either one.
+  # The game's picture where the site shows game art. A game with no text-free image yet (not in
+  # TEXT_FREE_IMAGES, or no instructions.png) shows a placeholder in its set colour
+  # (shared/_game_art_placeholder). `class:` sizes either one.
   def game_art_tag(game, sizes:, card: false, priority: false, **options)
     if game_image_text_free?(game) && game_instruction_image?(game)
       game_image_tag(game, sizes: sizes, card: card, priority: priority, **options)
