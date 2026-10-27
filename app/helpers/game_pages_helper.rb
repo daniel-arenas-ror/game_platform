@@ -176,7 +176,7 @@ module GamePagesHelper
   TEXT_FREE_IMAGES = %w[
     battle_city character_hunt count_birds doodle_dash fisherman guess_the_color haunted_house
     how_want_be_billionare matching_pairs mind_match monster_mash sequence_memory soup_of_numbers
-    submarine_combat
+    submarine_combat tug_of_war
   ].freeze
 
   def game_image_text_free?(game)
