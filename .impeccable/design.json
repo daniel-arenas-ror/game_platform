@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-04T19:00:31+00:00",
+  "generatedAt": "2026-10-27T02:31:49+00:00",
   "title": "Design System: Grouparty",
   "extensions": {
     "colorMeta": {
@@ -336,7 +336,7 @@
       },
       "set-blue": {
         "role": "tertiary",
-        "displayName": "Set Blue (Billionaire)",
+        "displayName": "Set Blue (How Want Be Billionaire)",
         "canonical": "oklch(37.9% .146 265.522)",
         "tonalRamp": [
           "oklch(15% .146 265.522)",
@@ -347,6 +347,201 @@
           "oklch(65% .146 265.522)",
           "oklch(80% .146 265.522)",
           "oklch(95% .146 265.522)"
+        ]
+      },
+      "set-purple": {
+        "role": "tertiary",
+        "displayName": "Set Purple (The Fisherman)",
+        "canonical": "oklch(71.4% .203 305.504)",
+        "tonalRamp": [
+          "oklch(15% .203 305.504)",
+          "oklch(25% .203 305.504)",
+          "oklch(35% .203 305.504)",
+          "oklch(45% .203 305.504)",
+          "oklch(55% .203 305.504)",
+          "oklch(65% .203 305.504)",
+          "oklch(80% .203 305.504)",
+          "oklch(95% .203 305.504)"
+        ]
+      },
+      "set-amber": {
+        "role": "tertiary",
+        "displayName": "Set Amber (Battle City)",
+        "canonical": "oklch(82.8% .189 84.429)",
+        "tonalRamp": [
+          "oklch(15% .189 84.429)",
+          "oklch(25% .189 84.429)",
+          "oklch(35% .189 84.429)",
+          "oklch(45% .189 84.429)",
+          "oklch(55% .189 84.429)",
+          "oklch(65% .189 84.429)",
+          "oklch(80% .189 84.429)",
+          "oklch(95% .189 84.429)"
+        ]
+      },
+      "set-orange": {
+        "role": "tertiary",
+        "displayName": "Set Orange (Guess The Color)",
+        "canonical": "oklch(75% .183 55.934)",
+        "tonalRamp": [
+          "oklch(15% .183 55.934)",
+          "oklch(25% .183 55.934)",
+          "oklch(35% .183 55.934)",
+          "oklch(45% .183 55.934)",
+          "oklch(55% .183 55.934)",
+          "oklch(65% .183 55.934)",
+          "oklch(80% .183 55.934)",
+          "oklch(95% .183 55.934)"
+        ]
+      },
+      "set-sky": {
+        "role": "tertiary",
+        "displayName": "Set Sky (Count Birds)",
+        "canonical": "oklch(74.6% .16 232.661)",
+        "tonalRamp": [
+          "oklch(15% .16 232.661)",
+          "oklch(25% .16 232.661)",
+          "oklch(35% .16 232.661)",
+          "oklch(45% .16 232.661)",
+          "oklch(55% .16 232.661)",
+          "oklch(65% .16 232.661)",
+          "oklch(80% .16 232.661)",
+          "oklch(95% .16 232.661)"
+        ]
+      },
+      "set-indigo": {
+        "role": "tertiary",
+        "displayName": "Set Indigo (Sequence Memory)",
+        "canonical": "oklch(67.3% .182 276.935)",
+        "tonalRamp": [
+          "oklch(15% .182 276.935)",
+          "oklch(25% .182 276.935)",
+          "oklch(35% .182 276.935)",
+          "oklch(45% .182 276.935)",
+          "oklch(55% .182 276.935)",
+          "oklch(65% .182 276.935)",
+          "oklch(80% .182 276.935)",
+          "oklch(95% .182 276.935)"
+        ]
+      },
+      "set-rose": {
+        "role": "tertiary",
+        "displayName": "Set Rose (Matching Pairs)",
+        "canonical": "oklch(71.2% .194 13.428)",
+        "tonalRamp": [
+          "oklch(15% .194 13.428)",
+          "oklch(25% .194 13.428)",
+          "oklch(35% .194 13.428)",
+          "oklch(45% .194 13.428)",
+          "oklch(55% .194 13.428)",
+          "oklch(65% .194 13.428)",
+          "oklch(80% .194 13.428)",
+          "oklch(95% .194 13.428)"
+        ]
+      },
+      "set-lime": {
+        "role": "tertiary",
+        "displayName": "Set Lime (Doodle Dash)",
+        "canonical": "oklch(84.1% .238 128.85)",
+        "tonalRamp": [
+          "oklch(15% .238 128.85)",
+          "oklch(25% .238 128.85)",
+          "oklch(35% .238 128.85)",
+          "oklch(45% .238 128.85)",
+          "oklch(55% .238 128.85)",
+          "oklch(65% .238 128.85)",
+          "oklch(80% .238 128.85)",
+          "oklch(95% .238 128.85)"
+        ]
+      },
+      "set-pumpkin": {
+        "role": "tertiary",
+        "displayName": "Set Pumpkin (Haunted House)",
+        "canonical": "oklch(70.5% .213 47.604)",
+        "tonalRamp": [
+          "oklch(15% .213 47.604)",
+          "oklch(25% .213 47.604)",
+          "oklch(35% .213 47.604)",
+          "oklch(45% .213 47.604)",
+          "oklch(55% .213 47.604)",
+          "oklch(65% .213 47.604)",
+          "oklch(80% .213 47.604)",
+          "oklch(95% .213 47.604)"
+        ]
+      },
+      "set-green": {
+        "role": "tertiary",
+        "displayName": "Set Green (Monster Mash)",
+        "canonical": "oklch(79.2% .209 151.711)",
+        "tonalRamp": [
+          "oklch(15% .209 151.711)",
+          "oklch(25% .209 151.711)",
+          "oklch(35% .209 151.711)",
+          "oklch(45% .209 151.711)",
+          "oklch(55% .209 151.711)",
+          "oklch(65% .209 151.711)",
+          "oklch(80% .209 151.711)",
+          "oklch(95% .209 151.711)"
+        ]
+      },
+      "set-yellow": {
+        "role": "tertiary",
+        "displayName": "Set Yellow (Character Hunt)",
+        "canonical": "oklch(85.2% .199 91.936)",
+        "tonalRamp": [
+          "oklch(15% .199 91.936)",
+          "oklch(25% .199 91.936)",
+          "oklch(35% .199 91.936)",
+          "oklch(45% .199 91.936)",
+          "oklch(55% .199 91.936)",
+          "oklch(65% .199 91.936)",
+          "oklch(80% .199 91.936)",
+          "oklch(95% .199 91.936)"
+        ]
+      },
+      "set-red": {
+        "role": "tertiary",
+        "displayName": "Set Red (Tug of War)",
+        "canonical": "oklch(70.4% .191 22.216)",
+        "tonalRamp": [
+          "oklch(15% .191 22.216)",
+          "oklch(25% .191 22.216)",
+          "oklch(35% .191 22.216)",
+          "oklch(45% .191 22.216)",
+          "oklch(55% .191 22.216)",
+          "oklch(65% .191 22.216)",
+          "oklch(80% .191 22.216)",
+          "oklch(95% .191 22.216)"
+        ]
+      },
+      "team-red": {
+        "role": "tertiary",
+        "displayName": "Team Red (Tug of War)",
+        "canonical": "oklch(63.7% .237 25.331)",
+        "tonalRamp": [
+          "oklch(15% .237 25.331)",
+          "oklch(25% .237 25.331)",
+          "oklch(35% .237 25.331)",
+          "oklch(45% .237 25.331)",
+          "oklch(55% .237 25.331)",
+          "oklch(65% .237 25.331)",
+          "oklch(80% .237 25.331)",
+          "oklch(95% .237 25.331)"
+        ]
+      },
+      "team-blue": {
+        "role": "tertiary",
+        "displayName": "Team Blue (Tug of War)",
+        "canonical": "oklch(62.3% .214 259.815)",
+        "tonalRamp": [
+          "oklch(15% .214 259.815)",
+          "oklch(25% .214 259.815)",
+          "oklch(35% .214 259.815)",
+          "oklch(45% .214 259.815)",
+          "oklch(55% .214 259.815)",
+          "oklch(65% .214 259.815)",
+          "oklch(80% .214 259.815)",
+          "oklch(95% .214 259.815)"
         ]
       }
     },
@@ -399,6 +594,11 @@
         "name": "button-glow",
         "value": "0 10px 15px -3px oklch(38.1% .176 304.987 / .2)",
         "purpose": "Purple primary buttons (shadow-lg shadow-purple-900/20)."
+      },
+      {
+        "name": "buzzer-edge",
+        "value": "0 5px 0 oklch(38.1% .176 304.987)",
+        "purpose": "The solid darker edge under a buzzer button (btn); 7px on hover, 1px when pressed. Each variant uses its own edge colour."
       }
     ],
     "motion": [
@@ -408,24 +608,29 @@
         "purpose": "Default color/border transitions on links, inputs, buttons."
       },
       {
-        "name": "press",
-        "value": "transform: scale(.95) on :active",
-        "purpose": "Press-down on primary CTAs."
-      },
-      {
         "name": "media-zoom",
         "value": "300ms, scale(1.05)",
         "purpose": "Game-card image on hover."
       },
       {
-        "name": "spring-pop",
-        "value": "cubic-bezier(0.34, 1.56, 0.64, 1)",
-        "purpose": "In-game badges, pop-ins and reveals only."
-      },
-      {
         "name": "toast-exit",
         "value": "cubic-bezier(.8, 0, 1, 1)",
         "purpose": "In-game toasts sliding out."
+      },
+      {
+        "name": "buzzer-press",
+        "value": "translateY(-2px) on hover, translateY(4px) on :active, 150ms ease-out-expo",
+        "purpose": "Buzzer buttons lift on hover and press down onto their edge."
+      },
+      {
+        "name": "ease-spring",
+        "value": "cubic-bezier(0.34, 1.56, 0.64, 1)",
+        "purpose": "Things appearing in game moments and scale reveals: badges, +1 pops, titles (animate-pop-in)."
+      },
+      {
+        "name": "ease-out-expo",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Reveals, FAQ slides, button motion, and anything whose position carries meaning (a rope, a flag, a progress marker): no overshoot."
       }
     ],
     "breakpoints": [
@@ -460,20 +665,20 @@
       "css": ".ds-btn-primary{width:100%;background:oklch(62.7% .265 303.9/.15);color:oklch(97.7% .014 308.299);font:600 1rem/1.5 ui-sans-serif,system-ui,sans-serif;padding:12px 16px;border:1px solid oklch(62.7% .265 303.9/.3);border-radius:.75rem;cursor:pointer;transition:background-color .15s,color .15s,border-color .15s}.ds-btn-primary:hover{background:oklch(55.8% .288 302.321);border-color:oklch(55.8% .288 302.321);color:#fff}.ds-btn-primary:focus-visible{outline:2px solid oklch(71.4% .203 305.504);outline-offset:2px}"
     },
     {
-      "name": "Primary Sweep Button",
+      "name": "Buzzer Button",
       "kind": "button",
       "refersTo": "button-primary",
-      "description": "Purple→pink gradient CTA, reserved for the one primary start/join action per view.",
-      "html": "<button class=\"ds-btn-sweep\">ENTER LOBBY</button>",
-      "css": ".ds-btn-sweep{width:100%;background:linear-gradient(to right,oklch(55.8% .288 302.321),oklch(59.2% .249 .584));color:#fff;font:900 1rem/1.5 ui-sans-serif,system-ui,sans-serif;padding:16px 24px;border:none;border-radius:.75rem;box-shadow:0 10px 15px -3px rgb(0 0 0/.1);cursor:pointer;transition:transform .15s}.ds-btn-sweep:hover{background:linear-gradient(to right,oklch(62.7% .265 303.9),oklch(65.6% .241 354.308))}.ds-btn-sweep:focus-visible{outline:2px solid oklch(71.4% .203 305.504);outline-offset:2px}.ds-btn-sweep:active{transform:scale(.95)}"
+      "description": "Solid house-purple button on a darker 5px edge, in the display face. Start a game, Join, Enter Lobby, Save. Lifts on hover, presses down onto its edge.",
+      "html": "<button class=\"ds-btn-buzzer\">Start a game</button>",
+      "css": ".ds-btn-buzzer{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;border:none;border-radius:1rem;padding:.875rem 1.75rem;font:800 1rem/1.5 'Bricolage Grotesque',ui-sans-serif,system-ui,sans-serif;letter-spacing:-.01em;color:#fff;background:oklch(55.8% .288 302.321);box-shadow:0 5px 0 oklch(38.1% .176 304.987);transform:translateY(0);transition:transform 150ms cubic-bezier(.16,1,.3,1),box-shadow 150ms cubic-bezier(.16,1,.3,1),background-color 150ms;cursor:pointer}.ds-btn-buzzer:hover{background:oklch(62.7% .265 303.9);transform:translateY(-2px);box-shadow:0 7px 0 oklch(38.1% .176 304.987)}.ds-btn-buzzer:active{transform:translateY(4px);box-shadow:0 1px 0 oklch(38.1% .176 304.987)}.ds-btn-buzzer:focus-visible{outline:2px solid oklch(82.7% .119 306.383);outline-offset:4px}"
     },
     {
       "name": "Go Button",
       "kind": "button",
       "refersTo": "button-go",
-      "description": "Host's Start Game action.",
+      "description": "Host's Start Game action: a go-green buzzer (btn-go) with Studio Black text on a dark green edge.",
       "html": "<button class=\"ds-btn-go\">Start Game</button>",
-      "css": ".ds-btn-go{width:100%;background:oklch(72.3% .219 149.579);color:oklch(20.8% .042 265.755);font:900 1rem/1.5 ui-sans-serif,system-ui,sans-serif;text-transform:uppercase;letter-spacing:.1em;padding:16px 0;border:none;border-radius:.75rem;cursor:pointer;transition:background-color .15s}.ds-btn-go:hover{background:oklch(79.2% .209 151.711)}.ds-btn-go:focus-visible{outline:2px solid #fff;outline-offset:2px}"
+      "css": ".ds-btn-go{width:100%;border:none;border-radius:1rem;padding:.875rem 1.75rem;font:800 1rem/1.5 'Bricolage Grotesque',ui-sans-serif,system-ui,sans-serif;color:oklch(12.9% .042 264.695);background:oklch(72.3% .219 149.579);box-shadow:0 5px 0 oklch(44.8% .119 151.328);transition:transform 150ms cubic-bezier(.16,1,.3,1),box-shadow 150ms cubic-bezier(.16,1,.3,1),background-color 150ms;cursor:pointer}.ds-btn-go:hover{background:oklch(79.2% .209 151.711);transform:translateY(-2px);box-shadow:0 7px 0 oklch(44.8% .119 151.328)}.ds-btn-go:active{transform:translateY(4px);box-shadow:0 1px 0 oklch(44.8% .119 151.328)}.ds-btn-go:focus-visible{outline:2px solid #fff;outline-offset:4px}"
     },
     {
       "name": "Room Code Input",
@@ -511,9 +716,9 @@
       "name": "Player Row",
       "kind": "custom",
       "refersTo": "player-row",
-      "description": "Lobby roster entry with initial avatar disc.",
-      "html": "<div class=\"ds-player\"><span class=\"ds-avatar\">D</span><span class=\"ds-nick\">Daniel</span></div>",
-      "css": ".ds-player{display:flex;align-items:center;gap:16px;max-width:22rem;background:oklch(37.2% .044 257.287);border:1px solid oklch(44.6% .043 257.281);border-radius:.75rem;padding:16px;font-family:ui-sans-serif,system-ui,sans-serif}.ds-avatar{width:40px;height:40px;border-radius:9999px;background:oklch(62.7% .265 303.9);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center}.ds-nick{color:#fff;font-weight:700}"
+      "description": "Lobby roster entry: a round blob avatar drawn from the nickname, the nickname, and the host's Remove button. In a team game the avatar gets a team-colour ring.",
+      "html": "<div class=\"ds-player\"><span class=\"ds-avatar\"><svg viewBox=\"0 0 40 40\" aria-hidden=\"true\"><circle cx=\"20\" cy=\"20\" r=\"20\" fill=\"oklch(86.9% .022 252.894)\"/><path d=\"M9 21c0-7 5-12 11-12s11 4 11 11-5 11-11 11S9 28 9 21z\" fill=\"oklch(71.4% .203 305.504)\"/><rect x=\"15\" y=\"17\" width=\"2.5\" height=\"5\" rx=\"1.25\" fill=\"oklch(12.9% .042 264.695)\"/><rect x=\"22.5\" y=\"17\" width=\"2.5\" height=\"5\" rx=\"1.25\" fill=\"oklch(12.9% .042 264.695)\"/></svg></span><span class=\"ds-nick\">Daniel</span><button class=\"ds-remove\">Remove</button></div>",
+      "css": ".ds-player{display:flex;align-items:center;gap:12px;max-width:22rem;background:oklch(20.8% .042 265.755);border:2px solid oklch(37.2% .044 257.287);border-radius:1rem;padding:12px;font-family:ui-sans-serif,system-ui,sans-serif}.ds-avatar{width:40px;height:40px;flex-shrink:0;border-radius:9999px;display:block}.ds-avatar svg{width:100%;height:100%;display:block}.ds-nick{flex:1;min-width:0;color:#fff;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.ds-remove{flex-shrink:0;border-radius:.5rem;border:1px solid oklch(63.7% .237 25.331/.4);background:oklch(63.7% .237 25.331/.1);color:oklch(80.8% .114 19.571);font:700 .875rem/1.25 ui-sans-serif,system-ui,sans-serif;padding:6px 12px;cursor:pointer}.ds-remove:hover{background:oklch(63.7% .237 25.331/.2)}.ds-remove:focus-visible{outline:2px solid oklch(70.4% .191 22.216);outline-offset:2px}"
     },
     {
       "name": "Footer Nav",
@@ -525,7 +730,7 @@
   ],
   "narrative": {
     "northStar": "The Game-Show Studio",
-    "overview": "Grouparty is a studio with the lights down. The host screen is the set, seen by the whole room from the sofa, the back of a classroom or the end of a meeting table. Every phone is a contestant's buzzer. The building is permanently dark: a deep slate floor, panels one step lighter, and thin rigging lines between them. The house lights are purple, with a purple-to-pink sweep on the main call to action. The Grouparty wordmark is solid white type. When something matters, like a score, a winner or a correct answer, the gold spotlight hits it.\n\nEach game is its own set on the same stage. Mind Match is lit violet, Submarine Combat cyan, Soup of Numbers emerald, and the billionaire quiz deep studio blue. The studio itself stays constant, so moving between games feels like a scene change rather than leaving the show. The chrome is clean and calm: quiet panels, plain system type and restrained borders. The game moments are what's allowed to shout.\n\nThe studio is family-show TV, not a casino and not a kids' channel. It should look right in front of a class, a team or a family. That rules out flashing slot-machine glare, wall-to-wall neon and cartoon mascots.",
+    "overview": "Grouparty is a studio with the lights down. The host screen is the set, seen by the whole room from the sofa, the back of a classroom or the end of a meeting table. Every phone is a contestant's buzzer. The building is permanently dark: a deep slate floor, panels one step lighter, and thin rigging lines between them. The house lights are purple, and the main call to action is a solid buzzer button sitting on a darker edge. The Grouparty wordmark is solid white type. When something matters, like a score, a winner or a correct answer, the gold spotlight hits it.\n\nEach game is its own set on the same stage. Mind Match is lit violet, Submarine Combat cyan, Soup of Numbers emerald, and the billionaire quiz deep studio blue. The studio itself stays constant, so moving between games feels like a scene change rather than leaving the show. The chrome is clean and calm: quiet panels, plain system type and restrained borders. The game moments are what's allowed to shout.\n\nThe studio is family-show TV, not a casino and not a kids' channel. It should look right in front of a class, a team or a family. That rules out flashing slot-machine glare, wall-to-wall neon and cartoon mascots.",
     "keyCharacteristics": [
       "Permanently dark, built from tonal slate layers (950 → 900 → 800 → 700).",
       "One house accent (purple) for site chrome, and one set accent per game.",
@@ -546,8 +751,8 @@
         "section": "colors"
       },
       {
-        "name": "The Gradient Is a Signature Rule",
-        "body": "The purple→pink sweep is reserved for the one primary \"get into a room\" CTA in each view (Start a game, Join game, Enter Lobby). It isn't a general fill, and it never colors text. The secondary CTA beside it is always the tonal button.",
+        "name": "The No-Gradient Rule",
+        "body": "Every fill is one solid colour. Energy comes from saturated solid blocks (house purple, pink, gold, each game's set light), big display type and motion, never from colour blends. (Older in-game views still have a few; don't add new ones.)",
         "section": "colors"
       },
       {
@@ -564,24 +769,31 @@
         "name": "The Lighter-Means-Closer Rule",
         "body": "To bring a surface forward, raise it one slate step and give it a border. Don't stack shadows inside shadows.",
         "section": "elevation"
+      },
+      {
+        "name": "The Honest Position Rule",
+        "body": "The spring overshoot is for things appearing (a badge, a \"+1\", a title). Anything whose position is the information, like Tug of War's rope and flag or a progress marker, eases out without overshoot (`--ease-out-expo` family), so it never looks as if it crossed a line it didn't reach.",
+        "section": "components"
       }
     ],
     "dos": [
-      "**Do** build every surface from the slate stack. Stage Floor is the page, Set Panel the card, and Set Panel Raised the nested row, each with a 1px Rig Line.",
-      "**Do** give each game exactly one set accent and use it for selection, key borders and emphasis inside that game.",
-      "**Do** reserve Spotlight Gold for scores, winners and correct or current highlights (The Spotlight Rule).",
-      "**Do** set codes, scores, timers and grid digits in black-weight monospace.",
-      "**Do** keep host-screen text at 1.5rem or larger and weight 700–900 so it can be read across a room.",
-      "**Do** use the Label style (0.75rem, weight 900, widest tracking, uppercase) for field labels and picker headers.",
-      "**Do** keep site chrome calm, using color transitions and a 95% press-down. Save springy motion for game moments."
+      "Do build every surface from the slate stack. Stage Floor is the page, Set Panel the card, and Set Panel Raised the nested row, each with a 1px Rig Line.",
+      "Do give each game exactly one set accent and use it for selection, key borders and emphasis inside that game.",
+      "Do reserve Spotlight Gold for scores, winners and correct or current highlights (The Spotlight Rule).",
+      "Do set codes, scores, timers and grid digits in black-weight monospace.",
+      "Do keep host-screen text at 1.5rem or larger and weight 700–900 so it can be read across a room.",
+      "Do use the Label style (0.75rem, weight 900, widest tracking, uppercase) for field labels and picker headers.",
+      "Do keep site chrome calm, using color transitions and a 95% press-down. Save springy motion for game moments.",
+      "Do show every player's blob avatar next to their name: join preview, lobby, Players panel and every leaderboard or scoreboard.",
+      "Do mark team membership with the team colour on the avatar ring or a heading, not with a thick coloured stripe down one side of a row."
     ],
     "donts": [
-      "**Don't** introduce a light theme or white surfaces. The only white surface is the QR code plate.",
-      "**Don't** look like a casino: no flashing lights, slot-machine glare, stacked neon glows or everything-animating-at-once.",
-      "**Don't** go childish or cartoonish: no mascots, bubbly comic fonts or toy-like chrome. The studio has to suit colleagues and classrooms as well as families.",
-      "**Don't** use the purple→pink gradient beyond the primary start/join CTA, never twice side by side, and never as gradient text.",
-      "**Don't** let two set accents, or house purple plus a set accent, compete inside one game view.",
-      "**Don't** use type smaller than 0.75rem, or put Ink Faint text on Set Panel Raised, where contrast drops too low."
+      "Don't introduce a light theme or white surfaces. The only white surface is the QR code plate.",
+      "Don't look like a casino: no flashing lights, slot-machine glare, stacked neon glows or everything-animating-at-once.",
+      "Don't go childish or cartoonish: no mascots, bubbly comic fonts or toy-like chrome. The studio has to suit colleagues and classrooms as well as families.",
+      "Don't use gradients: no gradient fills, borders or text (The No-Gradient Rule).",
+      "Don't let two set accents, or house purple plus a set accent, compete inside one game view.",
+      "Don't use type smaller than 0.75rem, or put Ink Faint text on Set Panel Raised, where contrast drops too low."
     ]
   }
 }

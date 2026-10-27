@@ -25,6 +25,19 @@ colors:
   set-cyan: "oklch(78.9% .154 211.53)"
   set-emerald: "oklch(76.5% .177 163.223)"
   set-blue: "oklch(37.9% .146 265.522)"
+  set-purple: "oklch(71.4% .203 305.504)"
+  set-amber: "oklch(82.8% .189 84.429)"
+  set-orange: "oklch(75% .183 55.934)"
+  set-sky: "oklch(74.6% .16 232.661)"
+  set-indigo: "oklch(67.3% .182 276.935)"
+  set-rose: "oklch(71.2% .194 13.428)"
+  set-lime: "oklch(84.1% .238 128.85)"
+  set-pumpkin: "oklch(70.5% .213 47.604)"
+  set-green: "oklch(79.2% .209 151.711)"
+  set-yellow: "oklch(85.2% .199 91.936)"
+  set-red: "oklch(70.4% .191 22.216)"
+  team-red: "oklch(63.7% .237 25.331)"
+  team-blue: "oklch(62.3% .214 259.815)"
 typography:
   display:
     fontFamily: "Bricolage Grotesque, ui-sans-serif, system-ui, sans-serif"
@@ -151,7 +164,7 @@ components:
 
 **Creative North Star: "The Game-Show Studio"**
 
-Grouparty is a studio with the lights down. The host screen is the set, seen by the whole room from the sofa, the back of a classroom or the end of a meeting table. Every phone is a contestant's buzzer. The building is permanently dark: a deep slate floor, panels one step lighter, and thin rigging lines between them. The house lights are purple, with a purple-to-pink sweep on the main call to action. The Grouparty wordmark is solid white type. When something matters, like a score, a winner or a correct answer, the gold spotlight hits it.
+Grouparty is a studio with the lights down. The host screen is the set, seen by the whole room from the sofa, the back of a classroom or the end of a meeting table. Every phone is a contestant's buzzer. The building is permanently dark: a deep slate floor, panels one step lighter, and thin rigging lines between them. The house lights are purple, and the main call to action is a solid buzzer button sitting on a darker edge. The Grouparty wordmark is solid white type. When something matters, like a score, a winner or a correct answer, the gold spotlight hits it.
 
 Each game is its own set on the same stage. Mind Match is lit violet, Submarine Combat cyan, Soup of Numbers emerald, and the billionaire quiz deep studio blue. The studio itself stays constant, so moving between games feels like a scene change rather than leaving the show. The chrome is clean and calm: quiet panels, plain system type and restrained borders. The game moments are what's allowed to shout.
 
@@ -170,7 +183,7 @@ The studio is family-show TV, not a casino and not a kids' channel. It should lo
 The palette is a dark studio floor with one house light, a gold spotlight, and a different colored set light for each game. All values come straight from Tailwind v4's OKLCH palette. Use the Tailwind utilities rather than custom values.
 
 ### Primary
-- **House Purple** (`purple-600`): The brand's voice. Status pills, the hover fill of the catalog's "Play Now" / "Switch to this game" buttons, and player avatar discs (in its lighter step, `purple-500`). It also starts the purple→pink CTA sweep.
+- **House Purple** (`purple-600`): The brand's voice. Status pills, the hover fill of the catalog's "Play Now" / "Switch to this game" buttons, and the default buzzer button (`btn`, edge `purple-900`).
 - **House Purple Lit** (`purple-500`): Hover state for purple buttons, focus borders on inputs (`focus:border-purple-500`), and the active game-card border.
 - **House Purple Glow** (`purple-400`): Accent text on dark backgrounds, such as room codes, "← Back to games" links, step numbers and inline links.
 - **House Pink** (`pink-600`): The second house light. The Join button on the Join page and the "You're in!" moment. Used as a solid fill, never blended with purple.
@@ -179,13 +192,27 @@ The palette is a dark studio floor with one house light, a gold spotlight, and a
 - **Spotlight Gold** (`yellow-400`): The most-used accent inside games. It marks scores, point gains, the current round, winners, highlighted cells and leaderboard leaders. `yellow-500` is its deeper fill.
 
 ### Tertiary
-These are the set accents, one per game. A game's accent owns its selected-picker state, its key borders and its emphasis text, and appears only inside that game's views.
-- **Set Violet** (`violet-500` / `violet-400`): Mind Match.
+These are the set accents, one per game. A game's accent owns its selected-picker state, its key borders and its emphasis text, and appears only inside that game's views and on its public game page. `GamePagesHelper::ACCENTS` is the source of truth (text, soft, tint, border, solid, ink and `--accent` per game); a new game adds its row there.
+- **Set Purple** (`purple-400`): The Fisherman.
+- **Set Blue** (`blue-400` text; older views still have `blue-900`/`blue-950` gradients): How Want Be Billionaire.
+- **Set Amber** (`amber-400`): Battle City.
+- **Set Orange** (`orange-400`): Guess The Color.
+- **Set Sky** (`sky-400`): Count Birds.
+- **Set Indigo** (`indigo-400`): Sequence Memory.
 - **Set Cyan** (`cyan-400`): Submarine Combat.
+- **Set Violet** (`violet-500` / `violet-400`): Mind Match.
 - **Set Emerald** (`emerald-400`): Soup of Numbers.
-- **Set Blue** (`blue-900` / `blue-950` gradients, `blue-400` text): How Want Be Billionaire.
+- **Set Rose** (`rose-400`): Matching Pairs.
+- **Set Lime** (`lime-400`): Doodle Dash.
+- **Set Pumpkin** (`orange-500`): Haunted House.
+- **Set Green** (`green-400`): Monster Mash.
+- **Set Yellow** (`yellow-400`): Character Hunt.
+- **Set Red** (`red-400`): Tug of War.
+- **Team Red / Team Blue** (`red-500` / `blue-500`, pages tinted `red-950` / `blue-950`): the two teams in Tug of War. They mark the rope's ends, the team lines, avatar rings and each phone's background.
 - **Go Green** (`green-500`): The host's Start Game button. `green-400` marks correct answers.
 - **Miss Red** (`red-400`): Errors, wrong answers, hits taken and eliminations.
+
+Some set lights share a hue with a feedback colour: Character Hunt's yellow is Spotlight Gold, Monster Mash's green is the correct-answer green, and Tug of War's red is Miss Red. Inside those games the hue means the game (or the team), so feedback moves to another signal. Tug of War shows a wrong answer as a sky-blue frozen card with ❄️, never as red.
 
 ### Neutral
 - **Studio Black** (`slate-950`): The deepest surface. It's the footer, full-bleed game backdrops and the darkest wells.
@@ -324,13 +351,15 @@ This is the pre-game config control. A grid of three radio tiles uses Set Panel 
 This is the Join page's code entry. Four 96–112px Studio Black slots with 3px Rig Line borders, 24px radius and a solid Studio Black edge show the code in black-weight 2.25–3rem monospace. They sit over one real, invisible text input that keeps paste, autofill and screen readers working. Each character pops in as it is typed; the next slot to fill gets a `purple-400` border and a 10% purple tint, filled slots get `slate-500`. On the 4th character every slot turns green and the form submits; a wrong code shakes the row and turns every slot red. Without JS the plain input shows instead.
 
 ### Player Row (signature component)
-This is the lobby roster entry (`rooms/_lobby_player`, built the same way in `game_subscription_controller#addPlayer`). A Stage Floor row with a 2px Rig Line border, 16px radius and 12px padding: a 40px solid avatar disc (display-face initial) and the nickname in white bold. Avatar colours come from the nickname (`RoomsHelper#player_avatar_color`, `controllers/shared/avatar.js`, same list), so a player keeps one colour in the lobby, the Players panel and the join-form preview. New rows pop in at the top with a purple border that settles to grey; the count pill ("3 players") updates live. A dashed "Waiting for players to join" row with bouncing dots sits under the list.
+This is the lobby roster entry (`rooms/_lobby_player`, built the same way in `game_subscription_controller#addPlayer`). A Stage Floor row with a 2px Rig Line border, 16px radius and 12px padding: a 40px round blob avatar and the nickname in white bold, plus a Remove button for the host. The avatar is a blobatar drawn from the nickname (`player_avatar` in ERB, `avatar()` / `avatarHtml()` from `controllers/shared/avatar` in JS), so a player keeps the same face on the join preview, the lobby, the Players panel and every in-game leaderboard. In a team game the avatar takes a ring in the team colour. New rows pop in at the top with a purple border that settles to grey; the count pill ("3 players") updates live. A dashed "Waiting for players to join" row with bouncing dots sits under the list.
 
 ### Lobby (`rooms/show`)
-Host (TV): category eyebrow and the display-face game name; the room code as four 96px tiles (purple border, solid purple edge) that pop in; the QR on a tilted house-purple block; "Scan to join" with the join address as a mono chip; the players panel (28px radius) with the go-green buzzer Start. Player (phone): a house-purple "You're in!" card with their big avatar disc, nickname and "Waiting for the host to start" with bouncing dots; how to play as solid set-colour numbered tiles; the roster. The join form (`rooms/join`) shows the game art, the room code as small tiles and an avatar preview that fills in as the nickname is typed (`nickname_preview_controller`). Room settings (`rooms/edit`) put the game art and a display-face title above the game's pickers in one panel.
+Host (TV): category eyebrow and the display-face game name; the room code as four 96px tiles (purple border, solid purple edge) that pop in; the QR on a tilted house-purple block; "Scan to join" with the join address as a mono chip; the players panel (28px radius) with the go-green buzzer Start. Player (phone): a house-purple "You're in!" card with their big blob avatar, nickname and "Waiting for the host to start" with bouncing dots; how to play as solid set-colour numbered tiles; the roster. The join form (`rooms/join`) shows the game art, the room code as small tiles and an avatar preview that fills in as the nickname is typed (`nickname_preview_controller`). Room settings (`rooms/edit`) put the game art and a display-face title above the game's pickers in one panel.
 
 ### Toasts and Reveals (game-side)
-In-game feedback is injected per game. Toasts slide in and out, badges pop in on a spring curve (`cubic-bezier(0.34, 1.56, 0.64, 1)`), groups and categories enter with a short slide-up, and misses shake. These motions belong to game moments.
+In-game feedback is injected per game. Toasts slide in and out, badges pop in on a spring curve (`--ease-spring`), groups and categories enter with a short slide-up, and misses shake. These motions belong to game moments.
+
+**The Honest Position Rule.** The spring overshoot is for things appearing (a badge, a "+1", a title). Anything whose position is the information, like Tug of War's rope and flag or a progress marker, eases out without overshoot (`--ease-out-expo` family), so it never looks as if it crossed a line it didn't reach.
 
 ### Site Motion
 Public pages move too, but every effect has a reduced-motion fallback and content is visible without JS.
@@ -354,6 +383,8 @@ Game pictures go through `game_art_tag`. Games whose image has English rules dra
 - **Do** keep host-screen text at 1.5rem or larger and weight 700–900 so it can be read across a room.
 - **Do** use the Label style (0.75rem, weight 900, widest tracking, uppercase) for field labels and picker headers.
 - **Do** keep site chrome calm, using color transitions and a 95% press-down. Save springy motion for game moments.
+- **Do** show every player's blob avatar next to their name: join preview, lobby, Players panel and every leaderboard or scoreboard.
+- **Do** mark team membership with the team colour on the avatar ring or a heading, not with a thick coloured stripe down one side of a row.
 
 ### Don't:
 - **Don't** introduce a light theme or white surfaces. The only white surface is the QR code plate.
