@@ -1,0 +1,95 @@
+# Slug is a public URL (/games/tug-of-war) — never change it once live.
+name: Tug of War
+slug: tug-of-war
+# Hidden on the public site until the game has its images (instructions.png, WebP copies, og.png).
+listed: false
+description: A team math race. The room splits into Red and Blue, every phone gets its own sums,
+  and each right answer pulls the rope on the big screen a little closer to your side.
+tagline: Solve the sums, pull the rope. First team to drag the flag over its line wins.
+category: puzzle
+min_players: 2
+max_players: 30
+players_note: >-
+  Two players is enough for a one-on-one pull, but it's best with a crowd: two big teams pulling at
+  once. Uneven teams are fine, because a smaller team pulls harder with every right answer.
+duration_minutes: 5
+age: 6
+long_description: >-
+  Tug of War turns mental math into a team sport. The room splits into a Red team and a Blue team,
+  and the big screen shows both teams holding a rope with a flag in the middle. Every player gets
+  their own math problem on their phone. Answer it right and your team pulls: the rope slides your
+  way and a "+1" pops up over your name. Answer it wrong and your phone freezes for 2 seconds, so
+  guessing doesn't pay. The first team to drag the flag over its line wins the round. The host
+  chooses how hard the sums are, from adding up to 20 to two-step problems like 7 × 6 − 9, and
+  whether players type the answer or pick it from four. Before the first round the host can move
+  players between teams, so the sides are fair.
+how_to_play:
+  - "The host picks how players answer (type it or pick from four), the difficulty, the rope length, a time limit and 1 round or best of 3."
+  - When the game starts, everyone is split into Red and Blue at random. The host can tap a player on the big screen to move them to the other team, or shuffle, then starts the pull.
+  - After a 3-2-1 countdown, every phone shows its own math problem. Answer it right and your team pulls the rope a little, then a new problem appears straight away.
+  - A wrong answer freezes your phone for 2 seconds and shows you the right one.
+  - A team wins the round when the flag crosses its line. If the time runs out first, the side the rope is leaning towards wins.
+tips:
+  - Speed beats perfection, but only just. A wrong answer costs you 2 seconds, so don't guess.
+  - Everyone pulls at the same time. Your answer counts no matter what your teammates are doing.
+  - In "pick it" mode the wrong answers are close to the right one. Work it out before you tap.
+  - Watch the small rope at the top of your phone to see if your team is winning.
+  - Mix the teams so each side has fast and slower players. The host can move anyone before the start.
+perfect_for: [party, family, classroom, work]
+faq:
+  - q: How does a team win Tug of War?
+    a: Every right answer pulls the rope towards your team. The first team to drag the flag over its line wins the round. With a time limit, the team the rope leans towards when time runs out wins.
+  - q: What kind of math is it?
+    a: The host picks the difficulty. Easy is adding and taking away up to 20, Medium adds times tables and division, and Hard uses two-step problems like 7 × 6 − 9. Answers are always whole numbers.
+  - q: What if the teams aren't the same size?
+    a: It's still fair. A smaller team pulls harder with every right answer, so 3 players against 4 is an even match.
+  - q: Do players type the answer or choose it?
+    a: The host decides before the game. Players either type the answer on a number pad, or pick it from four answers, which is easier for younger kids.
+  - q: Can someone join after the game has started?
+    a: Yes. They go to the smaller team and get a problem straight away.
+
+# Spanish. Same fields as above; anything missing falls back to English.
+translations:
+  es:
+    name: Tira y Afloja
+    description: Una carrera de matemáticas por equipos. La sala se divide en Rojo y Azul, cada celular
+      recibe sus propias cuentas y cada respuesta correcta tira de la cuerda en la pantalla grande un
+      poco más hacia tu lado.
+    tagline: Resuelve las cuentas, tira de la cuerda. Gana el equipo que pase la bandera por su línea.
+    players_note: >-
+      Con dos jugadores ya se puede tirar uno contra uno, pero es mejor con mucha gente: dos equipos
+      grandes tirando a la vez. No importa si los equipos no son iguales, porque el equipo más pequeño
+      tira más fuerte con cada respuesta correcta.
+    long_description: >-
+      Tira y Afloja convierte el cálculo mental en un deporte de equipo. La sala se divide en un equipo
+      Rojo y un equipo Azul, y la pantalla grande muestra a los dos equipos sujetando una cuerda con una
+      bandera en el medio. Cada jugador recibe su propio problema de matemáticas en el celular. Si
+      aciertas, tu equipo tira: la cuerda se mueve hacia tu lado y aparece un "+1" sobre tu nombre. Si te
+      equivocas, tu celular se congela 2 segundos, así que adivinar no sirve. El primer equipo que pase
+      la bandera por su línea gana la ronda. El anfitrión elige qué tan difíciles son las cuentas, desde
+      sumas hasta 20 hasta problemas de dos pasos como 7 × 6 − 9, y si los jugadores escriben la
+      respuesta o la eligen entre cuatro. Antes de la primera ronda el anfitrión puede cambiar a los
+      jugadores de equipo para que sea parejo.
+    how_to_play:
+      - "El anfitrión elige cómo responden (escribir o elegir entre cuatro), la dificultad, el largo de la cuerda, un tiempo límite y 1 ronda o al mejor de 3."
+      - Al empezar, todos se dividen en Rojo y Azul al azar. El anfitrión puede tocar a un jugador en la pantalla grande para pasarlo al otro equipo, o mezclar, y luego empieza a tirar.
+      - Después de una cuenta regresiva 3-2-1, cada celular muestra su propio problema. Si aciertas, tu equipo tira un poco de la cuerda y aparece otro problema enseguida.
+      - Una respuesta incorrecta congela tu celular 2 segundos y te muestra la correcta.
+      - Un equipo gana la ronda cuando la bandera cruza su línea. Si el tiempo se acaba antes, gana el lado hacia donde está inclinada la cuerda.
+    tips:
+      - La rapidez gana, pero no a cualquier precio. Una respuesta incorrecta te cuesta 2 segundos, así que no adivines.
+      - Todos tiran a la vez. Tu respuesta cuenta sin importar lo que hagan tus compañeros.
+      - En el modo "elegir" las respuestas incorrectas se parecen a la correcta. Resuélvelo antes de tocar.
+      - Mira la cuerda pequeña arriba en tu celular para saber si tu equipo va ganando.
+      - Mezcla los equipos para que cada lado tenga jugadores rápidos y más lentos. El anfitrión puede cambiar a cualquiera antes de empezar.
+    faq:
+      - q: ¿Cómo gana un equipo en Tira y Afloja?
+        a: Cada respuesta correcta tira de la cuerda hacia tu equipo. El primer equipo que pase la bandera por su línea gana la ronda. Con tiempo límite, gana el equipo hacia el que está inclinada la cuerda cuando se acaba el tiempo.
+      - q: ¿Qué tipo de matemáticas son?
+        a: El anfitrión elige la dificultad. Fácil son sumas y restas hasta 20, Media agrega tablas de multiplicar y divisiones, y Difícil usa problemas de dos pasos como 7 × 6 − 9. Las respuestas siempre son números enteros.
+      - q: ¿Y si los equipos no tienen la misma cantidad de jugadores?
+        a: Sigue siendo justo. El equipo más pequeño tira más fuerte con cada respuesta correcta, así que 3 contra 4 es un duelo parejo.
+      - q: ¿Los jugadores escriben la respuesta o la eligen?
+        a: El anfitrión lo decide antes de empezar. Los jugadores escriben la respuesta en un teclado numérico, o la eligen entre cuatro opciones, que es más fácil para los más pequeños.
+      - q: ¿Alguien puede unirse cuando el juego ya empezó?
+        a: Sí. Entra al equipo más pequeño y recibe un problema enseguida.
