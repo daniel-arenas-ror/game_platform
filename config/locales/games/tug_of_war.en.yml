@@ -1,0 +1,53 @@
+# Tug of War: in-game screen and its JS.
+en:
+  rooms:
+    games:
+      tug_of_war:
+        index:
+          title: "Tug of War"
+          sound: "Sound"
+          skip: "Next ⏭"
+          shuffle: "Shuffle"
+          start_pulling: "Start pulling"
+          teams_hint: "Tap a player to move them to the other team"
+          need_both: "Both teams need at least one player"
+          get_ready: "Get ready…"
+          look_tv: "Look at the TV"
+          erase: "Delete"
+          send: "Send"
+  js:
+    tug_of_war:
+      teams:
+        red: "Red"
+        blue: "Blue"
+      team_label: "%{team} team"
+      round: "Round %{round} of %{total}"
+      get_ready: "Get ready!"
+      go: "PULL!"
+      players:
+        one: "%{count} player"
+        other: "%{count} players"
+      pulls:
+        one: "%{count} pull"
+        other: "%{count} pulls"
+      streak: "🔥 %{count} in a row"
+      move_to: "Move to the %{team} team"
+      teams_wait: "The host is picking the teams. Look at the TV!"
+      correct: "💪 Pull!"
+      wrong: "%{text} = %{answer}"
+      round_winner: "%{team} team wins the round!"
+      round_draw: "It's a draw!"
+      you_won_round: "Your team won the round!"
+      you_lost_round: "The other team won this round"
+      game_winner: "%{team} team wins!"
+      game_draw: "It's a draw!"
+      mvp:
+        one: "⭐ MVP: %{names} (%{count} pull)"
+        other: "⭐ MVP: %{names} (%{count} pulls)"
+      you_win: "Your team wins!"
+      you_lose: "Your team lost. Good pulling!"
+      you_mvp: "⭐ You were the MVP!"
+      your_pulls:
+        one: "You pulled %{count} time"
+        other: "You pulled %{count} times"
+      error: "Something went wrong. Start a new game."

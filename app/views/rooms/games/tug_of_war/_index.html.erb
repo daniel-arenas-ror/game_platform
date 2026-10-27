@@ -1,0 +1,215 @@
+<% is_host = session[:player_id].blank? %>
+
+<% if is_host %>
+  <%# ================================================================= %>
+  <%# HOST VIEW — TV: the rope, both teams on it, every pull            %>
+  <%# ================================================================= %>
+  <div data-controller="tug-of-war-host"
+       data-tug-of-war-host-room-code-value="<%= @room.code %>"
+       class="flex flex-col h-dvh bg-slate-950 text-white overflow-hidden">
+
+    <%# Header %>
+    <div class="flex items-center justify-between gap-6 px-6 pt-5 pb-4">
+      <h1 class="text-2xl font-black tracking-widest uppercase text-red-400">🪢 <%= t(".title") %></h1>
+      <div class="flex items-center gap-5">
+        <p data-tug-of-war-host-target="roundLabel" class="text-slate-300 font-bold text-lg"></p>
+        <p data-tug-of-war-host-target="wins" class="hidden font-black text-2xl tabular-nums"></p>
+        <p data-tug-of-war-host-target="countdown" class="font-mono font-black text-3xl tabular-nums"></p>
+      </div>
+      <div class="flex items-center gap-4">
+        <button type="button" data-action="tug-of-war-host#toggleSound" data-tug-of-war-host-target="soundButton"
+                class="rounded-full border border-slate-700 bg-slate-900 px-3 py-1 text-xs font-bold text-slate-300 hover:text-white cursor-pointer">
+          🔊 <%= t(".sound") %>
+        </button>
+        <p class="text-slate-500 text-xs font-mono tracking-widest">
+          <%= t("rooms.games.shared.room") %> <span class="text-white font-bold"><%= @room.code %></span>
+        </p>
+      </div>
+    </div>
+
+    <%# The field. Bottom margin keeps it clear of the Players button. %>
+    <div data-tug-of-war-host-target="stage"
+         class="relative flex-1 min-h-0 mx-6 mb-16 rounded-3xl bg-slate-900 border border-slate-800 overflow-hidden">
+      <%# Ground: each team's line and the centre line. The flag crossing a team's line wins it. %>
+      <div class="absolute inset-y-0 left-[32%] w-1.5 -translate-x-1/2 bg-red-500/50"></div>
+      <div class="absolute inset-y-0 left-1/2 -translate-x-1/2 border-l-2 border-dashed border-slate-700"></div>
+      <div class="absolute inset-y-0 left-[68%] w-1.5 -translate-x-1/2 bg-blue-500/50"></div>
+
+      <%# Each team's name, pulls and streak %>
+      <div class="absolute top-5 left-6 flex flex-col items-start gap-1">
+        <p class="font-black text-3xl text-red-400 tracking-wide">🔴 <span data-tug-of-war-host-target="redName"></span></p>
+        <p data-tug-of-war-host-target="redPulls" class="text-slate-300 font-bold tabular-nums"></p>
+        <p data-tug-of-war-host-target="redStreak" class="hidden rounded-full bg-orange-500 px-3 py-0.5 text-sm font-black text-slate-950"></p>
+      </div>
+      <div class="absolute top-5 right-6 flex flex-col items-end gap-1">
+        <p class="font-black text-3xl text-blue-400 tracking-wide"><span data-tug-of-war-host-target="blueName"></span> 🔵</p>
+        <p data-tug-of-war-host-target="bluePulls" class="text-slate-300 font-bold tabular-nums"></p>
+        <p data-tug-of-war-host-target="blueStreak" class="hidden rounded-full bg-orange-500 px-3 py-0.5 text-sm font-black text-slate-950"></p>
+      </div>
+
+      <%# The rope, the flag and the players move together. 100 % of the way = the flag on a team's line. %>
+      <div data-tug-of-war-host-target="rope" class="tw-rope absolute inset-0">
+        <div class="absolute -left-1/4 -right-1/4 top-1/2 h-4 -translate-y-1/2 bg-amber-700 border-y-4 border-dashed border-amber-900"></div>
+        <div class="absolute left-1/2 top-1/2 -translate-x-1/2 flex flex-col items-center">
+          <div class="w-3 h-16 rounded-b-md bg-yellow-400 border-2 border-yellow-200"></div>
+        </div>
+        <div data-tug-of-war-host-target="redTeam"
+             class="absolute right-[56%] w-[26%] top-1/2 -translate-y-1/2 flex flex-row-reverse items-center justify-start gap-4"></div>
+        <div data-tug-of-war-host-target="blueTeam"
+             class="absolute left-[56%] w-[26%] top-1/2 -translate-y-1/2 flex items-center justify-start gap-4"></div>
+      </div>
+
+      <%# Teams screen: move players, shuffle, start %>
+      <div data-tug-of-war-host-target="teamsPanel"
+           class="hidden absolute inset-x-0 bottom-6 flex flex-col items-center gap-3 text-center">
+        <p class="text-slate-300 font-bold text-lg"><%= t(".teams_hint") %></p>
+        <div class="flex items-center gap-3">
+          <button type="button" data-action="tug-of-war-host#shuffle"
+                  class="rounded-xl border border-slate-600 bg-slate-800 px-6 py-3 font-bold text-slate-200 hover:text-white cursor-pointer">
+            🔀 <%= t(".shuffle") %>
+          </button>
+          <button type="button" data-action="tug-of-war-host#startPulling" data-tug-of-war-host-target="startButton"
+                  class="rounded-xl bg-red-500 hover:bg-red-400 disabled:opacity-40 disabled:cursor-not-allowed px-10 py-3 font-black uppercase tracking-widest text-white text-lg cursor-pointer">
+            <%= t(".start_pulling") %> ▶
+          </button>
+        </div>
+        <p data-tug-of-war-host-target="teamsWarning" class="hidden text-orange-300 text-sm font-bold"><%= t(".need_both") %></p>
+      </div>
+
+      <%# 3, 2, 1, PULL! %>
+      <div data-tug-of-war-host-target="countdownOverlay"
+           class="hidden absolute inset-0 flex flex-col items-center justify-center bg-slate-950/70 text-center">
+        <p data-tug-of-war-host-target="countdownKicker" class="text-red-300 text-sm uppercase tracking-[0.3em] font-mono"></p>
+        <p data-tug-of-war-host-target="countdownNumber" class="font-black text-[10rem] leading-none tabular-nums tw-pop"></p>
+      </div>
+
+      <%# A round's winner %>
+      <div data-tug-of-war-host-target="roundOver"
+           class="hidden absolute inset-0 flex flex-col items-center justify-center gap-4 bg-slate-950/80 text-center">
+        <p data-tug-of-war-host-target="roundOverTitle" class="font-black text-6xl text-balance tw-pop"></p>
+        <p data-tug-of-war-host-target="roundOverScore" class="font-black text-4xl tabular-nums"></p>
+        <button type="button" data-tug-of-war-host-target="skipButton" data-action="tug-of-war-host#skip"
+                class="rounded-xl border border-slate-600 bg-slate-800 px-6 py-2 font-bold text-slate-200 hover:text-white cursor-pointer">
+          <%= t(".skip") %>
+        </button>
+      </div>
+
+      <div data-tug-of-war-host-target="toasts" class="absolute bottom-4 right-4 flex flex-col items-end gap-2"></div>
+    </div>
+
+    <%# Game over %>
+    <div data-tug-of-war-host-target="phaseGameOver"
+         class="hidden absolute inset-0 z-30 overflow-y-auto bg-slate-950 px-8 py-10">
+      <div class="flex flex-col items-center text-center">
+        <p class="text-7xl mb-3">🏆</p>
+        <h2 data-tug-of-war-host-target="gameOverTitle" class="text-5xl font-black tracking-wide"></h2>
+        <p data-tug-of-war-host-target="gameOverHint" class="text-slate-300 text-2xl font-black mt-2 tabular-nums"></p>
+        <p data-tug-of-war-host-target="mvp" class="text-yellow-300 text-xl font-bold mt-3"></p>
+        <div class="grid grid-cols-2 gap-6 w-full max-w-3xl mt-6 text-left">
+          <div data-tug-of-war-host-target="finalRed" class="space-y-2"></div>
+          <div data-tug-of-war-host-target="finalBlue" class="space-y-2"></div>
+        </div>
+        <div class="flex flex-col items-center mt-6">
+          <button data-action="tug-of-war-host#restart"
+                  class="bg-red-500 hover:bg-red-400 text-white font-black px-10 py-3 rounded-xl uppercase tracking-widest text-lg transition-colors cursor-pointer">
+            <%= t("rooms.games.shared.play_again") %>
+          </button>
+          <%= render partial: "rooms/games/change_game", locals: { room: @room, games: @games } %>
+        </div>
+        <%= game_over_ad %>
+      </div>
+    </div>
+  </div>
+
+<% else %>
+  <%# ================================================================= %>
+  <%# PLAYER VIEW — phone: your team, your math problem, the keypad     %>
+  <%# ================================================================= %>
+  <% current_player %>
+  <div data-controller="tug-of-war-player"
+       data-tug-of-war-player-room-code-value="<%= @room.code %>"
+       data-tug-of-war-player-player-id-value="<%= session[:player_id] %>"
+       class="fixed inset-0 flex flex-col bg-slate-950 text-white overflow-hidden select-none transition-colors">
+
+    <%# Header %>
+    <div class="flex items-center justify-between gap-3 px-4 pt-4 pb-2">
+      <p class="font-black text-lg tracking-wide leading-tight truncate"><%= session[:nickname] %></p>
+      <p data-tug-of-war-player-target="teamChip" class="rounded-full px-3 py-1 text-sm font-black whitespace-nowrap"></p>
+      <p data-tug-of-war-player-target="countdown" class="font-mono font-black text-2xl tabular-nums min-w-[2ch] text-right"></p>
+    </div>
+
+    <%# The rope, small: where the flag is %>
+    <div class="px-4 pb-3">
+      <div class="relative h-4 rounded-full bg-slate-800 border border-slate-700">
+        <div class="absolute inset-y-0 left-0 w-2 rounded-l-full bg-red-500"></div>
+        <div class="absolute inset-y-0 right-0 w-2 rounded-r-full bg-blue-500"></div>
+        <div class="absolute inset-y-0 left-1/2 border-l border-dashed border-slate-500"></div>
+        <div data-tug-of-war-player-target="flag"
+             class="absolute -top-1.5 w-2.5 h-7 -translate-x-1/2 rounded bg-yellow-400 border border-yellow-200 transition-[left] duration-300"
+             style="left: 50%"></div>
+      </div>
+      <p data-tug-of-war-player-target="myPulls" class="mt-2 text-center text-slate-300 text-sm font-bold"></p>
+    </div>
+
+    <div class="relative flex-1 min-h-0 flex flex-col">
+      <%# Waiting / teams / round over: a message %>
+      <div data-tug-of-war-player-target="phaseMessage" class="flex-1 flex flex-col items-center justify-center gap-3 px-6 text-center">
+        <p data-tug-of-war-player-target="messageIcon" class="text-7xl"></p>
+        <p data-tug-of-war-player-target="messageTitle" class="font-black text-3xl text-balance"><%= t(".get_ready") %></p>
+        <p data-tug-of-war-player-target="messageHint" class="text-slate-300 text-balance"><%= t(".look_tv") %></p>
+      </div>
+
+      <%# 3, 2, 1 %>
+      <div data-tug-of-war-player-target="phaseCountdown" class="hidden flex-1 flex items-center justify-center">
+        <p data-tug-of-war-player-target="countdownNumber" class="font-black text-[9rem] leading-none tabular-nums tw-pop"></p>
+      </div>
+
+      <%# Pulling: the problem and the answer %>
+      <div data-tug-of-war-player-target="phasePulling" class="hidden flex-1 min-h-0 flex flex-col px-4 pb-4 gap-3">
+        <div class="relative flex-1 min-h-0 flex flex-col items-center justify-center rounded-3xl bg-slate-900/80 border border-slate-700 px-4 py-4">
+          <p data-tug-of-war-player-target="problem" class="font-black text-5xl tabular-nums text-center leading-tight"></p>
+          <p data-tug-of-war-player-target="typed"
+             class="mt-3 min-w-[4ch] rounded-2xl border-2 border-slate-600 bg-slate-950 px-5 py-2 text-center font-mono font-black text-5xl tabular-nums"></p>
+          <p data-tug-of-war-player-target="feedback" class="hidden absolute inset-x-4 bottom-3 text-center font-black text-2xl"></p>
+
+          <%# Frozen after a wrong answer %>
+          <div data-tug-of-war-player-target="frozen"
+               class="hidden absolute inset-0 flex flex-col items-center justify-center rounded-3xl bg-sky-950/95 border-4 border-sky-300 text-center px-4">
+            <p class="text-6xl tw-shake">❄️</p>
+            <p data-tug-of-war-player-target="frozenAnswer" class="font-black text-2xl mt-2 tabular-nums"></p>
+            <p data-tug-of-war-player-target="frozenSeconds" class="font-mono font-black text-5xl tabular-nums mt-1"></p>
+          </div>
+        </div>
+
+        <%# Type it %>
+        <div data-tug-of-war-player-target="keypad" class="hidden grid grid-cols-3 gap-2">
+          <% %w[1 2 3 4 5 6 7 8 9].each do |digit| %>
+            <button type="button" data-action="tug-of-war-player#press" data-digit="<%= digit %>"
+                    class="h-16 rounded-2xl bg-slate-800 border border-slate-700 text-3xl font-black active:scale-95 active:bg-slate-700 cursor-pointer"><%= digit %></button>
+          <% end %>
+          <button type="button" data-action="tug-of-war-player#erase" aria-label="<%= t(".erase") %>"
+                  class="h-16 rounded-2xl bg-slate-800 border border-slate-700 text-2xl font-black active:scale-95 cursor-pointer">⌫</button>
+          <button type="button" data-action="tug-of-war-player#press" data-digit="0"
+                  class="h-16 rounded-2xl bg-slate-800 border border-slate-700 text-3xl font-black active:scale-95 active:bg-slate-700 cursor-pointer">0</button>
+          <button type="button" data-action="tug-of-war-player#submit" aria-label="<%= t(".send") %>"
+                  class="h-16 rounded-2xl bg-emerald-500 text-slate-950 text-3xl font-black active:scale-95 cursor-pointer">✓</button>
+        </div>
+
+        <%# Pick it %>
+        <div data-tug-of-war-player-target="choices" class="hidden grid grid-cols-2 gap-3"></div>
+      </div>
+    </div>
+
+    <p class="pb-2 text-center text-slate-600 text-[10px] font-mono"><%= t("rooms.games.shared.room") %> <%= @room.code %></p>
+
+    <%# Game over %>
+    <div data-tug-of-war-player-target="phaseGameOver"
+         class="hidden fixed inset-0 z-30 flex flex-col items-center justify-center bg-slate-950 text-center px-6 py-10">
+      <p data-tug-of-war-player-target="gameOverIcon" class="text-6xl mb-3">🏆</p>
+      <p data-tug-of-war-player-target="gameOverTitle" class="font-black text-3xl tracking-wide mb-2 text-balance"></p>
+      <p data-tug-of-war-player-target="gameOverHint" class="text-slate-300 font-bold"></p>
+      <p data-tug-of-war-player-target="gameOverMvp" class="text-yellow-300 font-bold mt-2"></p>
+      <p class="text-slate-600 text-xs mt-6 font-mono"><%= t("rooms.games.shared.waiting_restart") %></p>
+    </div>
+  </div>
+<% end %>

@@ -1,0 +1,86 @@
+<% tug   = GameServices::TugOfWar %>
+<% state = @room.game_state %>
+<% picked = "peer-checked:border-red-500 peer-checked:bg-red-500/10" %>
+
+<%# How players answer: type on a keypad or pick one of four %>
+<div class="space-y-4 bg-slate-900/50 p-6 rounded-2xl border border-slate-700">
+  <label class="block text-xs font-bold text-slate-400 mb-3 tracking-widest"><%= t(".answer_mode") %></label>
+  <div class="grid grid-cols-2 gap-3">
+    <% mode = tug::ANSWER_MODES.include?(state["answer_mode"]) ? state["answer_mode"] : tug::DEFAULT_ANSWER_MODE %>
+    <% tug::ANSWER_MODES.each do |name| %>
+      <label class="relative cursor-pointer">
+        <input type="radio" name="room[game_state][answer_mode]" value="<%= name %>" class="peer hidden" <%= "checked" if mode == name %>>
+        <div class="h-full text-center py-3 px-2 bg-slate-800 border-2 border-slate-700 rounded-xl text-white <%= picked %> transition-all">
+          <p class="font-bold"><%= t(".mode_#{name}") %></p>
+          <p class="text-xs text-slate-400 mt-1"><%= t(".mode_#{name}_desc") %></p>
+        </div>
+      </label>
+    <% end %>
+  </div>
+</div>
+
+<%# Difficulty: which problems %>
+<div class="space-y-4 bg-slate-900/50 p-6 rounded-2xl border border-slate-700">
+  <label class="block text-xs font-bold text-slate-400 mb-3 tracking-widest"><%= t(".difficulty") %></label>
+  <div class="grid grid-cols-3 gap-3">
+    <% level = tug::DIFFICULTIES.include?(state["difficulty"]) ? state["difficulty"] : tug::DEFAULT_DIFFICULTY %>
+    <% tug::DIFFICULTIES.each do |name| %>
+      <label class="relative cursor-pointer">
+        <input type="radio" name="room[game_state][difficulty]" value="<%= name %>" class="peer hidden" <%= "checked" if level == name %>>
+        <div class="h-full text-center py-3 px-2 bg-slate-800 border-2 border-slate-700 rounded-xl text-white <%= picked %> transition-all">
+          <p class="font-bold"><%= t(".#{name}") %></p>
+          <p class="text-xs text-slate-400 mt-1 font-mono"><%= t(".#{name}_example") %></p>
+        </div>
+      </label>
+    <% end %>
+  </div>
+</div>
+
+<%# Rope length: how many correct answers it takes %>
+<div class="space-y-4 bg-slate-900/50 p-6 rounded-2xl border border-slate-700">
+  <label class="block text-xs font-bold text-slate-400 mb-3 tracking-widest"><%= t(".rope_length") %></label>
+  <div class="grid grid-cols-3 gap-3">
+    <% length = tug::ROPE_LENGTHS.key?(state["rope_length"]) ? state["rope_length"] : tug::DEFAULT_ROPE_LENGTH %>
+    <% tug::ROPE_LENGTHS.each do |name, pulls| %>
+      <label class="relative cursor-pointer">
+        <input type="radio" name="room[game_state][rope_length]" value="<%= name %>" class="peer hidden" <%= "checked" if length == name %>>
+        <div class="h-full text-center py-3 px-2 bg-slate-800 border-2 border-slate-700 rounded-xl text-white <%= picked %> transition-all">
+          <p class="font-bold"><%= t(".rope_#{name}") %></p>
+          <p class="text-xs text-slate-400 mt-1"><%= t(".pulls_each", count: pulls) %></p>
+        </div>
+      </label>
+    <% end %>
+  </div>
+</div>
+
+<%# Time limit (0 = until the rope reaches an end) %>
+<div class="space-y-4 bg-slate-900/50 p-6 rounded-2xl border border-slate-700">
+  <label class="block text-xs font-bold text-slate-400 mb-3 tracking-widest"><%= t(".time_limit") %></label>
+  <div class="grid grid-cols-4 gap-3">
+    <% limit = tug.pick(state["time_limit"], tug::TIME_LIMITS, tug::DEFAULT_TIME_LIMIT) %>
+    <% tug::TIME_LIMITS.each do |seconds| %>
+      <label class="relative cursor-pointer">
+        <input type="radio" name="room[game_state][time_limit]" value="<%= seconds %>" class="peer hidden" <%= "checked" if limit == seconds %>>
+        <div class="h-full text-center py-3 px-1 bg-slate-800 border-2 border-slate-700 rounded-xl text-white font-bold <%= picked %> transition-all">
+          <%= seconds.zero? ? t(".no_limit") : t(".minutes", count: seconds / 60) %>
+        </div>
+      </label>
+    <% end %>
+  </div>
+</div>
+
+<%# Rounds %>
+<div class="space-y-4 bg-slate-900/50 p-6 rounded-2xl border border-slate-700">
+  <label class="block text-xs font-bold text-slate-400 mb-3 tracking-widest"><%= t(".rounds") %></label>
+  <div class="grid grid-cols-2 gap-3">
+    <% rounds = tug.pick(state["total_rounds"], tug::ROUND_CHOICES, tug::DEFAULT_ROUNDS) %>
+    <% tug::ROUND_CHOICES.each do |count| %>
+      <label class="relative cursor-pointer">
+        <input type="radio" name="room[game_state][total_rounds]" value="<%= count %>" class="peer hidden" <%= "checked" if rounds == count %>>
+        <div class="h-full text-center py-3 px-2 bg-slate-800 border-2 border-slate-700 rounded-xl text-white font-bold <%= picked %> transition-all">
+          <%= count == 1 ? t(".one_round") : t(".best_of", count: count) %>
+        </div>
+      </label>
+    <% end %>
+  </div>
+</div>

@@ -390,6 +390,35 @@ es:
           rounds_option: "%{count} rondas"
           round_time: "TIEMPO PARA BUSCAR EN CADA RONDA"
           round_time_option: "%{count} seg"
+      tug_of_war:
+        edit:
+          answer_mode: "CÓMO RESPONDEN"
+          mode_type: "⌨️ Escribir"
+          mode_type_desc: "Escriben la respuesta en un teclado numérico"
+          mode_choice: "🔘 Elegir"
+          mode_choice_desc: "Eligen la respuesta entre cuatro (más fácil para niños)"
+          difficulty: "DIFICULTAD"
+          easy: "Fácil"
+          easy_example: "8 + 5"
+          medium: "Media"
+          medium_example: "6 × 7"
+          hard: "Difícil"
+          hard_example: "7 × 6 − 9"
+          rope_length: "LARGO DE LA CUERDA"
+          rope_short: "Corta"
+          rope_normal: "Normal"
+          rope_long: "Larga"
+          pulls_each:
+            one: "~%{count} respuesta correcta cada uno"
+            other: "~%{count} respuestas correctas cada uno"
+          time_limit: "TIEMPO LÍMITE"
+          no_limit: "Sin límite"
+          minutes:
+            one: "%{count} min"
+            other: "%{count} min"
+          rounds: "RONDAS"
+          one_round: "1 ronda"
+          best_of: "Al mejor de %{count}"
       guess_the_color:
         edit:
           rounds: "RONDAS"

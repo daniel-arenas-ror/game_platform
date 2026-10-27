@@ -401,6 +401,35 @@ en:
           rounds_option: "%{count} rounds"
           round_time: "TIME TO SEARCH EACH ROUND"
           round_time_option: "%{count} sec"
+      tug_of_war:
+        edit:
+          answer_mode: "HOW PLAYERS ANSWER"
+          mode_type: "⌨️ Type it"
+          mode_type_desc: "Type the answer on a number pad"
+          mode_choice: "🔘 Pick it"
+          mode_choice_desc: "Pick the answer from four (easier for kids)"
+          difficulty: "DIFFICULTY"
+          easy: "Easy"
+          easy_example: "8 + 5"
+          medium: "Medium"
+          medium_example: "6 × 7"
+          hard: "Hard"
+          hard_example: "7 × 6 − 9"
+          rope_length: "ROPE LENGTH"
+          rope_short: "Short"
+          rope_normal: "Normal"
+          rope_long: "Long"
+          pulls_each:
+            one: "~%{count} correct answer each"
+            other: "~%{count} correct answers each"
+          time_limit: "TIME LIMIT"
+          no_limit: "No limit"
+          minutes:
+            one: "%{count} min"
+            other: "%{count} min"
+          rounds: "ROUNDS"
+          one_round: "1 round"
+          best_of: "Best of %{count}"
       guess_the_color:
         edit:
           rounds: "ROUNDS"

@@ -1,0 +1,53 @@
+# Tira y Afloja: pantalla del juego y su JS.
+es:
+  rooms:
+    games:
+      tug_of_war:
+        index:
+          title: "Tira y Afloja"
+          sound: "Sonido"
+          skip: "Siguiente ⏭"
+          shuffle: "Mezclar"
+          start_pulling: "¡A tirar!"
+          teams_hint: "Toca a un jugador para pasarlo al otro equipo"
+          need_both: "Cada equipo necesita al menos un jugador"
+          get_ready: "Prepárate…"
+          look_tv: "Mira la TV"
+          erase: "Borrar"
+          send: "Enviar"
+  js:
+    tug_of_war:
+      teams:
+        red: "Rojo"
+        blue: "Azul"
+      team_label: "Equipo %{team}"
+      round: "Ronda %{round} de %{total}"
+      get_ready: "¡Prepárate!"
+      go: "¡TIRA!"
+      players:
+        one: "%{count} jugador"
+        other: "%{count} jugadores"
+      pulls:
+        one: "%{count} tirón"
+        other: "%{count} tirones"
+      streak: "🔥 %{count} seguidos"
+      move_to: "Pasar al equipo %{team}"
+      teams_wait: "El anfitrión está armando los equipos. ¡Mira la TV!"
+      correct: "💪 ¡Tira!"
+      wrong: "%{text} = %{answer}"
+      round_winner: "¡El equipo %{team} gana la ronda!"
+      round_draw: "¡Empate!"
+      you_won_round: "¡Tu equipo ganó la ronda!"
+      you_lost_round: "El otro equipo ganó esta ronda"
+      game_winner: "¡Gana el equipo %{team}!"
+      game_draw: "¡Empate!"
+      mvp:
+        one: "⭐ MVP: %{names} (%{count} tirón)"
+        other: "⭐ MVP: %{names} (%{count} tirones)"
+      you_win: "¡Tu equipo gana!"
+      you_lose: "Tu equipo perdió. ¡Buenos tirones!"
+      you_mvp: "⭐ ¡Fuiste el MVP!"
+      your_pulls:
+        one: "Tiraste %{count} vez"
+        other: "Tiraste %{count} veces"
+      error: "Algo salió mal. Empieza una partida nueva."

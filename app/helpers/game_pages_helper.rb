@@ -18,7 +18,8 @@ module GamePagesHelper
     "doodle_dash"            => { text: "text-lime-400",    soft: "text-lime-300",    tint: "bg-lime-500/10",    border: "border-lime-500/40",    dot: "bg-lime-400", solid: "bg-lime-500", ink: "text-slate-950", var: "--color-lime-400", hex: "#bef264" },
     "haunted_house"          => { text: "text-orange-500",  soft: "text-orange-300",  tint: "bg-orange-600/10",  border: "border-orange-600/40",  dot: "bg-orange-500", solid: "bg-orange-600", ink: "text-white", var: "--color-orange-500", hex: "#fb923c" },
     "monster_mash"           => { text: "text-green-400",   soft: "text-green-300",   tint: "bg-green-500/10",   border: "border-green-500/40",   dot: "bg-green-400", solid: "bg-green-500", ink: "text-slate-950", var: "--color-green-400", hex: "#86efac" },
-    "character_hunt"         => { text: "text-yellow-400",  soft: "text-yellow-300",  tint: "bg-yellow-400/10",  border: "border-yellow-400/40",  dot: "bg-yellow-400", solid: "bg-yellow-400", ink: "text-slate-950", var: "--color-yellow-400", hex: "#fde047" }
+    "character_hunt"         => { text: "text-yellow-400",  soft: "text-yellow-300",  tint: "bg-yellow-400/10",  border: "border-yellow-400/40",  dot: "bg-yellow-400", solid: "bg-yellow-400", ink: "text-slate-950", var: "--color-yellow-400", hex: "#fde047" },
+    "tug_of_war"             => { text: "text-red-400",     soft: "text-red-300",     tint: "bg-red-500/10",     border: "border-red-500/40",     dot: "bg-red-400", solid: "bg-red-500", ink: "text-white", var: "--color-red-400", hex: "#fca5a5" }
   }.freeze
 
   CATEGORIES = %w[social trivia action perception memory puzzle strategy drawing].freeze
