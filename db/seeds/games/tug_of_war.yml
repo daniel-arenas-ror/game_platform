@@ -1,8 +1,6 @@
 # Slug is a public URL (/games/tug-of-war) — never change it once live.
 name: Tug of War
 slug: tug-of-war
-# Hidden on the public site until the game has its images (instructions.png, WebP copies, og.png).
-listed: false
 description: A team math race. The room splits into Red and Blue, every phone gets its own sums,
   and each right answer pulls the rope on the big screen a little closer to your side.
 tagline: Solve the sums, pull the rope. First team to drag the flag over its line wins.
