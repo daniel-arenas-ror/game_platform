@@ -22,14 +22,14 @@
 
       <nav aria-label="<%= t(".nav") %>" class="contents">
         <div>
-          <p class="eyebrow text-slate-500"><%= t(".play") %></p>
+          <p class="eyebrow text-slate-400"><%= t(".play") %></p>
           <ul class="mt-3 space-y-1 text-sm font-semibold">
             <li><%= link_to t("shared.site_header.games"), games_path, class: footer_link %></li>
             <li><%= link_to t("shared.site_header.join"), find_room_path, class: footer_link %></li>
           </ul>
         </div>
         <div>
-          <p class="eyebrow text-slate-500"><%= t(".info") %></p>
+          <p class="eyebrow text-slate-400"><%= t(".info") %></p>
           <ul class="mt-3 space-y-1 text-sm font-semibold">
             <li><%= link_to t(".about"),   about_path,   class: footer_link %></li>
             <li><%= link_to t(".contact"), contact_path, class: footer_link %></li>
@@ -39,6 +39,6 @@
       </nav>
     </div>
 
-    <p class="mt-12 border-t border-slate-800 pt-6 text-sm text-slate-500">© <%= Date.current.year %> <%= SeoHelper::SITE_NAME %> · <%= t(".tagline") %></p>
+    <p class="mt-12 border-t border-slate-800 pt-6 text-sm text-slate-400">© <%= Date.current.year %> <%= SeoHelper::SITE_NAME %> · <%= t(".tagline") %></p>
   </div>
 </footer>

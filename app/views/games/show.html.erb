@@ -54,7 +54,7 @@
             <%= button_to t(".start_game"), rooms_path(game_id: @game.id), method: :post, class: start_cta, form: select_game_analytics(@game) %>
             <a href="#how-to-play" class="text-center text-purple-300 hover:text-white font-semibold px-4 py-3 transition-colors <%= link_css %>"><%= t(".how_to_play_link") %></a>
           </div>
-          <p class="mt-4 text-sm text-slate-500"><%= t(".free_note") %></p>
+          <p class="mt-4 text-sm text-slate-400"><%= t(".free_note") %></p>
         </div>
 
         <%# The game's art on a tilted block of its solid set colour %>
@@ -172,8 +172,8 @@
           <% fits = @game.perfect_for.include?(key) %>
           <li class="rounded-3xl border-2 p-5 <%= fits ? "bg-slate-900 #{accent[:border]}" : "border-slate-800 border-dashed" %>" data-reveal="scale">
             <span class="mb-4 grid place-items-center size-11 rounded-2xl <%= fits ? "#{accent[:solid]} #{accent[:ink]}" : "bg-slate-900 text-slate-600" %>" aria-hidden="true"><%= game_page_icon(icon, css: "size-6") %></span>
-            <p class="font-bold <%= fits ? "text-white" : "text-slate-500" %>"><%= label %></p>
-            <p class="text-sm mt-1 <%= fits ? "text-slate-400" : "text-slate-500" %>">
+            <p class="font-bold <%= fits ? "text-white" : "text-slate-300" %>"><%= label %></p>
+            <p class="text-sm mt-1 <%= "text-slate-400" %>">
               <% if fits %>
                 <span class="inline-flex items-center gap-1"><%= game_page_icon(:check, css: "size-3.5 #{accent[:text]}") %><%= t(".great_fit") %></span>
               <% elsif key == "video_call" %>
