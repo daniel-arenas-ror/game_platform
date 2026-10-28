@@ -15,25 +15,19 @@ class AdPlacementTest < ActionDispatch::IntegrationTest
     @game.delete
   end
 
-  test "home, games, lobby and info pages show ads" do
-    get root_path
-    assert_select AD, 1
-
-    get games_path
-    assert_select AD, 1
-
-    get room_path(@room.code)
-    assert_select AD, 1
-
-    [ about_path, contact_path, privacy_path ].each do |path|
+  test "home, games and about show ads" do
+    [ root_path, games_path, about_path ].each do |path|
       get path
       assert_select AD, 1
     end
   end
 
-  test "settings and the join pages never show ads" do
-    get find_room_path
-    assert_select AD, 0
+  # AdSense policy: no ads on waiting/navigation screens or thin pages
+  test "the lobby, settings, join, contact and privacy pages never show ads" do
+    [ room_path(@room.code), find_room_path, contact_path, privacy_path ].each do |path|
+      get path
+      assert_select AD, 0
+    end
 
     get edit_room_path(@room.code)
     assert_select AD, 0

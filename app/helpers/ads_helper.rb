@@ -1,4 +1,5 @@
-# Google AdSense. Ads only appear on an allowlist of calm pages, never on game screens or forms
+# Google AdSense. Ads only appear on an allowlist of pages with real content (AdSense policy: no
+# ads on waiting/navigation screens or thin pages), never on room screens, forms or legal pages
 # where players tap quickly on their phones and could click an ad by accident. The one exception
 # is the host's Game Over screen (see #game_over_ad).
 module AdsHelper
@@ -9,7 +10,6 @@ module AdsHelper
   AD_SLOTS = {
     home:      nil,
     games:     nil,
-    lobby:     nil,
     page:      nil,
     game_over: nil
   }.freeze
@@ -18,8 +18,7 @@ module AdsHelper
   ADS_ALLOWED = {
     "home"  => %w[index],
     "games" => %w[index show],
-    "rooms" => %w[show],
-    "pages" => %w[about contact privacy]
+    "pages" => %w[about]
   }.freeze
 
   def ads_allowed?

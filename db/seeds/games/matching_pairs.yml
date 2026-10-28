@@ -11,7 +11,7 @@ players_note: >-
   Everyone plays their own board on their own phone at the same time, so it works for any group
   size, from a solo practice to a full classroom.
 duration_minutes: 5
-age: 5
+age: 8
 long_description: >-
   The classic memory card game, played by everyone at once. The big screen shows the whole board
   face up for a few seconds. Then the cards flip over, and everyone has to find the pairs on their
@@ -35,8 +35,8 @@ faq:
     a: Each match is worth 100 points and each wrong pair costs 10 points. Your score never drops below 0.
   - q: What cards can we play with?
     a: Animals, objects, country flags, numbers, or a random mix.
-  - q: Is Matching Pairs good for young kids?
-    a: Yes. A 4×4 board with animals is perfect for little ones, and bigger boards challenge older players.
+  - q: Is Matching Pairs good for families?
+    a: Yes. A 4×4 board with animals is an easy start, and bigger boards challenge older players and adults.
 
 # Spanish. Same fields as above; anything missing falls back to English.
 translations:
@@ -71,5 +71,5 @@ translations:
         a: Cada pareja vale 100 puntos y cada error resta 10. Tu puntaje nunca baja de 0.
       - q: ¿Con qué cartas se puede jugar?
         a: Animales, objetos, banderas de países, números o una mezcla al azar.
-      - q: ¿Encuentra las Parejas es bueno para niños pequeños?
-        a: Sí. Un tablero de 4×4 con animales es perfecto para los más pequeños, y los tableros grandes retan a los mayores.
+      - q: ¿Encuentra las Parejas es bueno para jugar en familia?
+        a: Sí. Un tablero de 4×4 con animales es un comienzo fácil, y los tableros grandes retan a los mayores y a los adultos.

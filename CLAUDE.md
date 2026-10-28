@@ -236,6 +236,7 @@ English and Spanish (`config/initializers/locale.rb`). Strings live in `config/l
 - **MongoDB** via Docker Compose. `config/mongoid.yml` for connection.
 - **ActionCable** uses `async` adapter in dev, **Redis** (`REDIS_URL`) in production (`config/cable.yml`).
 - **Google Analytics** (`AnalyticsHelper#google_analytics_tag`, first in `<head>` of `layouts/application`): production only, ID from the `GA_MEASUREMENT_ID` env var (unset = no tag). Mentioned in the privacy pages (section 4). Funnel events, each with `game_name` (the game's slug): `select_game` (Start game buttons, `select_game_analytics(game)` + `analytics_controller.js`), `room_created` (server-queued with `track_analytics`, sent on the next page), `game_started` / `play_again` / `game_finished` (`Room#broadcast_analytics` on status change → RoomChannel → only the host's screen sends them, via `room_players_controller`). New games get the last three for free as long as they set `room.status` to `playing` / `finished`. Never send nicknames or other player text.
+- **Google AdSense** (`AdsHelper`): ads only on `ADS_ALLOWED` pages with real content (Home, Games catalog, game pages, About) plus the host's Game Over screen. Never on the lobby, join, settings, contact, privacy or players' phones (AdSense policy: no ads on waiting/navigation screens or thin pages). Keep game `age` at 8+ so the site doesn't read as child-directed (COPPA).
 - **CI** (GitHub Actions): RuboCop → Brakeman/bundler-audit → unit tests → system tests.
 
 ### Known Issues
