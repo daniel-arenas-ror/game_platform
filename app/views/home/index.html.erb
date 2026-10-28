@@ -158,14 +158,15 @@
         <dl class="space-y-3" data-reveal-stagger="90">
           <% t(".benefits").each_with_index do |benefit, i| %>
             <% color, icon = benefit_icons[i % benefit_icons.size] %>
-            <div data-reveal class="flex gap-5 rounded-3xl border border-slate-800 bg-slate-900 p-5 sm:p-6 transition-colors hover:border-slate-700">
-              <span class="size-12 shrink-0 rounded-2xl <%= color %> text-white flex items-center justify-center" aria-hidden="true">
-                <svg class="size-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><%= icon.html_safe %></svg>
-              </span>
-              <div>
-                <dt class="font-display text-xl font-extrabold text-white"><%= benefit[:title] %></dt>
-                <dd class="mt-1 text-slate-400 text-pretty"><%= benefit[:body] %></dd>
-              </div>
+            <%# A <dl> group may only hold <dt>/<dd>, so the icon sits inside the <dt>, pinned left %>
+            <div data-reveal class="relative min-h-22 rounded-3xl border border-slate-800 bg-slate-900 p-5 pl-22 sm:p-6 sm:pl-24 transition-colors hover:border-slate-700">
+              <dt class="font-display text-xl font-extrabold text-white">
+                <span class="absolute left-5 top-5 sm:left-6 sm:top-6 size-12 rounded-2xl <%= color %> text-white flex items-center justify-center" aria-hidden="true">
+                  <svg class="size-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><%= icon.html_safe %></svg>
+                </span>
+                <%= benefit[:title] %>
+              </dt>
+              <dd class="mt-1 text-slate-400 text-pretty"><%= benefit[:body] %></dd>
             </div>
           <% end %>
         </dl>
