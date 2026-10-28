@@ -17,6 +17,26 @@
       "hasPart" => @games.map { |g| { "@type" => "VideoGame", "name" => g.name, "description" => g.description, "url" => (game_url(g) if g.slug.present?) }.compact }
     }.to_json) %>
   </script>
+  <% unless @room %>
+    <%# The catalog as a list of game pages, so search engines see what the page is a list of %>
+    <script type="application/ld+json">
+      <%= raw json_escape({
+        "@context" => "https://schema.org",
+        "@type" => "CollectionPage",
+        "name" => page_title,
+        "description" => page_description,
+        "url" => canonical_url,
+        "inLanguage" => I18n.locale.to_s,
+        "mainEntity" => {
+          "@type" => "ItemList",
+          "numberOfItems" => @games.count { |g| g.slug.present? },
+          "itemListElement" => @games.select { |g| g.slug.present? }.each_with_index.map { |g, i|
+            { "@type" => "ListItem", "position" => i + 1, "url" => game_url(g), "name" => g.name }
+          }
+        }
+      }.to_json) %>
+    </script>
+  <% end %>
 <% end %>
 
 <%

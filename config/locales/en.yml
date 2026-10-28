@@ -151,11 +151,11 @@ en:
 
   games:
     index:
-      title: "Games"
+      title: "Free Party Games for Groups – Play on One Screen"
       description: "Pick a free party game — trivia, social deduction, memory, color matching, tank battles and more. Open a room on the big screen and everyone plays from their phone."
       heading: "Pick a game"
       heading_room: "Pick the next game"
-      intro: "Choose a game to open a room. Put this screen where everyone can see it, and players join from their phones."
+      intro: "Free multiplayer party games for groups. Choose one to open a room, put this screen where everyone can see it, and players join from their phones."
       changing_html: "Changing game for room %{code}"
       changing_text: "Pick a new game, or configure %{game} again. Players stay in the room."
       cancel: "Cancel"

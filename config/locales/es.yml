@@ -143,11 +143,11 @@ es:
 
   games:
     index:
-      title: "Juegos"
+      title: "Juegos de fiesta gratis para grupos – En una sola pantalla"
       description: "Elige un juego de fiesta gratis — trivia, deducción social, memoria, colores, batallas de tanques y más. Abre una sala en la pantalla grande y todos juegan desde su celular."
       heading: "Elige un juego"
       heading_room: "Elige el siguiente juego"
-      intro: "Elige un juego para abrir una sala. Pon esta pantalla donde todos la vean, y los jugadores se unen desde su celular."
+      intro: "Juegos de fiesta multijugador gratis para grupos. Elige uno para abrir una sala, pon esta pantalla donde todos la vean, y los jugadores se unen desde su celular."
       changing_html: "Cambiando el juego de la sala %{code}"
       changing_text: "Elige un juego nuevo, o vuelve a configurar %{game}. Los jugadores siguen en la sala."
       cancel: "Cancelar"
