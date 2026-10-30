@@ -78,7 +78,10 @@ class RoomsController < ApplicationController
       joined = { action: "player_joined", nickname: @player.nickname, player_id: @player.id.to_s }
       ActionCable.server.broadcast("game_#{@room.code}", joined)
       ActionCable.server.broadcast(RoomChannel.stream_for_room(@room.code), joined)
-      
+      # Sent by the player's own phone on the lobby page (one event per player, never the nickname).
+      track_analytics("players_joined", game_name: @game.slug, player_count: @room.players.count)
+
+
       redirect_to room_path(@room.code), notice: t("rooms.joined", nickname: nickname)
     else
       flash.now[:alert] = t("rooms.nickname_blank")

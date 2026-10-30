@@ -5,6 +5,7 @@
 # Custom events (the funnel, each with the game's slug as `game_name`):
 #   select_game   — a "Start game" button (controllers/analytics_controller.js)
 #   room_created  — queued by the server with #track_analytics, sent on the next page (below)
+#   players_joined — same way, on the player's phone after they join (with player_count)
 #   game_started, play_again, game_finished — Room#broadcast_analytics, sent by the host's screen
 module AnalyticsHelper
   def google_analytics_tag
