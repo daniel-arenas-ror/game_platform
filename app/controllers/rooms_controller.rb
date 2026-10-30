@@ -1,7 +1,8 @@
 class RoomsController < ApplicationController
-  # Game screens need import maps, CSS nesting and :has. Only here: public pages must load for
-  # every browser and crawler (AdSense's reviewer sends an old Chrome user agent and got a 406).
-  allow_browser versions: :modern
+  # Game screens need import maps, CSS nesting and :has. Older browsers still get every page
+  # (no 406: AdSense's reviewer sends an old Chrome user agent and reported the site as down)
+  # with a banner suggesting an update (layouts/application).
+  allow_browser versions: :modern, block: -> { @outdated_browser = true }
 
   # Rooms and join links are temporary and private — keep them out of search results.
   before_action { response.set_header("X-Robots-Tag", "noindex, nofollow") }

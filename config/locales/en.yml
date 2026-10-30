@@ -20,6 +20,7 @@ en:
   layouts:
     application:
       skip_to_content: "Skip to content"
+      outdated_browser: "Your browser is out of date, so some games may not work well. Update it for the best experience."
 
   shared:
     room_players:

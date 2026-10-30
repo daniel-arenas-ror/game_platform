@@ -56,6 +56,9 @@
   <body class="bg-slate-900 min-h-screen <%= "site-page" if site_header? %>">
     <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-lg focus:bg-purple-600 focus:px-4 focus:py-2 focus:text-sm focus:font-bold focus:text-white"><%= t(".skip_to_content") %></a>
     <%= render "shared/site_header" if site_header? %>
+    <% if @outdated_browser %>
+      <p role="status" class="bg-amber-400 px-4 py-2 text-center text-sm font-semibold text-slate-950"><%= t(".outdated_browser") %></p>
+    <% end %>
     <main id="main">
       <%= yield %>
     </main>
