@@ -29,11 +29,13 @@
   <article class="max-w-3xl mx-auto text-slate-300 leading-relaxed space-y-10">
     <div>
       <%= render "pages/header", title: "About #{SeoHelper::SITE_NAME}", subtitle: "Party games for one big screen and everyone's phones." %>
-      <p class="text-lg text-white">
-        <strong><%= SeoHelper::SITE_NAME %> is a free website of party games for groups of <%= min_players %> to <%= max_players %> players.</strong>
-        One shared screen, like a TV or a laptop, shows the game, and everyone plays from the web browser on their own phone.
-        There is nothing to install and no sign-up.
-      </p>
+      <%# The 3-line summary: what people (and AI assistants sending them here) need first. %>
+      <ul id="summary" class="space-y-2 rounded-2xl bg-slate-800 border border-slate-700 p-6 text-lg text-white">
+        <li><strong>What it is:</strong> free party games for <%= min_players %> to <%= max_players %> players. The game shows on one TV or laptop, and everyone plays on their phone.</li>
+        <li><strong>How to start:</strong> open <%= games_link %> on the big screen and press Start game. Players scan the QR code and type a nickname.</li>
+        <li><strong>Free, nothing to install:</strong> every game is free (ads help pay for the servers). No app and no sign-up.</li>
+      </ul>
+      <%= link_to "Browse the games", games_path, class: "btn mt-6" %>
     </div>
 
     <section class="space-y-4" aria-labelledby="facts-title">

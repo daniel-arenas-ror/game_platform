@@ -10,6 +10,16 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "about opens with the 3-line summary: what it is, how to start, free with ads and nothing to install" do
+    { about_path => [ "What it is:", "How to start:", "ads help pay", "No app and no sign-up" ],
+      about_path(locale: "es") => [ "Qué es:", "Cómo empezar:", "los anuncios ayudan", "Sin app y sin registro" ] }.each do |path, phrases|
+      get path
+      assert_select "#summary li", 3
+      summary = css_select("#summary").text
+      phrases.each { |phrase| assert_includes summary, phrase, path }
+    end
+  end
+
   test "the privacy policy covers AdSense and the contact email" do
     get privacy_path
     assert_select "a[href=?]", "https://policies.google.com/technologies/partner-sites"
