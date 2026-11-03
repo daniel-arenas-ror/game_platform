@@ -2,12 +2,28 @@
 	email {$ACME_EMAIL}
 }
 
+# Access log on the data volume (/data/caddy on the host), kept up to 30 days: Rails' docker logs
+# only last about 2 days. Caddy redacts cookies. Gzipped when rolled, so 15 files stay small.
+(access_log) {
+	log {
+		output file /data/logs/access.log {
+			roll_size 50MiB
+			roll_keep 15
+			roll_keep_for 720h
+		}
+		format json
+	}
+}
+
 # TLS termination + automatic Let's Encrypt certs. WebSockets (/cable) are proxied transparently.
 {$APP_DOMAIN} {
+	import access_log
+	log_skip /assets/*
 	encode zstd gzip
 	reverse_proxy web:80
 }
 
 www.{$APP_DOMAIN} {
+	import access_log
 	redir https://{$APP_DOMAIN}{uri} permanent
 }
