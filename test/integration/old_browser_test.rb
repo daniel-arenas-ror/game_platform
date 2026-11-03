@@ -1,7 +1,7 @@
 require "test_helper"
 
-# AdSense's reviewer browses with an old Chrome. A 406 on Start game or the join link made it
-# report the whole site as down, so old browsers get every page, with a banner on room screens.
+# A 406 on Start game or the join link is a dead end for anyone on an old device (and we suspected
+# it hurt the AdSense review), so old browsers get every page, with a banner on room screens.
 class OldBrowserTest < ActionDispatch::IntegrationTest
   OLD_CHROME = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) " \
                "Chrome/109.0.0.0 Safari/537.36".freeze

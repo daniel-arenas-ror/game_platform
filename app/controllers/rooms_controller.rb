@@ -1,6 +1,6 @@
 class RoomsController < ApplicationController
   # Game screens need import maps, CSS nesting and :has. Older browsers still get every page
-  # (no 406: AdSense's reviewer sends an old Chrome user agent and reported the site as down)
+  # (no 406: real people on old devices should still reach the room)
   # with a banner suggesting an update (layouts/application).
   allow_browser versions: :modern, block: -> { @outdated_browser = true }
 
