@@ -7,6 +7,8 @@ Rails.application.routes.draw do
   get "robots.txt", to: "home#robots", defaults: { format: :text }, as: :robots
   # Plain-text summary of the site and its games for AI assistants (llmstxt.org).
   get "llms.txt", to: "home#llms", defaults: { format: :text }, as: :llms
+  # Chrome's prefetch proxy asks here whether it may load pages ahead of time.
+  get ".well-known/traffic-advice", to: "home#traffic_advice", as: :traffic_advice
 
   # Switches the language from the header picker and goes back to the same page in that language.
   get "language", to: "locales#update", as: :switch_locale

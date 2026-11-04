@@ -57,6 +57,13 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "<loc>#{find_room_url}</loc>"
   end
 
+  test "traffic-advice lets Chrome's prefetch proxy load pages, with the content type it expects" do
+    get "/.well-known/traffic-advice"
+    assert_response :success
+    assert_equal "application/trafficadvice+json", response.media_type
+    assert_equal [ { "user_agent" => "prefetch-proxy", "fraction" => 1.0 } ], JSON.parse(response.body)
+  end
+
   test "should get robots.txt pointing to the sitemap" do
     get robots_url
     assert_response :success

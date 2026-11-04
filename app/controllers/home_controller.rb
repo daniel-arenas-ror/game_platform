@@ -24,6 +24,11 @@ class HomeController < ApplicationController
     expires_in 1.day, public: true
   end
 
+  def traffic_advice
+    expires_in 1.day, public: true
+    render json: [ { user_agent: "prefetch-proxy", fraction: 1.0 } ], content_type: "application/trafficadvice+json"
+  end
+
   # In English (no locale prefix), with the Spanish pages linked.
   def llms
     expires_in 1.day, public: true
