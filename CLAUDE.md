@@ -65,6 +65,8 @@ A real-time multiplayer game platform. A host creates a **Room**, shares a QR co
 | `doodle_dash` | Doodle Dash | Drawing + guessing: artist draws on their phone, the drawing shows on the TV only |
 | `haunted_house` | Haunted House | Halloween Werewolf-style: secret roles (ghosts, Medium, trick-or-treaters), night moves + day vote; loop id + heartbeat in `game_state`, TV sounds made with Web Audio |
 | `monster_mash` | Monster Mash | Halloween drawing relay: head → body → legs passed around, guide strip from the part above, reveal + vote; drawings in `MonsterMash::Drawing` |
+| `tug_of_war` | Tug of War | Team math race: right answers pull the rope, wrong ones freeze the phone |
+| `color_chain` | Color Chain | Repeat the TV's colour sequence, one colour longer each round; the colours go to the TV alone (`_host` stream) until the reveal |
 | `impostor` | Impostor | TODO stub in GameFactory |
 
 FIFA World Cup has data models only (no game logic).

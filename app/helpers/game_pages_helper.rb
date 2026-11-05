@@ -19,7 +19,8 @@ module GamePagesHelper
     "haunted_house"          => { text: "text-orange-500",  soft: "text-orange-300",  tint: "bg-orange-600/10",  border: "border-orange-600/40",  dot: "bg-orange-500", solid: "bg-orange-600", ink: "text-white", var: "--color-orange-500", hex: "#fb923c" },
     "monster_mash"           => { text: "text-green-400",   soft: "text-green-300",   tint: "bg-green-500/10",   border: "border-green-500/40",   dot: "bg-green-400", solid: "bg-green-500", ink: "text-slate-950", var: "--color-green-400", hex: "#86efac" },
     "character_hunt"         => { text: "text-yellow-400",  soft: "text-yellow-300",  tint: "bg-yellow-400/10",  border: "border-yellow-400/40",  dot: "bg-yellow-400", solid: "bg-yellow-400", ink: "text-slate-950", var: "--color-yellow-400", hex: "#fde047" },
-    "tug_of_war"             => { text: "text-red-400",     soft: "text-red-300",     tint: "bg-red-500/10",     border: "border-red-500/40",     dot: "bg-red-400", solid: "bg-red-500", ink: "text-white", var: "--color-red-400", hex: "#fca5a5" }
+    "tug_of_war"             => { text: "text-red-400",     soft: "text-red-300",     tint: "bg-red-500/10",     border: "border-red-500/40",     dot: "bg-red-400", solid: "bg-red-500", ink: "text-white", var: "--color-red-400", hex: "#fca5a5" },
+    "color_chain"            => { text: "text-pink-400",    soft: "text-pink-300",    tint: "bg-pink-500/10",    border: "border-pink-500/40",    dot: "bg-pink-400", solid: "bg-pink-500", ink: "text-white", var: "--color-pink-400", hex: "#f9a8d4" }
   }.freeze
 
   CATEGORIES = %w[social trivia action perception memory puzzle strategy drawing].freeze
@@ -176,7 +177,7 @@ module GamePagesHelper
   TEXT_FREE_IMAGES = %w[
     battle_city character_hunt count_birds doodle_dash fisherman guess_the_color haunted_house
     how_want_be_billionare matching_pairs mind_match monster_mash sequence_memory soup_of_numbers
-    submarine_combat tug_of_war
+    submarine_combat tug_of_war color_chain
   ].freeze
 
   def game_image_text_free?(game)
