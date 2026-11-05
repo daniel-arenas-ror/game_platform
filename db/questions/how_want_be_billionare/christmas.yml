@@ -1,0 +1,226 @@
+# Christmas — import with: bin/rails questions:billionaire:import
+
+- text: "What do children hang up on Christmas Eve for Santa to fill with small gifts?"
+  topic: "Traditions"
+  points: 100
+  answers:
+    - { text: "Umbrellas" }
+    - { text: "Stockings", correct: true }
+    - { text: "Scarves" }
+    - { text: "Hats" }
+
+- text: "Which reindeer has a shiny red nose in the popular song?"
+  topic: "Songs"
+  points: 100
+  answers:
+    - { text: "Rudolph", correct: true }
+    - { text: "Dasher" }
+    - { text: "Comet" }
+    - { text: "Blitzen" }
+
+- text: "In the song \"The Twelve Days of Christmas\", what is the gift on the first day?"
+  topic: "Songs"
+  points: 200
+  answers:
+    - { text: "Two turtle doves" }
+    - { text: "Five gold rings" }
+    - { text: "A partridge in a pear tree", correct: true }
+    - { text: "Three French hens" }
+
+- text: "Under which plant do people traditionally kiss at Christmas?"
+  topic: "Traditions"
+  points: 200
+  answers:
+    - { text: "Ivy" }
+    - { text: "Holly" }
+    - { text: "Fern" }
+    - { text: "Mistletoe", correct: true }
+
+- text: "In which town does the Christmas story place the birth of Jesus?"
+  topic: "History"
+  points: 200
+  answers:
+    - { text: "Bethlehem", correct: true }
+    - { text: "Rome" }
+    - { text: "Athens" }
+    - { text: "Damascus" }
+
+- text: "What is the name of the miser in Charles Dickens's \"A Christmas Carol\"?"
+  topic: "Books"
+  points: 300
+  answers:
+    - { text: "Oliver Twist" }
+    - { text: "Ebenezer Scrooge", correct: true }
+    - { text: "David Copperfield" }
+    - { text: "Jacob Marley" }
+
+- text: "What is the name of the boy left behind in the movie \"Home Alone\"?"
+  topic: "Movies"
+  points: 300
+  answers:
+    - { text: "Charlie" }
+    - { text: "Tommy" }
+    - { text: "Kevin", correct: true }
+    - { text: "Buddy" }
+
+- text: "On what date is Three Kings' Day celebrated?"
+  topic: "Traditions"
+  points: 300
+  answers:
+    - { text: "December 28" }
+    - { text: "January 6", correct: true }
+    - { text: "January 1" }
+    - { text: "December 31" }
+
+- text: "Who released \"All I Want for Christmas Is You\" in 1994?"
+  topic: "Songs"
+  points: 400
+  answers:
+    - { text: "Whitney Houston" }
+    - { text: "Celine Dion" }
+    - { text: "Madonna" }
+    - { text: "Mariah Carey", correct: true }
+
+- text: "Which country has given London the Christmas tree in Trafalgar Square every year since 1947?"
+  topic: "Traditions"
+  points: 400
+  answers:
+    - { text: "Norway", correct: true }
+    - { text: "Canada" }
+    - { text: "Germany" }
+    - { text: "Finland" }
+
+- text: "The poinsettia, the red Christmas plant, is native to which country?"
+  topic: "Nature"
+  points: 400
+  answers:
+    - { text: "Spain" }
+    - { text: "Italy" }
+    - { text: "Mexico", correct: true }
+    - { text: "Egypt" }
+
+- text: "In which country was the carol \"Silent Night\" first performed, in 1818?"
+  topic: "Songs"
+  points: 500
+  answers:
+    - { text: "France" }
+    - { text: "Austria", correct: true }
+    - { text: "Poland" }
+    - { text: "England" }
+
+- text: "The bûche de Noël, a cake shaped like a log, comes from which country?"
+  topic: "Food"
+  points: 500
+  answers:
+    - { text: "Belgium" }
+    - { text: "Portugal" }
+    - { text: "Sweden" }
+    - { text: "France", correct: true }
+
+- text: "The name \"Santa Claus\" comes from which Dutch figure?"
+  topic: "History"
+  points: 500
+  answers:
+    - { text: "Sinterklaas", correct: true }
+    - { text: "Zwarte Piet" }
+    - { text: "Knecht Ruprecht" }
+    - { text: "Julenissen" }
+
+- text: "Saint Nicholas was a bishop of Myra, in what is now which country?"
+  topic: "History"
+  points: 600
+  answers:
+    - { text: "Greece" }
+    - { text: "Italy" }
+    - { text: "Turkey", correct: true }
+    - { text: "Lebanon" }
+
+- text: "Who composed the music for the ballet \"The Nutcracker\"?"
+  topic: "Music"
+  points: 600
+  answers:
+    - { text: "Pyotr Ilyich Tchaikovsky", correct: true }
+    - { text: "Johannes Brahms" }
+    - { text: "Antonio Vivaldi" }
+    - { text: "Igor Stravinsky" }
+
+- text: "How many reindeer pull the sleigh in the 1823 poem \"A Visit from St. Nicholas\"?"
+  topic: "Books"
+  points: 600
+  answers:
+    - { text: "Six" }
+    - { text: "Nine" }
+    - { text: "Twelve" }
+    - { text: "Eight", correct: true }
+
+- text: "Panettone, the Christmas bread, comes from which Italian city?"
+  topic: "Food"
+  points: 600
+  answers:
+    - { text: "Naples" }
+    - { text: "Milan", correct: true }
+    - { text: "Rome" }
+    - { text: "Palermo" }
+
+- text: "Which husband of a British queen helped make Christmas trees popular in Britain in the 1840s?"
+  topic: "History"
+  points: 700
+  answers:
+    - { text: "Prince Philip" }
+    - { text: "King George III" }
+    - { text: "Prince Albert", correct: true }
+    - { text: "King William IV" }
+
+- text: "How many nights do the Mexican Posadas last before Christmas?"
+  topic: "Traditions"
+  points: 700
+  answers:
+    - { text: "Three" }
+    - { text: "Twelve" }
+    - { text: "Seven" }
+    - { text: "Nine", correct: true }
+
+- text: "Which food became a popular Christmas meal in Japan thanks to a 1970s ad campaign?"
+  topic: "Food"
+  points: 700
+  answers:
+    - { text: "Fried chicken", correct: true }
+    - { text: "Pizza" }
+    - { text: "Roast turkey" }
+    - { text: "Hamburgers" }
+
+- text: "In which country was the first commercial Christmas card printed, in 1843?"
+  topic: "History"
+  points: 800
+  answers:
+    - { text: "United States" }
+    - { text: "Germany" }
+    - { text: "England", correct: true }
+    - { text: "France" }
+
+- text: "On what date does Colombia traditionally celebrate the Day of the Little Candles (Día de las Velitas)?"
+  topic: "Traditions"
+  points: 800
+  answers:
+    - { text: "The night of December 7", correct: true }
+    - { text: "The night of December 16" }
+    - { text: "The night of December 23" }
+    - { text: "The night of January 5" }
+
+- text: "During which war did the famous Christmas Truce of 1914 take place?"
+  topic: "History"
+  points: 900
+  answers:
+    - { text: "The Crimean War" }
+    - { text: "World War I", correct: true }
+    - { text: "The Boer War" }
+    - { text: "World War II" }
+
+- text: "Who wrote \"Jingle Bells\", published in 1857?"
+  topic: "Songs"
+  points: 1000
+  answers:
+    - { text: "Irving Berlin" }
+    - { text: "Stephen Foster" }
+    - { text: "Lowell Mason" }
+    - { text: "James Lord Pierpont", correct: true }

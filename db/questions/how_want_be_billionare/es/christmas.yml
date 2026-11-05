@@ -1,0 +1,226 @@
+# Navidad — importar con: bin/rails questions:billionaire:import
+
+- text: "¿Qué cuelgan los niños en Nochebuena para que Santa Claus los llene de regalitos?"
+  topic: "Tradiciones"
+  points: 100
+  answers:
+    - { text: "Paraguas" }
+    - { text: "Calcetines", correct: true }
+    - { text: "Bufandas" }
+    - { text: "Sombreros" }
+
+- text: "En la canción popular, ¿qué reno tiene la nariz roja y brillante?"
+  topic: "Canciones"
+  points: 100
+  answers:
+    - { text: "Rodolfo", correct: true }
+    - { text: "Dasher" }
+    - { text: "Cometa" }
+    - { text: "Blitzen" }
+
+- text: "En la canción \"Los doce días de Navidad\", ¿cuál es el regalo del primer día?"
+  topic: "Canciones"
+  points: 200
+  answers:
+    - { text: "Dos tórtolas" }
+    - { text: "Cinco anillos de oro" }
+    - { text: "Una perdiz en un peral", correct: true }
+    - { text: "Tres gallinas francesas" }
+
+- text: "¿Bajo qué planta se besan tradicionalmente las personas en Navidad?"
+  topic: "Tradiciones"
+  points: 200
+  answers:
+    - { text: "Hiedra" }
+    - { text: "Acebo" }
+    - { text: "Helecho" }
+    - { text: "Muérdago", correct: true }
+
+- text: "¿En qué ciudad sitúa el relato de la Navidad el nacimiento de Jesús?"
+  topic: "Historia"
+  points: 200
+  answers:
+    - { text: "Belén", correct: true }
+    - { text: "Roma" }
+    - { text: "Atenas" }
+    - { text: "Damasco" }
+
+- text: "¿Cómo se llama el avaro de \"Cuento de Navidad\", de Charles Dickens?"
+  topic: "Libros"
+  points: 300
+  answers:
+    - { text: "Oliver Twist" }
+    - { text: "Ebenezer Scrooge", correct: true }
+    - { text: "David Copperfield" }
+    - { text: "Jacob Marley" }
+
+- text: "¿Cómo se llama el niño que se queda solo en la película \"Mi pobre angelito\" (\"Solo en casa\")?"
+  topic: "Películas"
+  points: 300
+  answers:
+    - { text: "Charlie" }
+    - { text: "Tommy" }
+    - { text: "Kevin", correct: true }
+    - { text: "Buddy" }
+
+- text: "¿Qué día se celebra el Día de los Reyes Magos?"
+  topic: "Tradiciones"
+  points: 300
+  answers:
+    - { text: "28 de diciembre" }
+    - { text: "6 de enero", correct: true }
+    - { text: "1 de enero" }
+    - { text: "31 de diciembre" }
+
+- text: "¿Quién lanzó \"All I Want for Christmas Is You\" en 1994?"
+  topic: "Canciones"
+  points: 400
+  answers:
+    - { text: "Whitney Houston" }
+    - { text: "Celine Dion" }
+    - { text: "Madonna" }
+    - { text: "Mariah Carey", correct: true }
+
+- text: "¿Qué país le regala a Londres, cada año desde 1947, el árbol de Navidad de Trafalgar Square?"
+  topic: "Tradiciones"
+  points: 400
+  answers:
+    - { text: "Noruega", correct: true }
+    - { text: "Canadá" }
+    - { text: "Alemania" }
+    - { text: "Finlandia" }
+
+- text: "¿De qué país es originaria la flor de Nochebuena, la planta roja de Navidad?"
+  topic: "Naturaleza"
+  points: 400
+  answers:
+    - { text: "España" }
+    - { text: "Italia" }
+    - { text: "México", correct: true }
+    - { text: "Egipto" }
+
+- text: "¿En qué país se cantó por primera vez el villancico \"Noche de paz\", en 1818?"
+  topic: "Canciones"
+  points: 500
+  answers:
+    - { text: "Francia" }
+    - { text: "Austria", correct: true }
+    - { text: "Polonia" }
+    - { text: "Inglaterra" }
+
+- text: "¿De qué país viene la bûche de Noël, un pastel con forma de tronco?"
+  topic: "Comida"
+  points: 500
+  answers:
+    - { text: "Bélgica" }
+    - { text: "Portugal" }
+    - { text: "Suecia" }
+    - { text: "Francia", correct: true }
+
+- text: "¿De qué personaje holandés viene el nombre \"Santa Claus\"?"
+  topic: "Historia"
+  points: 500
+  answers:
+    - { text: "Sinterklaas", correct: true }
+    - { text: "Zwarte Piet" }
+    - { text: "Knecht Ruprecht" }
+    - { text: "Julenissen" }
+
+- text: "San Nicolás fue obispo de Mira, en lo que hoy es ¿qué país?"
+  topic: "Historia"
+  points: 600
+  answers:
+    - { text: "Grecia" }
+    - { text: "Italia" }
+    - { text: "Turquía", correct: true }
+    - { text: "Líbano" }
+
+- text: "¿Quién compuso la música del ballet \"El cascanueces\"?"
+  topic: "Música"
+  points: 600
+  answers:
+    - { text: "Piotr Ilich Chaikovski", correct: true }
+    - { text: "Johannes Brahms" }
+    - { text: "Antonio Vivaldi" }
+    - { text: "Ígor Stravinski" }
+
+- text: "¿Cuántos renos tiran del trineo en el poema \"Una visita de San Nicolás\", de 1823?"
+  topic: "Libros"
+  points: 600
+  answers:
+    - { text: "Seis" }
+    - { text: "Nueve" }
+    - { text: "Doce" }
+    - { text: "Ocho", correct: true }
+
+- text: "¿De qué ciudad italiana viene el panettone, el pan de Navidad?"
+  topic: "Comida"
+  points: 600
+  answers:
+    - { text: "Nápoles" }
+    - { text: "Milán", correct: true }
+    - { text: "Roma" }
+    - { text: "Palermo" }
+
+- text: "¿Qué esposo de una reina británica ayudó a popularizar el árbol de Navidad en Gran Bretaña en la década de 1840?"
+  topic: "Historia"
+  points: 700
+  answers:
+    - { text: "Príncipe Felipe" }
+    - { text: "Rey Jorge III" }
+    - { text: "Príncipe Alberto", correct: true }
+    - { text: "Rey Guillermo IV" }
+
+- text: "¿Cuántas noches duran las posadas mexicanas antes de Navidad?"
+  topic: "Tradiciones"
+  points: 700
+  answers:
+    - { text: "Tres" }
+    - { text: "Doce" }
+    - { text: "Siete" }
+    - { text: "Nueve", correct: true }
+
+- text: "¿Qué comida se volvió popular en Navidad en Japón gracias a una campaña publicitaria de los años setenta?"
+  topic: "Comida"
+  points: 700
+  answers:
+    - { text: "Pollo frito", correct: true }
+    - { text: "Pizza" }
+    - { text: "Pavo asado" }
+    - { text: "Hamburguesas" }
+
+- text: "¿En qué país se imprimió la primera tarjeta comercial de Navidad, en 1843?"
+  topic: "Historia"
+  points: 800
+  answers:
+    - { text: "Estados Unidos" }
+    - { text: "Alemania" }
+    - { text: "Inglaterra", correct: true }
+    - { text: "Francia" }
+
+- text: "¿En qué fecha se celebra tradicionalmente el Día de las Velitas en Colombia?"
+  topic: "Tradiciones"
+  points: 800
+  answers:
+    - { text: "La noche del 7 de diciembre", correct: true }
+    - { text: "La noche del 16 de diciembre" }
+    - { text: "La noche del 23 de diciembre" }
+    - { text: "La noche del 5 de enero" }
+
+- text: "¿En qué guerra ocurrió la famosa Tregua de Navidad de 1914?"
+  topic: "Historia"
+  points: 900
+  answers:
+    - { text: "La guerra de Crimea" }
+    - { text: "La Primera Guerra Mundial", correct: true }
+    - { text: "La guerra de los bóeres" }
+    - { text: "La Segunda Guerra Mundial" }
+
+- text: "¿Quién escribió \"Jingle Bells\", publicada en 1857?"
+  topic: "Canciones"
+  points: 1000
+  answers:
+    - { text: "Irving Berlin" }
+    - { text: "Stephen Foster" }
+    - { text: "Lowell Mason" }
+    - { text: "James Lord Pierpont", correct: true }

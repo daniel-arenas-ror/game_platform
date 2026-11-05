@@ -33,7 +33,7 @@ tips:
 perfect_for: [classroom, family, party, work, video_call]
 faq:
   - q: What topics are the trivia questions about?
-    a: History, science, biology, geography, sports, food, literature, math and technology, mythology and language, and general knowledge.
+    a: History, science, biology, geography, sports, food, literature, math and technology, mythology and language, Christmas, and general knowledge.
   - q: How many people can play the trivia game?
     a: Any number from 1 up. Everyone answers on their own phone at the same time, so it works for a family, a team or a full classroom.
   - q: Do we see the same questions every time?
@@ -69,7 +69,7 @@ translations:
       - Si vuelven a jugar en la misma sala, no se repiten las preguntas que ya vieron.
     faq:
       - q: ¿De qué temas son las preguntas de trivia?
-        a: Historia, ciencia, biología, geografía, deportes, comida, literatura, matemáticas y tecnología, mitología y lenguaje, y cultura general.
+        a: Historia, ciencia, biología, geografía, deportes, comida, literatura, matemáticas y tecnología, mitología y lenguaje, Navidad y cultura general.
       - q: ¿Cuántas personas pueden jugar la trivia?
         a: Desde 1 en adelante. Todos responden en su propio celular al mismo tiempo, así que funciona para una familia, un equipo o un salón completo.
       - q: ¿Salen las mismas preguntas cada vez?
