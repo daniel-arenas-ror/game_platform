@@ -31,6 +31,8 @@ class GameFactory
       GameServices::CharacterHunt.new(room)
     when 'tug_of_war'
       GameServices::TugOfWar.new(room)
+    when 'color_chain'
+      GameServices::ColorChain.new(room)
     when 'impostor'
       ## TODO
     else
