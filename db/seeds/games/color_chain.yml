@@ -1,0 +1,92 @@
+# Slug is a public URL (/games/color-chain) — never change it once live.
+name: Color Chain
+slug: color-chain
+listed: false
+description: Watch the colors light up on the big screen, then repeat them on your phone. Every round
+  adds one more color to the chain, so how long can you keep it going?
+tagline: Four colors. One growing chain. Don't let it slip.
+category: memory
+min_players: 1
+max_players: 30
+players_note: >-
+  Everyone answers on their own phone at the same time, so it plays the same alone or with a full
+  room. The biggest laughs come with a group trying to remember the chain together.
+duration_minutes: 5
+age: 8
+long_description: >-
+  Color Chain is a memory game for the whole room. The big screen shows four blocks, blue, green,
+  yellow and red, and lights them up one at a time, each with its own note. When it's done, every
+  phone turns into the same four blocks, and everyone taps the colors back in the same order. Each
+  round is the same chain plus one more color, so it gets harder without ever changing the rules.
+  You score 10 points for every correct color from the start of the chain, up to your first mistake.
+  Nobody is knocked out: slip up and you still play the next round. The host picks how many colors
+  the first round has and how many rounds to play. Nobody sees the right answer until the reveal, so
+  you can't copy it from a friend's screen, only from their face.
+how_to_play:
+  - The host picks how many colors the first round has (2, 3 or 4) and how many rounds to play (5, 10 or 15).
+  - Watch the big screen. The blocks light up one at a time, each with its own sound.
+  - When your phone shows the four blocks, tap the colors in the same order. Your answer goes in with your last tap.
+  - You get 10 points for each correct color from the start, up to your first mistake. Then the big screen shows the right sequence.
+  - The next round is the same chain plus one more color. The most points after the last round wins.
+tips:
+  - The blocks are in the same places on the TV and on your phone, so remember positions as well as colors.
+  - Say the colors in your head as they light up, or turn them into a little tune.
+  - Split a long chain into groups of three. It's easier to remember than one long line.
+  - Your first colors are worth the most, because a mistake stops the count. Get the start right.
+  - You get more time as the chain grows, so take a breath before you start tapping.
+perfect_for: [party, family, classroom, work]
+faq:
+  - q: How do you score points in Color Chain?
+    a: You get 10 points for each correct color from the start of the sequence, up to your first mistake. Get 4 of 6 right and then slip, and you score 40. Colors after a mistake don't count.
+  - q: Is a player out after a mistake?
+    a: No. Everyone plays every round. A mistake only costs you points in that round, and you're back in for the next one.
+  - q: How long does a player have to answer?
+    a: About 2 seconds per color plus 3 extra, from 7 seconds up to 30. The round ends early once everyone has answered.
+  - q: How long can the chain get?
+    a: It starts with 2, 3 or 4 colors and grows by one every round. With 4 colors and 15 rounds, the last chain has 18 colors.
+  - q: Can someone join after the game has started?
+    a: Yes. They scan the QR code, and they can answer from the current round with 0 points.
+
+# Spanish. Same fields as above; anything missing falls back to English.
+translations:
+  es:
+    name: Cadena de Colores
+    description: Mira cómo se encienden los colores en la pantalla grande y repítelos en tu celular. Cada
+      ronda agrega un color más a la cadena. ¿Hasta dónde puedes llegar?
+    tagline: Cuatro colores. Una cadena que crece. No dejes que se rompa.
+    players_note: >-
+      Cada uno responde en su celular al mismo tiempo, así que funciona igual solo o con la sala llena.
+      Las mejores risas llegan cuando un grupo intenta recordar la cadena a la vez.
+    long_description: >-
+      Cadena de Colores es un juego de memoria para toda la sala. La pantalla grande muestra cuatro
+      bloques, azul, verde, amarillo y rojo, y los enciende uno por uno, cada uno con su propia nota.
+      Al terminar, todos los celulares se convierten en los mismos cuatro bloques y cada jugador toca
+      los colores en el mismo orden. Cada ronda es la misma cadena más un color, así que se pone más
+      difícil sin cambiar nunca las reglas. Ganas 10 puntos por cada color correcto desde el inicio de
+      la cadena, hasta tu primer error. Nadie queda eliminado: si te equivocas, igual juegas la
+      siguiente ronda. El anfitrión elige cuántos colores tiene la primera ronda y cuántas rondas se
+      juegan. Nadie ve la respuesta correcta hasta el final de la ronda, así que no puedes copiarla de
+      la pantalla de un amigo, solo de su cara.
+    how_to_play:
+      - El anfitrión elige cuántos colores tiene la primera ronda (2, 3 o 4) y cuántas rondas se juegan (5, 10 o 15).
+      - Mira la pantalla grande. Los bloques se encienden uno por uno, cada uno con su propio sonido.
+      - Cuando tu celular muestre los cuatro bloques, toca los colores en el mismo orden. Tu respuesta se envía con el último toque.
+      - Ganas 10 puntos por cada color correcto desde el inicio, hasta tu primer error. Después la pantalla grande muestra la secuencia correcta.
+      - La siguiente ronda es la misma cadena más un color. Gana quien tenga más puntos al final de la última ronda.
+    tips:
+      - Los bloques están en los mismos lugares en la TV y en tu celular, así que recuerda las posiciones además de los colores.
+      - Di los colores mentalmente cuando se enciendan, o conviértelos en una pequeña melodía.
+      - Divide una cadena larga en grupos de tres. Es más fácil de recordar que una sola línea larga.
+      - Tus primeros colores valen más, porque un error detiene la cuenta. Asegura el comienzo.
+      - Tienes más tiempo a medida que crece la cadena, así que respira antes de empezar a tocar.
+    faq:
+      - q: ¿Cómo se ganan puntos en Cadena de Colores?
+        a: Ganas 10 puntos por cada color correcto desde el inicio de la secuencia, hasta tu primer error. Si aciertas 4 de 6 y fallas, sumas 40. Los colores después de un error no cuentan.
+      - q: ¿Un jugador queda eliminado si se equivoca?
+        a: No. Todos juegan todas las rondas. Un error solo te cuesta puntos en esa ronda, y vuelves a jugar en la siguiente.
+      - q: ¿Cuánto tiempo hay para responder?
+        a: Unos 2 segundos por color más 3 adicionales, desde 7 hasta 30 segundos. La ronda termina antes si todos ya respondieron.
+      - q: ¿Hasta dónde puede crecer la cadena?
+        a: Empieza con 2, 3 o 4 colores y crece uno por ronda. Con 4 colores y 15 rondas, la última cadena tiene 18 colores.
+      - q: ¿Alguien puede unirse cuando el juego ya empezó?
+        a: Sí. Escanea el código QR y puede responder desde la ronda actual, con 0 puntos.
