@@ -23,7 +23,9 @@
 	reverse_proxy web:80
 }
 
-www.{$APP_DOMAIN} {
+# Both www addresses go straight to the real site in one redirect. Google's AdSense crawler asks for
+# http://www and stopped after one hop when it was http -> https -> no www.
+www.{$APP_DOMAIN}, http://www.{$APP_DOMAIN} {
 	import access_log
 	redir https://{$APP_DOMAIN}{uri} permanent
 }
