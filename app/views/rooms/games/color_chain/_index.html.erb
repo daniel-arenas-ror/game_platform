@@ -1,0 +1,115 @@
+<% is_host = session[:player_id].blank? %>
+<% block_colors = { "blue" => "bg-blue-500", "green" => "bg-green-500", "yellow" => "bg-yellow-400", "red" => "bg-red-500" } %>
+
+<% if is_host %>
+  <%# ================================================================= %>
+  <%# HOST VIEW — TV: the four blocks, which light up the sequence      %>
+  <%# ================================================================= %>
+  <div data-controller="color-chain-host"
+       data-color-chain-host-room-code-value="<%= @room.code %>"
+       class="flex flex-col h-dvh bg-slate-950 text-white overflow-hidden">
+
+    <%# Header %>
+    <div class="flex items-center justify-between gap-6 px-6 pt-5 pb-3">
+      <h1 class="text-2xl font-black tracking-widest uppercase text-blue-400"><%= t(".title") %></h1>
+      <p data-color-chain-host-target="roundLabel" class="text-slate-300 font-bold text-lg"></p>
+      <p class="text-slate-500 text-xs font-mono tracking-widest">
+        <%= t("rooms.games.shared.room") %> <span class="text-white font-bold"><%= @room.code %></span>
+      </p>
+    </div>
+
+    <%# Bottom margin keeps the board clear of the Players button. %>
+    <div class="flex-1 min-h-0 flex gap-6 px-6 pb-16">
+      <div class="flex-1 min-w-0 flex flex-col items-center gap-3">
+        <div class="flex items-center gap-5 min-h-12">
+          <p data-color-chain-host-target="status" class="font-black text-3xl text-center text-balance"></p>
+          <p data-color-chain-host-target="countdown" class="font-mono font-black text-4xl tabular-nums"></p>
+        </div>
+
+        <div class="relative flex-1 min-h-0 aspect-[4/3] max-w-full grid grid-cols-2 grid-rows-2 gap-4">
+          <% GameServices::ColorChain::COLORS.each do |color| %>
+            <div data-color-chain-host-target="block" data-color="<%= color %>"
+                 class="rounded-3xl opacity-25 transition-[opacity,scale] duration-100 <%= block_colors[color] %>"></div>
+          <% end %>
+
+          <%# The sequence, shown after each round %>
+          <div data-color-chain-host-target="reveal"
+               class="hidden absolute inset-0 flex flex-col items-center justify-center gap-6 rounded-3xl bg-slate-950/90 p-6 text-center">
+            <p class="text-slate-300 font-bold text-xl"><%= t(".sequence_was") %></p>
+            <div data-color-chain-host-target="revealSequence" class="flex flex-wrap justify-center gap-3">
+              <% GameServices::ColorChain::COLORS.each do |color| %>
+                <template data-color-chain-host-target="chip" data-color="<%= color %>">
+                  <span class="size-14 rounded-xl <%= block_colors[color] %>"></span>
+                </template>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <aside class="hidden md:flex w-72 shrink-0 flex-col gap-2 overflow-hidden">
+        <p class="text-xs font-bold text-slate-400 tracking-widest uppercase"><%= t("rooms.games.shared.points") %></p>
+        <div data-color-chain-host-target="board" class="flex flex-col gap-2 min-h-0 overflow-hidden"></div>
+      </aside>
+    </div>
+
+    <%# Game over %>
+    <div data-color-chain-host-target="phaseGameOver"
+         class="hidden absolute inset-0 z-30 overflow-y-auto bg-slate-950 px-8 py-10">
+      <div class="flex flex-col items-center text-center">
+        <p class="text-7xl mb-3">🏆</p>
+        <h2 class="text-5xl font-black tracking-wide"><%= t("rooms.games.shared.game_over") %></h2>
+        <div data-color-chain-host-target="finalBoard" class="flex flex-col gap-2 w-full max-w-xl mt-6 text-left"></div>
+        <div class="flex flex-col items-center mt-6">
+          <button data-action="color-chain-host#restart"
+                  class="bg-blue-500 hover:bg-blue-400 text-white font-black px-10 py-3 rounded-xl uppercase tracking-widest text-lg transition-colors cursor-pointer">
+            <%= t("rooms.games.shared.play_again") %>
+          </button>
+          <%= render partial: "rooms/games/change_game", locals: { room: @room, games: @games } %>
+        </div>
+        <%= game_over_ad %>
+      </div>
+    </div>
+  </div>
+
+<% else %>
+  <%# ================================================================= %>
+  <%# PLAYER VIEW — phone: four blocks, full screen, and the points     %>
+  <%# ================================================================= %>
+  <% current_player %>
+  <div data-controller="color-chain-player"
+       data-color-chain-player-room-code-value="<%= @room.code %>"
+       data-color-chain-player-player-id-value="<%= session[:player_id] %>"
+       class="fixed inset-0 bg-slate-950 text-white overflow-hidden select-none touch-manipulation">
+
+    <%# Watching the TV, answer sent, result %>
+    <div data-color-chain-player-target="phaseMessage"
+         class="absolute inset-0 flex flex-col items-center justify-center gap-3 px-6 text-center">
+      <p data-color-chain-player-target="messageTitle" class="font-black text-4xl text-balance"><%= t(".get_ready") %></p>
+      <p data-color-chain-player-target="messageHint" class="text-slate-300 text-lg text-balance"><%= t(".look_tv") %></p>
+      <p data-color-chain-player-target="messagePoints" class="mt-4 font-black text-2xl tabular-nums"></p>
+    </div>
+
+    <%# The same blocks, in the same places, as on the TV %>
+    <div data-color-chain-player-target="phaseBlocks" class="hidden absolute inset-0 grid grid-cols-2 grid-rows-2 gap-1 p-1">
+      <% GameServices::ColorChain::COLORS.each do |color| %>
+        <button type="button" data-action="color-chain-player#tap" data-color="<%= color %>"
+                aria-label="<%= t(".color_#{color}") %>"
+                class="rounded-2xl active:opacity-60 cursor-pointer <%= block_colors[color] %>"></button>
+      <% end %>
+      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none flex flex-col items-center rounded-3xl bg-slate-950 px-5 py-2 text-center">
+        <p data-color-chain-player-target="blocksPoints" class="font-black text-2xl tabular-nums"></p>
+        <p data-color-chain-player-target="taps" class="font-mono font-bold text-sm tabular-nums text-slate-300"></p>
+        <p data-color-chain-player-target="countdown" class="font-mono font-black text-lg tabular-nums"></p>
+      </div>
+    </div>
+
+    <%# Game over %>
+    <div data-color-chain-player-target="phaseGameOver"
+         class="hidden absolute inset-0 flex flex-col items-center justify-center gap-2 bg-slate-950 text-center px-6">
+      <p data-color-chain-player-target="gameOverTitle" class="font-black text-4xl tracking-wide text-balance"></p>
+      <p data-color-chain-player-target="gameOverPoints" class="text-slate-300 font-bold text-xl tabular-nums"></p>
+      <p class="text-slate-600 text-xs mt-6 font-mono"><%= t("rooms.games.shared.waiting_restart") %></p>
+    </div>
+  </div>
+<% end %>

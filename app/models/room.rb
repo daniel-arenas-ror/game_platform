@@ -45,7 +45,8 @@ class Room
     "haunted_house"          => "haunted_house_room_",
     "monster_mash"           => "monster_mash_room_",
     "character_hunt"         => "character_hunt_room_",
-    "tug_of_war"             => "tug_of_war_room_"
+    "tug_of_war"             => "tug_of_war_room_",
+    "color_chain"            => "color_chain_room_"
   }.freeze
 
   def enough_players?

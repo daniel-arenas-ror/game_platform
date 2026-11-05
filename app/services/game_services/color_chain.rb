@@ -6,6 +6,8 @@ module GameServices
     COLORS         = %w[blue green yellow red].freeze
     START_LENGTHS  = [ 2, 3, 4 ].freeze
     ROUND_CHOICES  = [ 5, 10, 15 ].freeze
+    DEFAULT_START_LENGTH = 3
+    DEFAULT_ROUNDS       = 10
 
     # Points per correct colour from the start, up to the first mistake.
     POINTS_PER_COLOR = 10
@@ -27,9 +29,9 @@ module GameServices
 
     def setup_game!
       start_length = @room.game_state["start_length"].to_i
-      start_length = 3 unless START_LENGTHS.include?(start_length)
+      start_length = DEFAULT_START_LENGTH unless START_LENGTHS.include?(start_length)
       total_rounds = @room.game_state["total_rounds"].to_i
-      total_rounds = 10 unless ROUND_CHOICES.include?(total_rounds)
+      total_rounds = DEFAULT_ROUNDS unless ROUND_CHOICES.include?(total_rounds)
 
       @room.update!(
         status: "playing",

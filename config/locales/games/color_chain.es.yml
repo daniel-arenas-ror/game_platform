@@ -1,0 +1,33 @@
+# Cadena de Colores: pantalla del juego y su JS.
+es:
+  rooms:
+    games:
+      color_chain:
+        edit:
+          start_length: "COLORES EN LA PRIMERA RONDA"
+          colors:
+            one: "%{count} color"
+            other: "%{count} colores"
+          rounds: "RONDAS"
+          rounds_option:
+            one: "%{count} ronda"
+            other: "%{count} rondas"
+        index:
+          title: "Cadena de Colores"
+          sequence_was: "La secuencia era"
+          get_ready: "Prepárate…"
+          look_tv: "Mira la TV"
+          color_blue: "Azul"
+          color_green: "Verde"
+          color_yellow: "Amarillo"
+          color_red: "Rojo"
+  js:
+    color_chain:
+      get_ready: "Prepárate…"
+      look_tv: "Mira la TV"
+      watch: "¡Mira los colores!"
+      answered: "%{done} de %{total} respondieron"
+      results: "Resultados"
+      sent: "Enviado ✓"
+      wait_others: "Esperando a los demás…"
+      error: "Algo salió mal. Recarga esta página."

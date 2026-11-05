@@ -1,0 +1,35 @@
+<% chain = GameServices::ColorChain %>
+<% state = @room.game_state %>
+<% picked = "peer-checked:border-blue-500 peer-checked:bg-blue-500/10" %>
+
+<%# How many colours the first round has %>
+<div class="space-y-4 bg-slate-900/50 p-6 rounded-2xl border border-slate-700">
+  <label class="block text-xs font-bold text-slate-400 mb-3 tracking-widest"><%= t(".start_length") %></label>
+  <div class="grid grid-cols-3 gap-3">
+    <% length = (state["start_length"] || chain::DEFAULT_START_LENGTH).to_i %>
+    <% chain::START_LENGTHS.each do |n| %>
+      <label class="relative cursor-pointer">
+        <input type="radio" name="room[game_state][start_length]" value="<%= n %>" class="peer hidden" <%= "checked" if length == n %>>
+        <div class="text-center py-3 bg-slate-800 border-2 border-slate-700 rounded-xl text-white font-bold <%= picked %> transition-all">
+          <%= t(".colors", count: n) %>
+        </div>
+      </label>
+    <% end %>
+  </div>
+</div>
+
+<%# Rounds: each one adds a colour %>
+<div class="space-y-4 bg-slate-900/50 p-6 rounded-2xl border border-slate-700 mt-2">
+  <label class="block text-xs font-bold text-slate-400 mb-3 tracking-widest"><%= t(".rounds") %></label>
+  <div class="grid grid-cols-3 gap-3">
+    <% rounds = (state["total_rounds"] || chain::DEFAULT_ROUNDS).to_i %>
+    <% chain::ROUND_CHOICES.each do |n| %>
+      <label class="relative cursor-pointer">
+        <input type="radio" name="room[game_state][total_rounds]" value="<%= n %>" class="peer hidden" <%= "checked" if rounds == n %>>
+        <div class="text-center py-3 bg-slate-800 border-2 border-slate-700 rounded-xl text-white font-bold <%= picked %> transition-all">
+          <%= t(".rounds_option", count: n) %>
+        </div>
+      </label>
+    <% end %>
+  </div>
+</div>

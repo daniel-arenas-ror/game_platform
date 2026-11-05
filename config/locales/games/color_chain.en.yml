@@ -1,0 +1,33 @@
+# Color Chain: in-game screen and its JS.
+en:
+  rooms:
+    games:
+      color_chain:
+        edit:
+          start_length: "COLORS IN THE FIRST ROUND"
+          colors:
+            one: "%{count} color"
+            other: "%{count} colors"
+          rounds: "ROUNDS"
+          rounds_option:
+            one: "%{count} round"
+            other: "%{count} rounds"
+        index:
+          title: "Color Chain"
+          sequence_was: "The sequence was"
+          get_ready: "Get ready…"
+          look_tv: "Look at the TV"
+          color_blue: "Blue"
+          color_green: "Green"
+          color_yellow: "Yellow"
+          color_red: "Red"
+  js:
+    color_chain:
+      get_ready: "Get ready…"
+      look_tv: "Look at the TV"
+      watch: "Watch the colors!"
+      answered: "%{done} of %{total} answered"
+      results: "Results"
+      sent: "Sent ✓"
+      wait_others: "Waiting for the others…"
+      error: "Something went wrong. Refresh this page."
