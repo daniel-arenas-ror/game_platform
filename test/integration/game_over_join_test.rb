@@ -23,6 +23,7 @@ class GameOverJoinTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "/join/#{@room.code}"
     assert_select "form[action=?] input[name=game_id][value=?]", change_game_room_path(@room.code), @game.id.to_s
     assert_select "form[action=?] button", change_game_room_path(@room.code), "Change settings"
+    assert_select "form[action=?][data-controller=open-settings]", change_game_room_path(@room.code)
     assert_select "a[href=?]", games_path(room: @room.code), "Change Game"
   end
 
