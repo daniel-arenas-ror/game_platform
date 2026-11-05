@@ -1,6 +1,20 @@
-<%# Rendered inside the host game-over overlay. Sends the host to the games page to pick
-    a new game (or reconfigure this one) for the same room. %>
+<%# Rendered inside the host game-over overlay. A QR so new players can join before the next game,
+    a link back to this game's settings, and a link to the games page to pick a new game for the
+    same room. "Change settings" goes through change_game with the same game, so phones return to
+    the lobby. The QR sits in the corner (the Players button has the other one), big screens only:
+    the overlays are centred and don't scroll, so it can't go in with a full leaderboard. %>
+<% link_css = "text-slate-400 hover:text-white text-sm underline underline-offset-4 transition-colors cursor-pointer" %>
 <div class="mt-4">
-  <%= link_to t("rooms.games.change_game.link"), games_path(room: room.code),
-        class: "text-slate-400 hover:text-white text-sm underline underline-offset-4 transition-colors" %>
+  <% if @svg %>
+    <div data-game-over-qr class="fixed bottom-3 right-3 z-[60] hidden w-52 flex-col items-center gap-2 rounded-2xl border border-slate-700 bg-slate-800 p-3 text-center lg:flex">
+      <div class="rounded-xl bg-white p-1.5 [&>svg]:block [&>svg]:size-32"><%= @svg.html_safe %></div>
+      <p class="text-sm font-bold text-white text-balance"><%= t("rooms.games.change_game.scan") %></p>
+      <p class="font-mono text-xs font-bold text-purple-300 break-all"><%= @join_url.sub(%r{\Ahttps?://}, "") %></p>
+    </div>
+  <% end %>
+  <div class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
+    <%= button_to t("rooms.games.change_game.settings"), change_game_room_path(room.code),
+          params: { game_id: room.game_id }, method: :post, class: link_css %>
+    <%= link_to t("rooms.games.change_game.link"), games_path(room: room.code), class: link_css %>
+  </div>
 </div>

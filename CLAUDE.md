@@ -137,6 +137,10 @@ showPhase(name) {
 - Always `unsubscribe()` and `clearInterval()` in `disconnect()`.
 - Inject CSS animations once via `<style id="...">` — check for existing tag before inserting.
 
+### Game Over Screen (every game)
+
+Render `rooms/games/_change_game` on the host's game-over overlay (plus `game_over_ad`). It adds the join QR (bottom-right corner, big screens), "Change settings" (`change_game` with the same game, so phones go back to the lobby) and "Change Game". A game must set `room.status = "finished"` at game over and call `broadcast_start` in `setup_game!`: that's how a player who joined from the QR reaches the next game.
+
 ### Winner Celebration (every game)
 
 Every game plays the same celebration on the winning player's phone at game over: confetti plus a

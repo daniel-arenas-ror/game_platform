@@ -40,19 +40,7 @@ class RoomsController < ApplicationController
       return redirect_to playing_room_path(@room.code), alert: t("rooms.already_started")
     end
 
-    # The URL that other players will scan to join
-    @join_url = join_room_url(code: @room.code)
-    
-    # Generate QR Code
-    @qrcode = RQRCode::QRCode.new(@join_url)
-    @svg = @qrcode.as_svg(
-      color: "000",
-      shape_rendering: "crispEdges",
-      module_size: 11,
-      standalone: true,
-      use_path: true,
-      viewbox: true # no fixed size: the lobby sizes it with CSS
-    )
+    prepare_join_qr
   end
 
   def join
@@ -112,6 +100,7 @@ class RoomsController < ApplicationController
 
     @game_state = @room.game_state
     @games      = Game.catalog
+    prepare_join_qr if current_player.nil? # the host's Game Over screen (rooms/games/_change_game)
 
     render "playing"
   end
@@ -150,6 +139,20 @@ class RoomsController < ApplicationController
   # The host is the screen without a player in its session.
   def host_only
     head :forbidden if session[:player_id].present?
+  end
+
+  def prepare_join_qr
+    # The URL that other players will scan to join
+    @join_url = join_room_url(code: @room.code)
+
+    @svg = RQRCode::QRCode.new(@join_url).as_svg(
+      color: "000",
+      shape_rendering: "crispEdges",
+      module_size: 11,
+      standalone: true,
+      use_path: true,
+      viewbox: true # no fixed size: sized with CSS where it's shown
+    )
   end
 
   # Lobby, join and game screens speak the room's language, so a phone that scans the QR code

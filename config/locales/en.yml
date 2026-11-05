@@ -311,6 +311,8 @@ en:
     games:
       change_game:
         link: "Change Game"
+        settings: "Change settings"
+        scan: "New players: scan to join the next game"
       # Pre-game settings, one block per game (rooms/games/<code>/_edit).
       battle_city:
         edit:

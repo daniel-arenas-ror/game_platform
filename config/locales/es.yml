@@ -301,6 +301,8 @@ es:
     games:
       change_game:
         link: "Cambiar juego"
+        settings: "Cambiar configuración"
+        scan: "Jugadores nuevos: escanea para unirte al próximo juego"
       battle_city:
         edit:
           map: "MAPA"
