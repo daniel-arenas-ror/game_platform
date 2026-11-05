@@ -1,6 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 import consumer from "channels/consumer"
 import { t, num, placeTitle } from "controllers/shared/i18n"
+import { celebrateWin, confetti, isTopScore } from "controllers/shared/celebration"
 import { startCountdown, stopCountdown } from "controllers/haunted_house/common"
 
 const SEND_MARGIN = 300 // ms before the time runs out, so a phone's last taps reach the server
@@ -52,7 +53,11 @@ export default class extends Controller {
   tap(event) {
     if (this.state?.phase !== "input" || this.sent) return
 
-    this.tapped.push(event.currentTarget.dataset.color)
+    const block = event.currentTarget
+    block.animate([ { opacity: 0.45 }, { opacity: 1 } ], { duration: 160 })
+    navigator.vibrate?.(20)
+
+    this.tapped.push(block.dataset.color)
     this.renderTaps()
     if (this.tapped.length >= this.state.sequence_length) this.send()
   }
@@ -66,6 +71,7 @@ export default class extends Controller {
   }
 
   onState(state) {
+    const previous = this.state?.phase
     if (state.round !== this.round) {
       this.round  = state.round
       this.tapped = []
@@ -82,6 +88,10 @@ export default class extends Controller {
       stopCountdown(this.countdownTarget)
     }
     this.render()
+
+    if (previous === state.phase || !previous) return
+    if (state.phase === "reveal" && this.perfect()) { navigator.vibrate?.([ 60, 40, 120 ]); confetti(30) }
+    if (state.phase === "game_over" && isTopScore(state.scores, this.playerIdValue)) celebrateWin(this.gameOverTitleTarget)
   }
 
   // ── Rendering ─────────────────────────────────────────────────────────────
@@ -112,7 +122,7 @@ export default class extends Controller {
     const messages = {
       watching: [ t("color_chain.watch"), t("color_chain.look_tv") ],
       input:    [ t("color_chain.sent"), t("color_chain.wait_others") ],
-      reveal:   [ `+${num(won[this.playerIdValue])}`, t("color_chain.look_tv") ]
+      reveal:   [ `+${num(won[this.playerIdValue])}`, this.perfect() ? t("color_chain.perfect") : t("color_chain.look_tv") ]
     }
     const [ title, hint ] = messages[phase] ?? [ t("color_chain.get_ready"), t("color_chain.look_tv") ]
     this.messageTitleTarget.textContent = title
@@ -122,6 +132,10 @@ export default class extends Controller {
   showGameOver() {
     const scores = Object.values(this.state.scores || {})
     this.gameOverTitleTarget.textContent = placeTitle(1 + scores.filter((points) => points > this.myPoints()).length)
+  }
+
+  perfect() {
+    return this.tapped.length > 0 && this.tapped.join() === (this.state.sequence || []).join()
   }
 
   myPoints() {

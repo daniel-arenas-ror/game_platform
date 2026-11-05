@@ -14,6 +14,7 @@ en:
             other: "%{count} rounds"
         index:
           title: "Color Chain"
+          sound: "Sound"
           sequence_was: "The sequence was"
           get_ready: "Get ready…"
           look_tv: "Look at the TV"
@@ -26,7 +27,8 @@ en:
       get_ready: "Get ready…"
       look_tv: "Look at the TV"
       watch: "Watch the colors!"
-      answered: "%{done} of %{total} answered"
+      answered: "Your turn! %{done} of %{total} answered"
+      perfect: "Perfect!"
       results: "Results"
       sent: "Sent ✓"
       wait_others: "Waiting for the others…"

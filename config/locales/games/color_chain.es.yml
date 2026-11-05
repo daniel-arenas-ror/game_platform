@@ -14,6 +14,7 @@ es:
             other: "%{count} rondas"
         index:
           title: "Cadena de Colores"
+          sound: "Sonido"
           sequence_was: "La secuencia era"
           get_ready: "Prepárate…"
           look_tv: "Mira la TV"
@@ -26,7 +27,8 @@ es:
       get_ready: "Prepárate…"
       look_tv: "Mira la TV"
       watch: "¡Mira los colores!"
-      answered: "%{done} de %{total} respondieron"
+      answered: "¡Su turno! %{done} de %{total} respondieron"
+      perfect: "¡Perfecto!"
       results: "Resultados"
       sent: "Enviado ✓"
       wait_others: "Esperando a los demás…"

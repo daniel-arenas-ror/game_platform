@@ -3,7 +3,9 @@ import consumer from "channels/consumer"
 import { t, num } from "controllers/shared/i18n"
 import { avatarHtml } from "controllers/shared/avatar"
 import { escapeHtml } from "controllers/shared/html"
+import { confetti } from "controllers/shared/celebration"
 import { startCountdown, stopCountdown } from "controllers/haunted_house/common"
+import { ChainSounds } from "controllers/color_chain/sounds"
 
 const BOARD_SIZE = 8 // players listed beside the blocks
 
@@ -13,7 +15,7 @@ const BOARD_SIZE = 8 // players listed beside the blocks
 export default class extends Controller {
   static values  = { roomCode: String }
   static targets = [
-    "roundLabel", "status", "countdown", "block", "reveal", "revealSequence", "chip", "board",
+    "soundButton", "roundLabel", "status", "countdown", "block", "reveal", "revealSequence", "chip", "board",
     "phaseGameOver", "finalBoard"
   ]
 
@@ -21,6 +23,10 @@ export default class extends Controller {
     this.state     = null
     this.nicknames = {}
     this.timers    = []
+    this.sounds    = new ChainSounds()
+    this.soundLabel  = this.soundButtonTarget.textContent.trim().replace(/^\S+\s*/, "")
+    this.unlockSound = () => this.sounds.unlock()
+    document.addEventListener("pointerdown", this.unlockSound)
 
     this.channel = consumer.subscriptions.create(
       { channel: "Games::ColorChainChannel", room_code: this.roomCodeValue, player_id: "" },
@@ -32,8 +38,10 @@ export default class extends Controller {
   }
 
   disconnect() {
+    document.removeEventListener("pointerdown", this.unlockSound)
     this.stopPlayback()
     stopCountdown(this.countdownTarget)
+    this.sounds.close()
     this.channel?.unsubscribe()
   }
 
@@ -54,7 +62,14 @@ export default class extends Controller {
     this.channel.perform("restart_game", {})
   }
 
+  toggleSound() {
+    const on = this.sounds.toggle()
+    this.soundButtonTarget.textContent = `${on ? "🔊" : "🔇"} ${this.soundLabel}`
+    this.soundButtonTarget.classList.toggle("opacity-50", !on)
+  }
+
   onState({ state, nicknames }) {
+    const previous = this.state?.phase
     this.state     = state
     this.nicknames = nicknames || {}
 
@@ -70,6 +85,10 @@ export default class extends Controller {
     this.renderReveal()
     this.phaseGameOverTarget.classList.toggle("hidden", state.phase !== "game_over")
     if (state.phase === "game_over") this.finalBoardTarget.innerHTML = this.boardHtml(this.ranking())
+
+    if (previous === state.phase || !previous) return
+    if (state.phase === "input") this.sounds.yourTurn()
+    if (state.phase === "game_over") { this.sounds.win(); confetti(80) }
   }
 
   onAnswered({ player_id }) {
@@ -89,7 +108,7 @@ export default class extends Controller {
 
     sequence.forEach((color, i) => {
       const start = lead_in * 1000 + i * step
-      this.timers.push(setTimeout(() => this.light(color), start))
+      this.timers.push(setTimeout(() => { this.light(color); this.sounds.color(color, flash_duration) }, start))
       this.timers.push(setTimeout(() => this.light(null), start + flash))
     })
     this.timers.push(setTimeout(() => { this.playing = false }, lead_in * 1000 + sequence.length * step))
