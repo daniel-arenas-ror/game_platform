@@ -82,14 +82,14 @@ module GameServices
     def update_round!
       @room.atomic_set("game_state.current_round" => @room.game_state["current_round"].to_i - 1)
       if @room.game_state["current_round"].to_i <= 0
-        @room.update!(status: 'finished')
-
         points_hash = @room.game_state['points'] || {}
         @sorted_players = @room.players.sort_by do |player|
           points_hash[player.id.to_s].to_i
         end.reverse
 
+        # The list goes first: the results page reads it as soon as the room is finished.
         @room.atomic_set("game_state.sorted_players" => @sorted_players.map { |p| { nickname: p.nickname, points: points_hash[p.id.to_s].to_i } })
+        @room.update!(status: 'finished')
       end
     end
   end
