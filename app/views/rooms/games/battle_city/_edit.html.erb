@@ -59,22 +59,5 @@
   </div>
 </div>
 
-<%# Max players picker %>
-<div class="space-y-4 bg-slate-900/50 p-6 rounded-2xl border border-slate-700 mt-2">
-  <label class="block text-xs font-bold text-slate-400 mb-3 tracking-widest"><%= t(".max_players") %></label>
-  <div class="grid grid-cols-3 gap-3">
-    <% [2, 3, 4].each do |n| %>
-      <label class="relative cursor-pointer">
-        <input type="radio"
-               name="room[game_state][max_players]"
-               value="<%= n %>"
-               class="peer hidden"
-               <%= 'checked' if (@room.game_state['max_players']&.to_i || 4) == n %>>
-        <div class="text-center py-3 bg-slate-800 border-2 border-slate-700 rounded-xl text-white font-bold
-                    peer-checked:border-yellow-500 peer-checked:bg-yellow-500/10 transition-all">
-          <%= t(".tanks", count: n) %>
-        </div>
-      </label>
-    <% end %>
-  </div>
-</div>
+<%# No player limit to pick: the first 8 to join get a tank each %>
+<p class="mt-2 text-center text-sm text-slate-400">👥 <%= t(".players_note") %></p>

@@ -8,8 +8,13 @@ const COLOR_HEX = {
   yellow: "#f1c40f",
   green:  "#2ecc71",
   white:  "#ecf0f1",
-  red:    "#e74c3c"
+  red:    "#e74c3c",
+  blue:   "#3498db",
+  purple: "#9b59b6",
+  orange: "#e67e22",
+  pink:   "#ff79c6"
 }
+const WHITE_TEXT = [ "red", "blue", "purple" ] // dark enough for white text; the rest get dark text
 
 export default class extends Controller {
   static values  = { roomCode: String, playerId: String }
@@ -118,12 +123,11 @@ export default class extends Controller {
   }
 
   // The whole phone takes my tank's colour, so I can tell at a glance which tank on the TV is mine.
-  // Red is dark enough for white text; yellow, green and white need dark text.
   paintTankColor(color) {
     const hex = COLOR_HEX[color]
     if (!hex) return
     this.element.style.backgroundColor = hex
-    this.element.style.color = color === "red" ? "#ffffff" : "#0f172a"
+    this.element.style.color = WHITE_TEXT.includes(color) ? "#ffffff" : "#0f172a"
     if (this.hasColorBadgeTarget) this.colorBadgeTarget.style.backgroundColor = hex
   }
 

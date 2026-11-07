@@ -1,6 +1,14 @@
 module GameServices
   class BattleCity < Base
-    TANK_COLORS      = %w[yellow green white red].freeze
+    MAX_PLAYERS      = 8
+    TANK_COLORS      = %w[yellow green white red blue purple orange pink].freeze
+    # Where players start, in the order they joined: the four corners first, then the top and the
+    # middle of the map. Never the bottom centre: that's the base. A spot on a wall (each map is
+    # different) moves to the nearest free cell.
+    SPAWN_SPOTS = [
+      [ 2, 2 ], [ 23, 2 ], [ 2, 22 ], [ 23, 22 ],   # corners
+      [ 12, 2 ], [ 2, 12 ], [ 23, 12 ], [ 12, 12 ]  # top centre, left, right, centre
+    ].freeze
     PASSABLE_WALLS   = %w[trees].freeze
     MOVE_EVERY_TICKS = 4    # one cell every 4 × 60 ms ≈ 240 ms
     RESPAWN_TICKS    = 50   # 50 × 60 ms = 3 seconds
@@ -8,11 +16,7 @@ module GameServices
     # Bot behaviour
     BOT_FIRE_CHANCE   = 0.04   # probability of firing each tick
     BOT_TURN_CHANCE   = 0.04   # probability of random direction change each tick
-    BOT_SPAWN_CELLS   = [
-      { "x" => 1,  "y" => 1 },
-      { "x" => 12, "y" => 1 },
-      { "x" => 24, "y" => 1 }
-    ].freeze
+    BOT_SPAWN_SPOTS   = [ [ 6, 1 ], [ 19, 1 ], [ 12, 5 ] ].freeze # between the players' top spots
 
     DIRECTIONS = {
       "up"    => [ 0, -1],
@@ -29,13 +33,13 @@ module GameServices
     def setup_game!
       preset_name = @room.game_state["map_preset"] || "classic"
       preset      = ::BattleCity::MapPreset.find_by(name: preset_name)
-      max_players = (@room.game_state["max_players"] || 4).to_i
       bot_count   = (@room.game_state["bot_count"]   || 0).to_i.clamp(0, 3)
-      players     = @players.first(max_players)
+      players     = @players.first(MAX_PLAYERS)
 
       walls       = build_walls(preset)
-      tanks       = build_tanks(players, preset).merge(build_bot_tanks(bot_count))
-      tank_spawns = build_tank_spawns(players, preset).merge(build_bot_spawns(bot_count))
+      spawns      = spawn_cells(walls, preset, players.size, bot_count)
+      tanks       = build_tanks(players, spawns).merge(build_bot_tanks(bot_count, spawns))
+      tank_spawns = tanks.transform_values { |t| { "x" => t["x"], "y" => t["y"] } }
       scores      = players.each_with_object({}) { |p, h| h[p.id.to_s] = 0 }
 
       @room.update!(
@@ -162,23 +166,17 @@ module GameServices
       id.to_s.start_with?("bot_")
     end
 
-    def build_bot_tanks(count)
+    def build_bot_tanks(count, spawns)
       count.times.each_with_object({}) do |i, h|
-        spawn = BOT_SPAWN_CELLS[i]
+        x, y = spawns[:bots][i]
         h["bot_#{i}"] = {
-          "x"         => spawn["x"],
-          "y"         => spawn["y"],
+          "x"         => x,
+          "y"         => y,
           "direction" => "down",
           "alive"     => true,
           "color"     => "silver",
           "nickname"  => "Bot #{i + 1}"
         }
-      end
-    end
-
-    def build_bot_spawns(count)
-      count.times.each_with_object({}) do |i, h|
-        h["bot_#{i}"] = BOT_SPAWN_CELLS[i].dup
       end
     end
 
@@ -390,12 +388,12 @@ module GameServices
       end
     end
 
-    def build_tanks(players, preset)
+    def build_tanks(players, spawns)
       players.each_with_index.each_with_object({}) do |(player, i), h|
-        spawn = preset.tank_spawns[i]
+        x, y = spawns[:players][i]
         h[player.id.to_s] = {
-          "x"         => spawn["x"],
-          "y"         => spawn["y"],
+          "x"         => x,
+          "y"         => y,
           "direction" => "up",
           "alive"     => true,
           "color"     => TANK_COLORS[i],
@@ -404,13 +402,34 @@ module GameServices
       end
     end
 
-    def build_tank_spawns(players, preset)
-      players.each_with_index.each_with_object({}) do |(player, i), h|
-        h[player.id.to_s] = {
-          "x" => preset.tank_spawns[i]["x"],
-          "y" => preset.tank_spawns[i]["y"]
-        }
+    # A different free cell for every tank: players first, then bots.
+    def spawn_cells(walls, preset, player_count, bot_count)
+      taken = [ [ preset.base_x, preset.base_y ] ]
+      pick  = ->(spot) { free_cell_near(spot, walls, preset, taken).tap { |cell| taken << cell } }
+      {
+        players: SPAWN_SPOTS.first(player_count).map(&pick),
+        bots:    BOT_SPAWN_SPOTS.first(bot_count).map(&pick)
+      }
+    end
+
+    # The spot itself when it's free, else the closest cell with no wall (trees included, so nobody
+    # starts hidden) and no other tank, inside the steel border.
+    def free_cell_near(spot, walls, preset, taken)
+      inside = ->(x, y) { x.between?(1, preset.cols - 2) && y.between?(1, preset.rows - 2) }
+      seen   = { spot => true }
+      queue  = [ spot ]
+      until queue.empty?
+        x, y = queue.shift
+        return [ x, y ] if inside.(x, y) && !walls.key?("#{x},#{y}") && !taken.include?([ x, y ])
+
+        DIRECTIONS.each_value do |dx, dy|
+          cell = [ x + dx, y + dy ]
+          next if seen[cell] || !inside.(*cell)
+          seen[cell] = true
+          queue << cell
+        end
       end
+      spot
     end
   end
 end

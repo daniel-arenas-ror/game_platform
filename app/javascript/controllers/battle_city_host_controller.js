@@ -7,7 +7,8 @@ import { Application, Graphics, Container } from "pixi.js"
 import { soundFile } from "controllers/shared/sound"
 
 const WALL_COLORS  = { brick: 0xc0392b, steel: 0x7f8c8d, water: 0x2471a3, trees: 0x1e8449 }
-const TANK_COLORS  = { yellow: 0xf1c40f, green: 0x2ecc71, white: 0xecf0f1, red: 0xe74c3c, silver: 0x95a5a6 }
+const TANK_COLORS  = { yellow: 0xf1c40f, green: 0x2ecc71, white: 0xecf0f1, red: 0xe74c3c,
+                       blue: 0x3498db, purple: 0x9b59b6, orange: 0xe67e22, pink: 0xff79c6, silver: 0x95a5a6 }
 const BULLET_COLOR = 0xffffff
 const BG_COLOR     = 0x0d0d1a
 
@@ -461,7 +462,6 @@ export default class extends Controller {
     if (reasonEl) reasonEl.textContent = data.reason ? t(`battle_city.reasons.${data.reason}`) : ""
 
     if (rankEl && this.state?.tanks) {
-      const COLORS = { yellow: "#f1c40f", green: "#2ecc71", white: "#ecf0f1", red: "#e74c3c" }
       const scores = data.scores ?? {}
       const sorted = Object.entries(scores).sort(([, a], [, b]) => b - a)
 
@@ -469,7 +469,7 @@ export default class extends Controller {
         const tank     = this.state.tanks[pid]
         const nickname = tank?.nickname ?? t("battle_city.player", { n: idx + 1 })
         const name     = escapeHtml(nickname)
-        const color    = COLORS[tank?.color] ?? "#ffffff"
+        const color    = `#${(TANK_COLORS[tank?.color] ?? 0xffffff).toString(16).padStart(6, "0")}`
         const medal    = ["🥇", "🥈", "🥉"][idx] ?? `${idx + 1}.`
         const isWinner = pid === data.winner_id || (idx === 0 && data.reason === "kills_limit")
         return `
