@@ -13,5 +13,15 @@ module BattleCity
     field :base_y,       type: Integer
     # Ordered list of tank spawn positions: [{ "x" => Integer, "y" => Integer }, ...]
     field :tank_spawns,  type: Array,   default: []
+
+    # The game has no base for now (a later mode may bring it back), so the walls that guard it
+    # are left out too: everything up to 3 cells either side of it, on its row and the one above.
+    BASE_FORT_REACH = 3
+
+    def cells_without_base
+      cells.reject do |cell|
+        (cell["x"] - base_x).abs <= BASE_FORT_REACH && cell["y"] >= base_y - 1 && cell["y"] <= base_y
+      end
+    end
   end
 end

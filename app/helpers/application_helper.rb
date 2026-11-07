@@ -14,7 +14,7 @@ module ApplicationHelper
     wall_color = { "brick" => "#c0392b", "steel" => "#7f8c8d",
                    "trees" => "#1e8449", "water" => "#2471a3" }
 
-    rects = preset.cells.map do |cell|
+    rects = preset.cells_without_base.map do |cell|
       c = wall_color[cell["type"]] || "#888"
       x = (cell["x"] * cs).round(2)
       y = (cell["y"] * cs).round(2)
@@ -22,13 +22,8 @@ module ApplicationHelper
       %(<rect x="#{x}" y="#{y}" width="#{w}" height="#{w}" fill="#{c}"/>)
     end.join
 
-    bx = (preset.base_x * cs).round(2)
-    by = (preset.base_y * cs).round(2)
-    bw = [cs.ceil, 1].max
-    base = %(<rect x="#{bx}" y="#{by}" width="#{bw}" height="#{bw}" fill="#f39c12"/>)
-
     svg = %(<svg xmlns="http://www.w3.org/2000/svg" width="#{size}" height="#{size}" ) +
-          %(style="background:#0d0d1a;border-radius:4px">#{rects}#{base}</svg>)
+          %(style="background:#0d0d1a;border-radius:4px">#{rects}</svg>)
 
     svg.html_safe
   end

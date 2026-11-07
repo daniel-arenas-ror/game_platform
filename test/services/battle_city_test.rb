@@ -88,4 +88,88 @@ class BattleCityTest < ActiveSupport::TestCase
     assert_not s["tanks"]["beto"]["alive"], "Beto stays out"
     assert_equal "playing", s["status"]
   end
+
+  test "a tank right in front of the barrel is hit; so is a brick" do
+    s = state(kills_to_win: 5)
+    s["tanks"]["beto"]["x"] = 6
+    ana_shoots(s)
+    assert_not s["tanks"]["beto"]["alive"]
+    assert_equal 1, s["scores"]["ana"]
+
+    s = state(kills_to_win: 5)
+    s["walls"] = { "6,5" => "brick" }
+    delta = ana_shoots(s)
+    assert_equal [ "6,5" ], delta["walls_destroyed"]
+    assert_equal [ "ana" ], delta["shots"]
+  end
+
+  test "a player comes back at a free spawn point, shielded for 3 seconds" do
+    s = state(kills_to_win: 5)
+    s["spawn_points"] = [ [ 2, 2 ], [ 23, 2 ] ]
+    s["tanks"]["ana"].merge!("x" => 23, "y" => 2) # one point is taken
+    s["tanks"]["ana"]["direction"] = "down"
+    s["tanks"]["beto"].merge!("alive" => false, "respawn_tick" => 1)
+
+    delta = @service.tick!(s, {})
+    beto  = s["tanks"]["beto"]
+    assert beto["alive"]
+    assert_equal [ 2, 2 ], [ beto["x"], beto["y"] ]
+    assert_equal 1 + GameServices::BattleCity::SHIELD_TICKS, beto["shield_until"]
+    assert delta["tanks"]["beto"]["shield_until"], "the TV gets the shield to flicker the tank"
+
+    GameServices::BattleCity::SHIELD_TICKS.times { delta = @service.tick!(s, {}) }
+    assert_nil beto["shield_until"]
+    assert_nil delta["tanks"]["beto"]["shield_until"], "the TV hears the shield is over"
+  end
+
+  test "a shield stops a bullet, and firing ends your own shield" do
+    s = state(kills_to_win: 5)
+    s["tanks"]["beto"]["shield_until"] = 100
+    ana_shoots(s)
+    assert s["tanks"]["beto"]["alive"]
+    assert_equal 0, s["scores"]["ana"]
+    assert_empty s["bullets"]
+
+    delta = @service.tick!(s, { "beto" => { "direction" => nil, "firing" => true } })
+    assert_nil s["tanks"]["beto"]["shield_until"]
+    assert delta["tanks"].key?("beto")
+  end
+
+  test "the 9 spawn points and 3 bots each get their own free cell, never a wall" do
+    preset = BattleCity::MapPreset.new(cols: 26, rows: 26, base_x: 12, base_y: 24)
+    walls  = { "12,2" => "brick", "12,12" => "steel", "2,12" => "trees" }
+    spawns = @service.send(:spawn_cells, walls, preset, 3)
+    cells  = spawns[:players] + spawns[:bots]
+
+    assert_equal 12, cells.uniq.size
+    cells.each do |x, y|
+      assert_not walls.key?("#{x},#{y}"), "#{x},#{y} is a wall"
+      assert x.between?(1, 24) && y.between?(1, 24), "#{x},#{y} is on the border"
+    end
+    assert_equal 9, spawns[:players].size
+    assert_equal [ 2, 2 ], spawns[:players].first, "a free spot is kept"
+    spawns[:players].zip(GameServices::BattleCity::SPAWN_SPOTS).each do |(x, y), (sx, sy)|
+      assert_operator (x - sx).abs + (y - sy).abs, :<=, 1, "a walled spot moves to the next cell"
+    end
+  end
+
+  test "the first 8 players get a tank and a colour each; a 9th watches" do
+    game    = Game.create!(name: "Battle City", code: "battle_city", description: "x")
+    preset  = BattleCity::MapPreset.create!(name: "test-#{SecureRandom.hex(3)}", base_x: 12, base_y: 24)
+    room    = ::Room.create!(game: game, game_state: { "map_preset" => preset.name })
+    players = 9.times.map { |i| room.players.create!(nickname: "P#{i}") }
+
+    GameServices::BattleCity.new(room).setup_game!
+    tanks = room.reload.game_state["tanks"]
+
+    assert_equal players.first(8).map { _1.id.to_s }.sort, tanks.keys.sort
+    assert_equal GameServices::BattleCity::TANK_COLORS.sort, tanks.values.map { _1["color"] }.sort
+    assert_equal 8, tanks.values.map { [ _1["x"], _1["y"] ] }.uniq.size, "each on their own spot"
+  ensure
+    Player.where(room_id: room&.id).delete_all
+    Event.where(room_id: room&.id).delete_all
+    room&.delete
+    preset&.delete
+    game&.delete
+  end
 end

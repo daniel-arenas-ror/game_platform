@@ -1,38 +1,37 @@
 # Slug is a public URL (/games/battle-city) — never change it once live.
 name: Battle City
 slug: battle-city
-description: Multiplayer tank battle! Drive your tank from your phone, destroy enemies
-  and protect the base.
-tagline: Your phone is the joystick. The TV is the battlefield. Guard the base!
+description: Multiplayer tank battle! Drive your tank from your phone and destroy the
+  other tanks.
+tagline: Your phone is the joystick. The TV is the battlefield. Last tank wins!
 category: action
 min_players: 1
-max_players: 4
+max_players: 8
 players_note: >-
-  Up to 4 players drive a tank each. Playing alone or with only 2? The host can add up to 3 computer
+  Up to 8 players drive a tank each. Playing alone or with only 2? The host can add up to 3 computer
   bots so the arena never feels empty.
 duration_minutes: 10
 age: 8
 long_description: >-
   A retro arcade tank game for the whole room. Everyone drives their own colored tank from their
   phone while the map plays out live on the big screen. Blast through brick walls, hide in the
-  trees, dodge the steel and tag the other tanks to score. But watch the base: if anyone's shot
-  hits it, the game is over for everyone. Pick a map, add a few bots, and see who rules the arena.
+  trees, dodge the steel and tag the other tanks to score. Tagged tanks come back somewhere new,
+  blinking and safe for 3 seconds. Pick a map, add a few bots, and see who rules the arena.
 how_to_play:
   - The host picks a map (Classic, Open, Siege or Forest), how many tags it takes to win, and up to 3 bots.
   - Your phone becomes a controller. Steer with the arrow pad and press Fire to shoot.
-  - Hit another tank to score a point. Tagged tanks come back after 3 seconds.
+  - Hit another tank to score a point. Tagged tanks come back after 3 seconds at a random spot, and can't be hit for 3 more seconds (until they fire).
   - Brick walls break when you shoot them, steel walls don't, and trees hide you as you drive through.
-  - The first player to reach the target wins. In "Base only" mode, tagged tanks don't come back and the last tank standing wins. If the base is hit, the game ends right away.
+  - The first player to reach the target wins. With no target (∞), tagged tanks don't come back and the last tank standing wins.
 tips:
   - Trees are the best hiding spot. Wait inside and surprise anyone who drives past.
   - Shoot through brick to open new paths, or leave it standing as cover.
-  - Keep your shots away from the base. One stray bullet ends the game for everyone.
-  - Bots aim for the base, so someone has to stay back and defend it.
-  - '"Base only" mode (0 tags to win) turns it into a survival game: last tank standing wins.'
+  - A blinking tank just came back and can't be hit yet. Wait for it to stop blinking.
+  - '∞ (no target) turns it into a survival game: last tank standing wins.'
 perfect_for: [party, family]
 faq:
   - q: How many players can play Battle City?
-    a: Up to 4 players, each driving their own tank from their phone. The host can add up to 3 computer bots on top.
+    a: Up to 8 players, each driving their own tank from their phone. The host can add up to 3 computer bots on top.
   - q: Can I play Battle City alone?
     a: Yes. Start a game with just yourself and add bots for opponents.
   - q: Does Battle City work over a video call?
@@ -41,33 +40,32 @@ faq:
 # Spanish. Same fields as above; anything missing falls back to English.
 translations:
   es:
-    description: ¡Batalla de tanques multijugador! Maneja tu tanque desde el celular, destruye
-      a los enemigos y protege la base.
-    tagline: Tu celular es el control. La TV es el campo de batalla. ¡Protege la base!
+    description: ¡Batalla de tanques multijugador! Maneja tu tanque desde el celular y destruye
+      a los otros tanques.
+    tagline: Tu celular es el control. La TV es el campo de batalla. ¡Gana el último tanque!
     players_note: >-
-      Hasta 4 jugadores manejan un tanque cada uno. ¿Juegas solo o con 2? El anfitrión puede añadir
+      Hasta 8 jugadores manejan un tanque cada uno. ¿Juegas solo o con 2? El anfitrión puede añadir
       hasta 3 bots para que la arena nunca se sienta vacía.
     long_description: >-
       Un juego de tanques retro de arcade para toda la sala. Cada uno maneja su tanque de color desde
       el celular mientras el mapa se juega en vivo en la pantalla grande. Rompe muros de ladrillo,
       escóndete entre los árboles, esquiva el acero y dispara a los otros tanques para sumar puntos.
-      Pero cuida la base: si un disparo de cualquiera la alcanza, el juego termina para todos. Elige
+      Los tanques alcanzados vuelven en otro lugar, parpadeando y a salvo por 3 segundos. Elige
       un mapa, añade unos bots y descubre quién domina la arena.
     how_to_play:
       - El anfitrión elige un mapa (Clásico, Abierto, Asedio o Bosque), cuántos impactos se necesitan para ganar y hasta 3 bots.
       - Tu celular se convierte en control. Muévete con las flechas y pulsa Disparar.
-      - Acierta a otro tanque para sumar un punto. Los tanques alcanzados vuelven a los 3 segundos.
+      - Acierta a otro tanque para sumar un punto. Los tanques alcanzados vuelven a los 3 segundos en un lugar al azar, y nadie puede darles durante 3 segundos más (hasta que disparen).
       - Los muros de ladrillo se rompen con los disparos, los de acero no, y los árboles te esconden mientras pasas.
-      - Gana el primero en llegar a la meta. En el modo "Solo base", los tanques alcanzados no vuelven y gana el último tanque en pie. Si la base recibe un disparo, el juego termina de inmediato.
+      - Gana el primero en llegar a la meta. Sin meta (∞), los tanques alcanzados no vuelven y gana el último tanque en pie.
     tips:
       - Los árboles son el mejor escondite. Espera adentro y sorprende al que pase.
       - Dispara al ladrillo para abrir caminos nuevos, o déjalo en pie como protección.
-      - Mantén tus disparos lejos de la base. Una bala perdida termina el juego para todos.
-      - Los bots apuntan a la base, así que alguien tiene que quedarse atrás defendiéndola.
-      - 'El modo "Solo base" (0 impactos para ganar) lo convierte en supervivencia: gana el último tanque en pie.'
+      - Un tanque que parpadea acaba de volver y todavía no se le puede dar. Espera a que deje de parpadear.
+      - '∞ (sin meta) lo convierte en supervivencia: gana el último tanque en pie.'
     faq:
       - q: ¿Cuántos jugadores pueden jugar Battle City?
-        a: Hasta 4 jugadores, cada uno manejando su tanque desde el celular. Además, el anfitrión puede añadir hasta 3 bots.
+        a: Hasta 8 jugadores, cada uno manejando su tanque desde el celular. Además, el anfitrión puede añadir hasta 3 bots.
       - q: ¿Puedo jugar Battle City solo?
         a: Sí. Empieza una partida contigo solo y añade bots como rivales.
       - q: ¿Funciona Battle City por videollamada?

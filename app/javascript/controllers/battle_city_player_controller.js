@@ -131,7 +131,7 @@ export default class extends Controller {
     if (this.hasColorBadgeTarget) this.colorBadgeTarget.style.backgroundColor = hex
   }
 
-  // Base-only survival: a destroyed tank has no respawn time, it's out until the next game.
+  // No kill limit (survival): a destroyed tank has no respawn time, it's out until the next game.
   isOut(tank) {
     return !tank.alive && tank.respawn_tick == null
   }

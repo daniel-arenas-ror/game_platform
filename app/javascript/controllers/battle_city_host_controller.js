@@ -24,6 +24,7 @@ const TURN_MS     = 90
 const RECOIL_MS   = 140
 const FLASH_MS    = 90
 const SPAWN_MS    = 300
+const SHIELD_BLINK_MS = 120 // a tank that just came back flickers while bullets can't hurt it
 const SHAKE_MS    = 280
 const ANGLES      = { up: 0, right: Math.PI / 2, down: Math.PI, left: -Math.PI / 2 }
 const DIRS        = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] }
@@ -248,7 +249,8 @@ export default class extends Controller {
       view, treads, barrel, flash, h, tw, sw, ridge: darkenColor(col, 0.75),
       fromX: tank.x, fromY: tank.y, toX: tank.x, toY: tank.y, x: tank.x, y: tank.y, t0: -Infinity,
       fromAngle: ANGLES[tank.direction] ?? 0, toAngle: ANGLES[tank.direction] ?? 0, a0: -Infinity,
-      travel: 0, firedAt: -Infinity, spawnAt: now, alive: tank.alive, color: tank.color
+      travel: 0, firedAt: -Infinity, spawnAt: now, alive: tank.alive, color: tank.color,
+      shielded: !!tank.shield_until
     }
     view.visible = tank.alive
     this.tanks.set(id, sprite)
@@ -287,6 +289,7 @@ export default class extends Controller {
     }
 
     sprite.alive        = tank.alive
+    sprite.shielded     = !!tank.shield_until
     sprite.view.visible = tank.alive
   }
 
@@ -314,7 +317,8 @@ export default class extends Controller {
 
     // Respawn: fades and grows in.
     const sp = easeOut(clamp01((now - s.spawnAt) / SPAWN_MS))
-    s.view.alpha = sp
+    const blink = s.shielded && Math.floor(now / SHIELD_BLINK_MS) % 2 === 1
+    s.view.alpha = blink ? sp * 0.25 : sp
     s.view.scale.set(0.6 + 0.4 * sp)
   }
 

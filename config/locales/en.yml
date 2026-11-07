@@ -343,11 +343,10 @@ en:
             open: "Open"
             siege: "Siege"
             forest: "Forest"
-          kills_to_win: "KILLS TO WIN (0 = base only)"
+          kills_to_win: "KILLS TO WIN (∞ = last tank standing)"
           bots: "BOT ENEMIES"
           no_bots: "None"
-          max_players: "MAX PLAYERS"
-          tanks: "%{count} Tanks"
+          players_note: "Perfect for up to 8 players, one tank each."
       count_birds:
         edit:
           rounds: "ROUNDS"

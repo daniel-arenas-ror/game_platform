@@ -332,11 +332,10 @@ es:
             open: "Abierto"
             siege: "Asedio"
             forest: "Bosque"
-          kills_to_win: "IMPACTOS PARA GANAR (0 = solo la base)"
+          kills_to_win: "IMPACTOS PARA GANAR (∞ = último tanque en pie)"
           bots: "BOTS ENEMIGOS"
           no_bots: "Ninguno"
-          max_players: "MÁXIMO DE JUGADORES"
-          tanks: "%{count} tanques"
+          players_note: "Perfecto para hasta 8 jugadores, un tanque cada uno."
       count_birds:
         edit:
           rounds: "RONDAS"
