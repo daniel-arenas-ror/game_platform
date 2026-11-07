@@ -231,6 +231,21 @@
 
 /* ---- Motion ---- */
 
+/* The "Pick a game" button hops every 2 seconds. `translate`, so it adds to the button's own
+   hover and press moves (`transform`). Still on hover, on focus and with reduced motion. */
+@keyframes btn-jump {
+  0%, 24%, 100% { translate: 0 0; }
+  8% { translate: 0 -10px; }
+  16% { translate: 0 0; }
+  20% { translate: 0 -3px; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .btn-jump:not(:hover, :focus-visible) {
+    animation: btn-jump 2s ease-out infinite;
+  }
+}
+
 /* Content fades up on scroll (reveal_controller.js). data-reveal="scale" pops in instead.
    Without JS, or with reduced motion, everything is simply visible. */
 @media (prefers-reduced-motion: no-preference) {

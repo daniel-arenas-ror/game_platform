@@ -20,7 +20,7 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
 
   test "the first screen has the Pick a game button and the three steps" do
     get root_url
-    assert_select "section:first-of-type a.btn-lg[href=?]", games_path, "Pick a game"
+    assert_select "section:first-of-type a.btn-lg.btn-jump[href=?]", games_path, "Pick a game"
     assert_equal %w[Pick Scan Play], css_select("section:first-of-type ol li p:first-child").map { _1.text.split.last }
   end
 

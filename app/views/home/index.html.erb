@@ -44,7 +44,7 @@
           <%= t(".hero_text") %>
         </p>
         <div class="mt-6 flex flex-wrap items-center gap-3">
-          <%= link_to t(".start_game"), games_path, class: "btn btn-lg grow whitespace-nowrap" %>
+          <%= link_to t(".start_game"), games_path, class: "btn btn-lg btn-jump grow whitespace-nowrap" %>
           <%= link_to t(".join_game"), find_room_path, class: "btn btn-secondary grow whitespace-nowrap" %>
         </div>
         <%= render "shared/three_steps", css: "mt-5" %>

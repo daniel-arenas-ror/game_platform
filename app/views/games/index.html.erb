@@ -62,7 +62,7 @@
       <% else %>
         <h1 class="text-display text-5xl sm:text-6xl text-white"><%= t(".heading") %></h1>
         <%= render "shared/three_steps", css: "mt-5" %>
-        <%= link_to t(".pick_game"), "#games", class: "btn btn-lg w-full sm:w-auto mt-5" %>
+        <%= link_to t(".pick_game"), "#games", class: "btn btn-lg btn-jump w-full sm:w-auto mt-5" %>
         <%# The 3-line summary: what people (and AI assistants sending them here) need first. %>
         <ul id="summary" class="mt-6 space-y-2 text-slate-300 text-pretty">
           <li><%= t(".summary.what_html") %></li>
