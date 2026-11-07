@@ -1,7 +1,6 @@
 # Slug is a public URL (/games/color-chain) — never change it once live.
 name: Color Chain
 slug: color-chain
-listed: false
 description: Watch the colors light up on the big screen, then repeat them on your phone. Every round
   adds one more color to the chain, so how long can you keep it going?
 tagline: Four colors. One growing chain. Don't let it slip.
