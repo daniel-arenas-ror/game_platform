@@ -294,7 +294,15 @@ christmas_map.call("light_parade",
   reindeer: [ [ 8, 12 ], [ 17, 12 ], [ 12, 8 ], [ 13, 18 ] ],
   pine:     square.(12, 13, 13, 14))
 
-::HowWantBeBillionare::Question.create!(
+# Sample Billionaire questions. Skipped when a question with the same text is already there (in
+# English), so running the seeds again never adds copies. The full sets come from
+# `bin/rails questions:billionaire:import`.
+seed_question = lambda do |attrs|
+  next if HowWantBeBillionare::Question.where(text: attrs[:text]).in(locale: [ nil, "en" ]).exists?
+  HowWantBeBillionare::Question.create!(attrs)
+end
+
+seed_question.(
   text: "Which of the following countries are considered Scandinavian?",
   points: 100,
   answers: [
@@ -306,7 +314,7 @@ christmas_map.call("light_parade",
   topic: "Geography"
 )
 
-::HowWantBeBillionare::Question.create!(
+seed_question.(
   text: "Who wrote the play 'Hamlet'?",
   points: 100,
   answers: [
@@ -318,7 +326,7 @@ christmas_map.call("light_parade",
   topic: "Literature"
 )
 
-::HowWantBeBillionare::Question.create!(
+seed_question.(
   text: "Which of these are gases at room temperature?",
   points: 100,
   answers: [
@@ -330,7 +338,7 @@ christmas_map.call("light_parade",
   topic: "Chemistry"
 )
 
-::HowWantBeBillionare::Question.create!(
+seed_question.(
   text: "What is the capital city of Australia?",
   points: 200,
   answers: [
@@ -342,7 +350,7 @@ christmas_map.call("light_parade",
   topic: "Geography"
 )
 
-::HowWantBeBillionare::Question.create!(
+seed_question.(
   text: "Which of these famous artists are known for painting during the Renaissance period?",
   points: 200,
   answers: [
@@ -354,7 +362,7 @@ christmas_map.call("light_parade",
   topic: "Art History"
 )
 
-::HowWantBeBillionare::Question.create!(
+seed_question.(
   text: "What is the chemical symbol for gold?",
   points: 300,
   answers: [
@@ -366,7 +374,7 @@ christmas_map.call("light_parade",
   topic: "Chemistry"
 )
 
-::HowWantBeBillionare::Question.create!(
+seed_question.(
   text: "Which of these planets in our solar system have moons?",
   points: 300,
   answers: [
@@ -378,7 +386,7 @@ christmas_map.call("light_parade",
   topic: "Astronomy"
 )
 
-::HowWantBeBillionare::Question.create!(
+seed_question.(
   text: "Which empire built the Colosseum in Rome?",
   points: 300,
   answers: [
@@ -390,7 +398,7 @@ christmas_map.call("light_parade",
   topic: "History"
 )
 
-::HowWantBeBillionare::Question.create!(
+seed_question.(
   text: "In music, which of these are considered string instruments?",
   points: 400,
   answers: [
@@ -402,7 +410,7 @@ christmas_map.call("light_parade",
   topic: "Music"
 )
 
-::HowWantBeBillionare::Question.create!(
+seed_question.(
   text: "What is the longest river in the world?",
   points: 400,
   answers: [
@@ -414,7 +422,7 @@ christmas_map.call("light_parade",
   topic: "Geography"
 )
 
-::HowWantBeBillionare::Question.create!(
+seed_question.(
   text: "Which of these scientists won a Nobel Prize in Physics?",
   points: 500,
   answers: [
@@ -426,7 +434,7 @@ christmas_map.call("light_parade",
   topic: "Science History"
 )
 
-::HowWantBeBillionare::Question.create!(
+seed_question.(
   text: "Which of these cities is located in Japan?",
   points: 500,
   answers: [
@@ -438,7 +446,7 @@ christmas_map.call("light_parade",
   topic: "Geography"
 )
 
-::HowWantBeBillionare::Question.create!(
+seed_question.(
   text: "Which of these are classified as mammals?",
   points: 600,
   answers: [
@@ -450,7 +458,7 @@ christmas_map.call("light_parade",
   topic: "Biology"
 )
 
-::HowWantBeBillionare::Question.create!(
+seed_question.(
   text: "Who is the author of the novel '1984'?",
   points: 600,
   answers: [
@@ -462,7 +470,7 @@ christmas_map.call("light_parade",
   topic: "Literature"
 )
 
-::HowWantBeBillionare::Question.create!(
+seed_question.(
   text: "Which of these countries share a land border with Brazil?",
   points: 700,
   answers: [
@@ -474,7 +482,7 @@ christmas_map.call("light_parade",
   topic: "Geography"
 )
 
-::HowWantBeBillionare::Question.create!(
+seed_question.(
   text: "What is the primary language spoken in Brazil?",
   points: 700,
   answers: [
@@ -486,7 +494,7 @@ christmas_map.call("light_parade",
   topic: "Language"
 )
 
-::HowWantBeBillionare::Question.create!(
+seed_question.(
   text: "Which of these historical figures was a President of the United States?",
   points: 800,
   answers: [
@@ -498,7 +506,7 @@ christmas_map.call("light_parade",
   topic: "History"
 )
 
-::HowWantBeBillionare::Question.create!(
+seed_question.(
   text: "What is the largest ocean on Earth?",
   points: 800,
   answers: [
@@ -510,7 +518,7 @@ christmas_map.call("light_parade",
   topic: "Geography"
 )
 
-::HowWantBeBillionare::Question.create!(
+seed_question.(
   text: "In Greek mythology, who was the god of the sea?",
   points: 900,
   answers: [
@@ -522,7 +530,7 @@ christmas_map.call("light_parade",
   topic: "Mythology"
 )
 
-::HowWantBeBillionare::Question.create!(
+seed_question.(
   text: "Which of these elements are noble gases?",
   points: 1000,
   answers: [

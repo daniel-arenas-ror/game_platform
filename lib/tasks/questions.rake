@@ -7,6 +7,26 @@ namespace :questions do
     [ parent, name ].find { |part| I18n.available_locales.map(&:to_s).include?(part) } || "en"
   end
 
+  desc "Delete repeated Billionaire and Fisherman questions (same text and language), keeping the oldest. " \
+       "DRY_RUN=1 only counts. A question on screen in a running game is kept."
+  task dedupe: :environment do
+    dry_run = ENV["DRY_RUN"].present?
+    in_use  = Room.where(status: "playing").pluck(:game_state).filter_map { |state| state&.dig("question_id")&.to_s }
+
+    [ HowWantBeBillionare::Question, Fisherman::Question ].each do |model|
+      groups = model.collection.aggregate([
+        { "$group" => { "_id" => { "text" => "$text", "locale" => { "$ifNull" => [ "$locale", "en" ] } },
+                        "ids" => { "$push" => "$_id" } } },
+        { "$match" => { "ids.1" => { "$exists" => true } } }
+      ]).to_a
+      repeated = groups.flat_map { |group| group["ids"].sort.drop(1) }.reject { |id| in_use.include?(id.to_s) }
+
+      model.where(:_id.in => repeated).delete_all unless dry_run
+      puts "#{model.name}: #{groups.size} texts repeated, #{repeated.size} copies #{dry_run ? "would be deleted" : "deleted"}. " \
+           "Total now: #{model.count}."
+    end
+  end
+
   namespace :billionaire do
     desc "Import How Want Be Billionaire questions from db/questions/how_want_be_billionare/**/*.yml (or FILE=path). " \
          "Files in es/ are Spanish. Creates new questions and updates existing ones matched by text and language; never deletes."
