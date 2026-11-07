@@ -22,8 +22,9 @@ class Room
   after_create { Game.where(_id: game_id).inc(rooms_count: 1) }
   after_create { Event.record(:room_created, room: self) }
 
-  # Google Analytics: the host's screen hears these on RoomChannel and sends them
-  # (room_players_controller), so each room counts once, not once per phone.
+  # Google Analytics: only a change of status sends an event, so rounds, reloads and reconnects
+  # never do. The host's screen hears it on RoomChannel and sends it (room_players_controller), so
+  # each game counts once, not once per phone or per host tab.
   after_update :broadcast_analytics, if: -> { previous_changes.key?("status") }
 
   # Shown in the join page's "where's the code?" illustration, so it must never be a real room.
@@ -62,10 +63,17 @@ class Room
     return unless event
 
     ActionCable.server.broadcast(RoomChannel.stream_for_room(code), {
-      action: "analytics", event: event, params: { game_name: game.slug, player_count: players.count }
+      action: "analytics", event: event, params: analytics_params
     })
   rescue StandardError => e # analytics must never break a game
     Rails.logger.error("Room#broadcast_analytics failed: #{e.class}: #{e.message}")
+  end
+
+  # The same parameters on every funnel event. Never the nicknames. `game_name` is the old name of
+  # `game`, kept so reports from before the change still work. Not `language`: GA fills that one in
+  # by itself on every event, with the browser's language.
+  def analytics_params
+    { game: game.slug, game_name: game.slug, room_code: code, player_count: players.count, game_language: locale }
   end
 
   def game_stream_name

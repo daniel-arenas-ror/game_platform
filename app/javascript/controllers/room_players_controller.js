@@ -18,11 +18,28 @@ export default class extends Controller {
       { channel: "RoomChannel", room_code: this.roomCodeValue, player_id: this.playerIdValue },
       { received: (data) => this.received(data) }
     )
-    if (this.isHost) this.refresh()
+    if (this.isHost) {
+      this.refresh()
+      this.claimAnalytics()
+    }
   }
 
   disconnect() {
+    this.analyticsClaim?.abort()
+    this.releaseAnalytics?.()
     this.channel?.unsubscribe()
+  }
+
+  // A host with the room open in two tabs hears every event twice: the tab holding this lock sends
+  // them, and the next tab takes over when it closes. Browsers without locks just send.
+  claimAnalytics() {
+    if (!navigator.locks) { this.sendsAnalytics = true; return }
+
+    this.analyticsClaim = new AbortController()
+    navigator.locks.request(`analytics-${this.roomCodeValue}`, { signal: this.analyticsClaim.signal }, () => {
+      this.sendsAnalytics = true
+      return new Promise((resolve) => { this.releaseAnalytics = resolve })
+    }).catch(() => {}) // aborted: the page left while waiting
   }
 
   get isHost() {
@@ -32,7 +49,7 @@ export default class extends Controller {
   received(data) {
     // Google Analytics funnel events (Room#broadcast_analytics): only the host sends them.
     if (data.action === "analytics") {
-      if (this.isHost) track(data.event, data.params)
+      if (this.isHost && this.sendsAnalytics) track(data.event, data.params)
       return
     }
     if (data.action === "player_left" && data.player_id === this.playerIdValue) {

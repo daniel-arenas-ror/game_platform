@@ -2,7 +2,8 @@
 # The measurement ID comes from the GA_MEASUREMENT_ID env var; without it nothing is loaded.
 # Admin pages use their own layout and never load it.
 #
-# Custom events (the funnel, each with the game's slug as `game_name`):
+# Custom events (the funnel). Inside a room each has Room#analytics_params; select_game comes before
+# the room exists, so it only has the game and the language:
 #   select_game   — a "Start game" button (controllers/analytics_controller.js)
 #   room_created  — queued by the server with #track_analytics, sent on the next page (below)
 #   players_joined — same way, on the player's phone after they join (with player_count)
@@ -34,7 +35,8 @@ module AnalyticsHelper
   # `form:` options for a button_to that starts a room: sends select_game when it's pressed.
   def select_game_analytics(game)
     { data: { controller: "analytics", action: "submit->analytics#track",
-              analytics_event_param: "select_game", analytics_game_param: game.slug } }
+              analytics_event_param: "select_game", analytics_game_param: game.slug,
+              analytics_language_param: I18n.locale } }
   end
 
   private

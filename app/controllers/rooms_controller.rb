@@ -13,7 +13,7 @@ class RoomsController < ApplicationController
     session[:player_id] = nil
     @game = Game.find(params[:game_id])
     @room = Room.create!(game: @game, locale: I18n.locale)
-    track_analytics("room_created", game_name: @game.slug)
+    track_analytics("room_created", **@room.analytics_params)
 
     redirect_to edit_room_path(@room.code)
   end
@@ -67,7 +67,7 @@ class RoomsController < ApplicationController
       ActionCable.server.broadcast("game_#{@room.code}", joined)
       ActionCable.server.broadcast(RoomChannel.stream_for_room(@room.code), joined)
       # Sent by the player's own phone on the lobby page (one event per player, never the nickname).
-      track_analytics("players_joined", game_name: @game.slug, player_count: @room.players.count)
+      track_analytics("players_joined", **@room.analytics_params)
 
 
       redirect_to room_path(@room.code), notice: t("rooms.joined", nickname: nickname)
