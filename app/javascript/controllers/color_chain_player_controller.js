@@ -3,6 +3,7 @@ import consumer from "channels/consumer"
 import { t, num, placeTitle } from "controllers/shared/i18n"
 import { celebrateWin, confetti, isTopScore } from "controllers/shared/celebration"
 import { startCountdown, stopCountdown } from "controllers/haunted_house/common"
+import { ChainSounds } from "controllers/color_chain/sounds"
 
 const SEND_MARGIN = 300 // ms before the time runs out, so a phone's last taps reach the server
 
@@ -22,6 +23,7 @@ export default class extends Controller {
     this.round = null
     this.tapped = []
     this.sent  = false
+    this.sounds = new ChainSounds()
     this.keepAwake()
 
     this.channel = consumer.subscriptions.create(
@@ -38,6 +40,7 @@ export default class extends Controller {
     stopCountdown(this.countdownTarget)
     clearTimeout(this.sendTimer)
     this.wakeLock?.release().catch(() => {})
+    this.sounds.close()
     this.channel?.unsubscribe()
   }
 
@@ -56,6 +59,7 @@ export default class extends Controller {
     const block = event.currentTarget
     block.animate([ { opacity: 0.45 }, { opacity: 1 } ], { duration: 160 })
     navigator.vibrate?.(20)
+    this.sounds.tap(block.dataset.color)
 
     this.tapped.push(block.dataset.color)
     this.renderTaps()

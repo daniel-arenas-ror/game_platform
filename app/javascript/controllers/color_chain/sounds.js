@@ -1,7 +1,9 @@
-// The TV's sounds: one note per colour, a beep when the phones open and a short tune at game over.
+// The game's sounds: one note per colour (on the TV and on a phone's taps), a beep when the phones
+// open and a short tune at game over.
 import { Sounds } from "controllers/haunted_house/common"
 
 const NOTES = { blue: 523.25, green: 659.25, yellow: 783.99, red: 880 }
+const TAP_SECONDS = 0.6 // the same length as the TV's flash
 
 export class ChainSounds extends Sounds {
   note(frequency, seconds, delay = 0, type = "triangle", volume = 0.4) {
@@ -19,6 +21,13 @@ export class ChainSounds extends Sounds {
 
   color(name, seconds) {
     this.note(NOTES[name], seconds)
+  }
+
+  // A phone has no earlier tap to unlock the sound, so the first one has to wait for it to start.
+  tap(name) {
+    this.unlock()
+    if (this.ready) this.color(name, TAP_SECONDS)
+    else this.ctx?.resume().then(() => this.color(name, TAP_SECONDS)).catch(() => {})
   }
 
   yourTurn() {
