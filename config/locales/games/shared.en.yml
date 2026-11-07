@@ -13,6 +13,7 @@ en:
         total_points: "total points"
         results: "Results"
         final_standings: "Final Standings"
+        tap_for_sound: "Tap for sound"
   js:
     shared:
       go: "GO!"

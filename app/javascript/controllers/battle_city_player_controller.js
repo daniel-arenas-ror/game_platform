@@ -24,9 +24,7 @@ export default class extends Controller {
     this.playing    = false
     this.alive      = false
     this.sounds     = new TankSounds()
-    this.unlockSound = () => this.sounds.unlock()
-    // Phones allow sound only after a touch; any tap on the screen turns it on.
-    ;["pointerdown", "pointerup", "touchend"].forEach(e => this.element.addEventListener(e, this.unlockSound, true))
+    this.sounds.unlock() // loads the files; any tap on the page turns the sound on
     this.showSoundState()
     this.subscribe()
     this.bindDpad()
@@ -35,7 +33,6 @@ export default class extends Controller {
   disconnect() {
     this.channel?.unsubscribe()
     clearInterval(this.moveTimer)
-    ;["pointerdown", "pointerup", "touchend"].forEach(e => this.element.removeEventListener(e, this.unlockSound, true))
     this.sounds.close()
   }
 

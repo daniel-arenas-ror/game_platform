@@ -2,6 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 import consumer from "channels/consumer"
 import { t } from "controllers/shared/i18n"
 import { avatarHtml } from "controllers/shared/avatar"
+import { soundFile } from "controllers/shared/sound"
 
 export default class extends Controller {
   static values  = { roomCode: String }
@@ -154,7 +155,7 @@ export default class extends Controller {
   }
 
   onGameOver(data) {
-    this.winSound = new Audio("/games/sounds/Triumphant_win.mp3")
+    this.winSound = soundFile("/games/sounds/Triumphant_win.mp3")
     this.winSound.play().catch(() => {}) // ignore autoplay blocks
     this.stopCountdown()
     this.nicknames = data.nicknames || this.nicknames

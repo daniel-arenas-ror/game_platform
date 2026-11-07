@@ -12,6 +12,7 @@ es:
         total_points: "puntos en total"
         results: "Resultados"
         final_standings: "Resultado final"
+        tap_for_sound: "Toca para activar el sonido"
   js:
     shared:
       go: "¡YA!"

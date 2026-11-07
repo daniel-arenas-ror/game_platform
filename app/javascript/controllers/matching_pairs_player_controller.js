@@ -5,6 +5,7 @@ import {
   buildBoard, cardAt, showBack, showFace, preload, ranked, restartAnimation, injectStyles, FLIP_MS, MEDALS
 } from "controllers/matching_pairs/cards"
 import { celebrateWin, confetti, pop } from "controllers/shared/celebration"
+import { soundFile } from "controllers/shared/sound"
 
 // Countdown colour thresholds
 const COLOR_GREEN  = "#4ade80"
@@ -34,8 +35,8 @@ export default class extends Controller {
     this.active    = false // the round is being played
     this.pending   = false // a flip is waiting for the server's answer
     this.resolving = false // a wrong pair is showing before it turns back
-    this.flipSound   = new Audio("/games/sounds/flip.mp3")
-    this.revealSound = new Audio("/games/sounds/reveal.mp3")
+    this.flipSound   = soundFile("/games/sounds/flip.mp3")
+    this.revealSound = soundFile("/games/sounds/reveal.mp3")
     injectStyles()
     this.subscribe()
   }

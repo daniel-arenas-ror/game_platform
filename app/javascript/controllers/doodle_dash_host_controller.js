@@ -7,6 +7,7 @@ import {
   restartAnimation, injectStyles, MEDALS
 } from "controllers/doodle_dash/drawing"
 import { confetti } from "controllers/shared/celebration"
+import { soundFile } from "controllers/shared/sound"
 
 // Countdown colour thresholds
 const COLOR_GREEN  = "#4ade80"
@@ -35,9 +36,9 @@ export default class extends Controller {
     this.gone      = new Set() // ids undone this turn: late messages for them are ignored
     this.clearedUpto = 0       // ids up to this were cleared this turn
     this.offline   = new Set()
-    this.tickSound = new Audio("/games/sounds/timer_count_down.mp3")
-    this.dingSound = new Audio("/games/sounds/reveal.mp3")
-    this.goSound   = new Audio("/games/sounds/click.mp3")
+    this.tickSound = soundFile("/games/sounds/timer_count_down.mp3")
+    this.dingSound = soundFile("/games/sounds/reveal.mp3")
+    this.goSound   = soundFile("/games/sounds/click.mp3")
 
     injectStyles()
     fitCanvas(this.canvasTarget)
@@ -250,7 +251,7 @@ export default class extends Controller {
 
   onGameOver(data) {
     this.stopCountdown()
-    this.winSound = new Audio("/games/sounds/Triumphant_win.mp3")
+    this.winSound = soundFile("/games/sounds/Triumphant_win.mp3")
     this.winSound.play().catch(() => {}) // ignore autoplay blocks
     this.finalLeaderboardTarget.innerHTML = this.buildLeaderboard(data.scores || this.scores, data.nicknames || this.nicknames)
     this.playAgainTarget.addEventListener("click", () => {

@@ -2,6 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 import consumer from "channels/consumer"
 import { t } from "controllers/shared/i18n"
 import { avatarHtml } from "controllers/shared/avatar"
+import { soundFile } from "controllers/shared/sound"
 
 // Bird drawn as a filled "M" silhouette using bezier curves
 // Each bird moves independently — no flocking
@@ -93,7 +94,7 @@ export default class extends Controller {
   }
 
   onGameOver(data) {
-    this.winSound = new Audio("/games/sounds/Triumphant_win.mp3")
+    this.winSound = soundFile("/games/sounds/Triumphant_win.mp3")
     this.winSound.play().catch(() => {}) // ignore autoplay blocks
     this.finalLeaderboardTarget.innerHTML = this.buildLeaderboard(data)
     this.playAgainTarget.addEventListener("click", () => {

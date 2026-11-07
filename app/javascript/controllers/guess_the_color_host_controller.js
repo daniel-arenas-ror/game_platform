@@ -3,6 +3,7 @@ import consumer from "channels/consumer"
 import { t } from "controllers/shared/i18n"
 import { escapeHtml } from "controllers/shared/html"
 import { avatarHtml } from "controllers/shared/avatar"
+import { soundFile } from "controllers/shared/sound"
 
 export default class extends Controller {
   static values  = { roomCode: String }
@@ -15,8 +16,8 @@ export default class extends Controller {
   connect() {
     this.state       = null
     this.timerHandle = null
-    this.tickSound   = new Audio("/games/sounds/timer_count_down.mp3")
-    this.winSound    = new Audio("/games/sounds/Triumphant_win.mp3")
+    this.tickSound   = soundFile("/games/sounds/timer_count_down.mp3")
+    this.winSound    = soundFile("/games/sounds/Triumphant_win.mp3")
     this.subscribe()
   }
 

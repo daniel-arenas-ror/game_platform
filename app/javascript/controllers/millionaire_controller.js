@@ -4,6 +4,7 @@ import { celebrateWin, isTopScore } from "controllers/shared/celebration"
 import { t, num } from "controllers/shared/i18n"
 import { escapeHtml } from "controllers/shared/html"
 import { avatarHtml } from "controllers/shared/avatar"
+import { soundFile } from "controllers/shared/sound"
 
 export default class extends Controller {
   static targets = [
@@ -40,8 +41,8 @@ export default class extends Controller {
     this.answered       = false
     this.selectedOption = null
     this.timerHandle    = null
-    this.clickingSound  = new Audio("/games/sounds/clicking.mp3")
-    this.chooseSound    = new Audio("/games/sounds/choose.mp3")
+    this.clickingSound  = soundFile("/games/sounds/clicking.mp3")
+    this.chooseSound    = soundFile("/games/sounds/choose.mp3")
     this.clickingSound.loop = true
     this.updateVisibility()
     this.subscribe()
@@ -243,7 +244,7 @@ export default class extends Controller {
     this.hideNext()
     this.stopCountdown()
     if (!this.playerIdValue) {
-      this.winSound = new Audio("/games/sounds/Triumphant_win.mp3")
+      this.winSound = soundFile("/games/sounds/Triumphant_win.mp3")
       this.winSound.play().catch(() => {}) // ignore autoplay blocks
     }
     const { leaderboard, nicknames } = data

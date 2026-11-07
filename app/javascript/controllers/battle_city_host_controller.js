@@ -4,6 +4,7 @@ import { t } from "controllers/shared/i18n"
 import { escapeHtml } from "controllers/shared/html"
 import { avatarHtml } from "controllers/shared/avatar"
 import { Application, Graphics, Container } from "pixi.js"
+import { soundFile } from "controllers/shared/sound"
 
 const WALL_COLORS  = { brick: 0xc0392b, steel: 0x7f8c8d, water: 0x2471a3, trees: 0x1e8449 }
 const TANK_COLORS  = { yellow: 0xf1c40f, green: 0x2ecc71, white: 0xecf0f1, red: 0xe74c3c, silver: 0x95a5a6 }
@@ -449,7 +450,7 @@ export default class extends Controller {
   // ── Game Over overlay ────────────────────────────────────────────────────
 
   showGameOver(data) {
-    this.winSound = new Audio("/games/sounds/Triumphant_win.mp3")
+    this.winSound = soundFile("/games/sounds/Triumphant_win.mp3")
     this.winSound.play().catch(() => {}) // ignore autoplay blocks
     const overlay   = document.getElementById("battle-city-game-over")
     const reasonEl  = document.getElementById("battle-city-over-reason")

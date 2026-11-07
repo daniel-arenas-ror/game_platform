@@ -29,8 +29,6 @@ export default class extends Controller {
     this.state      = null
     this.nicknames  = {}
     this.soundLabel = this.soundButtonTarget.textContent.trim().replace(/^\S+\s*/, "")
-    this.unlockSound = () => this.sounds.unlock()
-    document.addEventListener("pointerdown", this.unlockSound)
     this.redNameTarget.textContent  = teamName("red")
     this.blueNameTarget.textContent = teamName("blue")
 
@@ -44,7 +42,6 @@ export default class extends Controller {
   }
 
   disconnect() {
-    document.removeEventListener("pointerdown", this.unlockSound)
     stopCountdown(this.countdownTarget)
     clearInterval(this.countdownTimer)
     this.sounds.close()

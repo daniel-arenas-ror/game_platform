@@ -2,6 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 import consumer from "channels/consumer"
 import { t } from "controllers/shared/i18n"
 import { celebrateWin, isTopScore } from "controllers/shared/celebration"
+import { audioContext, canPlay, soundFile } from "controllers/shared/sound"
 
 const CELL_EMPTY  = "#1e293b"
 const CELL_MISSED = "#475569"
@@ -37,7 +38,7 @@ export default class extends Controller {
     this.active       = false  // a round is open and nobody has found the number yet
     this.pending      = false  // a claim is waiting for the server's answer
     this.targetLength = 0
-    this.clickSound   = new Audio("/games/sounds/click.mp3")
+    this.clickSound   = soundFile("/games/sounds/click.mp3")
     this.injectStyles()
     this.subscribe()
   }
@@ -45,7 +46,6 @@ export default class extends Controller {
   disconnect() {
     this.channel?.unsubscribe()
     clearInterval(this.timerHandle)
-    this.audioCtx?.close()
   }
 
   subscribe() {
@@ -331,8 +331,8 @@ export default class extends Controller {
   // Short rising two-note chime, synthesized so no extra sound file is needed.
   playChime() {
     try {
-      this.audioCtx ??= new AudioContext()
-      const ctx = this.audioCtx
+      const ctx = audioContext()
+      if (!ctx || !canPlay()) return
       ;[ 880, 1320 ].forEach((freq, i) => {
         const osc  = ctx.createOscillator()
         const gain = ctx.createGain()

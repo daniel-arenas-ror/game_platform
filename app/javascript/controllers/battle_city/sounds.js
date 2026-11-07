@@ -1,8 +1,10 @@
 // Battle City sounds on the player's phone: the engine idling while the tank stands still and
 // revving while it drives, a shot when their bullet leaves the barrel, an explosion when their tank
 // is hit or they hit another, and a crumble when they break a brick. Web Audio, so the engine loops
-// have no gap and a shot plays at once. Phones only allow sound after a touch, so the controller
-// calls unlock() on every tap.
+// have no gap and a shot plays at once. It plays on the page's shared context
+// (controllers/shared/sound), which any tap on the page starts.
+import { audioContext, canPlay } from "controllers/shared/sound"
+
 const FILES = {
   calm:  "/games/sounds/tank_calm.mp3",
   drive: "/games/sounds/tank_acceleration.mp3",
@@ -31,16 +33,13 @@ export class TankSounds {
   }
 
   unlock() {
-    if (!this.ctx) {
-      const AudioContext = window.AudioContext || window.webkitAudioContext
-      if (!AudioContext) return
-      this.ctx    = new AudioContext()
-      this.master = this.ctx.createGain()
-      this.master.gain.value = this.muted ? 0 : 1
-      this.master.connect(this.ctx.destination)
-      this.load()
-    }
-    if (this.ctx.state === "suspended") this.ctx.resume().catch(() => {})
+    if (this.ctx) return
+    this.ctx = audioContext()
+    if (!this.ctx) return
+    this.master = this.ctx.createGain()
+    this.master.gain.value = this.muted ? 0 : 1
+    this.master.connect(this.ctx.destination)
+    this.load()
   }
 
   async load() {
@@ -75,7 +74,7 @@ export class TankSounds {
 
   play(name, volume) {
     const buffer = this.buffers[name]
-    if (!buffer || this.ctx?.state !== "running") return false
+    if (!buffer || !canPlay()) return false
     const source = this.ctx.createBufferSource()
     const gain   = this.ctx.createGain()
     gain.gain.value = volume
@@ -91,8 +90,11 @@ export class TankSounds {
     if (this.master) this.master.gain.setTargetAtTime(muted ? 0 : 1, this.ctx.currentTime, FADE_SECONDS)
   }
 
+  // The context is the page's, so only this game's sounds stop.
   close() {
-    this.ctx?.close().catch(() => {})
+    Object.values(this.loops).forEach((gain) => { try { gain.source.stop() } catch {} })
+    this.loops = {}
+    this.master?.disconnect()
     this.ctx = null
   }
 
@@ -119,6 +121,7 @@ export class TankSounds {
     gain.gain.value  = 0
     source.connect(gain).connect(this.master)
     source.start(0, start)
+    gain.source = source
     return gain
   }
 }

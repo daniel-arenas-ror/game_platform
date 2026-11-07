@@ -6,6 +6,7 @@ import {
   buildBoard, cardAt, showBack, showFace, ranked, esc, cascade, restartAnimation, injectStyles, MEDALS
 } from "controllers/matching_pairs/cards"
 import { confetti } from "controllers/shared/celebration"
+import { soundFile } from "controllers/shared/sound"
 
 // Countdown colour thresholds
 const COLOR_GREEN  = "#4ade80"
@@ -31,7 +32,7 @@ export default class extends Controller {
     this.scores    = {}
     this.progress  = {} // { pid => { matches, wrong } } for the current round
     this.nicknames = {}
-    this.tickSound = new Audio("/games/sounds/timer_count_down.mp3")
+    this.tickSound = soundFile("/games/sounds/timer_count_down.mp3")
     injectStyles()
     this.subscribe()
   }
@@ -146,7 +147,7 @@ export default class extends Controller {
 
   onGameOver(data) {
     this.stopCountdown()
-    this.winSound = new Audio("/games/sounds/Triumphant_win.mp3")
+    this.winSound = soundFile("/games/sounds/Triumphant_win.mp3")
     this.winSound.play().catch(() => {}) // ignore autoplay blocks
     this.finalLeaderboardTarget.innerHTML = this.buildLeaderboard(data.scores || this.scores, data.nicknames || this.nicknames)
     this.playAgainTarget.addEventListener("click", () => {

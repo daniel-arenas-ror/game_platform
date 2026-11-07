@@ -25,8 +25,6 @@ export default class extends Controller {
     this.timers    = []
     this.sounds    = new ChainSounds()
     this.soundLabel  = this.soundButtonTarget.textContent.trim().replace(/^\S+\s*/, "")
-    this.unlockSound = () => this.sounds.unlock()
-    document.addEventListener("pointerdown", this.unlockSound)
 
     this.channel = consumer.subscriptions.create(
       { channel: "Games::ColorChainChannel", room_code: this.roomCodeValue, player_id: "" },
@@ -38,7 +36,6 @@ export default class extends Controller {
   }
 
   disconnect() {
-    document.removeEventListener("pointerdown", this.unlockSound)
     this.stopPlayback()
     stopCountdown(this.countdownTarget)
     this.sounds.close()

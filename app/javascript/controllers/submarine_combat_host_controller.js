@@ -3,6 +3,7 @@ import consumer from "channels/consumer"
 import { t } from "controllers/shared/i18n"
 import { escapeHtml } from "controllers/shared/html"
 import { avatarHtml } from "controllers/shared/avatar"
+import { soundFile } from "controllers/shared/sound"
 
 const SHIP_COLORS = [
   { fill: "#06b6d4", border: "#0891b2" },
@@ -184,7 +185,7 @@ export default class extends Controller {
   }
 
   onGameOver(data) {
-    this.winSound = new Audio("/games/sounds/Triumphant_win.mp3")
+    this.winSound = soundFile("/games/sounds/Triumphant_win.mp3")
     this.winSound.play().catch(() => {}) // ignore autoplay blocks
     this.stopCountdown()
     const winnerNick = (data.nicknames || {})[data.winner_id] || t("submarine_combat.unknown")

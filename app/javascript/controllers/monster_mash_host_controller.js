@@ -26,8 +26,6 @@ export default class extends Controller {
     this.monsters  = {}   // index → monster with its drawings
     this.progress  = []
     this.soundLabel = this.soundButtonTarget.textContent.trim().replace(/^\S+\s*/, "")
-    this.unlockSound = () => this.sounds.unlock()
-    document.addEventListener("pointerdown", this.unlockSound)
 
     this.channel = consumer.subscriptions.create(
       { channel: "Games::MonsterMashChannel", room_code: this.roomCodeValue, player_id: "" },
@@ -39,7 +37,6 @@ export default class extends Controller {
   }
 
   disconnect() {
-    document.removeEventListener("pointerdown", this.unlockSound)
     stopCountdown(this.countdownTarget)
     this.sounds.close()
     this.channel?.unsubscribe()

@@ -2,6 +2,7 @@
 // sounds. The sounds are made with the Web Audio API (no files to load): a night drone with wind,
 // a scream when someone is scared out, a drumroll for the vote and a chime for the winners.
 import { t } from "controllers/shared/i18n"
+import { audioContext, canPlay } from "controllers/shared/sound"
 
 export const ROLE_ICON = { ghost: "👻", medium: "🔮", guest: "🎃" }
 
@@ -63,17 +64,14 @@ export class Sounds {
     this.drone   = null
   }
 
-  // Browsers only allow sound after a tap on the page; any tap (e.g. Sound, Skip) unlocks it.
+  // The page's shared context (controllers/shared/sound), which any tap on the page starts.
   unlock() {
-    if (!this.ctx) {
-      const AudioCtx = window.AudioContext || window.webkitAudioContext
-      if (!AudioCtx) return
-      this.ctx    = new AudioCtx()
-      this.master = this.ctx.createGain()
-      this.master.gain.value = 0.6
-      this.master.connect(this.ctx.destination)
-    }
-    if (this.ctx.state === "suspended") this.ctx.resume().catch(() => {})
+    if (this.ctx) return
+    this.ctx = audioContext()
+    if (!this.ctx) return
+    this.master = this.ctx.createGain()
+    this.master.gain.value = this.enabled ? 0.6 : 0
+    this.master.connect(this.ctx.destination)
   }
 
   toggle() {
@@ -84,8 +82,8 @@ export class Sounds {
   }
 
   get ready() {
-    if (!this.ctx) this.unlock()
-    return this.ctx && this.ctx.state === "running"
+    this.unlock()
+    return !!this.ctx && canPlay()
   }
 
   // Low wind and a slow, wavering drone, until stopNight().
@@ -193,7 +191,10 @@ export class Sounds {
     return src
   }
 
+  // The context is the page's, so only this game's sounds stop.
   close() {
-    this.ctx?.close().catch(() => {})
+    this.drone?.nodes.forEach((node) => { try { node.stop() } catch {} })
+    this.drone = null
+    this.master?.disconnect()
   }
 }

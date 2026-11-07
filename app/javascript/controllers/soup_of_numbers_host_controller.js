@@ -2,6 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 import consumer from "channels/consumer"
 import { t } from "controllers/shared/i18n"
 import { avatarHtml } from "controllers/shared/avatar"
+import { audioContext, canPlay, soundFile } from "controllers/shared/sound"
 
 const CELL_EMPTY  = "#1e293b"
 const CELL_MISSED = "#475569"
@@ -40,7 +41,7 @@ export default class extends Controller {
     this.colors    = {}
     this.scores    = {}
     this.nicknames = {}
-    this.tickSound = new Audio("/games/sounds/timer_count_down.mp3")
+    this.tickSound = soundFile("/games/sounds/timer_count_down.mp3")
     this.injectStyles()
     this.subscribe()
   }
@@ -49,7 +50,6 @@ export default class extends Controller {
     this.winSound?.pause()
     this.stopCountdown()
     this.channel?.unsubscribe()
-    this.audioCtx?.close()
   }
 
   subscribe() {
@@ -138,7 +138,7 @@ export default class extends Controller {
 
   onGameOver(data) {
     this.stopCountdown()
-    this.winSound = new Audio("/games/sounds/Triumphant_win.mp3")
+    this.winSound = soundFile("/games/sounds/Triumphant_win.mp3")
     this.winSound.play().catch(() => {}) // ignore autoplay blocks
     this.finalLeaderboardTarget.innerHTML = this.buildLeaderboard(data.scores || this.scores, data.nicknames || this.nicknames)
     this.playAgainTarget.addEventListener("click", () => {
@@ -281,8 +281,8 @@ export default class extends Controller {
   // Short rising two-note chime, synthesized so no extra sound file is needed.
   playChime() {
     try {
-      this.audioCtx ??= new AudioContext()
-      const ctx = this.audioCtx
+      const ctx = audioContext()
+      if (!ctx || !canPlay()) return
       ;[ 880, 1320 ].forEach((freq, i) => {
         const osc  = ctx.createOscillator()
         const gain = ctx.createGain()

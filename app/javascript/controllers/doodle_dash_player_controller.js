@@ -6,6 +6,7 @@ import {
   secondsUntil, restartAnimation, injectStyles, MEDALS
 } from "controllers/doodle_dash/drawing"
 import { celebrateWin, confetti, isTopScore, pop } from "controllers/shared/celebration"
+import { soundFile } from "controllers/shared/sound"
 
 // Countdown colour thresholds
 const COLOR_GREEN  = "#4ade80"
@@ -44,7 +45,7 @@ export default class extends Controller {
     this.strokes     = []   // the artist's own drawing this turn, to redraw after undo or a resize
     this.lastId      = 0    // stroke ids count up from 1 each turn (the server keys strokes by id)
     this.pointerId   = null // the finger that is drawing; other fingers are ignored
-    this.dingSound   = new Audio("/games/sounds/reveal.mp3")
+    this.dingSound   = soundFile("/games/sounds/reveal.mp3")
 
     injectStyles()
     this.renderTools()

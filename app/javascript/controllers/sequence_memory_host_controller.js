@@ -2,6 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 import consumer from "channels/consumer"
 import { t } from "controllers/shared/i18n"
 import { avatarHtml } from "controllers/shared/avatar"
+import { soundFile } from "controllers/shared/sound"
 
 const CELL_NEUTRAL   = "#1e3a5f"
 const CELL_HIGHLIGHT = "#facc15"
@@ -30,7 +31,7 @@ export default class extends Controller {
     this.timerHandle    = null
     this.submittedCount = 0
     this.inputDuration  = 0
-    this.clickSound     = new Audio("/games/sounds/click.mp3")
+    this.clickSound     = soundFile("/games/sounds/click.mp3")
     this.subscribe()
   }
 
@@ -117,7 +118,7 @@ export default class extends Controller {
   }
 
   onGameOver(data) {
-    this.winSound = new Audio("/games/sounds/Triumphant_win.mp3")
+    this.winSound = soundFile("/games/sounds/Triumphant_win.mp3")
     this.winSound.play().catch(() => {}) // ignore autoplay blocks
     this.finalLeaderboardTarget.innerHTML = this.buildLeaderboard(data)
     this.playAgainTarget.addEventListener("click", () => {

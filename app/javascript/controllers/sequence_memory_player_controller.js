@@ -2,6 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 import consumer from "channels/consumer"
 import { t, placeTitle } from "controllers/shared/i18n"
 import { celebrateWin, isTopScore } from "controllers/shared/celebration"
+import { soundFile } from "controllers/shared/sound"
 
 const CELL_NEUTRAL  = "#1e3a5f"
 const CELL_TAPPED   = "#facc15"
@@ -28,7 +29,7 @@ export default class extends Controller {
     this.submitted   = false
     this.timerHandle = null
     this.totalScore  = 0
-    this.clickSound  = new Audio("/games/sounds/click.mp3")
+    this.clickSound  = soundFile("/games/sounds/click.mp3")
     this.subscribe()
   }
 
