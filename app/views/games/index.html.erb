@@ -36,10 +36,20 @@
         }
       }.to_json) %>
     </script>
+    <script type="application/ld+json">
+      <%= raw json_escape({
+        "@context" => "https://schema.org",
+        "@type" => "FAQPage",
+        "mainEntity" => t(".faq").map { |item|
+          { "@type" => "Question", "name" => item[:q], "acceptedAnswer" => { "@type" => "Answer", "text" => item[:a] } }
+        }
+      }.to_json) %>
+    </script>
   <% end %>
 <% end %>
 
 <%
+  min_players, max_players = site_players_range(@games)
   categories = GamePagesHelper::CATEGORIES & @games.map(&:category)
   pill_css = "chip cursor-pointer transition-colors hover:border-slate-500 aria-pressed:bg-white aria-pressed:border-white aria-pressed:text-slate-950 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-400"
 %>
@@ -51,9 +61,12 @@
         <h1 class="text-display text-5xl sm:text-6xl text-white"><%= t(".heading_room") %></h1>
       <% else %>
         <h1 class="text-display text-5xl sm:text-7xl text-white"><%= t(".heading") %></h1>
-        <p class="mt-5 text-slate-400 text-lg sm:text-xl text-pretty">
-          <%= t(".intro") %>
-        </p>
+        <%# The 3-line summary: what people (and AI assistants sending them here) need first. %>
+        <ul id="summary" class="mt-5 space-y-2 text-slate-300 text-lg text-pretty">
+          <li><%= t(".summary.what_html") %></li>
+          <li><%= t(".summary.who_html", min: min_players, max: max_players) %></li>
+          <li><%= t(".summary.start_html") %></li>
+        </ul>
       <% end %>
     </header>
 
@@ -101,6 +114,25 @@
         </div>
       <% end %>
     </div>
+
+    <% unless @room %>
+      <section id="faq" class="mt-20 max-w-3xl mx-auto [--accent:var(--color-purple-400)]" aria-labelledby="faq-title">
+        <h2 id="faq-title" class="text-display text-3xl sm:text-4xl text-white mb-8"><%= t(".faq_title") %></h2>
+        <div class="space-y-3">
+          <% t(".faq").each do |item| %>
+            <details class="faq group rounded-3xl border-2 border-slate-800 bg-slate-800/60 transition-colors open:border-(--accent) open:bg-slate-800">
+              <summary class="flex items-center justify-between gap-4 cursor-pointer list-none p-5 sm:p-6 font-bold text-white text-lg rounded-3xl [&::-webkit-details-marker]:hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-400">
+                <%= item[:q] %>
+                <span class="grid place-items-center size-9 shrink-0 rounded-full bg-slate-900 transition-[rotate,background-color] duration-300 group-open:rotate-180 group-open:bg-(--accent)" aria-hidden="true">
+                  <%= game_page_icon(:chevron, css: "size-5 text-slate-300 group-open:text-slate-950") %>
+                </span>
+              </summary>
+              <p class="px-5 sm:px-6 pb-6 -mt-1 text-slate-400 text-pretty"><%= item[:a] %></p>
+            </details>
+          <% end %>
+        </div>
+      </section>
+    <% end %>
 
     <%# Below the game cards with a wide gap, so it is never next to a Play button %>
     <%= ad_slot :games, css: "mt-16 max-w-3xl mx-auto" %>

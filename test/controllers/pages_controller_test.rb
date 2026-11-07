@@ -10,9 +10,9 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test "about opens with the 3-line summary: what it is, how to start, free with ads and nothing to install" do
-    { about_path => [ "What it is:", "How to start:", "ads help pay", "No app and no sign-up" ],
-      about_path(locale: "es") => [ "Qué es:", "Cómo empezar:", "los anuncios ayudan", "Sin app y sin registro" ] }.each do |path, phrases|
+  test "about opens with the 3-line summary: what it is, who it's for, how to start, free with ads and nothing to install" do
+    { about_path => [ "What it is:", "Who it's for:", "How to start:", "ads help pay", "No app and no sign-up" ],
+      about_path(locale: "es") => [ "Qué es:", "Para quién es:", "Cómo empezar:", "los anuncios ayudan", "Sin app y sin registro" ] }.each do |path, phrases|
       get path
       assert_select "#summary li", 3
       summary = css_select("#summary").text

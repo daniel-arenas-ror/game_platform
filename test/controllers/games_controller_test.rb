@@ -122,6 +122,31 @@ class GamesControllerTest < ActionDispatch::IntegrationTest
     other&.delete
   end
 
+  test "the catalog opens with the 3-line summary and ends with a short FAQ, in both languages" do
+    { games_path => [ "What it is:", "Who it's for:", "How to start:", "no app and no sign-up" ],
+      games_path(locale: "es") => [ "Qué es:", "Para quién es:", "Cómo empezar:", "sin app y sin registro" ] }.each do |path, phrases|
+      get path
+      assert_select "#summary li", 3
+      summary = css_select("#summary").text
+      phrases.each { |phrase| assert_includes summary, phrase, path }
+
+      shown = css_select("#faq details summary").map { _1.text.strip }
+      faq   = css_select("script[type='application/ld+json']").map { JSON.parse(_1.text) }.find { _1["@type"] == "FAQPage" }
+      assert_equal 4, shown.size
+      assert_equal shown, faq["mainEntity"].map { _1["name"] }, "the data says what the page shows"
+    end
+  end
+
+  test "picking the next game for a room has no summary or FAQ" do
+    room = Room.create!(game: @game)
+    get games_path(room: room.code)
+    assert_select "#summary", 0
+    assert_select "#faq", 0
+    assert_not_includes response.body, "FAQPage"
+  ensure
+    room&.delete
+  end
+
   test "slug defaults to the parameterized name" do
     game = Game.new(name: "Mind Match", code: "mind_match")
     game.validate

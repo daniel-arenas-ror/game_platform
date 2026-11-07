@@ -31,9 +31,9 @@
       <%= render "pages/header", title: "Acerca de #{SeoHelper::SITE_NAME}", subtitle: "Juegos de fiesta para una pantalla grande y los celulares de todos." %>
       <%# El resumen de 3 líneas: lo primero que necesita la gente (y los asistentes de IA que la mandan aquí). %>
       <ul id="summary" class="space-y-2 rounded-2xl bg-slate-800 border border-slate-700 p-6 text-lg text-white">
-        <li><strong>Qué es:</strong> juegos de fiesta gratis para <%= min_players %> a <%= max_players %> jugadores. El juego se ve en una TV o un portátil, y todos juegan desde su celular.</li>
-        <li><strong>Cómo empezar:</strong> abre <%= games_link %> en la pantalla grande y pulsa Empezar juego. Los jugadores escanean el código QR y escriben un apodo.</li>
-        <li><strong>Gratis, sin instalar nada:</strong> todos los juegos son gratis (los anuncios ayudan a pagar los servidores). Sin app y sin registro.</li>
+        <li><strong>Qué es:</strong> juegos de fiesta gratis. El juego se ve en una TV o un portátil, y todos juegan desde su celular.</li>
+        <li><strong>Para quién es:</strong> amigos, familias, salones de clase y equipos de trabajo, de <%= min_players %> a <%= max_players %> jugadores, desde los 8 años.</li>
+        <li><strong>Cómo empezar:</strong> abre <%= games_link %> en la pantalla grande y pulsa Empezar juego. Los jugadores escanean el código QR y escriben un apodo. Todos los juegos son gratis (los anuncios ayudan a pagar los servidores). Sin app y sin registro.</li>
       </ul>
       <%= link_to "Ver los juegos", games_path, class: "btn mt-6" %>
     </div>
