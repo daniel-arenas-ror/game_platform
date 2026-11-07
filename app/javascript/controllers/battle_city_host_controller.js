@@ -12,6 +12,12 @@ const TANK_COLORS  = { yellow: 0xf1c40f, green: 0x2ecc71, white: 0xecf0f1, red: 
 const BULLET_COLOR = 0xffffff
 const BG_COLOR     = 0x0d0d1a
 
+// Christmas maps (map_theme "christmas"): night-blue snow ground, twinkling bulbs, falling snow.
+const CHRISTMAS_BG = 0x0b1730
+const BULB_COLORS  = [0xff3b3b, 0x2ecc71, 0xffd23f, 0x3fa9ff]
+const TWINKLE_MS   = 450
+const SNOWFLAKES   = 70
+
 // Explosion palette: yellow → orange → red as age increases
 const EXP_COLORS = [0xffd700, 0xffa500, 0xff6600, 0xcc3300]
 
@@ -69,13 +75,15 @@ export default class extends Controller {
 
     this.element.appendChild(this.app.canvas)
 
-    // world (shakes on explosions) → map, tanks, bullets, effects
+    // world (shakes on explosions) → map, light bulbs, tanks, bullets, effects, snow
     this.world       = new Container()
     this.staticLayer = new Graphics()
     this.tankLayer   = new Container()
     this.bulletLayer = new Graphics()
+    this.lightsLayer = new Graphics()
     this.fxLayer     = new Graphics()
-    this.world.addChild(this.staticLayer, this.tankLayer, this.bulletLayer, this.fxLayer)
+    this.snowLayer   = new Graphics()
+    this.world.addChild(this.staticLayer, this.lightsLayer, this.tankLayer, this.bulletLayer, this.fxLayer, this.snowLayer)
     this.app.stage.addChild(this.world)
 
     // Every frame: positions come from the animations, not straight from the server cells.
@@ -190,6 +198,7 @@ export default class extends Controller {
   // Full rebuild from a snapshot (first load, reconnect). Everything snaps into place.
   buildScene() {
     if (!this.state || !this.pixiReady) return
+    this.app.renderer.background.color = this.christmas ? CHRISTMAS_BG : BG_COLOR
     this.renderStatic()
 
     this.tankLayer.removeChildren().forEach(c => c.destroy({ children: true }))
@@ -208,7 +217,13 @@ export default class extends Controller {
     this.tanks.forEach(tank => this.animateTank(tank, now))
     this.drawBullets(now)
     this.drawFX(now)
+    this.drawLights(now)
+    this.drawSnow(now)
     this.shake(now)
+  }
+
+  get christmas() {
+    return this.state?.map_theme === "christmas"
   }
 
   // ── Tanks ────────────────────────────────────────────────────────────────
@@ -500,6 +515,8 @@ export default class extends Controller {
 
   renderStatic() {
     const g = this.staticLayer.clear()
+    this.bulbs     = []    // where the light strings' bulbs go; drawLights colours them
+    this.bulbPhase = null
     this.renderWalls(g)
     this.renderBase(g)
   }
@@ -518,6 +535,12 @@ export default class extends Controller {
         this.renderSteel(g, ox, oy, cs)
       } else if (type === "trees") {
         this.renderTrees(g, ox, oy, cs)
+      } else if (type === "pine") {
+        this.renderPine(g, ox, oy, cs)
+      } else if (type === "reindeer") {
+        this.renderReindeer(g, ox, oy, cs, x % 2 === 1)
+      } else if (type === "lights") {
+        this.renderLights(g, ox, oy, cs)
       } else {
         g.rect(ox, oy, cs, cs)
         g.fill(WALL_COLORS[type] ?? 0x888888)
@@ -581,6 +604,77 @@ export default class extends Controller {
     g.fill({ color: 0x27ae60, alpha: 0.9 })
     g.circle(ox + Math.floor(cs * 0.67), oy + Math.floor(cs * 0.55), r)
     g.fill({ color: 0x2ecc71, alpha: 0.85 })
+  }
+
+  // ── Christmas cells (drawn on a 20-unit grid, scaled to the cell) ─────
+
+  // A decorated tree: two tiers, a trunk, baubles and a star.
+  renderPine(g, ox, oy, cs) {
+    const u = cs / 20
+    const P = (x, y) => [ox + x * u, oy + y * u]
+    g.rect(ox + 9 * u, oy + 16 * u, 2 * u, 3 * u).fill(0x6e3b1f)
+    g.poly([...P(10, 3), ...P(16, 10), ...P(4, 10)]).fill(0x1e8449)
+    g.poly([...P(10, 6), ...P(18, 16.5), ...P(2, 16.5)]).fill(0x196f3d)
+    ;[[7, 14, 0xe74c3c], [13, 13, 0xf1c40f], [10, 9.5, 0x3fa9ff], [11.5, 15.5, 0xe74c3c], [8.5, 11.5, 0xf1c40f]]
+      .forEach(([x, y, color]) => g.circle(ox + x * u, oy + y * u, 1.1 * u).fill(color))
+    g.star(ox + 10 * u, oy + 2.5 * u, 5, 2.4 * u, 1 * u).fill(0xffd23f)
+  }
+
+  // A reindeer standing side-on with antlers and a red nose; `flip` faces it left.
+  renderReindeer(g, ox, oy, cs, flip) {
+    const u = cs / 20
+    const R = (x, y, w, h, color) => g.rect(ox + (flip ? 20 - x - w : x) * u, oy + y * u, w * u, h * u).fill(color)
+    const fur = 0x9c6233, dark = 0x5d3a1a, antler = 0xe8d5b0
+    R(3, 9, 11, 6, fur)                                   // body
+    ;[4, 7, 10, 12].forEach(x => R(x, 15, 2, 4, dark))    // legs
+    R(12, 6, 3, 4, fur)                                   // neck
+    R(13, 4, 5, 4, fur)                                   // head
+    R(14, 1, 1, 3, antler); R(12, 1, 3, 1, antler)        // antlers
+    R(17, 1, 1, 3, antler); R(17, 1, 3, 1, antler)
+    R(2, 9, 2, 2, 0xf5f5f5)                               // tail
+    R(15, 5, 1, 1, 0x111111)                              // eye
+    g.circle(ox + (flip ? 1 : 19) * u, oy + 6.5 * u, 1.4 * u).fill(0xff2b2b)
+  }
+
+  // A snowy fence with a string of bulbs; the bulbs themselves twinkle in drawLights.
+  renderLights(g, ox, oy, cs) {
+    g.rect(ox, oy, cs, cs).fill(0x1b2f55)
+    g.rect(ox, oy, cs, Math.max(1, Math.round(cs * 0.15))).fill(0xe8f1ff)
+    const wireY = oy + Math.round(cs * 0.45)
+    g.rect(ox, wireY, cs, 1).fill(0x2e7d32)
+    this.bulbs.push({ x: ox + cs * 0.25, y: wireY + cs * 0.18 }, { x: ox + cs * 0.75, y: wireY + cs * 0.18 })
+  }
+
+  // Each bulb steps through the colours, all redrawn only when the step changes.
+  drawLights(now) {
+    if (!this.bulbs) return
+    const phase = this.calm ? 0 : Math.floor(now / TWINKLE_MS)
+    if (phase === this.bulbPhase) return
+    this.bulbPhase = phase
+    const g = this.lightsLayer.clear()
+    const r = this.cellSize * 0.14
+    this.bulbs.forEach((bulb, i) => {
+      const color = BULB_COLORS[(i + phase) % BULB_COLORS.length]
+      g.circle(bulb.x, bulb.y, r * 2.2).fill({ color, alpha: 0.22 })
+      g.circle(bulb.x, bulb.y, r).fill(color)
+    })
+  }
+
+  // Light snow falling over the whole map (still flakes with reduced motion).
+  drawSnow(now) {
+    const g = this.snowLayer.clear()
+    if (!this.christmas) return
+    const size = this.cellSize * (this.state.map_cols || 26)
+    this.flakes ??= Array.from({ length: SNOWFLAKES }, () => ({
+      x: Math.random() * size, y: Math.random() * size,
+      speed: 12 + Math.random() * 22, radius: 0.8 + Math.random() * 1.6, drift: Math.random() * Math.PI * 2
+    }))
+    const t = this.calm ? 0 : now / 1000
+    this.flakes.forEach(f => {
+      const x = mod(f.x + Math.sin(t * 0.8 + f.drift) * 6, size)
+      const y = mod(f.y + f.speed * t, size)
+      g.circle(x, y, f.radius).fill({ color: 0xffffff, alpha: 0.7 })
+    })
   }
 
   renderBase(g) {

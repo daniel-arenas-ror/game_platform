@@ -254,6 +254,46 @@ BattleCity::MapPreset.create!(
   cells: forest_cells
 )
 
+# ---------------------------------------------------------------------------
+# Battle City — Christmas maps (theme "christmas": snow on the TV)
+# "pine" hides tanks like trees, "reindeer" stand like steel, "lights" break like brick.
+# Every map keeps the 9 player spots and the 3 bot spots open (GameServices::BattleCity).
+# ---------------------------------------------------------------------------
+christmas_map = lambda do |name, **types|
+  cells = []
+  (0..25).each { |i| cells.push({ "x" => i, "y" => 0, "type" => "steel" }, { "x" => i, "y" => 25, "type" => "steel" }) }
+  (1..24).each { |i| cells.push({ "x" => 0, "y" => i, "type" => "steel" }, { "x" => 25, "y" => i, "type" => "steel" }) }
+  types.each { |type, list| list.uniq.each { |x, y| cells << { "x" => x, "y" => y, "type" => type.to_s } } }
+  BattleCity::MapPreset.create!(name: name, theme: "christmas", cols: 26, rows: 26, base_x: 12, base_y: 24,
+                                cells: cells)
+end
+square = ->(x0, x1, y0, y1) { (x0..x1).flat_map { |x| (y0..y1).map { |y| [ x, y ] } } }
+row    = ->(x0, x1, y) { (x0..x1).map { |x| [ x, y ] } }
+column = ->(x, y0, y1) { (y0..y1).map { |y| [ x, y ] } }
+
+# North Pole: a reindeer herd round the middle, a decorated tree in each quarter, strings of
+# lights fencing the centre with gaps to drive through.
+christmas_map.call("north_pole",
+  pine:     square.(5, 6, 5, 6) + square.(19, 20, 5, 6) + square.(5, 6, 18, 19) + square.(19, 20, 18, 19),
+  reindeer: [ [ 9, 9 ], [ 11, 9 ], [ 14, 9 ], [ 16, 9 ], [ 9, 15 ], [ 11, 15 ], [ 14, 15 ], [ 16, 15 ] ],
+  lights:   row.(8, 10, 7) + row.(15, 17, 7) + row.(8, 10, 17) + row.(15, 17, 17) +
+            column.(7, 10, 11) + column.(7, 13, 14) + column.(18, 10, 11) + column.(18, 13, 14))
+
+# Snowy Woods: thick patches of decorated trees to hide in, reindeer resting in the clearings.
+christmas_map.call("snowy_woods",
+  pine:     square.(4, 6, 4, 6) + square.(19, 21, 4, 6) + square.(4, 6, 17, 19) + square.(19, 21, 17, 19) +
+            row.(10, 14, 9) + row.(10, 14, 15) + square.(8, 9, 11, 13) + square.(15, 16, 11, 13),
+  reindeer: [ [ 12, 7 ], [ 3, 9 ], [ 22, 9 ], [ 3, 15 ], [ 22, 15 ], [ 12, 18 ] ],
+  lights:   row.(8, 10, 3) + row.(15, 17, 3) + row.(8, 10, 21) + row.(15, 17, 21))
+
+# Light Parade: a maze of light strings to shoot through, reindeer posts, the big tree in the middle.
+christmas_map.call("light_parade",
+  lights:   row.(3, 9, 5) + row.(16, 22, 5) + row.(6, 10, 9) + row.(15, 19, 9) +
+            row.(6, 10, 16) + row.(15, 19, 16) + row.(3, 9, 20) + row.(16, 22, 20) +
+            column.(5, 11, 14) + column.(20, 11, 14),
+  reindeer: [ [ 8, 12 ], [ 17, 12 ], [ 12, 8 ], [ 13, 18 ] ],
+  pine:     square.(12, 13, 13, 14))
+
 ::HowWantBeBillionare::Question.create!(
   text: "Which of the following countries are considered Scandinavian?",
   points: 100,

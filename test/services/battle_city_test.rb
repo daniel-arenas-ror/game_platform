@@ -60,6 +60,25 @@ class BattleCityTest < ActiveSupport::TestCase
     assert_equal [ "ana" ], delta["bricks_by"]
   end
 
+  test "Christmas cells: lights break like brick, reindeer stay like steel, tanks drive into a tree" do
+    s = state(kills_to_win: 5)
+    s["tanks"]["beto"].merge!("x" => 20, "y" => 20)
+    s["walls"] = { "6,5" => "lights" }
+    assert_equal [ "6,5" ], ana_shoots(s)["walls_destroyed"]
+
+    s = state(kills_to_win: 5)
+    s["tanks"]["beto"].merge!("x" => 20, "y" => 20)
+    s["walls"] = { "6,5" => "reindeer" }
+    assert_nil ana_shoots(s)["walls_destroyed"]
+    assert_equal "reindeer", s["walls"]["6,5"]
+
+    s = state(kills_to_win: 5)
+    s["walls"] = { "6,5" => "pine" }
+    s["tanks"]["ana"]["last_move_tick"] = -10
+    @service.tick!(s, { "ana" => { "direction" => "right", "firing" => false } })
+    assert_equal 6, s["tanks"]["ana"]["x"]
+  end
+
   test "reaching the kill target wins" do
     s = state(kills_to_win: 1)
     ana_shoots(s)

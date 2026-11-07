@@ -12,7 +12,9 @@ module ApplicationHelper
     cs = size.to_f / [preset.cols, preset.rows].max
 
     wall_color = { "brick" => "#c0392b", "steel" => "#7f8c8d",
-                   "trees" => "#1e8449", "water" => "#2471a3" }
+                   "trees" => "#1e8449", "water" => "#2471a3",
+                   "pine" => "#2ecc71", "reindeer" => "#b07040", "lights" => "#f1c40f" }
+    background = preset.theme == "christmas" ? "#0b1730" : "#0d0d1a"
 
     rects = preset.cells_without_base.map do |cell|
       c = wall_color[cell["type"]] || "#888"
@@ -23,7 +25,7 @@ module ApplicationHelper
     end.join
 
     svg = %(<svg xmlns="http://www.w3.org/2000/svg" width="#{size}" height="#{size}" ) +
-          %(style="background:#0d0d1a;border-radius:4px">#{rects}</svg>)
+          %(style="background:#{background};border-radius:4px">#{rects}</svg>)
 
     svg.html_safe
   end

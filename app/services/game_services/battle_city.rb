@@ -9,7 +9,8 @@ module GameServices
       [ 12, 2 ], [ 2, 12 ], [ 23, 12 ], [ 12, 12 ], # top centre, left, right, centre
       [ 12, 22 ]                                    # bottom centre, where the base was
     ].freeze
-    PASSABLE_WALLS   = %w[trees].freeze
+    PASSABLE_WALLS   = %w[trees pine].freeze  # tanks drive through; bullets still stop
+    BREAKABLE_WALLS  = %w[brick lights].freeze # a bullet breaks them (reindeer stay, like steel)
     MOVE_EVERY_TICKS = 4    # one cell every 4 × 60 ms ≈ 240 ms
     RESPAWN_TICKS    = 50   # 50 × 60 ms = 3 seconds
     SHIELD_TICKS     = 50   # a player who comes back can't be hit for 3 seconds, or until they fire
@@ -57,6 +58,7 @@ module GameServices
           "pending_inputs" => {},
           "walls"          => walls,
           "map_preset"     => preset_name,
+          "map_theme"      => preset.theme,
           "map_cols"       => preset.cols,
           "map_rows"       => preset.rows,
           "kills_to_win"   => (@room.game_state["kills_to_win"] || 5).to_i,
@@ -297,7 +299,7 @@ module GameServices
         wall_key = "#{nx},#{ny}"
         if (wall_type = state["walls"][wall_key])
           to_remove << bullet["id"]
-          if wall_type == "brick"
+          if BREAKABLE_WALLS.include?(wall_type)
             state["walls"].delete(wall_key)
             walls_destroyed << wall_key
             @bricks_by&.push(bullet["owner_id"])
