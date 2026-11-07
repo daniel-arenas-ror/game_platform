@@ -53,16 +53,18 @@
   categories = GamePagesHelper::CATEGORIES & @games.map(&:category)
   pill_css = "chip cursor-pointer transition-colors hover:border-slate-500 aria-pressed:bg-white aria-pressed:border-white aria-pressed:text-slate-950 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-400"
 %>
-<div class="bg-slate-900 min-h-screen pt-10 pb-16 sm:pt-14 px-4 sm:px-6 lg:px-8" data-controller="reveal catalog-filter">
+<div class="bg-slate-900 min-h-screen pt-6 pb-16 sm:pt-10 px-4 sm:px-6 lg:px-8" data-controller="reveal catalog-filter">
   <div class="max-w-7xl mx-auto">
 
-    <header class="mb-10 max-w-3xl">
+    <header class="mb-8 max-w-3xl">
       <% if @room %>
         <h1 class="text-display text-5xl sm:text-6xl text-white"><%= t(".heading_room") %></h1>
       <% else %>
-        <h1 class="text-display text-5xl sm:text-7xl text-white"><%= t(".heading") %></h1>
+        <h1 class="text-display text-5xl sm:text-6xl text-white"><%= t(".heading") %></h1>
+        <%= render "shared/three_steps", css: "mt-5" %>
+        <%= link_to t(".pick_game"), "#games", class: "btn btn-lg w-full sm:w-auto mt-5" %>
         <%# The 3-line summary: what people (and AI assistants sending them here) need first. %>
-        <ul id="summary" class="mt-5 space-y-2 text-slate-300 text-lg text-pretty">
+        <ul id="summary" class="mt-6 space-y-2 text-slate-300 text-pretty">
           <li><%= t(".summary.what_html") %></li>
           <li><%= t(".summary.who_html", min: min_players, max: max_players) %></li>
           <li><%= t(".summary.start_html") %></li>
@@ -82,6 +84,8 @@
               class: "text-slate-400 hover:text-white text-sm underline underline-offset-4 transition-colors shrink-0 rounded focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-purple-400" %>
       </div>
     <% end %>
+
+    <div id="games" class="scroll-mt-24"></div>
 
     <%# Type filter (catalog_filter_controller). Hidden without JS, when every game shows anyway. %>
     <% if categories.size > 1 %>

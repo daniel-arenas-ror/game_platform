@@ -46,6 +46,15 @@ es:
 
   mock_game_name: "Mentes Gemelas"
 
+  # Elige, escanea, juega: la primera pantalla de inicio y de juegos.
+  three_steps:
+    - title: "Elige"
+      text: "un juego en la pantalla grande"
+    - title: "Escanea"
+      text: "el código QR con tu celular"
+    - title: "Juega"
+      text: "gratis, sin app y sin registro"
+
   perks:
     no_registration: "Sin registro"
     no_app: "Sin instalar apps"
@@ -57,10 +66,8 @@ es:
 
   home:
     index:
-      hero_text: >-
-        Juegos de fiesta gratis para salones de clase, equipos de trabajo y reuniones familiares.
-        Pon una pantalla donde todos la vean — los jugadores se unen desde su celular en segundos.
-      start_game: "Empezar un juego"
+      hero_text: "Juegos de fiesta gratis para una pantalla grande y el celular de cada uno."
+      start_game: "Elige un juego"
       join_game: "Unirse a un juego"
       hero_figure: "La pantalla principal muestra un código de sala y un código QR; los jugadores se unen desde su celular."
       mock_room: "SALA: %{code}"
@@ -148,6 +155,7 @@ es:
       description: "Elige un juego de fiesta gratis — trivia, deducción social, memoria, colores, batallas de tanques y más. Abre una sala en la pantalla grande y todos juegan desde su celular."
       heading: "Elige un juego"
       heading_room: "Elige el siguiente juego"
+      pick_game: "Elige un juego ↓"
       summary:
         what_html: "<strong class=\"text-white\">Qué es:</strong> juegos de fiesta gratis. El juego se ve en una TV o un portátil, y todos juegan desde su celular."
         who_html: "<strong class=\"text-white\">Para quién es:</strong> amigos, familias, salones de clase y equipos de trabajo, de %{min} a %{max} jugadores, desde los 8 años."

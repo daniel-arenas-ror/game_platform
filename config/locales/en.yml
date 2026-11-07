@@ -50,6 +50,15 @@ en:
     ad_slot:
       label: "Advertisement"
 
+  # Pick, scan, play: the first screen of the home and games pages.
+  three_steps:
+    - title: "Pick"
+      text: "a game on the big screen"
+    - title: "Scan"
+      text: "the QR code with your phone"
+    - title: "Play"
+      text: "free, no app, no sign-up"
+
   # Shared by the home, join and games pages.
   # Game name in the lobby mock-ups on the home and join pages.
   mock_game_name: "Mind Match"
@@ -65,10 +74,8 @@ en:
 
   home:
     index:
-      hero_text: >-
-        Free party games for classrooms, work teams and family get-togethers.
-        Put one screen where everyone can see it — players join from their phones in seconds.
-      start_game: "Start a game"
+      hero_text: "Free party games for one big screen and everyone's phones."
+      start_game: "Pick a game"
       join_game: "Join a game"
       hero_figure: "The host screen shows a room code and QR code; players join from their phones."
       mock_room: "ROOM: %{code}"
@@ -156,6 +163,7 @@ en:
       description: "Pick a free party game — trivia, social deduction, memory, color matching, tank battles and more. Open a room on the big screen and everyone plays from their phone."
       heading: "Pick a game"
       heading_room: "Pick the next game"
+      pick_game: "Pick a game ↓"
       summary:
         what_html: "<strong class=\"text-white\">What it is:</strong> free party games. The game shows on one TV or laptop, and everyone plays on their phone."
         who_html: "<strong class=\"text-white\">Who it's for:</strong> friends, families, classrooms and work teams, %{min} to %{max} players, ages 8 and up."

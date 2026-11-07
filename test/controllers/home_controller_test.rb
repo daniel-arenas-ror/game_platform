@@ -18,6 +18,12 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     assert_select "nav[aria-label=Main] a[aria-current=page]", "Home"
   end
 
+  test "the first screen has the Pick a game button and the three steps" do
+    get root_url
+    assert_select "section:first-of-type a.btn-lg[href=?]", games_path, "Pick a game"
+    assert_equal %w[Pick Scan Play], css_select("section:first-of-type ol li p:first-child").map { _1.text.split.last }
+  end
+
   test "the footer links to our social profiles" do
     get root_url
     SeoHelper::SOCIAL_LINKS.each_value do |url|
@@ -35,7 +41,7 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     assert_select ".marquee-track a", text: /Mind Match/
     assert_select "h2", "Made for any room"
     assert_select "dt", "Wake up your brain"
-    assert_select "a[href=?]", games_path, text: "Start a game", count: 2
+    assert_select "a[href=?]", games_path, text: "Pick a game", count: 2
     assert_select "a[href=?]", find_room_path, text: "Join a game", count: 2
     assert_select "li a img[src^=?]", "/games/mind_match/instructions-card-"
   ensure

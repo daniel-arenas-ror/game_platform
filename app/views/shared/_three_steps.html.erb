@@ -1,0 +1,12 @@
+<%# Pick, scan, play: the whole idea in one row, for the first screen of Home and the catalog. %>
+<ol class="grid grid-cols-3 gap-2 sm:gap-3 <%= local_assigns[:css] %>">
+  <% t("three_steps").each_with_index do |step, i| %>
+    <li class="rounded-2xl border border-slate-700 bg-slate-800 p-2.5 sm:p-3">
+      <p class="flex items-center gap-1.5 font-display font-extrabold text-white text-base sm:text-lg leading-tight">
+        <span class="grid place-items-center size-5 sm:size-6 shrink-0 rounded-full bg-purple-600 text-xs" aria-hidden="true"><%= i + 1 %></span>
+        <%= step[:title] %>
+      </p>
+      <p class="mt-1 text-sm leading-snug text-slate-400"><%= step[:text] %></p>
+    </li>
+  <% end %>
+</ol>

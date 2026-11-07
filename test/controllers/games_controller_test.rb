@@ -137,11 +137,21 @@ class GamesControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "the catalog's first screen has the three steps and a button down to the games" do
+    { games_path => [ "Pick", "Scan", "Play" ], games_path(locale: "es") => [ "Elige", "Escanea", "Juega" ] }.each do |path, steps|
+      get path
+      assert_equal steps, css_select("header ol li p:first-child").map { _1.text.split.last }
+      assert_select "header a.btn[href='#games']", 1
+      assert_select "#games", 1
+    end
+  end
+
   test "picking the next game for a room has no summary or FAQ" do
     room = Room.create!(game: @game)
     get games_path(room: room.code)
     assert_select "#summary", 0
     assert_select "#faq", 0
+    assert_select "header ol", 0
     assert_not_includes response.body, "FAQPage"
   ensure
     room&.delete
