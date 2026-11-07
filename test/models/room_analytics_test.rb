@@ -27,7 +27,8 @@ class RoomAnalyticsTest < ActiveSupport::TestCase
     message = event_for { @room.update!(status: "playing") }
     assert_equal "analytics", message["action"]
     assert_equal "game_started", message["event"]
-    assert_equal({ "game_name" => @game.slug, "player_count" => 1 }, message["params"])
+    assert_equal({ "game" => @game.slug, "game_name" => @game.slug, "room_code" => @room.code, "player_count" => 1, "game_language" => "en" },
+                 message["params"])
   end
 
   test "game over is game_finished, and starting again is play_again" do
