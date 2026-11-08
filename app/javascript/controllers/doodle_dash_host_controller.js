@@ -4,7 +4,7 @@ import { t } from "controllers/shared/i18n"
 import { avatarHtml } from "controllers/shared/avatar"
 import {
   fitCanvas, clearCanvas, createPen, patternHtml, ranked, esc, secondsUntil,
-  restartAnimation, injectStyles, MEDALS
+  restartAnimation, injectStyles, floatEmoji, MEDALS
 } from "controllers/doodle_dash/drawing"
 import { confetti } from "controllers/shared/celebration"
 import { soundFile } from "controllers/shared/sound"
@@ -22,12 +22,13 @@ export default class extends Controller {
   static values  = { roomCode: String }
   static targets = [
     "turnLabel", "pattern", "canvas", "overlay", "overlayIcon", "overlayTitle", "overlayHint",
-    "artistLabel", "phaseHint", "countdown", "scoreboard", "feed", "toasts",
+    "artistLabel", "phaseHint", "countdown", "scoreboard", "feed", "toasts", "reactions",
     "phaseGameOver", "finalLeaderboard", "playAgain"
   ]
 
   connect() {
     this.timerHandle = null
+    this.calm      = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
     this.scores    = {}
     this.nicknames = {}
     this.guessed   = {}   // this turn: { pid => points }
@@ -76,6 +77,7 @@ export default class extends Controller {
       case "clear":           this.onClear(data);      break
       case "hint":            this.setPattern(data.pattern, true); break
       case "guessed":         this.onGuessed(data);    break
+      case "reaction":        floatEmoji(this.reactionsTarget, data.emoji, this.calm); break
       case "feed":            this.onFeed(data);       break
       case "turn_over":       this.onTurnOver(data);   break
       case "player_left":     this.onPlayerLeft(data); break
@@ -112,7 +114,8 @@ export default class extends Controller {
       case "reveal":
         this.strokes = state.strokes || []
         this.repaint()
-        this.onTurnOver({ word: state.word, artist_id: state.artist_id, guessed: this.guessed, scores: this.scores })
+        this.onTurnOver({ word: state.word, artist_id: state.artist_id, guessed: this.guessed, scores: this.scores,
+                          artist_points: state.artist_earned })
         break
       case "game_over":
         this.onGameOver({ scores: this.scores, nicknames: this.nicknames })
@@ -201,12 +204,13 @@ export default class extends Controller {
     else this.strokes.splice(at, 0, stroke)
   }
 
-  onGuessed({ player_id, points, scores }) {
+  onGuessed({ player_id, points, first, scores }) {
     this.guessed[player_id] = points
     if (scores) this.scores = scores
     this.renderScoreboard()
     this.addFeed(`<span class="text-lime-400 font-black">${t("doodle_dash.guessed_it", { name: esc(this.name(player_id)) })}</span>`)
-    this.toast(`${t("doodle_dash.guessed_toast", { name: esc(this.name(player_id)) })} <span class="font-mono">+${points}</span>`)
+    const text = first ? "doodle_dash.first_toast" : "doodle_dash.guessed_toast"
+    this.toast(`${t(text, { name: esc(this.name(player_id)) })} <span class="font-mono">+${points}</span>`, first)
     this.playSound(this.dingSound)
     restartAnimation(this.scoreboardTarget.querySelector(`[data-score="${player_id}"]`), "dd-pop")
   }
@@ -217,7 +221,7 @@ export default class extends Controller {
     else this.addFeed(`${who} <span class="text-slate-400">${esc(text)}</span>`)
   }
 
-  onTurnOver({ word, artist_id, guessed, scores, turn, total_turns, nicknames }) {
+  onTurnOver({ word, artist_id, artist_points, guessed, scores, turn, total_turns, nicknames }) {
     this.stopCountdown()
     this.toastsTarget.innerHTML = "" // the reveal banner sits where the toasts are
     this.countdownTarget.textContent = ""
@@ -229,7 +233,7 @@ export default class extends Controller {
 
     const count = Object.keys(this.guessed).length
     const hint  = count === 0 ? t("doodle_dash.nobody_got_it") :
-                  t("doodle_dash.players_guessed", { count, artist: esc(this.name(artist_id)), points: count * 25 })
+                  t("doodle_dash.players_guessed", { count, artist: esc(this.name(artist_id)), points: artist_points ?? 0 })
     const guessers = Object.keys(this.scores).filter(id => id !== artist_id).length
     this.showOverlay("💡", t("doodle_dash.it_was", { word: esc(word || "?") }), hint, true, true)
     this.setSidebar(count && count >= guessers ? t("doodle_dash.everyone_got_it") : t("doodle_dash.times_up"),
@@ -316,9 +320,9 @@ export default class extends Controller {
     this.feedTarget.innerHTML = ""
   }
 
-  toast(html) {
+  toast(html, gold = false) {
     const el = document.createElement("div")
-    el.className = "dd-slide bg-lime-400 text-slate-950 font-black text-xl px-6 py-3 rounded-2xl shadow-2xl"
+    el.className = `dd-slide ${gold ? "bg-yellow-300 text-2xl" : "bg-lime-400 text-xl"} text-slate-950 font-black px-6 py-3 rounded-2xl shadow-2xl`
     el.innerHTML = html
     this.toastsTarget.appendChild(el)
     setTimeout(() => el.remove(), 2500)

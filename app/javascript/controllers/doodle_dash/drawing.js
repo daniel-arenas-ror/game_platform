@@ -142,3 +142,23 @@ export function injectStyles() {
   style.textContent = STYLES
   document.head.appendChild(style)
 }
+
+// An emoji reaction drifting up from the bottom of `layer` (an absolute, overflow-hidden box over a
+// canvas). Capped so a burst of taps can't pile up.
+export function floatEmoji(layer, emoji, calm = false) {
+  if (!layer || layer.childElementCount > 30) return
+  const el = document.createElement("span")
+  el.textContent = emoji
+  el.className = "absolute bottom-0 text-5xl select-none"
+  el.style.left = `${8 + Math.random() * 80}%`
+  layer.appendChild(el)
+  const rise = layer.clientHeight * (0.55 + Math.random() * 0.35)
+  const drift = (Math.random() - 0.5) * 60
+  const frames = calm
+    ? [ { opacity: 1 }, { opacity: 0 } ]
+    : [ { transform: "translate(0, 0) scale(.6)", opacity: 0 },
+        { transform: `translate(${drift / 3}px, -${rise * 0.2}px) scale(1.1)`, opacity: 1, offset: 0.15 },
+        { transform: `translate(${drift}px, -${rise}px) scale(1)`, opacity: 0 } ]
+  el.animate(frames, { duration: 2200, easing: "ease-out" }).finished.then(() => el.remove(), () => el.remove())
+}
+

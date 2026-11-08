@@ -351,6 +351,7 @@ es:
       doodle_dash:
         edit:
           draw_time: "TIEMPO PARA DIBUJAR"
+          sprint: "Exprés"
           quick: "Rápido"
           normal: "Normal"
           relaxed: "Tranquilo"

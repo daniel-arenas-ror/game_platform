@@ -109,13 +109,32 @@ class Games::DoodleDashChannelTest < ActionCable::Channel::TestCase
     end
   end
 
+  test "reactions float on the TV and the artist's phone, only from guessers, only while drawing" do
+    subscribe(room_code: @room.code, player_id: @guesser.id.to_s)
+    artist_stream = "doodle_dash_room_#{@room.code}_player_#{@artist.id}"
+
+    assert_broadcasts(host_stream, 1) { assert_broadcasts(artist_stream, 1) { perform :react, emoji: "😂" } }
+    assert_broadcasts(host_stream, 0) { perform :react, emoji: "😂" }   # too soon after the last one
+    sleep Games::DoodleDashChannel::REACTION_COOLDOWN
+    assert_broadcasts(host_stream, 0) { perform :react, emoji: "💩" }   # not one of ours
+    @room.atomic_set("game_state.status" => "reveal")
+    assert_broadcasts(host_stream, 0) { perform :react, emoji: "👏" }
+
+    unsubscribe
+    @room.atomic_set("game_state.status" => "drawing")
+    subscribe(room_code: @room.code, player_id: @artist.id.to_s)
+    assert_broadcasts(host_stream, 0) { perform :react, emoji: "👏" }   # not the artist
+  end
+
   test "a correct guess is answered privately and announced to the room without the word" do
     subscribe(room_code: @room.code, player_id: @guesser.id.to_s)
 
     assert_broadcasts(room_stream, 1) { perform :guess, text: @word }
-    assert_equal({ "action" => "guess_result", "result" => "correct", "points" => 100, "word" => @word },
-                 transmissions.last.slice("action", "result", "points", "word"))
+    first = 100 + GameServices::DoodleDash::FIRST_GUESS_BONUS
+    assert_equal({ "action" => "guess_result", "result" => "correct", "points" => first, "first" => true, "word" => @word },
+                 transmissions.last.slice("action", "result", "points", "first", "word"))
     assert_not broadcasts(room_stream).last.include?(@word)
+    assert JSON.parse(broadcasts(room_stream).last)["first"], "the TV calls out the first guess"
   end
 
   test "the game loop plays every turn, picks a word when the artist doesn't, and ends the game" do

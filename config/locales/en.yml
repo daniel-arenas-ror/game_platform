@@ -362,6 +362,7 @@ en:
       doodle_dash:
         edit:
           draw_time: "DRAWING TIME"
+          sprint: "Sprint"
           quick: "Quick"
           normal: "Normal"
           relaxed: "Relaxed"

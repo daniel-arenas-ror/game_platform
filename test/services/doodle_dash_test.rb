@@ -90,24 +90,39 @@ class DoodleDashTest < ActiveSupport::TestCase
     assert_equal word.length, room.game_state["pattern"].length
   end
 
-  test "a correct guess scores by speed and pays the artist" do
-    artist, word, (guesser, _) = start_drawing
+  test "a correct guess scores by speed, the first one gets a bonus, and the artist gets half" do
+    artist, word, (guesser, other) = start_drawing
     result = svc.guess!(guesser.id, word.upcase)
 
     assert_equal "correct", result[:result]
-    assert_equal 100, result[:points]
+    assert result[:first]
+    assert_equal 100 + Doodle::FIRST_GUESS_BONUS, result[:points]
     scores = @room.reload.game_state["scores"]
-    assert_equal 100, scores[guesser.id.to_s]
-    assert_equal Doodle::ARTIST_POINTS, scores[artist.id.to_s]
+    assert_equal 100 + Doodle::FIRST_GUESS_BONUS, scores[guesser.id.to_s]
+    assert_equal 50, scores[artist.id.to_s]
 
-    assert_equal({ ok: false }, svc.guess!(guesser.id, word)) # only once
-    assert_equal({ ok: false }, svc.guess!(artist.id, word))  # not the artist
+    @room.atomic_set("game_state.turn_ends_at" => Time.now.to_f - 5) # a slow guess pays the artist less
+    second = svc.guess!(other.id, word)
+    assert_not second[:first]
+    assert_equal 50, second[:points]
+    reveal = svc.end_turn!
+    assert_equal 50 + 25, reveal[:artist_points]
+    assert_equal guesser.id.to_s, reveal[:first_guesser]
+    assert_equal 100 + Doodle::FIRST_GUESS_BONUS, reveal[:guessed][guesser.id.to_s]
+
+  end
+
+  test "a player can guess only once, and never the artist" do
+    artist, word, (guesser, _) = start_drawing
+    svc.guess!(guesser.id, word)
+    assert_equal({ ok: false }, svc.guess!(guesser.id, word))
+    assert_equal({ ok: false }, svc.guess!(artist.id, word))
   end
 
   test "a late guess scores less, never under 50" do
     _artist, word, (guesser, other) = start_drawing
     @room.atomic_set("game_state.turn_ends_at" => Time.now.to_f + 30) # half the 60s left
-    assert_equal 75, svc.guess!(guesser.id, word)[:points]
+    assert_equal 75 + Doodle::FIRST_GUESS_BONUS, svc.guess!(guesser.id, word)[:points]
 
     @room.atomic_set("game_state.turn_ends_at" => Time.now.to_f - 5)
     assert_equal 50, svc.guess!(other.id, word)[:points]

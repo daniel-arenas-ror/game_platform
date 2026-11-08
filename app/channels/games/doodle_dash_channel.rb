@@ -8,6 +8,7 @@ class Games::DoodleDashChannel < ApplicationCable::Channel
   ARTIST_CHECK    = 1.0  # seconds a "this player is drawing" check is trusted before asking again
   GUESS_COOLDOWN  = 0.4  # seconds between two guesses from the same phone
   DRAW_RATE_LIMIT = 40   # draw messages per second from one phone (the phone sends about 20)
+  REACTION_COOLDOWN = 0.3 # seconds between two reactions from the same phone
 
   def subscribed
     @room   = Room.find_by(code: params[:room_code])
@@ -171,7 +172,8 @@ class Games::DoodleDashChannel < ApplicationCable::Channel
 
     case result[:result]
     when "correct"
-      broadcast({ action: "guessed", player_id: pid, points: result[:points], scores: @room.game_state["scores"] })
+      broadcast({ action: "guessed", player_id: pid, points: result[:points], first: result[:first],
+                  scores: @room.game_state["scores"] })
     when "close"
       ActionCable.server.broadcast(host_stream, { action: "feed", player_id: pid, kind: "close" })
     when "wrong"
@@ -179,6 +181,26 @@ class Games::DoodleDashChannel < ApplicationCable::Channel
         ActionCable.server.broadcast(host_stream, { action: "feed", player_id: pid, kind: "wrong", text: result[:text] })
       end
     end
+  end
+
+  # An emoji from anyone but the artist while a word is drawn: floats up on the TV and on the
+  # artist's phone, so players who already guessed still have something to do.
+  def react(data)
+    return unless @player
+
+    emoji = data["emoji"].to_s
+    return unless GameServices::DoodleDash::REACTIONS.include?(emoji)
+
+    now = monotonic_now
+    return if @last_reaction_at && now - @last_reaction_at < REACTION_COOLDOWN
+
+    @last_reaction_at = now
+    state = Room.where(_id: @room.id).only(:game_state).first&.game_state || {}
+    return unless state["status"] == "drawing" && state["artist_id"] != @player.id.to_s
+
+    payload = { action: "reaction", emoji: emoji, player_id: @player.id.to_s }
+    ActionCable.server.broadcast(host_stream, payload)
+    ActionCable.server.broadcast(player_stream(state["artist_id"]), payload)
   end
 
   private

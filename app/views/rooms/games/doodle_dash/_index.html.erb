@@ -26,6 +26,8 @@
         <div class="relative rounded-3xl overflow-hidden border-4 border-slate-700 shadow-2xl bg-white"
              style="width: min(60vw, calc(74vh * 4 / 3)); aspect-ratio: 4 / 3;">
           <canvas data-doodle-dash-host-target="canvas" class="block w-full h-full"></canvas>
+          <%# Emoji reactions float up over the drawing %>
+          <div data-doodle-dash-host-target="reactions" class="absolute inset-0 overflow-hidden pointer-events-none"></div>
 
           <%# Covers the canvas while a word is chosen and at the reveal %>
           <div data-doodle-dash-host-target="overlay"
@@ -132,12 +134,14 @@
           <p data-doodle-dash-player-target="word" class="text-center font-black text-3xl short-landscape:text-xl text-lime-400 mb-3 short-landscape:mb-1"></p>
 
           <%# Sized so the tools always fit on screen %>
-          <div class="mx-auto rounded-2xl overflow-hidden border-2 border-slate-700 bg-white
+          <div class="relative mx-auto rounded-2xl overflow-hidden border-2 border-slate-700 bg-white
                       w-[min(100%,calc((100dvh-15rem)*4/3))] short-landscape:w-[calc((100dvh-9rem)*4/3)]"
                style="aspect-ratio: 4 / 3;">
             <canvas data-doodle-dash-player-target="canvas"
                     data-action="pointerdown->doodle-dash-player#penDown pointermove->doodle-dash-player#penMove pointerup->doodle-dash-player#penUp pointercancel->doodle-dash-player#penUp"
                     class="block w-full h-full touch-none select-none"></canvas>
+            <%# The guessers' reactions, so the artist sees how it's going %>
+            <div data-doodle-dash-player-target="reactions" class="absolute inset-0 overflow-hidden pointer-events-none"></div>
           </div>
           <p class="text-center text-slate-500 text-xs mt-2 short-landscape:hidden"><%= t(".no_letters") %></p>
         </div>
@@ -169,6 +173,17 @@
                   class="shrink-0 bg-lime-400 hover:bg-lime-300 text-slate-950 font-black px-5 rounded-xl cursor-pointer active:scale-95 transition-transform"><%= t(".send") %></button>
         </form>
         <p data-doodle-dash-player-target="feedback" role="status" class="min-h-10 text-center font-black text-2xl mt-5"></p>
+
+        <%# Reactions: float up on the TV and on the artist's phone %>
+        <div class="mt-4" role="group" aria-label="<%= t(".react_label") %>">
+          <p class="text-center text-slate-500 text-xs uppercase tracking-widest font-mono mb-2"><%= t(".react_label") %></p>
+          <div class="flex justify-center gap-2">
+            <% GameServices::DoodleDash::REACTIONS.each do |emoji| %>
+              <button type="button" data-action="doodle-dash-player#react" data-emoji="<%= emoji %>"
+                      class="size-12 rounded-2xl bg-slate-800 border border-slate-700 text-2xl cursor-pointer active:scale-90 transition-transform"><%= emoji %></button>
+            <% end %>
+          </div>
+        </div>
       </div>
 
       <%# Reveal %>

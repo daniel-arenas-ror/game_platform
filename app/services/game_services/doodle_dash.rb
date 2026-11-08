@@ -2,7 +2,7 @@ module GameServices
   # Pictionary-style: each turn one player (the artist) draws a secret word on their phone, the strokes
   # appear on the TV only, and everyone else types guesses on their phone.
   class DoodleDash < Base
-    DRAW_TIMES   = [ 60, 80, 100 ].freeze
+    DRAW_TIMES   = [ 40, 60, 80, 100 ].freeze
     TURN_CHOICES = [ 1, 2, 3 ].freeze      # how many times each player draws
     DIFFICULTIES = %w[easy medium hard mixed].freeze
 
@@ -12,7 +12,10 @@ module GameServices
     # A correct guess is worth 50–100 points, depending on how much drawing time was left.
     MIN_GUESS_POINTS = 50
     MAX_GUESS_POINTS = 100
-    ARTIST_POINTS    = 25 # for every player who guesses the word
+    FIRST_GUESS_BONUS = 25  # the first player to guess the word
+    ARTIST_SHARE      = 0.5 # the artist earns half of each guesser's points (25–50): clear drawings pay
+    # Players who aren't drawing can send these; they float up over the drawing on the TV.
+    REACTIONS = %w[😂 👏 🔥 🤯 🤔 ❤️].freeze
 
     MAX_GUESS_LENGTH = 40
 
@@ -95,6 +98,8 @@ module GameServices
         "game_state.word"           => nil,
         "game_state.pattern"        => nil,
         "game_state.guessed"        => {},
+        "game_state.first_guesser"  => nil,
+        "game_state.artist_earned"  => 0,
         "game_state.strokes"        => [],
         "game_state.removed_strokes" => [],
         "game_state.cleared_upto"   => 0,
@@ -147,18 +152,33 @@ module GameServices
       if self.class.correct?(text, word)
         left   = state["turn_ends_at"].to_f - Time.now.to_f
         points = guess_points(left, state["draw_time"].to_i)
+        artist = (points * ARTIST_SHARE).round
         filter = { "_id" => @room.id, "game_state.status" => "drawing", "game_state.turn" => state["turn"],
                    "game_state.guessed.#{pid}" => { "$exists" => false } }
         update = { "$set" => { "game_state.guessed.#{pid}" => points },
-                   "$inc" => { "game_state.scores.#{pid}" => points, "game_state.scores.#{state['artist_id']}" => ARTIST_POINTS } }
+                   "$inc" => { "game_state.scores.#{pid}" => points, "game_state.scores.#{state['artist_id']}" => artist,
+                               "game_state.artist_earned" => artist } }
         return { ok: false } unless apply(filter, update)
 
-        { ok: true, result: "correct", points: points, word: word }
+        first = claim_first_guess!(pid, state["turn"])
+        points += FIRST_GUESS_BONUS if first
+        { ok: true, result: "correct", points: points, first: first, word: word }
       elsif self.class.close?(text, word)
         { ok: true, result: "close" }
       else
         { ok: true, result: "wrong", text: self.class.feed_text(text) }
       end
+    end
+
+    # Only the first right guess of a turn gets the bonus, even when two arrive together.
+    def claim_first_guess!(pid, turn)
+      filter = { "_id" => @room.id, "game_state.turn" => turn, "game_state.first_guesser" => nil }
+      update = { "$set" => { "game_state.first_guesser" => pid },
+                 "$inc" => { "game_state.scores.#{pid}" => FIRST_GUESS_BONUS, "game_state.guessed.#{pid}" => FIRST_GUESS_BONUS } }
+      return false unless apply(filter, update)
+
+      @room.reload
+      true
     end
 
     # Reveals one more letter of the word on the TV, keeping at least two letters hidden.
@@ -196,10 +216,12 @@ module GameServices
       state = @room.game_state
 
       {
-        word:      word,
-        artist_id: state["artist_id"],
-        guessed:   state["guessed"].to_h,
-        scores:    state["scores"].to_h
+        word:          word,
+        artist_id:     state["artist_id"],
+        artist_points: state["artist_earned"].to_i,
+        first_guesser: state["first_guesser"],
+        guessed:       state["guessed"].to_h,
+        scores:        state["scores"].to_h
       }
     end
 

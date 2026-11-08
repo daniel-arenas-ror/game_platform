@@ -3,7 +3,7 @@ import consumer from "channels/consumer"
 import { t } from "controllers/shared/i18n"
 import {
   PALETTE, ERASER, BRUSH_SIZES, fitCanvas, clearCanvas, createPen, redraw, patternHtml, ranked, esc,
-  secondsUntil, restartAnimation, injectStyles, MEDALS
+  secondsUntil, restartAnimation, injectStyles, floatEmoji, MEDALS
 } from "controllers/doodle_dash/drawing"
 import { celebrateWin, confetti, isTopScore, pop } from "controllers/shared/celebration"
 import { soundFile } from "controllers/shared/sound"
@@ -28,7 +28,7 @@ export default class extends Controller {
   static targets = [
     "score", "status", "countdown",
     ...PANELS, "waitingTitle", "waitingHint",
-    "choices", "word", "canvas", "colors", "sizes",
+    "choices", "word", "canvas", "colors", "sizes", "reactions",
     "pattern", "guessForm", "guessInput", "feedback",
     "revealWord", "revealPoints",
     "phaseGameOver", "gameOverIcon", "gameOverTitle", "finalScore"
@@ -36,6 +36,7 @@ export default class extends Controller {
 
   connect() {
     this.timerHandle = null
+    this.calm        = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
     this.nicknames   = {}
     this.artistId    = null
     this.word        = null
@@ -89,6 +90,7 @@ export default class extends Controller {
       case "hint":            this.setPattern(data.pattern, true); break
       case "guess_result":    this.onGuessResult(data); break
       case "guessed":         this.onGuessed(data);     break
+      case "reaction":        if (this.isArtist) floatEmoji(this.reactionsTarget, data.emoji, this.calm); break
       case "turn_over":       this.onTurnOver(data);    break
       case "game_over":       this.onGameOver(data);    break
       case "game_restarted":  window.location.reload(); break
@@ -124,7 +126,8 @@ export default class extends Controller {
                          duration: state.draw_time })
         break
       case "reveal":
-        this.onTurnOver({ word: state.word, guessed: state.guessed, scores: state.scores, artist_id: state.artist_id })
+        this.onTurnOver({ word: state.word, guessed: state.guessed, scores: state.scores, artist_id: state.artist_id,
+                          artist_points: state.artist_earned })
         break
       case "game_over":
         this.onGameOver({ scores: state.scores })
@@ -201,11 +204,11 @@ export default class extends Controller {
     }
   }
 
-  onGuessResult({ result, points }) {
+  onGuessResult({ result, points, first }) {
     if (result === "correct") {
       this.hasGuessed = true
       this.setGuessing(false)
-      this.setFeedback(t("doodle_dash.got_it_points", { points }), COLOR_GREEN)
+      this.setFeedback(t(first ? "doodle_dash.got_it_first" : "doodle_dash.got_it_points", { points }), COLOR_GREEN)
       this.playSound(this.dingSound)
       confetti(30)
       navigator.vibrate?.([ 60, 40, 120 ])
@@ -226,7 +229,7 @@ export default class extends Controller {
     }
   }
 
-  onTurnOver({ word, guessed, scores, artist_id }) {
+  onTurnOver({ word, guessed, scores, artist_id, artist_points }) {
     this.stopCountdown()
     this.countdownTarget.textContent = ""
     this.endStroke()
@@ -234,7 +237,7 @@ export default class extends Controller {
 
     const count = Object.keys(guessed || {}).length
     let points
-    if (artist_id === this.playerIdValue) points = count ? t("doodle_dash.for_drawing", { points: count * 25 }) : t("doodle_dash.nobody_got_it")
+    if (artist_id === this.playerIdValue) points = count ? t("doodle_dash.for_drawing", { points: artist_points ?? 0 }) : t("doodle_dash.nobody_got_it")
     else if (guessed?.[this.playerIdValue]) points = t("doodle_dash.got_it_points", { points: guessed[this.playerIdValue] })
     else points = t("doodle_dash.you_didnt")
 
@@ -388,6 +391,14 @@ export default class extends Controller {
   }
 
   // ── Guessing ──────────────────────────────────────────────────────────────
+
+  // A reaction for the TV and the artist. The server ignores taps that come too fast.
+  react(event) {
+    const button = event.currentTarget
+    this.channel.perform("react", { emoji: button.dataset.emoji })
+    if (!this.calm) button.animate([ { transform: "scale(1.3)" }, { transform: "scale(1)" } ], { duration: 200 })
+    navigator.vibrate?.(15)
+  }
 
   sendGuess(event) {
     event.preventDefault()

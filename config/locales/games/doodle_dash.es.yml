@@ -3,6 +3,7 @@ es:
     games:
       doodle_dash:
         index:
+          react_label: "Reacciona al dibujo"
           get_ready: "Prepárense…"
           grab_phones: "Tomen sus celulares. Uno de ustedes está por dibujar."
           scores: "Puntajes"
@@ -22,6 +23,8 @@ es:
           word_was: "La palabra era"
   js:
     doodle_dash:
+      got_it_first: "⚡ ¡El primero! +%{points}"
+      first_toast: "⚡ ¡%{name} adivinó primero!"
       error: "Algo salió mal"
       error_hint: "Empieza un juego nuevo."
       picking: "%{name} está eligiendo una palabra…"

@@ -22,7 +22,8 @@ how_to_play:
   - The host picks the drawing time, how many times each player draws, and the word difficulty.
   - On your turn, pick one of three secret words on your phone, then draw it with your finger. Your drawing appears live on the big screen.
   - Everyone else watches the TV and types guesses on their phone. If you're one letter off, your phone says "So close!"
-  - A correct guess scores 50 to 100 points, depending on how fast you were. The artist scores 25 for every player who gets it.
+  - A correct guess scores 50 to 100 points, depending on how fast you were, and the first to guess gets +25. The artist scores half of each guesser's points, so a clear drawing pays.
+  - Already guessed? Send emoji reactions: they float up over the drawing on the TV and on the artist's phone.
   - Letters of the word appear on the TV as hints. When everyone has drawn, the highest score wins.
 tips:
   - "Artists: start with the big shape, then add the details. A circle and two ears is already a cat."
@@ -60,7 +61,8 @@ translations:
       - El anfitrión elige el tiempo para dibujar, cuántas veces dibuja cada jugador y la dificultad de las palabras.
       - En tu turno, elige una de tres palabras secretas en tu celular y dibújala con el dedo. Tu dibujo aparece en vivo en la pantalla grande.
       - Los demás miran la TV y escriben sus respuestas en el celular. Si te falta una letra, tu celular dice "¡Casi!"
-      - Una respuesta correcta suma de 50 a 100 puntos, según lo rápido que fuiste. El artista suma 25 por cada jugador que acierta.
+      - Una respuesta correcta suma de 50 a 100 puntos, según lo rápido que fuiste, y el primero en adivinar gana +25. El artista suma la mitad de los puntos de cada adivinador, así que dibujar claro paga.
+      - ¿Ya adivinaste? Envía reacciones con emojis: suben flotando sobre el dibujo en la TV y en el celular del artista.
       - Las letras de la palabra aparecen en la TV como pistas. Cuando todos hayan dibujado, gana el puntaje más alto.
     tips:
       - "Artistas: empiecen por la forma grande y luego añadan los detalles. Un círculo y dos orejas ya es un gato."
