@@ -156,7 +156,8 @@ class Games::DoodleDashChannelTest < ActionCable::Channel::TestCase
         perform :start_game_loop
         perform :start_game_loop # a second loop is refused
 
-        Timeout.timeout(10) { sleep 0.1 until @room.reload.status == "finished" }
+        # The room is marked finished a moment before game_over goes out: wait for the message.
+        Timeout.timeout(10) { sleep 0.1 until broadcasts(room_stream).any? { JSON.parse(_1)["action"] == "game_over" } }
       end
     end
 
@@ -164,7 +165,7 @@ class Games::DoodleDashChannelTest < ActionCable::Channel::TestCase
     assert_equal 2, actions.count("drawing")
     assert_equal 2, actions.count("turn_over")
     assert_equal "game_over", actions.last
-    assert_equal 2, @room.game_state["used_words"].length
+    assert_equal 2, @room.reload.game_state["used_words"].length
   end
 
   test "with 3+ players and 2+ drawings the game ends with a gallery vote" do
@@ -197,7 +198,7 @@ class Games::DoodleDashChannelTest < ActionCable::Channel::TestCase
       with_constants(GameServices::DoodleDash, CHOOSE_TIME: 0.2) do
         subscribe(room_code: @room.code, player_id: "")
         perform :start_game_loop
-        Timeout.timeout(10) { sleep 0.1 until @room.reload.status == "finished" }
+        Timeout.timeout(10) { sleep 0.1 until broadcasts(room_stream).any? { JSON.parse(_1)["action"] == "game_over" } }
       end
     end
 

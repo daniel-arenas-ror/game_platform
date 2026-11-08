@@ -1,7 +1,9 @@
 class Games::GuessTheColorChannel < ApplicationCable::Channel
   STREAM_PREFIX    = "guess_the_color_room_"
   SHOW_DURATION    = 5   # seconds the color is shown on host screen
-  REVEAL_DURATION  = 5   # seconds the reveal is shown before next round
+  REVEAL_DURATION  = 5   # seconds the reveal stays up once every colour is out
+  REVEAL_STEP      = 0.5 # seconds between two colours coming out on the TV (furthest first)
+  REVEAL_STEPS_MAX = 4   # …all of them within this many seconds, however many players
 
   def subscribed
     @room   = Room.find_by(code: params[:room_code])
@@ -74,37 +76,17 @@ class Games::GuessTheColorChannel < ApplicationCable::Channel
         sleep 1.5   # grace period — lets in-flight client submissions arrive before we read picks
 
         # ── 3. Score & reveal ──────────────────────────────────────────────
-        @room.reload
-        target       = @room.game_state["current_color"]
-        picks        = @room.game_state["picks"] || {}
-        scores       = @room.game_state["scores"] || {}
-        round_scores = {}
-
-        scores.each_key do |player_id|
-          pick = picks[player_id]
-          pts  = pick ? GameServices::GuessTheColor.calculate_score(target, pick) : 0
-          round_scores[player_id] = pts
-          scores[player_id]       = scores[player_id].to_i + pts
-        end
-
-        @room.atomic_set(
-          "game_state.scores"       => scores,
-          "game_state.round_scores" => round_scores,
-          "game_state.status"       => "revealing"
-        )
+        result = service.score_round!
+        step   = [ REVEAL_STEP, REVEAL_STEPS_MAX.to_f / [ result[:scores].size, 1 ].max ].min
         broadcast({
           action:       "reveal",
-          target_color: target,
-          picks:        picks,
-          round_scores: round_scores,
-          matches:      round_scores.select { |id, _| picks[id] }.transform_values { |pts| GameServices::GuessTheColor.match_percent(pts) },
-          perfect:      GameServices::GuessTheColor::PERFECT_MATCH,
-          scores:       scores,
+          **result,
+          step_ms:      (step * 1000).round,
           nicknames:    nicknames_map,
           round:        round,
           total_rounds: total_rounds
         })
-        sleep REVEAL_DURATION
+        sleep REVEAL_DURATION + step * result[:scores].size
       end
 
       # ── 4. Game over ───────────────────────────────────────────────────

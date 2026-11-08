@@ -4,6 +4,7 @@ import { t } from "controllers/shared/i18n"
 import { escapeHtml } from "controllers/shared/html"
 import { avatarHtml } from "controllers/shared/avatar"
 import { soundFile } from "controllers/shared/sound"
+import { confetti, pop } from "controllers/shared/celebration"
 
 export default class extends Controller {
   static values  = { roomCode: String }
@@ -18,12 +19,16 @@ export default class extends Controller {
     this.timerHandle = null
     this.tickSound   = soundFile("/games/sounds/timer_count_down.mp3")
     this.winSound    = soundFile("/games/sounds/Triumphant_win.mp3")
+    this.dingSound   = soundFile("/games/sounds/reveal.mp3")
+    this.revealTimers = []
+    this.calm        = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
     this.subscribe()
   }
 
   disconnect() {
     this.channel?.unsubscribe()
     this.stopTimer()
+    this.revealTimers.forEach(clearTimeout)
     this.winSound.pause()
   }
 
@@ -99,54 +104,77 @@ export default class extends Controller {
     this.submittedListTarget.appendChild(pill)
   }
 
+  // The target first, then everyone's colour from the furthest to the closest, one every
+  // `step_ms`; then the closest gets the trophy and the round's scores come up.
   showReveal(data) {
     this.stopTimer()
+    this.revealTimers.forEach(clearTimeout)
+    this.revealTimers = []
     this.showPhase("phaseReveal")
     this.updateRoundCounter(data.round, data.total_rounds)
 
-    // ── Color blocks grid ───────────────────────────────────────────────
-    if (this.hasRevealGridTarget) {
-      const { r, g, b } = data.target_color
-      let html = this.colorCard(`rgb(${r},${g},${b})`, t("guess_the_color.target"), true)
+    const matches = data.matches || {}
+    const missing = Object.keys(data.scores).filter(id => !data.picks[id])
+    const ranked  = Object.keys(data.picks).sort((a, b) => (matches[a] ?? 0) - (matches[b] ?? 0))
+    const step    = this.calm ? 0 : (data.step_ms ?? 500)
+    const { r, g, b } = data.target_color
 
-      Object.entries(data.picks).forEach(([playerId, pick]) => {
-        const nickname = this.nicknameFor(playerId, data)
-        const pr = pick.r ?? 128
-        const pg = pick.g ?? 128
-        const pb = pick.b ?? 128
-        html += this.colorCard(`rgb(${pr},${pg},${pb})`, nickname, false, false, data.matches?.[playerId], data.perfect)
+    this.revealGridTarget.innerHTML = this.colorCard(`rgb(${r},${g},${b})`, t("guess_the_color.target"), true, false, null,
+                                                     data.perfect, this.colorName(data.target_name))
+    this.roundScoresTarget.innerHTML = ""
+
+    const cards = [
+      ...missing.map(id => this.colorCard("rgb(30,30,30)", t("guess_the_color.no_pick", { name: this.nicknameFor(id, data) }), false, true)),
+      ...ranked.map(id => {
+        const { r, g, b } = data.picks[id]
+        return this.colorCard(`rgb(${r ?? 128},${g ?? 128},${b ?? 128})`, this.nicknameFor(id, data), false, false,
+                              matches[id], data.perfect, this.colorName(data.pick_names?.[id]), id)
       })
+    ]
+    cards.forEach((html, i) => this.revealTimers.push(setTimeout(() => {
+      this.revealGridTarget.insertAdjacentHTML("beforeend", html)
+      const card = this.revealGridTarget.lastElementChild
+      if (!this.calm) card.animate([ { opacity: 0, transform: "scale(.6)" }, { opacity: 1, transform: "scale(1)" } ], { duration: 300, easing: "ease-out" })
+    }, (i + 1) * step)))
 
-      // Players who didn't submit
-      Object.keys(data.scores).forEach(playerId => {
-        if (!data.picks[playerId]) {
-          const nickname = this.nicknameFor(playerId, data)
-          html += this.colorCard("rgb(30,30,30)", t("guess_the_color.no_pick", { name: nickname }), false, true)
-        }
-      })
+    this.revealTimers.push(setTimeout(() => this.finishReveal(data, ranked.at(-1)), (cards.length + 1) * step + 200))
+  }
 
-      this.revealGridTarget.innerHTML = html
+  finishReveal(data, closestId) {
+    const card = closestId && this.revealGridTarget.querySelector(`[data-player="${closestId}"]`)
+    if (card) {
+      card.querySelector("[data-swatch]").classList.add("ring-4", "ring-yellow-400")
+      card.insertAdjacentHTML("afterbegin", `<p class="text-yellow-300 font-black text-sm mb-1">${t("guess_the_color.closest")}</p>`)
+      if (!this.calm) { pop(card); confetti(40) }
+      this.dingSound.currentTime = 0
+      this.dingSound.play().catch(() => {})
     }
+    this.renderRoundScores(data)
+  }
 
-    // ── Round scores list ────────────────────────────────────────────────
-    if (this.hasRoundScoresTarget) {
-      const sorted = Object.entries(data.scores).sort(([, a], [, b]) => b - a)
-      this.roundScoresTarget.innerHTML = sorted.map(([playerId, total]) => {
-        const nickname   = this.nicknameFor(playerId, data)
-        const roundPts   = data.round_scores[playerId] ?? 0
-        return `
-          <div class="flex items-center justify-between py-2 px-4 bg-slate-800 rounded-xl">
-            <div class="flex items-center gap-2 min-w-0">
-              ${avatarHtml(nickname, "size-7")}
-              <span class="font-bold text-white text-sm truncate">${escapeHtml(nickname)}</span>
-            </div>
-            <div class="text-right">
-              <span class="text-yellow-400 font-mono font-black text-lg">${total}</span>
-              <span class="text-slate-500 text-xs font-mono ml-2">(+${roundPts})</span>
-            </div>
-          </div>`
-      }).join("")
-    }
+  renderRoundScores(data) {
+    const sorted = Object.entries(data.scores).sort(([, a], [, b]) => b - a)
+    this.roundScoresTarget.innerHTML = sorted.map(([playerId, total]) => {
+      const nickname = this.nicknameFor(playerId, data)
+      const roundPts = data.round_scores[playerId] ?? 0
+      const bonus    = data.bonuses?.[playerId]
+        ? `<span class="text-orange-400 text-xs font-black ml-2">${t("guess_the_color.streak_bonus", { count: data.streaks[playerId], points: data.bonuses[playerId] })}</span>` : ""
+      return `
+        <div class="flex items-center justify-between py-2 px-4 bg-slate-800 rounded-xl">
+          <div class="flex items-center gap-2 min-w-0">
+            ${avatarHtml(nickname, "size-7")}
+            <span class="font-bold text-white text-sm truncate">${escapeHtml(nickname)}</span>${bonus}
+          </div>
+          <div class="text-right">
+            <span class="text-yellow-400 font-mono font-black text-lg">${total}</span>
+            <span class="text-slate-500 text-xs font-mono ml-2">(+${roundPts})</span>
+          </div>
+        </div>`
+    }).join("")
+  }
+
+  colorName(key) {
+    return key ? t(`guess_the_color.colors.${key}`) : ""
   }
 
   showGameOver(data) {
@@ -222,18 +250,20 @@ export default class extends Controller {
       this.roundCounterTarget.textContent = t("shared.round_of", { round, total })
   }
 
-  // match: the pick's % match ("🎯" at `perfect` or more), shown under the name.
-  colorCard(bg, label, isTarget, dimmed = false, match = null, perfect = 97) {
+  // match: the pick's % match ("🎯" at `perfect` or more), shown under the name; colorName: the
+  // nearest named colour ("Salmon").
+  colorCard(bg, label, isTarget, dimmed = false, match = null, perfect = 97, colorName = "", playerId = "") {
     const border  = isTarget ? "border-2 border-yellow-400" : "border border-slate-700"
     const opacity = dimmed ? "opacity-40" : ""
     const color   = match >= 85 ? "text-green-400" : match >= 60 ? "text-yellow-400" : "text-red-400"
     const score   = match == null ? "" :
       `<p class="font-mono font-black text-lg ${color}">${match >= perfect ? "🎯 " : ""}${match}%</p>`
     return `
-      <div class="text-center ${opacity}">
-        <div class="w-28 h-28 rounded-2xl shadow-lg ${border}"
+      <div class="text-center ${opacity}" data-player="${escapeHtml(playerId)}">
+        <div data-swatch class="w-28 h-28 rounded-2xl shadow-lg ${border}"
              style="background:${bg}"></div>
         <p class="text-xs font-bold mt-2 text-slate-300 max-w-[112px] truncate">${escapeHtml(label)}</p>
+        ${colorName ? `<p class="text-xs text-slate-500 italic max-w-[112px] truncate">${escapeHtml(colorName)}</p>` : ""}
         ${score}
       </div>`
   }

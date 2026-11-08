@@ -5,6 +5,27 @@ module GameServices
     MATCH_SPREAD  = 0.17
     PERFECT_MATCH = 97 # % shown as "Perfect!" on the phones and the TV
 
+    # A streak: STREAK_LENGTH rounds in a row at STREAK_MATCH % or more pays STREAK_BONUS, and so does
+    # every round after it while the streak lasts.
+    STREAK_MATCH  = 85
+    STREAK_LENGTH = 3
+    STREAK_BONUS  = 150
+
+    # Named colours for the reveal ("It was Coral · you made Salmon"): the nearest one by eye (OKLab).
+    # Names are in the JS locale files: js.guess_the_color.colors.<key>.
+    COLOR_NAMES = {
+      "red" => [ 220, 40, 40 ], "crimson" => [ 160, 20, 40 ], "maroon" => [ 110, 20, 30 ], "pink" => [ 245, 160, 190 ],
+      "hot_pink" => [ 240, 80, 160 ], "salmon" => [ 245, 130, 110 ], "coral" => [ 250, 110, 80 ], "orange" => [ 245, 140, 30 ],
+      "peach" => [ 250, 195, 150 ], "rust" => [ 170, 70, 30 ], "brown" => [ 130, 80, 40 ], "tan" => [ 210, 170, 120 ],
+      "beige" => [ 230, 215, 185 ], "cream" => [ 250, 240, 210 ], "gold" => [ 230, 180, 30 ], "yellow" => [ 250, 235, 0 ],
+      "lemon" => [ 245, 240, 140 ], "khaki" => [ 190, 180, 110 ], "olive" => [ 120, 120, 40 ], "lime" => [ 160, 220, 40 ],
+      "green" => [ 40, 160, 60 ], "forest_green" => [ 30, 90, 40 ], "mint" => [ 160, 230, 190 ], "teal" => [ 20, 130, 130 ],
+      "turquoise" => [ 60, 210, 200 ], "cyan" => [ 40, 200, 230 ], "sky_blue" => [ 120, 190, 240 ], "blue" => [ 40, 90, 220 ],
+      "navy" => [ 20, 30, 90 ], "indigo" => [ 70, 40, 150 ], "purple" => [ 130, 50, 170 ], "violet" => [ 170, 110, 220 ],
+      "lavender" => [ 200, 180, 240 ], "magenta" => [ 210, 40, 190 ], "plum" => [ 120, 40, 90 ], "white" => [ 245, 245, 245 ],
+      "light_grey" => [ 200, 200, 200 ], "grey" => [ 128, 128, 128 ], "charcoal" => [ 60, 60, 65 ], "black" => [ 15, 15, 15 ]
+    }.transform_values { |(r, g, b)| { "r" => r, "g" => g, "b" => b } }.freeze
+
     # Easy mode: 12 vivid hues spaced 30° apart, full saturation, mid lightness
     EASY_HUES = (0..330).step(30).to_a.freeze
 
@@ -37,7 +58,8 @@ module GameServices
           "scores"        => scores,
           "current_color" => nil,
           "picks"         => {},
-          "round_scores"  => {}
+          "round_scores"  => {},
+          "streaks"       => {}
         )
       )
 
@@ -53,6 +75,50 @@ module GameServices
       else
         { "r" => rand(256), "g" => rand(256), "b" => rand(256) }
       end
+    end
+
+    # Scores the round's picks, adds streak bonuses, saves the totals and returns what the reveal shows.
+    def score_round!
+      @room.reload
+      state   = @room.game_state
+      target  = state["current_color"]
+      picks   = state["picks"] || {}
+      scores  = state["scores"] || {}
+      streaks = state["streaks"] || {}
+      round_scores, matches, bonuses = {}, {}, {}
+
+      scores.each_key do |id|
+        points = picks[id] ? self.class.calculate_score(target, picks[id]) : 0
+        match  = self.class.match_percent(points)
+        matches[id]  = match if picks[id]
+        streaks[id]  = picks[id] && match >= STREAK_MATCH ? streaks[id].to_i + 1 : 0
+        bonuses[id]  = STREAK_BONUS if streaks[id] >= STREAK_LENGTH
+        round_scores[id] = points + bonuses[id].to_i
+        scores[id]       = scores[id].to_i + round_scores[id]
+      end
+
+      @room.atomic_set("game_state.scores" => scores, "game_state.round_scores" => round_scores,
+                       "game_state.streaks" => streaks, "game_state.status" => "revealing")
+      {
+        target_color: target,
+        target_name:  self.class.color_name(target),
+        picks:        picks,
+        pick_names:   picks.transform_values { |pick| self.class.color_name(pick) },
+        matches:      matches,
+        bonuses:      bonuses,
+        streaks:      streaks,
+        round_scores: round_scores,
+        scores:       scores,
+        perfect:      PERFECT_MATCH
+      }
+    end
+
+    # The key of the named colour that looks closest ("coral").
+    def self.color_name(color)
+      return nil unless color
+
+      lab = oklab(color)
+      COLOR_NAMES.min_by { |_, named| oklab(named).zip(lab).sum { |a, b| (a - b)**2 } }.first
     end
 
     # 0–1000 points: 1000 × how alike the two colours look (a bell curve on their OKLab distance).

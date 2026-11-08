@@ -9,7 +9,7 @@ export default class extends Controller {
     "phaseWaiting", "phaseWatch", "phasePicking", "phaseSubmitted", "phaseReveal", "phaseGameOver",
     "colorPreview", "sliderHue", "sliderLight", "sliderSat",
     "pickingTimer", "submittedLabel", "submittedPreview",
-    "targetPreview", "myPickPreview", "matchLabel", "roundPointsLabel",
+    "targetPreview", "targetName", "myPickPreview", "matchLabel", "pickNote", "roundPointsLabel",
     "score", "gameOverTitle", "finalScore"
   ]
 
@@ -116,6 +116,18 @@ export default class extends Controller {
 
     if (this.hasRoundPointsLabelTarget)
       this.roundPointsLabelTarget.textContent = `+${roundPoints}`
+
+    // Names: "It was Coral" under the target, "You made Salmon" with the score, and a streak bonus.
+    if (this.hasTargetNameTarget)
+      this.targetNameTarget.textContent = data.target_name ? t(`guess_the_color.colors.${data.target_name}`) : ""
+    const made  = data.pick_names?.[this.playerIdValue]
+    const bonus = data.bonuses?.[this.playerIdValue]
+    if (this.hasPickNoteTarget) {
+      this.pickNoteTarget.textContent = [
+        made ? t("guess_the_color.you_made", { name: t(`guess_the_color.colors.${made}`) }) : "",
+        bonus ? t("guess_the_color.streak_bonus", { count: data.streaks[this.playerIdValue], points: bonus }) : ""
+      ].filter(Boolean).join(" · ")
+    }
 
     // "94% match", or "🎯 Perfect!" when it's spot on
     const match = data.matches?.[this.playerIdValue]
