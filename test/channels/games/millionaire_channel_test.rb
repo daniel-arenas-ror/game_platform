@@ -44,7 +44,7 @@ class Games::MillionaireChannelTest < ActionCable::Channel::TestCase
 
     Timeout.timeout(5) { sleep 0.05 until actions.any? { |a| a["action"] == "reveal_answer" } }
     reveal = actions.find { |a| a["action"] == "reveal_answer" }
-    assert_equal [ "auto", 5 ], reveal.values_at("advance", "next_in")
+    assert_equal [ "auto", Games::MillionaireChannel::REVEAL_DURATION ], reveal.values_at("advance", "next_in")
     unsubscribe # ends the loop instead of waiting the 5 seconds
   end
 

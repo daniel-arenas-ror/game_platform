@@ -98,4 +98,30 @@ class HowWantBeBillionareTest < ActiveSupport::TestCase
     svc.add_answer(@ana.id, 0)
     assert svc.everyone_answered?
   end
+
+  test "the reveal counts the picks, keeps the old totals and names a new leader" do
+    beto = @room.players.create!(nickname: "Beto")
+    svc  = GameServices::HowWantBeBillionare.new(@room)
+    svc.setup_game!
+    @room.atomic_set("game_state.user_points" => { @ana.id.to_s => 0, beto.id.to_s => 50 })
+    q = @questions.first
+    @room.atomic_set("game_state.question_id" => q.id, "game_state.question_points" => 100,
+                     "game_state.question_duration" => 20,
+                     "game_state.answers_history.#{q.id}" => { @ana.id.to_s => 0, beto.id.to_s => 1 },
+                     "game_state.answer_seconds.#{q.id}"  => { @ana.id.to_s => 0 })
+
+    result = svc.score_round!(0)
+    assert_equal [ 1, 1 ], result[:answer_counts]
+    assert_equal 50, result[:previous_points][beto.id.to_s]
+    assert_equal @ana.id.to_s, result[:new_leader]
+  ensure
+    beto&.delete
+  end
+
+  test "no new leader when the leader stays or it's a tie" do
+    svc = GameServices::HowWantBeBillionare.new(@room)
+    assert_nil svc.send(:new_leader, { "a" => 100, "b" => 0 }, { "a" => 200, "b" => 100 })
+    assert_nil svc.send(:new_leader, { "a" => 100, "b" => 0 }, { "a" => 100, "b" => 100 })
+    assert_nil svc.send(:new_leader, { "a" => 0 }, { "a" => 0 })
+  end
 end

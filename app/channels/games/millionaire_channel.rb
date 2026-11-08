@@ -1,5 +1,5 @@
 class Games::MillionaireChannel < ApplicationCable::Channel
-  REVEAL_DURATION = 5    # "auto" mode: seconds the reveal is shown before the next question
+  REVEAL_DURATION = 7    # "auto" mode: seconds the reveal is shown (answer counts, answer, standings)
   ANSWER_POLL     = 0.25 # how often the loop checks whether everyone has answered
   ALL_IN_PAUSE    = 0.6  # once everyone answered: a beat before the reveal, so it doesn't feel cut off
   MANUAL_WAIT_LIMIT = 1.minutes # "manual" mode: give up if the host never taps Next
@@ -46,7 +46,7 @@ class Games::MillionaireChannel < ApplicationCable::Channel
 
         @room.reload
         sleep_time = @room.game_state["time_per_round"].to_i
-        sleep_time = 10 if sleep_time < 1
+        sleep_time = GameServices::HowWantBeBillionare::DEFAULT_SECONDS if sleep_time < 1
         svc        = GameServices::HowWantBeBillionare.new(@room)
 
         # ── 1. Broadcast the current question ────────────────────────────
@@ -77,6 +77,9 @@ class Games::MillionaireChannel < ApplicationCable::Channel
           question:               @room.game_state["question"],
           options:                @room.game_state["answers"],
           correct_answer_indices: result[:correct_answer_indices],
+          answer_counts:          result[:answer_counts],
+          previous_points:        result[:previous_points],
+          new_leader:             result[:new_leader],
           round_scores:           result[:round_scores],
           round_details:          result[:round_details],
           streaks:                result[:streaks],

@@ -80,6 +80,7 @@
              class="flex items-center border-2 border-slate-700 px-4 py-3 sm:p-4 rounded-2xl gap-3 transition-all duration-300">
           <span class="text-yellow-400 font-black w-6"><%= letter %>:</span>
           <span data-millionaire-target="revealOptionText" class="flex-1 font-sans font-bold text-slate-200"></span>
+          <span data-millionaire-target="revealOptionCount" class="font-sans text-xs font-bold text-slate-400 tabular-nums whitespace-nowrap"></span>
           <span data-millionaire-target="revealOptionIcon" class="text-base w-6 text-right"></span>
         </div>
       <% end %>
@@ -90,7 +91,11 @@
          class="hidden text-center w-full bg-slate-800/60 rounded-2xl p-4 sm:p-5 border border-slate-700">
       <p data-millionaire-target="revealResultText" class="text-2xl font-black mb-1"></p>
       <p data-millionaire-target="revealTotalText" class="text-sm text-slate-400 font-mono whitespace-pre-line"></p>
+      <p data-millionaire-target="revealRankText" class="mt-2 text-sm font-bold text-yellow-300"></p>
     </div>
+
+    <%# "👑 Ana takes the lead!" (host, when the leader changes) %>
+    <p data-millionaire-target="revealLeader" class="hidden text-center text-2xl font-black text-yellow-300"></p>
 
     <%# Host round scores (shown for host, hidden for players) %>
     <div data-millionaire-target="revealHostScores"

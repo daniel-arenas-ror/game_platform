@@ -1,10 +1,13 @@
 import { Controller } from "@hotwired/stimulus"
 import consumer from "channels/consumer"
-import { celebrateWin, isTopScore } from "controllers/shared/celebration"
+import { celebrateWin, isTopScore, pop } from "controllers/shared/celebration"
 import { t, num } from "controllers/shared/i18n"
 import { escapeHtml } from "controllers/shared/html"
 import { avatarHtml } from "controllers/shared/avatar"
 import { soundFile } from "controllers/shared/sound"
+
+const SUSPENSE_MS  = 1500 // answer counts on screen before the right answer lights up
+const STANDINGS_MS = 1300 // then the standings slide into their new order (TV)
 
 export default class extends Controller {
   static targets = [
@@ -25,9 +28,12 @@ export default class extends Controller {
     "revealOption",       // array — 4 elements
     "revealOptionText",   // array — 4 elements
     "revealOptionIcon",   // array — 4 elements
+    "revealOptionCount",  // array — 4 elements: how many picked it
     "revealPlayerResult",
     "revealResultText",
     "revealTotalText",
+    "revealRankText",
+    "revealLeader",
     "revealHostScores",
     "nextInfo",
     "nextButton",
@@ -41,6 +47,8 @@ export default class extends Controller {
     this.answered       = false
     this.selectedOption = null
     this.timerHandle    = null
+    this.revealTimers   = []
+    this.calm           = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
     this.clickingSound  = soundFile("/games/sounds/clicking.mp3")
     this.chooseSound    = soundFile("/games/sounds/choose.mp3")
     this.clickingSound.loop = true
@@ -51,6 +59,7 @@ export default class extends Controller {
   disconnect() {
     this.winSound?.pause()
     this.stopCountdown()
+    this.clearRevealTimers()
     clearInterval(this.nextHandle)
     this.channel?.unsubscribe()
   }
@@ -185,40 +194,65 @@ export default class extends Controller {
     if (picked) this.lockChoice(picked)
   }
 
+  // The reveal comes in three beats: how many picked each answer (everyone guesses), then the
+  // right answer with each player's points, then (TV) the standings sliding into their new order.
   onRevealAnswer(data) {
     this.stopCountdown()
     this.showNext(data)
-    const { options, correct_answer_indices, round_scores, user_points, nicknames, round, total } = data
-    const details = data.round_details || {}
-    const streaks = data.streaks || {}
+    this.clearRevealTimers()
+    const { options, round, total } = data
 
     this.revealRoundLabelTarget.textContent = t("how_want_be_billionare.round_reveal", { round, total })
+    this.revealOptionTextTargets.forEach((el, i) => { el.textContent = options[i]?.text || "" })
+    this.paintTiles(null, data.answer_counts)
+    this.revealPlayerResultTarget.classList.add("hidden")
+    this.revealHostScoresTarget.classList.add("hidden")
+    this.revealLeaderTarget.classList.add("hidden")
+    this.statusValue = "reveal"
 
-    // Colour each answer tile
+    this.revealTimers.push(setTimeout(() => this.showRoundResult(data), SUSPENSE_MS))
+  }
+
+  clearRevealTimers() {
+    ;(this.revealTimers || []).forEach(clearTimeout)
+    this.revealTimers = []
+  }
+
+  // correct: the right answer indices, or null while it's still a secret (my own pick stays lit).
+  paintTiles(correct, counts) {
     this.revealOptionTargets.forEach((el, i) => {
-      this.revealOptionTextTargets[i].textContent = options[i]?.text || ""
+      const picked    = i === this.selectedOption
+      const isCorrect = correct?.includes(i)
+      const isMyWrong = correct && picked && !isCorrect
+      const icon      = this.revealOptionIconTargets[i]
 
-      const isCorrect = correct_answer_indices.includes(i)
-      const isMyWrong = i === this.selectedOption && !isCorrect
-
-      el.style.borderColor       = isCorrect ? "#4ade80" : (isMyWrong ? "#f87171" : "#334155")
-      el.style.backgroundColor   = isCorrect ? "rgba(21,128,61,0.15)" : (isMyWrong ? "rgba(153,27,27,0.15)" : "transparent")
-      el.style.opacity           = (!isCorrect && !isMyWrong) ? "0.35" : "1"
-
-      const icon = this.revealOptionIconTargets[i]
-      if (isCorrect) {
-        icon.textContent  = "✓"
-        icon.style.color  = "#4ade80"
-      } else if (isMyWrong) {
-        icon.textContent  = "✗"
-        icon.style.color  = "#f87171"
+      if (!correct) {
+        el.style.borderColor     = picked ? "#facc15" : "#334155"
+        el.style.backgroundColor = "transparent"
+        el.style.opacity         = "1"
+        icon.textContent         = ""
       } else {
-        icon.textContent  = ""
+        el.style.borderColor     = isCorrect ? "#4ade80" : (isMyWrong ? "#f87171" : "#334155")
+        el.style.backgroundColor = isCorrect ? "rgba(21,128,61,0.15)" : (isMyWrong ? "rgba(153,27,27,0.15)" : "transparent")
+        el.style.opacity         = (!isCorrect && !isMyWrong) ? "0.35" : "1"
+        icon.textContent         = isCorrect ? "✓" : (isMyWrong ? "✗" : "")
+        icon.style.color         = isCorrect ? "#4ade80" : "#f87171"
+        if (isCorrect && !this.calm) el.animate([ { transform: "scale(1.04)" }, { transform: "scale(1)" } ], { duration: 350 })
       }
+
+      const count = counts?.[i] ?? 0
+      this.revealOptionCountTargets[i].textContent = counts ? t("how_want_be_billionare.picked", { count }) : ""
     })
+  }
+
+  showRoundResult(data) {
+    const { correct_answer_indices, round_scores, user_points, nicknames } = data
+    const details = data.round_details || {}
+    const streaks = data.streaks || {}
+    this.paintTiles(correct_answer_indices, data.answer_counts)
 
     if (this.playerIdValue !== "") {
-      // ── Player view: show their own result ─────────────────────────────
+      // ── Player view: their own result and where they stand ──────────────
       const myId     = this.playerIdValue
       const earned   = round_scores[myId] || 0
       const myTotal  = user_points[myId]  || 0
@@ -228,7 +262,6 @@ export default class extends Controller {
       this.myStreak  = streaks[myId] || 0
 
       this.revealPlayerResultTarget.classList.remove("hidden")
-      this.revealHostScoresTarget.classList.add("hidden")
 
       this.revealResultTextTarget.textContent = correct
         ? t("how_want_be_billionare.correct", { points: num(earned) })
@@ -241,41 +274,89 @@ export default class extends Controller {
       if (lostRun) extras.push(t("how_want_be_billionare.streak_lost"))
       const total = t("how_want_be_billionare.running_total", { points: num(myTotal) })
       this.revealTotalTextTarget.textContent = extras.length ? `${extras.join(" · ")}\n${total}` : total
+      this.revealRankTextTarget.textContent  = this.rankLine(myId, user_points, nicknames)
     } else {
-      // ── Host view: show per-player round summary ────────────────────────
-      this.revealPlayerResultTarget.classList.add("hidden")
+      // ── Host view: everyone's round, in the old order first ─────────────
+      const before = data.previous_points || user_points
+      const order  = (points) => Object.keys(nicknames).sort((a, b) => (points[b] || 0) - (points[a] || 0))
+      this.revealHostScoresTarget.innerHTML = order(before).map(pid => this.hostRow(pid, data, details, streaks)).join("")
       this.revealHostScoresTarget.classList.remove("hidden")
-
-      this.revealHostScoresTarget.innerHTML = Object.keys(nicknames)
-        .sort((a, b) => (user_points[b] || 0) - (user_points[a] || 0))
-        .map(pid => {
-          const name   = escapeHtml(nicknames[pid] || pid)
-          const earned = round_scores[pid] || 0
-          const runTotal = user_points[pid] || 0
-          const scored = earned > 0
-          const info   = details[pid] || {}
-          const fire   = (streaks[pid] || 0) >= 2
-            ? `<span class="ml-2 text-orange-400 font-black">🔥${streaks[pid]}</span>` : ""
-          const speed  = scored && info.seconds != null
-            ? `<span class="text-slate-500 ml-2">${this.seconds(info.seconds)} s</span>` : ""
-          const bonus  = info.multiplier > 1 ? `<span class="text-orange-400 ml-1">×${num(info.multiplier)}</span>` : ""
-
-          return `
-            <div class="flex items-center justify-between p-3 rounded-xl border
-                        ${scored ? "border-green-700/50 bg-green-900/10" : "border-slate-800 bg-slate-900/30"}">
-              <span class="font-bold text-sm ${scored ? "text-green-300" : "text-slate-500"}">${name}${fire}</span>
-              <div class="text-right font-mono text-xs">
-                <span class="${scored ? "text-green-400 font-black" : "text-slate-600"}">
-                  ${scored ? "+" + num(earned) : "+0"}
-                </span>${bonus}${speed}
-                <span class="text-slate-600 ml-2">${t("how_want_be_billionare.total", { points: num(runTotal) })}</span>
-              </div>
-            </div>
-          `
-        }).join("")
+      this.revealTimers.push(setTimeout(() => this.moveStandings(order(user_points), before, user_points, data.new_leader, nicknames), STANDINGS_MS))
     }
+  }
 
-    this.statusValue = "reveal"
+  hostRow(pid, { nicknames, round_scores, user_points }, details, streaks) {
+    const avatar   = avatarHtml(nicknames[pid] || pid, "size-8 shrink-0")
+    const name     = escapeHtml(nicknames[pid] || pid)
+    const earned   = round_scores[pid] || 0
+    const runTotal = user_points[pid] || 0
+    const scored   = earned > 0
+    const info     = details[pid] || {}
+    const fire     = (streaks[pid] || 0) >= 2
+      ? `<span class="text-orange-400 font-black">🔥${streaks[pid]}</span>` : ""
+    const speed    = scored && info.seconds != null
+      ? `<span class="text-slate-500 ml-2">${this.seconds(info.seconds)} s</span>` : ""
+    const bonus    = info.multiplier > 1 ? `<span class="text-orange-400 ml-1">×${num(info.multiplier)}</span>` : ""
+
+    return `
+      <div data-pid="${escapeHtml(pid)}" class="flex items-center justify-between p-3 rounded-xl border
+                  ${scored ? "border-green-700/50 bg-green-900/10" : "border-slate-800 bg-slate-900/30"}">
+        <span class="flex items-center gap-2 min-w-0 font-bold text-sm ${scored ? "text-green-300" : "text-slate-500"}">${avatar}<span class="truncate">${name}</span>${fire}<span data-move class="font-mono text-xs"></span></span>
+        <div class="text-right font-mono text-xs">
+          <span class="${scored ? "text-green-400 font-black" : "text-slate-600"}">
+            ${scored ? "+" + num(earned) : "+0"}
+          </span>${bonus}${speed}
+          <span class="text-slate-600 ml-2">${t("how_want_be_billionare.total", { points: num(runTotal) })}</span>
+        </div>
+      </div>
+    `
+  }
+
+  // Rows slide to their new places (FLIP), with ↑2 / ↓1 next to the names and a banner for a new leader.
+  moveStandings(newOrder, before, after, leaderId, nicknames) {
+    const list = this.revealHostScoresTarget
+    const rows = new Map([...list.children].map(row => [row.dataset.pid, row]))
+    const tops = new Map([...rows].map(([pid, row]) => [pid, row.getBoundingClientRect().top]))
+    const rank = (points, pid) => 1 + Object.values(points).filter(p => (p || 0) > (points[pid] || 0)).length
+
+    newOrder.forEach(pid => rows.get(pid) && list.appendChild(rows.get(pid)))
+    rows.forEach((row, pid) => {
+      const moved = rank(before, pid) - rank(after, pid)
+      const badge = row.querySelector("[data-move]")
+      badge.textContent = moved > 0 ? `↑${moved}` : (moved < 0 ? `↓${-moved}` : "")
+      badge.style.color = moved > 0 ? "#4ade80" : "#f87171"
+
+      const dy = tops.get(pid) - row.getBoundingClientRect().top
+      if (dy && !this.calm) {
+        row.animate([ { transform: `translateY(${dy}px)` }, { transform: "translateY(0)" } ],
+                    { duration: 650, easing: "cubic-bezier(.2,.8,.2,1)" })
+      }
+    })
+
+    if (leaderId && nicknames[leaderId]) {
+      this.revealLeaderTarget.textContent = t("how_want_be_billionare.takes_lead", { name: nicknames[leaderId] })
+      this.revealLeaderTarget.classList.remove("hidden")
+      if (!this.calm) pop(this.revealLeaderTarget)
+    }
+  }
+
+  // "#1 · 40 pts ahead", "#1 · tied for the lead" or "#3 · 120 pts behind Ana" (the player just above).
+  rankLine(myId, points, nicknames) {
+    const mine   = points[myId] || 0
+    const others = Object.keys(nicknames).filter(id => id !== myId)
+    const above  = others.filter(id => (points[id] || 0) > mine)
+    if (!others.length) return ""
+
+    if (!above.length) {
+      const next = Math.max(...others.map(id => points[id] || 0))
+      return next === mine
+        ? t("how_want_be_billionare.rank_tied_lead")
+        : t("how_want_be_billionare.rank_lead", { points: num(mine - next) })
+    }
+    const closest = above.reduce((a, b) => ((points[a] || 0) <= (points[b] || 0) ? a : b))
+    return t("how_want_be_billionare.rank_behind", {
+      rank: above.length + 1, points: num((points[closest] || 0) - mine), name: nicknames[closest]
+    })
   }
 
   onShowLeaderboard(data) {

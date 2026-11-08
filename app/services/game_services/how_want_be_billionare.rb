@@ -1,6 +1,7 @@
 module GameServices
   class HowWantBeBillionare < Base
-    DEFAULT_ROUNDS   = 5
+    DEFAULT_ROUNDS   = 10                    # what the settings start on
+    DEFAULT_SECONDS  = 10
     SPEED_FLOOR      = 0.5                   # a right answer at the buzzer keeps half its points
     STREAKS          = { 5 => 2, 3 => 1.5 }.freeze # right answers in a row → points multiplier
     FINAL_MULTIPLIER = 2                     # the last question is worth double
@@ -128,6 +129,17 @@ module GameServices
       POINTS_LADDER[(progress * (POINTS_LADDER.size - 1)).round]
     end
 
+    # The player now alone at the top, when that's someone other than before. Nil otherwise.
+    def new_leader(before, after)
+      leader = ->(points) do
+        top = points.values.map(&:to_i).max
+        ids = points.select { |_, p| p.to_i == top }.keys
+        ids.first if top.to_i.positive? && ids.size == 1
+      end
+      now = leader.(after)
+      now if now && now != leader.(before)
+    end
+
     def streak_multiplier(streak)
       STREAKS.find { |length, _| streak >= length }&.last || 1
     end
@@ -145,6 +157,7 @@ module GameServices
       user_points      = @room.game_state['user_points'] || {}
       streaks          = @room.game_state['streaks'] || {}
       worth            = question_points(round)
+      previous_points  = user_points.dup
       round_scores     = {}
       round_details    = {}
 
@@ -174,6 +187,9 @@ module GameServices
       @room.atomic_set('game_state.user_points' => user_points, 'game_state.streaks' => streaks)
 
       {
+        answer_counts:          question.answers.each_index.map { |i| question_answers.values.count { |a| a.to_i == i } },
+        previous_points:        previous_points,
+        new_leader:             new_leader(previous_points, user_points),
         round_scores:           round_scores,
         round_details:          round_details,
         streaks:                streaks,

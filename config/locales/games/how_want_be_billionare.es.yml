@@ -15,6 +15,13 @@ es:
           next_question: "Siguiente pregunta"
   js:
     how_want_be_billionare:
+      picked:
+        one: "%{count} la eligió"
+        other: "%{count} la eligieron"
+      rank_behind: "#%{rank} · a %{points} pts de %{name}"
+      rank_lead: "#1 · %{points} pts de ventaja"
+      rank_tied_lead: "#1 · empatado en el primer lugar"
+      takes_lead: "👑 ¡%{name} pasa al primer lugar!"
       worth: "%{points} pts"
       final_question: "Última pregunta · puntos dobles"
       lock_in: "Elige tu respuesta final"

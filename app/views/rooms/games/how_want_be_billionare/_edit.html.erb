@@ -4,7 +4,7 @@
     <% [5, 10, 20, 30].each do |num| %>
       <label class="relative cursor-pointer">
         <input type="radio" name="room[game_state][total_rounds]" value="<%= num %>" 
-                class="peer hidden" <%= 'checked' if @room.game_state['total_rounds'].to_i == num %>>
+                class="peer hidden" <%= 'checked' if (@room.game_state['total_rounds'] || GameServices::HowWantBeBillionare::DEFAULT_ROUNDS).to_i == num %>>
         <div class="text-center py-3 bg-slate-800 border-2 border-slate-700 rounded-xl text-white font-bold 
                     peer-checked:border-purple-500 peer-checked:bg-purple-500/10 transition-all">
           <%= t(".rounds_option", count: num) %>
@@ -20,7 +20,7 @@
     <% [5, 10, 20, 30].each do |num| %>
       <label class="relative cursor-pointer">
         <input type="radio" name="room[game_state][time_per_round]" value="<%= num %>" 
-                class="peer hidden" <%= 'checked' if @room.game_state['time_per_round'].to_i == num %>>
+                class="peer hidden" <%= 'checked' if (@room.game_state['time_per_round'] || GameServices::HowWantBeBillionare::DEFAULT_SECONDS).to_i == num %>>
         <div class="text-center py-3 bg-slate-800 border-2 border-slate-700 rounded-xl text-white font-bold 
                     peer-checked:border-purple-500 peer-checked:bg-purple-500/10 transition-all">
           <%= num %>
