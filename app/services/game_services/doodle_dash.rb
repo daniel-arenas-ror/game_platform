@@ -48,8 +48,8 @@ module GameServices
     MAX_CUSTOM_WORDS = 100
     MAX_CUSTOM_WORD  = 30 # letters
 
-    # What the artist draws: words (default), players in the room (everyone guesses who), or a mix
-    # (every other turn is a player turn). Player turns need 3+ players, else it's a word.
+    # What the artist draws: words, players in the room (everyone guesses who), or a mix (the default:
+    # every other turn is a player turn). Player turns need 3+ players, else it's a word.
     SUBJECTS           = %w[words players mix].freeze
     MIN_PLAYERS_TO_DRAW = 3
 
@@ -73,7 +73,7 @@ module GameServices
       difficulty = DIFFICULTIES.include?(state["difficulty"]) ? state["difficulty"] : "mixed"
       custom     = self.class.clean_custom_words(state["custom_words"])
       source     = WORD_SOURCES.include?(state["word_source"]) ? state["word_source"] : "mix"
-      subject    = SUBJECTS.include?(state["subject"]) ? state["subject"] : "words"
+      subject    = SUBJECTS.include?(state["subject"]) ? state["subject"] : "mix"
       order      = @players.map { |p| p.id.to_s }.shuffle
 
       @room.update!(

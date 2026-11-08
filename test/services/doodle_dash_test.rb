@@ -6,7 +6,7 @@ class DoodleDashTest < ActiveSupport::TestCase
   setup do
     @game = Game.create!(name: "Doodle Dash", code: "doodle_dash", description: "Draw")
     @room = Room.create!(game: @game, game_state: { "draw_time" => "60", "turns_per_player" => "2", "difficulty" => "easy",
-                                                 "word_source" => "classic" })
+                                                 "word_source" => "classic", "subject" => "words" })
     @ana, @beto, @caro = %w[Ana Beto Caro].map { |n| @room.players.create!(nickname: n) }
 
     @svc = Doodle.new(@room)
@@ -394,9 +394,10 @@ class DoodleDashTest < ActiveSupport::TestCase
   end
 
   test "mix is the default and draws from the packs and the classic easy and medium words" do
-    @room.atomic_set("game_state.word_source" => nil)
+    @room.atomic_set("game_state.word_source" => nil, "game_state.subject" => nil)
     Doodle.new(@room).setup_game!
     assert_equal "mix", @room.reload.game_state["word_source"]
+    assert_equal "mix", @room.game_state["subject"], "words and players take turns by default"
 
     everything = Doodle::PACKS.values.flat_map { _1["en"] } + Doodle::WORDS["en"]["easy"] + Doodle::WORDS["en"]["medium"]
     choices = Doodle.new(@room).start_turn!(0)[:choices]

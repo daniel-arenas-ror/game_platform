@@ -3,7 +3,7 @@ require "test_helper"
 class Games::DoodleDashChannelTest < ActionCable::Channel::TestCase
   setup do
     @game = Game.create!(name: "Doodle Dash", code: "doodle_dash", description: "Draw")
-    @room = Room.create!(game: @game, game_state: { "difficulty" => "easy" })
+    @room = Room.create!(game: @game, game_state: { "difficulty" => "easy", "subject" => "words" })
     @ana, @beto = %w[Ana Beto].map { |n| @room.players.create!(nickname: n) }
 
     svc = GameServices::DoodleDash.new(@room)
