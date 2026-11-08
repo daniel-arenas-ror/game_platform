@@ -7,6 +7,7 @@ import {
 } from "controllers/doodle_dash/drawing"
 import { celebrateWin, confetti, isTopScore, pop } from "controllers/shared/celebration"
 import { soundFile } from "controllers/shared/sound"
+import { avatarHtml } from "controllers/shared/avatar"
 
 // Countdown colour thresholds
 const COLOR_GREEN  = "#4ade80"
@@ -29,7 +30,7 @@ export default class extends Controller {
   static targets = [
     "score", "status", "countdown",
     ...PANELS, "waitingTitle", "waitingHint",
-    "choices", "word", "canvas", "colors", "sizes", "reactions",
+    "choices", "chooseTitle", "word", "canvas", "colors", "sizes", "reactions", "playerBanner", "revealLabel",
     "pattern", "guessForm", "guessInput", "feedback",
     "revealWord", "revealPoints",
     "voteOptions", "voteDone",
@@ -39,6 +40,8 @@ export default class extends Controller {
   connect() {
     this.timerHandle = null
     this.calm        = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
+    this.wordPlaceholder = this.guessInputTarget.placeholder // the page's texts, for word rounds
+    this.wordWasLabel    = this.revealLabelTarget.textContent
     this.nicknames   = {}
     this.artistId    = null
     this.word        = null
@@ -116,8 +119,8 @@ export default class extends Controller {
 
     switch (state.status) {
       case "choosing":
-        this.onChoosing({ artist_id: state.artist_id, duration: secondsUntil(state.choose_ends_at) })
-        if (state.choices) this.onChooseWord({ choices: state.choices })
+        this.onChoosing({ artist_id: state.artist_id, kind: state.kind, duration: secondsUntil(state.choose_ends_at) })
+        if (state.choices) this.onChooseWord({ choices: state.choices, kind: state.kind })
         break
       case "drawing":
         this.hasGuessed = this.playerIdValue in (state.guessed || {})
@@ -128,11 +131,11 @@ export default class extends Controller {
           this.lastId  = Math.max(state.cleared_upto || 0, ...(state.removed_strokes || []), ...state.strokes.map(s => s.id))
         }
         this.onDrawing({ artist_id: state.artist_id, pattern: state.pattern, turn_ends_at: state.turn_ends_at,
-                         duration: state.draw_time })
+                         duration: state.draw_time, kind: state.kind })
         break
       case "reveal":
         this.onTurnOver({ word: state.word, guessed: state.guessed, scores: state.scores, artist_id: state.artist_id,
-                          artist_points: state.artist_earned })
+                          artist_points: state.artist_earned, kind: state.kind })
         break
       case "voting":
         this.onVoting({ drawings: state.drawings, duration: secondsUntil(state.vote_ends_at) })
@@ -144,8 +147,9 @@ export default class extends Controller {
     }
   }
 
-  onChoosing({ artist_id, turn, total_turns, duration, nicknames }) {
+  onChoosing({ artist_id, turn, total_turns, duration, nicknames, kind }) {
     if (nicknames) this.nicknames = nicknames
+    this.kind       = kind || "word"
     this.artistId   = artist_id
     this.word       = null
     this.hasGuessed = false
@@ -159,24 +163,29 @@ export default class extends Controller {
       this.choicesTarget.innerHTML = `<p class="text-center text-slate-500">${t("doodle_dash.getting_words")}</p>`
       this.showPanel("panelChoose")
       // The words travel on this phone's private stream and can arrive before this announcement.
-      if (this.earlyChoices) this.onChooseWord({ choices: this.earlyChoices })
+      if (this.earlyChoices) this.onChooseWord(this.earlyChoices)
       this.syncUnless(() => this.hasChoices)
       navigator.vibrate?.([ 80, 60, 80 ])
     } else {
-      this.showWaiting(t("doodle_dash.picking", { name: this.name(artist_id) }), t("doodle_dash.get_ready_guess"))
+      const picking = this.playerRound ? "doodle_dash.picking_player" : "doodle_dash.picking"
+      this.showWaiting(t(picking, { name: this.name(artist_id) }), t("doodle_dash.get_ready_guess"))
     }
   }
 
-  onChooseWord({ choices }) {
-    if (!this.isArtist) { this.earlyChoices = choices; return }
+  // On a player round the choices are names: shown with their avatars, not capitalised.
+  onChooseWord({ choices, kind }) {
+    if (!this.isArtist) { this.earlyChoices = { choices, kind }; return }
     if (this.hasChoices) return
     this.hasChoices   = true
     this.earlyChoices = null
+    if (kind) this.kind = kind
+    this.chooseTitleTarget.textContent = t(this.playerRound ? "doodle_dash.pick_player" : "doodle_dash.pick_word")
     this.choicesTarget.innerHTML = choices.map((word, i) => `
       <button type="button" data-index="${i}"
-              class="dd-slide w-full py-5 rounded-2xl bg-slate-800 border-2 border-slate-700 active:border-lime-400
-                     text-2xl font-black capitalize cursor-pointer active:scale-[0.98] transition-transform"
-              style="animation-delay:${i * 60}ms">${esc(word)}</button>`).join("")
+              class="dd-slide w-full py-5 px-4 rounded-2xl bg-slate-800 border-2 border-slate-700 active:border-lime-400
+                     flex items-center justify-center gap-3 text-2xl font-black ${this.playerRound ? "" : "capitalize"}
+                     cursor-pointer active:scale-[0.98] transition-transform"
+              style="animation-delay:${i * 60}ms">${this.playerRound ? avatarHtml(word, "size-10 shrink-0") : ""}<span class="truncate">${esc(word)}</span></button>`).join("")
     this.choicesTarget.querySelectorAll("button").forEach(btn => {
       btn.addEventListener("click", () => {
         this.choicesTarget.querySelectorAll("button").forEach(b => { b.disabled = true })
@@ -191,15 +200,22 @@ export default class extends Controller {
     this.wordTarget.textContent = word
   }
 
-  onDrawing({ artist_id, pattern, duration, turn_ends_at }) {
+  get playerRound() {
+    return this.kind === "player"
+  }
+
+  onDrawing({ artist_id, pattern, duration, turn_ends_at, kind }) {
     this.artistId = artist_id
+    if (kind) this.kind = kind
+    this.playerBannerTarget.classList.toggle("hidden", !this.playerRound)
+    this.guessInputTarget.placeholder = this.playerRound ? t("doodle_dash.who_is_it") : this.wordPlaceholder
     const seconds = turn_ends_at ? secondsUntil(turn_ends_at) : duration
     this.startCountdown(seconds, duration)
 
     if (this.isArtist) {
       this.wordTarget.textContent = this.word || "…"
       this.syncUnless(() => this.word)
-      this.setStatus(t("doodle_dash.you_drawing"))
+      this.setStatus(t(this.playerRound ? "doodle_dash.you_drawing_player" : "doodle_dash.you_drawing"))
       this.showPanel("panelDraw")
       fitCanvas(this.canvasTarget)
       redraw(this.canvasTarget, this.strokes)
@@ -238,7 +254,9 @@ export default class extends Controller {
     }
   }
 
-  onTurnOver({ word, guessed, scores, artist_id, artist_points }) {
+  onTurnOver({ word, guessed, scores, artist_id, artist_points, kind }) {
+    if (kind) this.kind = kind
+    this.revealLabelTarget.textContent = this.playerRound ? t("doodle_dash.player_was") : this.wordWasLabel
     this.stopCountdown()
     this.countdownTarget.textContent = ""
     this.endStroke()

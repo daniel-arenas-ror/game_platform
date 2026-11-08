@@ -23,6 +23,7 @@ how_to_play:
   - On your turn, pick one of three secret words on your phone, then draw it with your finger. The bucket fills a closed shape with one tap. Your drawing appears live on the big screen.
   - Everyone else watches the TV and types guesses on their phone. If you're one letter off, your phone says "So close!"
   - A correct guess scores 50 to 100 points, depending on how fast you were, and the first to guess gets +25. The artist scores half of each guesser's points, so a clear drawing pays.
+  - Player rounds (a host setting, 3+ players): instead of a word, the artist draws someone in the room and everyone types who it is.
   - Already guessed? Send emoji reactions: they float up over the drawing on the TV and on the artist's phone.
   - At the end the TV shows a gallery of every drawing. Vote for the best one on your phone (not your own): its artist wins +100.
   - Letters of the word appear on the TV as hints. When everyone has drawn, the highest score wins.
@@ -63,6 +64,7 @@ translations:
       - En tu turno, elige una de tres palabras secretas en tu celular y dibújala con el dedo. El bote de pintura rellena una figura cerrada con un toque. Tu dibujo aparece en vivo en la pantalla grande.
       - Los demás miran la TV y escriben sus respuestas en el celular. Si te falta una letra, tu celular dice "¡Casi!"
       - Una respuesta correcta suma de 50 a 100 puntos, según lo rápido que fuiste, y el primero en adivinar gana +25. El artista suma la mitad de los puntos de cada adivinador, así que dibujar claro paga.
+      - Rondas de jugadores (un ajuste del anfitrión, 3 o más jugadores): en vez de una palabra, el artista dibuja a alguien de la sala y todos escriben quién es.
       - ¿Ya adivinaste? Envía reacciones con emojis: suben flotando sobre el dibujo en la TV y en el celular del artista.
       - Al final la TV muestra una galería con todos los dibujos. Vota por el mejor en tu celular (no el tuyo): su artista gana +100.
       - Las letras de la palabra aparecen en la TV como pistas. Cuando todos hayan dibujado, gana el puntaje más alto.

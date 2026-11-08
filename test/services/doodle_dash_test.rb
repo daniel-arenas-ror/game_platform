@@ -414,4 +414,47 @@ class DoodleDashTest < ActiveSupport::TestCase
     line = { "id" => 1000, "color" => "#111827", "size" => 4, "points" => [ [ 0.1, 0.1 ], [ 0.2, 0.2 ] ] }
     assert svc.save_stroke!(artist.id, line), "lines still go through"
   end
+
+  test "player rounds: the artist picks a connected player to draw, never themselves" do
+    @room.atomic_set("game_state.subject" => "players")
+    Doodle.new(@room).setup_game!
+    [ @ana, @beto, @caro ].each { _1.set(connected: true) }
+
+    turn   = Doodle.new(@room.reload).start_turn!(0)
+    artist = Player.find(turn[:artist_id])
+    assert_equal "player", turn[:kind]
+    assert_equal ([ @ana, @beto, @caro ] - [ artist ]).map(&:nickname).sort, turn[:choices].sort
+
+    name    = svc.choose_word!(artist.id, 0)
+    guesser = ([ @ana, @beto, @caro ] - [ artist ]).first
+    assert_equal "correct", svc.guess!(guesser.id, name.upcase)[:result]
+    assert_equal "player", svc.end_turn![:kind]
+  end
+
+  test "nobody is drawn twice before everyone has been drawn once" do
+    @room.atomic_set("game_state.subject" => "players")
+    Doodle.new(@room).setup_game!
+    [ @ana, @beto, @caro ].each { _1.set(connected: true) }
+    @room.reload.atomic_set("game_state.turns" => [ @ana.id.to_s ] * 3, "game_state.used_words" => [ "Beto" ])
+    assert_equal [ "Caro", "Beto" ], Doodle.new(@room).start_turn!(0)[:choices]
+  end
+
+  test "mix alternates words and players; with fewer than 3 players it stays words" do
+    @room.atomic_set("game_state.subject" => "mix")
+    Doodle.new(@room).setup_game!
+    [ @ana, @beto, @caro ].each { _1.set(connected: true) }
+    assert_equal "word", Doodle.new(@room.reload).start_turn!(0)[:kind]
+    assert_equal "player", Doodle.new(@room.reload).start_turn!(1)[:kind]
+
+    @caro.delete
+    @room.atomic_set("game_state.subject" => "players", "game_state.turns" => [ @ana.id.to_s ] * 2)
+    assert_equal "word", Doodle.new(@room.reload).start_turn!(1)[:kind]
+  end
+
+  test "letters with accents are hidden in the blanks too" do
+    turn = @svc.start_turn!(0)
+    @room.atomic_set("game_state.choices" => [ "Ángela" ])
+    svc.choose_word!(turn[:artist_id], 0)
+    assert_equal [ nil ] * 6, @room.reload.game_state["pattern"]
+  end
 end

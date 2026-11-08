@@ -20,6 +20,8 @@
     <div class="flex-1 flex items-center justify-center gap-10 px-8 py-6">
       <%# The word (blanks + hint letters) and the drawing %>
       <div class="flex flex-col items-center gap-5">
+        <p data-doodle-dash-host-target="playerChip"
+           class="hidden -mb-2 rounded-full border-2 border-yellow-400 bg-yellow-400/10 px-5 py-1 font-black text-xl text-yellow-300"></p>
         <p data-doodle-dash-host-target="pattern"
            class="min-h-[1.2em] font-mono font-black text-5xl tracking-wide text-white"></p>
 
@@ -138,7 +140,7 @@
       <%# Artist: pick a word %>
       <div data-doodle-dash-player-target="panelChoose" class="hidden flex-1 flex flex-col justify-center">
         <p class="text-center font-black text-2xl mb-1"><%= t(".your_turn") %></p>
-        <p class="text-center text-slate-400 text-sm mb-6"><%= t(".pick_word") %></p>
+        <p data-doodle-dash-player-target="chooseTitle" class="text-center text-slate-400 text-sm mb-6"><%= t(".pick_word") %></p>
         <div data-doodle-dash-player-target="choices" class="space-y-3"></div>
       </div>
 
@@ -180,6 +182,9 @@
 
       <%# Guesser: type the word %>
       <div data-doodle-dash-player-target="panelGuess" class="hidden flex-1 flex flex-col justify-center">
+        <%# Player rounds: the answer is someone in the room %>
+        <p data-doodle-dash-player-target="playerBanner"
+           class="hidden mb-4 rounded-2xl border-2 border-yellow-400 bg-yellow-400/10 px-4 py-3 text-center font-black text-yellow-300"><%= t(".player_banner") %></p>
         <p class="text-center text-slate-400 text-sm mb-2"><%= t(".guess_hint") %></p>
         <p data-doodle-dash-player-target="pattern" class="text-center font-mono font-black text-3xl mb-6"></p>
 
@@ -215,7 +220,7 @@
 
       <%# Reveal %>
       <div data-doodle-dash-player-target="panelReveal" class="hidden flex-1 flex flex-col items-center justify-center text-center">
-        <p class="text-slate-400 text-sm uppercase tracking-widest font-mono"><%= t(".word_was") %></p>
+        <p data-doodle-dash-player-target="revealLabel" class="text-slate-400 text-sm uppercase tracking-widest font-mono"><%= t(".word_was") %></p>
         <p data-doodle-dash-player-target="revealWord" class="font-black text-4xl text-lime-400 mt-2"></p>
         <p data-doodle-dash-player-target="revealPoints" class="font-black text-2xl mt-6"></p>
       </div>

@@ -22,7 +22,7 @@ export default class extends Controller {
   static values  = { roomCode: String }
   static targets = [
     "turnLabel", "pattern", "canvas", "overlay", "overlayIcon", "overlayTitle", "overlayHint",
-    "artistLabel", "phaseHint", "countdown", "scoreboard", "feed", "toasts", "reactions",
+    "artistLabel", "phaseHint", "countdown", "scoreboard", "feed", "toasts", "reactions", "playerChip",
     "phaseGameOver", "finalLeaderboard", "playAgain",
     "phaseGallery", "galleryCountdown", "galleryVotes", "galleryGrid", "bestDrawing", "galleryStrip"
   ]
@@ -106,7 +106,7 @@ export default class extends Controller {
 
     switch (state.status) {
       case "choosing":
-        this.onChoosing({ artist_id: state.artist_id, duration: secondsUntil(state.choose_ends_at) })
+        this.onChoosing({ artist_id: state.artist_id, kind: state.kind, duration: secondsUntil(state.choose_ends_at) })
         break
       case "drawing":
         this.strokes = (state.strokes || []).map(s => ({ ...s }))
@@ -114,13 +114,13 @@ export default class extends Controller {
         this.clearedUpto = state.cleared_upto || 0
         this.repaint()
         this.onDrawing({ artist_id: state.artist_id, pattern: state.pattern, turn_ends_at: state.turn_ends_at,
-                         duration: state.draw_time }, false)
+                         duration: state.draw_time, kind: state.kind }, false)
         break
       case "reveal":
         this.strokes = state.strokes || []
         this.repaint()
         this.onTurnOver({ word: state.word, artist_id: state.artist_id, guessed: this.guessed, scores: this.scores,
-                          artist_points: state.artist_earned })
+                          artist_points: state.artist_earned, kind: state.kind })
         break
       case "voting":
         this.onVoting({ drawings: state.drawings, duration: secondsUntil(state.vote_ends_at) })
@@ -132,8 +132,9 @@ export default class extends Controller {
     }
   }
 
-  onChoosing({ artist_id, turn, total_turns, duration, nicknames }) {
+  onChoosing({ artist_id, turn, total_turns, duration, nicknames, kind }) {
     if (nicknames) this.nicknames = nicknames
+    this.setKind(kind)
     if (turn === 1) this.clearSnapshots() // a new game (Play Again) starts a new gallery
     if (turn) this.turnIndex = turn - 1
     this.artistId = artist_id
@@ -145,18 +146,36 @@ export default class extends Controller {
     this.renderScoreboard()
 
     const name = this.name(artist_id)
-    this.showOverlay("🤫", t("doodle_dash.picking", { name: esc(name) }), t("doodle_dash.get_phone_ready"))
-    this.setSidebar(`✏️ ${name}`, t("doodle_dash.is_picking"))
+    if (this.playerRound) {
+      this.showOverlay("👤", t("doodle_dash.picking_player", { name: esc(name) }), t("doodle_dash.player_round_hint"))
+      this.setSidebar(`✏️ ${name}`, t("doodle_dash.is_picking_player"))
+    } else {
+      this.showOverlay("🤫", t("doodle_dash.picking", { name: esc(name) }), t("doodle_dash.get_phone_ready"))
+      this.setSidebar(`✏️ ${name}`, t("doodle_dash.is_picking"))
+    }
     this.startCountdown(duration)
   }
 
   // `fresh` is false when restoring a turn after a reload: keep the strokes already drawn.
-  onDrawing({ artist_id, pattern, duration, turn_ends_at }, fresh = true) {
+  // "player" rounds: someone in the room is being drawn; a chip above the word says so.
+  setKind(kind) {
+    this.kind = kind || "word"
+    this.playerChipTarget.textContent = t("doodle_dash.player_chip")
+    this.playerChipTarget.classList.toggle("hidden", !this.playerRound)
+  }
+
+  get playerRound() {
+    return this.kind === "player"
+  }
+
+  onDrawing({ artist_id, pattern, duration, turn_ends_at, kind }, fresh = true) {
+    if (kind) this.setKind(kind)
     this.artistId = artist_id
     if (fresh) { this.resetDrawing(); this.playSound(this.goSound) }
     this.hideOverlay()
     this.setPattern(pattern)
-    this.setSidebar(t("doodle_dash.is_drawing", { name: this.name(artist_id) }), t("doodle_dash.guess_on_phone"))
+    this.setSidebar(t("doodle_dash.is_drawing", { name: this.name(artist_id) }),
+                    t(this.playerRound ? "doodle_dash.guess_who_on_phone" : "doodle_dash.guess_on_phone"))
     this.renderScoreboard()
     this.startCountdown(turn_ends_at ? secondsUntil(turn_ends_at) : duration, duration, true)
   }
@@ -233,7 +252,8 @@ export default class extends Controller {
     else this.addFeed(`${who} <span class="text-slate-400">${esc(text)}</span>`)
   }
 
-  onTurnOver({ word, artist_id, artist_points, guessed, scores, turn, total_turns, nicknames }) {
+  onTurnOver({ word, artist_id, artist_points, guessed, scores, turn, total_turns, nicknames, kind }) {
+    if (kind) this.setKind(kind)
     this.stopCountdown()
     this.saveSnapshot(turn ? turn - 1 : this.turnIndex)
     this.toastsTarget.innerHTML = "" // the reveal banner sits where the toasts are
@@ -248,7 +268,10 @@ export default class extends Controller {
     const hint  = count === 0 ? t("doodle_dash.nobody_got_it") :
                   t("doodle_dash.players_guessed", { count, artist: esc(this.name(artist_id)), points: artist_points ?? 0 })
     const guessers = Object.keys(this.scores).filter(id => id !== artist_id).length
-    this.showOverlay("💡", t("doodle_dash.it_was", { word: esc(word || "?") }), hint, true, true)
+    const title = this.playerRound
+      ? `${avatarHtml(word || "?", "size-12 inline-block align-middle mr-2")}${t("doodle_dash.it_was_player", { name: esc(word || "?") })}`
+      : t("doodle_dash.it_was", { word: esc(word || "?") })
+    this.showOverlay(this.playerRound ? "👤" : "💡", title, hint, true, true)
     this.setSidebar(count && count >= guessers ? t("doodle_dash.everyone_got_it") : t("doodle_dash.times_up"),
                     turn && turn < total_turns ? t("doodle_dash.next_artist") : t("doodle_dash.final_results"))
   }

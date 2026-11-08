@@ -1,4 +1,7 @@
 <% pickers = [
+     [t(".subject"),   "subject",          "words", [["words", t(".subject_words"), t(".subject_words_desc")],
+                                                     ["players", t(".subject_players"), t(".subject_players_desc")],
+                                                     ["mix", t(".subject_mix"), t(".subject_mix_desc")]]],
      [t(".draw_time"), "draw_time",        "80",    [["40", "40s", t(".sprint")], ["60", "60s", t(".quick")], ["80", "80s", t(".normal")], ["100", "100s", t(".relaxed")]]],
      [t(".turns"),     "turns_per_player", "1",     [["1", "1×", t(".once")], ["2", "2×", t(".twice")], ["3", "3×", t(".three_times")]]],
      [t(".words"),     "difficulty",       "mixed", [["easy", t(".easy"), t(".easy_example")], ["medium", t(".medium"), t(".medium_example")],
@@ -58,6 +61,9 @@
         </label>
       <% end %>
     </div>
+    <% if key == "subject" %>
+      <p class="text-slate-500 text-xs"><%= t(".subject_note") %></p>
+    <% end %>
     <% if key == "show_guesses" %>
       <p class="text-slate-500 text-xs"><%= t(".rude_note") %></p>
     <% end %>

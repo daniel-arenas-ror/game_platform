@@ -3,6 +3,7 @@ es:
     games:
       doodle_dash:
         index:
+          player_banner: "👤 Ronda de jugadores: ¿a quién están dibujando? Escribe su nombre."
           gallery_title: "🎨 Galería"
           vote_on_phone: "¡Vota por el mejor dibujo en tu celular!"
           vote_title: "Vota por el mejor dibujo"
@@ -28,6 +29,16 @@ es:
           word_was: "La palabra era"
   js:
     doodle_dash:
+      pick_player: "Elige a un jugador para dibujar. Con cariño 🙂"
+      picking_player: "%{name} está eligiendo a un jugador…"
+      is_picking_player: "está eligiendo a un jugador"
+      player_round_hint: "👤 Ronda de jugadores: ¡van a dibujar a uno de ustedes!"
+      guess_who_on_phone: "¡Adivina quién es en tu celular!"
+      player_chip: "👤 Ronda de jugadores"
+      who_is_it: "¿Quién es?"
+      you_drawing_player: "Dibuja a este jugador, con cariño 🙂"
+      it_was_player: "¡Era %{name}!"
+      player_was: "Era"
       fill: "Bote de pintura"
       gallery_status: "Galería"
       votes_in:

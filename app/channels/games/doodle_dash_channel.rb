@@ -225,10 +225,11 @@ class Games::DoodleDashChannel < ApplicationCable::Channel
   # Word choice, then drawing. Returns early when the artist leaves or the loop is replaced.
   def play_turn(svc, index, turn, loop_id)
     artist_id = turn[:artist_id]
-    broadcast({ action: "choosing", turn: index + 1, total_turns: svc.total_turns, artist_id: artist_id,
+    broadcast({ action: "choosing", turn: index + 1, total_turns: svc.total_turns, artist_id: artist_id, kind: turn[:kind],
                 duration: GameServices::DoodleDash::CHOOSE_TIME, nicknames: nicknames_map })
     ActionCable.server.broadcast(player_stream(artist_id),
-                                 { action: "choose_word", choices: turn[:choices], duration: GameServices::DoodleDash::CHOOSE_TIME })
+                                 { action: "choose_word", choices: turn[:choices], kind: turn[:kind],
+                                   duration: GameServices::DoodleDash::CHOOSE_TIME })
 
     wait_for(GameServices::DoodleDash::CHOOSE_TIME + GRACE_PERIOD, loop_id) do
       state = Room.where(_id: @room.id).only(:game_state).first.game_state
@@ -242,7 +243,7 @@ class Games::DoodleDashChannel < ApplicationCable::Channel
 
     state     = @room.game_state
     draw_time = state["draw_time"].to_i
-    broadcast({ action: "drawing", artist_id: artist_id, pattern: state["pattern"],
+    broadcast({ action: "drawing", artist_id: artist_id, pattern: state["pattern"], kind: state["kind"],
                 duration: draw_time, turn_ends_at: state["turn_ends_at"] })
     ActionCable.server.broadcast(player_stream(artist_id), { action: "your_word", word: state["word"] })
 

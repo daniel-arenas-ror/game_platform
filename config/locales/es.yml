@@ -350,6 +350,14 @@ es:
           dense_desc: "10–25 pájaros por ronda"
       doodle_dash:
         edit:
+          subject: "QUÉ DIBUJAR"
+          subject_words: "✏️ Palabras"
+          subject_words_desc: "el juego clásico"
+          subject_players: "👤 Jugadores"
+          subject_players_desc: "dibuja a alguien de la sala"
+          subject_mix: "🔀 Ambos"
+          subject_mix_desc: "un turno sí, otro no"
+          subject_note: "Las rondas de jugadores necesitan 3 o más jugadores: todos adivinan a quién dibujan. ¡Con buena onda!"
           source: "PALABRAS"
           mix: "🎲 Mezcla"
           mix_desc: "un poco de todo"

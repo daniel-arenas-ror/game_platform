@@ -48,6 +48,11 @@ module GameServices
     MAX_CUSTOM_WORDS = 100
     MAX_CUSTOM_WORD  = 30 # letters
 
+    # What the artist draws: words (default), players in the room (everyone guesses who), or a mix
+    # (every other turn is a player turn). Player turns need 3+ players, else it's a word.
+    SUBJECTS           = %w[words players mix].freeze
+    MIN_PLAYERS_TO_DRAW = 3
+
     # Fill bucket: a "stroke" with one point and fill: true, flood-filled on every screen.
     MAX_FILLS = 30 # per drawing: each one costs every screen a full-canvas pass when it redraws
 
@@ -68,6 +73,7 @@ module GameServices
       difficulty = DIFFICULTIES.include?(state["difficulty"]) ? state["difficulty"] : "mixed"
       custom     = self.class.clean_custom_words(state["custom_words"])
       source     = WORD_SOURCES.include?(state["word_source"]) ? state["word_source"] : "mix"
+      subject    = SUBJECTS.include?(state["subject"]) ? state["subject"] : "words"
       order      = @players.map { |p| p.id.to_s }.shuffle
 
       @room.update!(
@@ -79,6 +85,8 @@ module GameServices
           "turns_per_player" => laps,
           "difficulty"       => difficulty,
           "word_source"      => source,
+          "subject"          => subject,
+          "kind"             => "word", # this turn: "word" or "player"
           "custom_words"     => custom,
           "show_guesses"     => state["show_guesses"].to_s != "false",
           # Same order every lap, so everyone draws once before anyone draws twice.
@@ -114,9 +122,12 @@ module GameServices
       artist_id = @room.game_state["turns"].to_a[index]
       return nil unless artist_id && Player.where(_id: artist_id, room_id: @room.id).exists?
 
-      choices = pick_words
+      players = player_turn?(index) ? pick_players(artist_id) : []
+      kind    = players.any? ? "player" : "word"
+      choices = players.presence || pick_words
       @room.atomic_set(
         "game_state.status"         => "choosing",
+        "game_state.kind"           => kind,
         "game_state.turn"           => index,
         "game_state.artist_id"      => artist_id,
         "game_state.choices"        => choices,
@@ -132,7 +143,7 @@ module GameServices
         "game_state.choose_ends_at" => Time.now.to_f + CHOOSE_TIME,
         "game_state.turn_ends_at"   => nil
       )
-      { artist_id: artist_id, choices: choices }
+      { artist_id: artist_id, choices: choices, kind: kind }
     end
 
     # The artist picks choice `index`, or the loop picks one at random when time runs out
@@ -151,7 +162,7 @@ module GameServices
         "$set"  => {
           "game_state.status"       => "drawing",
           "game_state.word"         => word,
-          "game_state.pattern"      => word.chars.map { |c| c.match?(/[a-z0-9]/) ? nil : c },
+          "game_state.pattern"      => word.chars.map { |c| c.match?(/[[:alnum:]]/) ? nil : c },
           "game_state.turn_ends_at" => Time.now.to_f + state["draw_time"].to_i
         },
         "$push" => { "game_state.used_words" => word }
@@ -240,7 +251,7 @@ module GameServices
       @room.atomic_set("game_state.status" => "reveal", "game_state.pattern" => word.to_s.chars)
       state = @room.game_state
       if state["strokes"].present?
-        entry = { "turn" => state["turn"], "artist_id" => state["artist_id"], "word" => word }
+        entry = { "turn" => state["turn"], "artist_id" => state["artist_id"], "word" => word, "kind" => state["kind"] }
         Room.collection.update_one({ "_id" => @room.id }, { "$push" => { "game_state.drawings" => entry } })
       end
 
@@ -248,6 +259,7 @@ module GameServices
         word:          word,
         artist_id:     state["artist_id"],
         artist_points: state["artist_earned"].to_i,
+        kind:          state["kind"],
         first_guesser: state["first_guesser"],
         guessed:       state["guessed"].to_h,
         scores:        state["scores"].to_h
@@ -470,6 +482,27 @@ module GameServices
     private
 
     # Three unused words. "mixed" offers one easy, one medium and one hard word.
+    def player_turn?(index)
+      case @room.game_state["subject"]
+      when "players" then true
+      when "mix"     then index.odd?
+      else false
+      end
+    end
+
+    # Up to 3 players connected right now, never the artist, whose name can be typed. Players not
+    # drawn yet come first, so nobody is drawn twice before everyone has been drawn once.
+    # Empty when the room is too small (the turn uses words instead).
+    def pick_players(artist_id)
+      players = Player.where(room_id: @room.id).to_a
+      return [] if players.size < MIN_PLAYERS_TO_DRAW
+
+      drawn = @room.game_state["used_words"].to_a
+      names = players.select { |p| p.connected && p.id.to_s != artist_id.to_s && self.class.normalize(p.nickname).present? }
+                     .map(&:nickname).uniq
+      (names - drawn).shuffle.first(CHOICES).then { |fresh| fresh + (names - fresh).shuffle.first(CHOICES - fresh.size) }
+    end
+
     def pick_words
       used   = @room.game_state["used_words"].to_a
       words  = WORDS.fetch(@room.locale, WORDS["en"])

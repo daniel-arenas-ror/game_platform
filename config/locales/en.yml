@@ -361,6 +361,14 @@ en:
           dense_desc: "10–25 birds per round"
       doodle_dash:
         edit:
+          subject: "WHAT TO DRAW"
+          subject_words: "✏️ Words"
+          subject_words_desc: "the classic game"
+          subject_players: "👤 Players"
+          subject_players_desc: "draw someone in the room"
+          subject_mix: "🔀 Both"
+          subject_mix_desc: "every other turn"
+          subject_note: "Player rounds need 3+ players: everyone guesses who is being drawn. Keep it friendly!"
           source: "WORDS FROM"
           mix: "🎲 Mix"
           mix_desc: "a bit of everything"

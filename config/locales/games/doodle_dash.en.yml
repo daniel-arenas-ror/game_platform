@@ -4,6 +4,7 @@ en:
     games:
       doodle_dash:
         index:
+          player_banner: "👤 Player round: who is being drawn? Type their name."
           gallery_title: "🎨 Gallery"
           vote_on_phone: "Vote for the best drawing on your phone!"
           vote_title: "Vote for the best drawing"
@@ -29,6 +30,16 @@ en:
           word_was: "The word was"
   js:
     doodle_dash:
+      pick_player: "Pick a player to draw. Draw nicely 🙂"
+      picking_player: "%{name} is picking a player…"
+      is_picking_player: "is picking a player"
+      player_round_hint: "👤 Player round: one of you is about to be drawn!"
+      guess_who_on_phone: "Guess who it is on your phone!"
+      player_chip: "👤 Player round"
+      who_is_it: "Who is it?"
+      you_drawing_player: "Draw this player, nicely 🙂"
+      it_was_player: "It was %{name}!"
+      player_was: "It was"
       fill: "Fill bucket"
       gallery_status: "Gallery"
       votes_in:
