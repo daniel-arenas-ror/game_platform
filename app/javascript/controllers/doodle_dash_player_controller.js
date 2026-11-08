@@ -21,7 +21,7 @@ const STROKE_LIMIT = 2000   // points per stroke (the server's max); longer line
 const SYNC_AFTER   = 1000   // ms: the artist asks again for their words if they haven't arrived
 const GUESS_PAUSE  = 400    // ms the Send button rests after a guess (the server's cooldown)
 
-const PANELS = [ "panelWaiting", "panelChoose", "panelDraw", "panelGuess", "panelReveal" ]
+const PANELS = [ "panelWaiting", "panelChoose", "panelDraw", "panelGuess", "panelReveal", "panelVote" ]
 
 export default class extends Controller {
   static values  = { roomCode: String, playerId: String }
@@ -31,7 +31,8 @@ export default class extends Controller {
     "choices", "word", "canvas", "colors", "sizes", "reactions",
     "pattern", "guessForm", "guessInput", "feedback",
     "revealWord", "revealPoints",
-    "phaseGameOver", "gameOverIcon", "gameOverTitle", "finalScore"
+    "voteOptions", "voteDone",
+    "phaseGameOver", "gameOverIcon", "gameOverTitle", "finalScore", "bestDrawingNote"
   ]
 
   connect() {
@@ -90,6 +91,8 @@ export default class extends Controller {
       case "hint":            this.setPattern(data.pattern, true); break
       case "guess_result":    this.onGuessResult(data); break
       case "guessed":         this.onGuessed(data);     break
+      case "voting":          this.onVoting(data);      break
+      case "voted":           this.onVoted();           break
       case "reaction":        if (this.isArtist) floatEmoji(this.reactionsTarget, data.emoji, this.calm); break
       case "turn_over":       this.onTurnOver(data);    break
       case "game_over":       this.onGameOver(data);    break
@@ -129,8 +132,12 @@ export default class extends Controller {
         this.onTurnOver({ word: state.word, guessed: state.guessed, scores: state.scores, artist_id: state.artist_id,
                           artist_points: state.artist_earned })
         break
+      case "voting":
+        this.onVoting({ drawings: state.drawings, duration: secondsUntil(state.vote_ends_at) })
+        if (state.my_vote != null) this.onVoted()
+        break
       case "game_over":
-        this.onGameOver({ scores: state.scores })
+        this.onGameOver({ scores: state.scores, best_drawings: state.best_drawings })
         break
     }
   }
@@ -249,8 +256,41 @@ export default class extends Controller {
     restartAnimation(this.revealWordTarget, "dd-pop")
   }
 
-  onGameOver({ scores }) {
+  // The gallery is on the TV; here, one button per drawing with the same number. Not your own.
+  onVoting({ drawings, duration, nicknames }) {
+    if (nicknames) this.nicknames = nicknames
+    this.startCountdown(duration)
+    this.setStatus(t("doodle_dash.gallery_status"))
+    this.voteDoneTarget.classList.add("hidden")
+    this.voteOptionsTarget.innerHTML = (drawings || []).map((d, i) => d.artist_id === this.playerIdValue ? "" : `
+      <button type="button" data-turn="${d.turn}" data-action="doodle-dash-player#vote"
+              class="dd-slide w-full flex items-center gap-3 py-4 px-4 rounded-2xl bg-slate-800 border-2 border-slate-700
+                     text-left cursor-pointer active:scale-[0.98] transition-transform" style="animation-delay:${i * 40}ms">
+        <span class="font-mono font-black text-lime-400 text-2xl w-10">#${i + 1}</span>
+        <span class="flex-1 min-w-0 truncate font-bold">${esc(this.name(d.artist_id))}</span>
+        <span class="font-black capitalize truncate">${esc(d.word || "")}</span>
+      </button>`).join("")
+    this.showPanel("panelVote")
+  }
+
+  vote(event) {
+    this.voteOptionsTarget.querySelectorAll("button").forEach(b => { b.disabled = true; b.classList.add("opacity-40") })
+    event.currentTarget.classList.remove("opacity-40")
+    event.currentTarget.classList.add("border-lime-400")
+    this.channel.perform("vote", { turn: Number(event.currentTarget.dataset.turn) })
+  }
+
+  onVoted() {
+    this.voteOptionsTarget.innerHTML = ""
+    this.voteDoneTarget.classList.remove("hidden")
+    navigator.vibrate?.(30)
+  }
+
+  onGameOver({ scores, best_drawings }) {
     this.stopCountdown()
+    const won = (best_drawings || []).some(d => d.artist_id === this.playerIdValue)
+    this.bestDrawingNoteTarget.textContent = won ? t("doodle_dash.your_drawing_won", { points: 100 }) : ""
+    this.bestDrawingNoteTarget.classList.toggle("hidden", !won)
     const me    = ranked(scores).find(r => r.id === this.playerIdValue)
     const place = me?.place
     const tied  = me && ranked(scores).filter(r => r.place === place).length > 1

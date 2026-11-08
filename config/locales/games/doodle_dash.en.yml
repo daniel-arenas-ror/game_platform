@@ -4,6 +4,11 @@ en:
     games:
       doodle_dash:
         index:
+          gallery_title: "🎨 Gallery"
+          vote_on_phone: "Vote for the best drawing on your phone!"
+          vote_title: "Vote for the best drawing"
+          vote_hint: "The numbers are on the TV. You can't vote for your own."
+          voted: "Vote in ✓ Look at the TV"
           react_label: "React to the drawing"
           get_ready: "Get ready…"
           grab_phones: "Grab your phones. One of you is about to draw."
@@ -24,6 +29,15 @@ en:
           word_was: "The word was"
   js:
     doodle_dash:
+      gallery_status: "Gallery"
+      votes_in:
+        one: "%{count} vote"
+        other: "%{count} votes"
+      best_drawing: "🎨 Best drawing"
+      best_votes:
+        one: "%{count} vote · +%{points}"
+        other: "%{count} votes · +%{points}"
+      your_drawing_won: "🎨 Your drawing won the vote! +%{points}"
       got_it_first: "⚡ First! +%{points}"
       first_toast: "⚡ %{name} got it first!"
       error: "Something went wrong"

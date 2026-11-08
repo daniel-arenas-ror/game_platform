@@ -23,7 +23,8 @@ export default class extends Controller {
   static targets = [
     "turnLabel", "pattern", "canvas", "overlay", "overlayIcon", "overlayTitle", "overlayHint",
     "artistLabel", "phaseHint", "countdown", "scoreboard", "feed", "toasts", "reactions",
-    "phaseGameOver", "finalLeaderboard", "playAgain"
+    "phaseGameOver", "finalLeaderboard", "playAgain",
+    "phaseGallery", "galleryCountdown", "galleryVotes", "galleryGrid", "bestDrawing", "galleryStrip"
   ]
 
   connect() {
@@ -37,6 +38,7 @@ export default class extends Controller {
     this.gone      = new Set() // ids undone this turn: late messages for them are ignored
     this.clearedUpto = 0       // ids up to this were cleared this turn
     this.offline   = new Set()
+    this.snapshots = this.loadSnapshots() // turn → small picture of that turn's drawing, for the gallery
     this.tickSound = soundFile("/games/sounds/timer_count_down.mp3")
     this.dingSound = soundFile("/games/sounds/reveal.mp3")
     this.goSound   = soundFile("/games/sounds/click.mp3")
@@ -77,6 +79,8 @@ export default class extends Controller {
       case "clear":           this.onClear(data);      break
       case "hint":            this.setPattern(data.pattern, true); break
       case "guessed":         this.onGuessed(data);    break
+      case "voting":          this.onVoting(data);     break
+      case "votes":           this.setVotes(data.count); break
       case "reaction":        floatEmoji(this.reactionsTarget, data.emoji, this.calm); break
       case "feed":            this.onFeed(data);       break
       case "turn_over":       this.onTurnOver(data);   break
@@ -93,6 +97,7 @@ export default class extends Controller {
 
   onSnapshot({ state, nicknames }) {
     this.nicknames = nicknames || {}
+    this.turnIndex = state.turn
     this.scores    = state.scores || {}
     this.guessed   = state.guessed || {}
     this.artistId  = state.artist_id
@@ -117,14 +122,20 @@ export default class extends Controller {
         this.onTurnOver({ word: state.word, artist_id: state.artist_id, guessed: this.guessed, scores: this.scores,
                           artist_points: state.artist_earned })
         break
+      case "voting":
+        this.onVoting({ drawings: state.drawings, duration: secondsUntil(state.vote_ends_at) })
+        this.setVotes(state.votes_count)
+        break
       case "game_over":
-        this.onGameOver({ scores: this.scores, nicknames: this.nicknames })
+        this.onGameOver({ scores: this.scores, nicknames: this.nicknames, drawings: state.drawings, best_drawings: state.best_drawings })
         break
     }
   }
 
   onChoosing({ artist_id, turn, total_turns, duration, nicknames }) {
     if (nicknames) this.nicknames = nicknames
+    if (turn === 1) this.clearSnapshots() // a new game (Play Again) starts a new gallery
+    if (turn) this.turnIndex = turn - 1
     this.artistId = artist_id
     this.guessed  = {}
     this.resetDrawing()
@@ -223,6 +234,7 @@ export default class extends Controller {
 
   onTurnOver({ word, artist_id, artist_points, guessed, scores, turn, total_turns, nicknames }) {
     this.stopCountdown()
+    this.saveSnapshot(turn ? turn - 1 : this.turnIndex)
     this.toastsTarget.innerHTML = "" // the reveal banner sits where the toasts are
     this.countdownTarget.textContent = ""
     if (nicknames) this.nicknames = nicknames
@@ -253,8 +265,68 @@ export default class extends Controller {
     this.renderScoreboard()
   }
 
+  // ── Gallery ───────────────────────────────────────────────────────────────
+
+  // At the end of a turn the finished drawing is on the canvas: keep a small copy. Kept in this tab's
+  // session storage too, so a reloaded TV still has the earlier drawings.
+  saveSnapshot(turn) {
+    if (turn == null || !this.strokes.length) return
+    const copy = document.createElement("canvas")
+    copy.width = 400
+    copy.height = 300
+    copy.getContext("2d").drawImage(this.canvasTarget, 0, 0, copy.width, copy.height)
+    this.snapshots[turn] = copy.toDataURL("image/jpeg", 0.8)
+    try { sessionStorage.setItem(this.snapshotKey, JSON.stringify(this.snapshots)) } catch {}
+  }
+
+  get snapshotKey() {
+    return `doodle-dash-gallery-${this.roomCodeValue}`
+  }
+
+  loadSnapshots() {
+    try { return JSON.parse(sessionStorage.getItem(this.snapshotKey)) || {} } catch { return {} }
+  }
+
+  clearSnapshots() {
+    this.snapshots = {}
+    try { sessionStorage.removeItem(this.snapshotKey) } catch {}
+  }
+
+  // One drawing: the picture (or a frame when this TV missed it), its number, the artist and the word.
+  drawingCard({ turn, artist_id, word }, number, big = false) {
+    const picture = this.snapshots[turn]
+      ? `<img src="${this.snapshots[turn]}" alt="${esc(word || "")}" class="w-full aspect-[4/3] object-cover bg-white">`
+      : `<div class="w-full aspect-[4/3] bg-white grid place-items-center text-5xl">🖼️</div>`
+    return `
+      <figure class="${big ? "" : "dd-slide"} rounded-2xl overflow-hidden border-2 border-slate-700 bg-slate-900">
+        <div class="relative">${picture}
+          ${number ? `<span class="absolute top-2 left-2 rounded-full bg-slate-950/85 px-3 py-1 font-mono font-black text-lime-400 ${big ? "text-2xl" : "text-lg"}">#${number}</span>` : ""}
+        </div>
+        <figcaption class="flex items-center gap-2 px-3 py-2">
+          ${avatarHtml(this.name(artist_id), "size-7 shrink-0")}
+          <span class="flex-1 min-w-0 truncate font-bold">${esc(this.name(artist_id))}</span>
+          <span class="font-black text-lime-400 capitalize truncate">${esc(word || "")}</span>
+        </figcaption>
+      </figure>`
+  }
+
+  onVoting({ drawings, duration, nicknames }) {
+    if (nicknames) this.nicknames = nicknames
+    this.hideOverlay()
+    this.galleryGridTarget.innerHTML = (drawings || []).map((d, i) => this.drawingCard(d, i + 1)).join("")
+    this.setVotes(0)
+    this.phaseGalleryTarget.classList.remove("hidden")
+    this.startCountdown(duration)
+  }
+
+  setVotes(count) {
+    this.galleryVotesTarget.textContent = t("doodle_dash.votes_in", { count: count || 0 })
+  }
+
   onGameOver(data) {
     this.stopCountdown()
+    this.phaseGalleryTarget.classList.add("hidden")
+    this.showGalleryResults(data.drawings || [], data.best_drawings || [])
     this.winSound = soundFile("/games/sounds/Triumphant_win.mp3")
     this.winSound.play().catch(() => {}) // ignore autoplay blocks
     this.finalLeaderboardTarget.innerHTML = this.buildLeaderboard(data.scores || this.scores, data.nicknames || this.nicknames)
@@ -341,6 +413,16 @@ export default class extends Controller {
     }).join("")
   }
 
+  showGalleryResults(drawings, best) {
+    this.bestDrawingTarget.classList.toggle("hidden", !best.length)
+    this.bestDrawingTarget.innerHTML = best.length ? `
+      <p class="text-center font-black text-2xl text-yellow-300 mb-3">${t("doodle_dash.best_drawing")}</p>
+      <div class="space-y-3">${best.map(d => this.drawingCard(d, null, true)).join("")}</div>
+      <p class="text-center font-mono text-slate-400 mt-2">${t("doodle_dash.best_votes", { count: best[0].votes, points: 100 })}</p>` : ""
+    this.galleryStripTarget.classList.toggle("hidden", !drawings.length)
+    this.galleryStripTarget.innerHTML = drawings.map(d => `<div class="w-44 shrink-0">${this.drawingCard(d)}</div>`).join("")
+  }
+
   buildLeaderboard(scores, nicknames) {
     return ranked(scores).map(({ id, pts, place }) => `
       <div class="flex items-center justify-between bg-slate-800 rounded-xl px-5 py-3">
@@ -380,6 +462,7 @@ export default class extends Controller {
     if (ticks && remaining > 0 && remaining <= TICK_FROM) this.playSound(this.tickSound)
     if (ticks && remaining > 0 && remaining <= PULSE_FROM) restartAnimation(this.countdownTarget, "dd-pulse")
     this.countdownTarget.textContent = remaining
+    this.galleryCountdownTarget.textContent = remaining
     this.countdownTarget.style.color = ratio > 0.5 ? COLOR_GREEN : ratio > 0.25 ? COLOR_YELLOW : COLOR_RED
   }
 

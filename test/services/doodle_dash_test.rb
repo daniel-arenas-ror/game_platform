@@ -290,4 +290,67 @@ class DoodleDashTest < ActiveSupport::TestCase
       end
     end
   end
+
+  # Two finished turns with a drawing each: Ana drew turn 0, Beto turn 1.
+  def gallery!
+    @room.atomic_set("game_state.drawings" => [
+      { "turn" => 0, "artist_id" => @ana.id.to_s, "word" => "cat" },
+      { "turn" => 1, "artist_id" => @beto.id.to_s, "word" => "sun" }
+    ])
+    svc.open_vote!
+  end
+
+  test "a turn with a drawing goes in the gallery, one without doesn't" do
+    artist, _word, _ = start_drawing
+    svc.save_stroke!(artist.id, { "id" => 1, "color" => "#111827", "size" => 4, "points" => [ [ 0.1, 0.1 ], [ 0.2, 0.2 ] ] })
+    svc.end_turn!
+    assert_equal [ artist.id.to_s ], @room.reload.game_state["drawings"].map { _1["artist_id"] }
+
+    @svc.start_turn!(1)
+    svc.choose_word!(nil)
+    svc.end_turn!
+    assert_equal 1, @room.reload.game_state["drawings"].size
+  end
+
+  test "votes: not for your own drawing, once each, and the winner's artist gets the points" do
+    gallery!
+    assert_not svc.vote!(@ana.id, 0), "own drawing"
+    assert svc.vote!(@ana.id, 1)
+    assert_not svc.vote!(@ana.id, 0), "only once"
+    assert svc.vote!(@caro.id, 1)
+    assert_not svc.vote!(@caro.id, 7), "no such drawing"
+    assert_equal 2, svc.votes_count
+
+    best = svc.tally_votes!
+    assert_equal [ [ 1, @beto.id.to_s, 2 ] ], best.map { _1.values_at("turn", "artist_id", "votes") }
+    assert_equal Doodle::BEST_DRAWING_POINTS, @room.reload.game_state["scores"][@beto.id.to_s]
+  end
+
+  test "a tie pays every artist at the top; no votes, no winner" do
+    gallery!
+    svc.vote!(@ana.id, 1)
+    svc.vote!(@beto.id, 0)
+    assert_equal 2, svc.tally_votes!.size
+
+    gallery!
+    assert_empty svc.tally_votes!
+  end
+
+  test "the vote ends when every connected player with someone else's drawing has voted" do
+    gallery!
+    [ @ana, @beto, @caro ].each { _1.set(connected: true) }
+    svc.vote!(@ana.id, 1)
+    svc.vote!(@beto.id, 0)
+    assert_not svc.all_voted?
+    svc.vote!(@caro.id, 0)
+    assert svc.all_voted?
+  end
+
+  test "there's a vote only with 2+ drawings and 3+ players" do
+    assert_not svc.voting?
+    gallery!
+    assert svc.voting?
+    @caro.delete
+    assert_not svc.voting?
+  end
 end

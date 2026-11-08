@@ -17,6 +17,11 @@ module GameServices
     # Players who aren't drawing can send these; they float up over the drawing on the TV.
     REACTIONS = %w[😂 👏 🔥 🤯 🤔 ❤️].freeze
 
+    # Game over: the TV shows every drawing and phones vote for the best one (not their own).
+    VOTE_TIME           = 20
+    BEST_DRAWING_POINTS = 100 # to the artist of the drawing with the most votes (all of them on a tie)
+    MIN_VOTERS          = 3   # with 2 players each would just vote for the other
+
     MAX_GUESS_LENGTH = 40
 
     # Drawing. Points are fractions of the canvas (0–1); brush sizes are per 1000 px of canvas width.
@@ -70,6 +75,9 @@ module GameServices
           "cleared_upto"     => 0,
           "pattern"          => nil,
           "artist_left"      => false,
+          "drawings"         => [], # { turn, artist_id, word } for every turn that has a drawing
+          "votes"            => {}, # voter id => turn
+          "best_drawings"    => [],
           "scores"           => @players.to_h { |p| [ p.id.to_s, 0 ] }
         )
       )
@@ -208,12 +216,16 @@ module GameServices
       fresh_state["artist_left"] == true
     end
 
-    # Ends the turn and returns what the reveal shows.
+    # Ends the turn and returns what the reveal shows. A turn with a drawing goes in the gallery.
     def end_turn!
       @room.reload
       word = @room.game_state["word"]
       @room.atomic_set("game_state.status" => "reveal", "game_state.pattern" => word.to_s.chars)
       state = @room.game_state
+      if state["strokes"].present?
+        entry = { "turn" => state["turn"], "artist_id" => state["artist_id"], "word" => word }
+        Room.collection.update_one({ "_id" => @room.id }, { "$push" => { "game_state.drawings" => entry } })
+      end
 
       {
         word:          word,
@@ -223,6 +235,55 @@ module GameServices
         guessed:       state["guessed"].to_h,
         scores:        state["scores"].to_h
       }
+    end
+
+    # ── Gallery vote ─────────────────────────────────────────────────────────
+
+    # True when there's something to vote on: 2+ drawings and enough players to make it fair.
+    def voting?
+      @room.reload
+      @room.game_state["drawings"].to_a.size >= 2 && @room.players.count >= MIN_VOTERS
+    end
+
+    def open_vote!
+      @room.atomic_set("game_state.status" => "voting", "game_state.votes" => {},
+                       "game_state.vote_ends_at" => Time.now.to_f + VOTE_TIME)
+    end
+
+    # A vote for drawing `turn`. Not for your own, and once only. Returns true when it counted.
+    def vote!(player_id, turn)
+      pid     = player_id.to_s
+      drawing = fresh_state["drawings"].to_a.find { |d| d["turn"] == turn.to_i }
+      return false unless drawing && drawing["artist_id"] != pid
+
+      filter = { "_id" => @room.id, "game_state.status" => "voting", "game_state.votes.#{pid}" => { "$exists" => false } }
+      apply(filter, { "$set" => { "game_state.votes.#{pid}" => drawing["turn"] } })
+    end
+
+    def votes_count
+      fresh_state["votes"].to_h.size
+    end
+
+    # Every connected player who has someone else's drawing to vote for has voted.
+    def all_voted?
+      state   = fresh_state
+      artists = state["drawings"].to_a.map { |d| d["artist_id"] }
+      voters  = Player.where(room_id: @room.id, connected: true).pluck(:id).map(&:to_s).select { |id| (artists - [ id ]).any? }
+      voters.any? && (voters - state["votes"].to_h.keys).empty?
+    end
+
+    # Counts the votes, pays the artist(s) of the winning drawing(s) and returns them.
+    def tally_votes!
+      @room.reload
+      state  = @room.game_state
+      counts = state["votes"].to_h.values.tally
+      top    = counts.values.max.to_i
+      best   = state["drawings"].to_a.select { |d| top.positive? && counts[d["turn"]] == top }
+                                     .map { |d| d.merge("votes" => top) }
+      scores = state["scores"].to_h
+      best.each { |d| scores[d["artist_id"]] = scores[d["artist_id"]].to_i + BEST_DRAWING_POINTS if scores.key?(d["artist_id"]) }
+      @room.atomic_set("game_state.best_drawings" => best, "game_state.scores" => scores)
+      best
     end
 
     def finish_game!
@@ -352,7 +413,8 @@ module GameServices
     # Guessers' phones: no word, no choices, no strokes (the drawing is on the TV only).
     def public_state
       state = @room.game_state
-      shown = state.except(*SECRET_KEYS, "strokes", "turns", "used_words", "loop_running")
+      shown = state.except(*SECRET_KEYS, "strokes", "turns", "used_words", "loop_running", "votes")
+      shown["votes_count"] = state["votes"].to_h.size
       shown["total_turns"] = total_turns
       shown["word"] = state["word"] if %w[reveal game_over].include?(state["status"])
       shown
@@ -367,6 +429,7 @@ module GameServices
     # (to carry on after a reload).
     def player_state(player_id)
       shown = public_state
+      shown["my_vote"] = @room.game_state.dig("votes", player_id.to_s)
       return shown unless player_id.to_s == @room.game_state["artist_id"]
 
       case @room.game_state["status"]

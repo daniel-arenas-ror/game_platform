@@ -82,9 +82,13 @@ class Games::DoodleDashChannel < ApplicationCable::Channel
         sleep REVEAL_DURATION # also after the last turn, so the last word stays up
       end
 
+      run_vote(svc, loop_id) if loop_id == @loop_id && svc.voting?
+
       if loop_id == @loop_id
         svc.finish_game!
-        broadcast({ action: "game_over", scores: @room.game_state["scores"], nicknames: nicknames_map })
+        state = @room.game_state
+        broadcast({ action: "game_over", scores: state["scores"], nicknames: nicknames_map,
+                    drawings: state["drawings"], best_drawings: state["best_drawings"] })
       end
     rescue => e
       Rails.logger.error("[DoodleDashChannel] game loop crashed in room #{@room&.code}: #{e.message}\n#{e.backtrace.first(3).join("\n")}")
@@ -183,6 +187,17 @@ class Games::DoodleDashChannel < ApplicationCable::Channel
     end
   end
 
+  # A vote for the best drawing in the game-over gallery. data: { turn: }
+  def vote(data)
+    return unless @player
+
+    svc = service
+    return unless svc.vote!(@player.id, data["turn"])
+
+    transmit({ action: "voted", turn: data["turn"].to_i })
+    ActionCable.server.broadcast(host_stream, { action: "votes", count: svc.votes_count })
+  end
+
   # An emoji from anyone but the artist while a word is drawn: floats up on the TV and on the
   # artist's phone, so players who already guessed still have something to do.
   def react(data)
@@ -240,6 +255,15 @@ class Games::DoodleDashChannel < ApplicationCable::Channel
       end
       svc.all_guessed? || svc.artist_left?
     end
+  end
+
+  # The gallery: phones vote until everyone has or the time runs out; the winner gets points.
+  def run_vote(svc, loop_id)
+    svc.open_vote!
+    broadcast({ action: "voting", drawings: @room.game_state["drawings"], nicknames: nicknames_map,
+                duration: GameServices::DoodleDash::VOTE_TIME })
+    wait_for(GameServices::DoodleDash::VOTE_TIME + GRACE_PERIOD, loop_id) { svc.all_voted? }
+    svc.tally_votes! if loop_id == @loop_id
   end
 
   # Sleeps until the block returns true, the time runs out, or the loop is replaced.

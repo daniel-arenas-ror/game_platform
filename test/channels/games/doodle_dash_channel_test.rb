@@ -158,6 +158,50 @@ class Games::DoodleDashChannelTest < ActionCable::Channel::TestCase
     assert_equal 2, @room.game_state["used_words"].length
   end
 
+  test "with 3+ players and 2+ drawings the game ends with a gallery vote" do
+    caro = @room.players.create!(nickname: "Caro")
+    @room.players.each { _1.set(connected: true) }
+    GameServices::DoodleDash.new(@room).setup_game!
+    @room.atomic_set("game_state.draw_time" => 1)
+    stroke = { "id" => 1, "color" => "#111827", "size" => 4, "points" => [ [ 0.1, 0.1 ], [ 0.5, 0.5 ] ] }
+
+    # Plays the phones: every artist draws a line, and everyone votes once the gallery opens.
+    phones = Thread.new do
+      loop do
+        state = Room.find(@room.id).game_state
+        svc   = GameServices::DoodleDash.new(Room.find(@room.id))
+        svc.save_stroke!(state["artist_id"], stroke) if state["status"] == "drawing" && state["strokes"].blank?
+        if state["status"] == "voting"
+          state["drawings"].each_with_index do |_, i|
+            voter = @room.players.to_a[i]
+            choice = state["drawings"].find { _1["artist_id"] != voter.id.to_s }
+            svc.vote!(voter.id, choice["turn"])
+          end
+          caro_choice = state["drawings"].find { _1["artist_id"] != caro.id.to_s }
+          svc.vote!(caro.id, caro_choice["turn"])
+        end
+        sleep 0.05
+      end
+    end
+
+    with_constants(Games::DoodleDashChannel, START_DELAY: 0, REVEAL_DURATION: 0, GRACE_PERIOD: 0.1, POLL_INTERVAL: 0.05) do
+      with_constants(GameServices::DoodleDash, CHOOSE_TIME: 0.2) do
+        subscribe(room_code: @room.code, player_id: "")
+        perform :start_game_loop
+        Timeout.timeout(10) { sleep 0.1 until @room.reload.status == "finished" }
+      end
+    end
+
+    messages = broadcasts(room_stream).map { |b| JSON.parse(b) }
+    assert_equal 3, messages.find { _1["action"] == "voting" }["drawings"].size
+    game_over = messages.last
+    assert_equal "game_over", game_over["action"]
+    assert_equal 3, game_over["drawings"].size
+    assert game_over["best_drawings"].any?
+  ensure
+    phones&.kill
+  end
+
   test "wrong guesses go to the TV feed only when the host allows it" do
     subscribe(room_code: @room.code, player_id: @guesser.id.to_s)
 

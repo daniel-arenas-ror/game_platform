@@ -3,6 +3,11 @@ es:
     games:
       doodle_dash:
         index:
+          gallery_title: "🎨 Galería"
+          vote_on_phone: "¡Vota por el mejor dibujo en tu celular!"
+          vote_title: "Vota por el mejor dibujo"
+          vote_hint: "Los números están en la TV. No puedes votar por el tuyo."
+          voted: "Voto enviado ✓ Mira la TV"
           react_label: "Reacciona al dibujo"
           get_ready: "Prepárense…"
           grab_phones: "Tomen sus celulares. Uno de ustedes está por dibujar."
@@ -23,6 +28,15 @@ es:
           word_was: "La palabra era"
   js:
     doodle_dash:
+      gallery_status: "Galería"
+      votes_in:
+        one: "%{count} voto"
+        other: "%{count} votos"
+      best_drawing: "🎨 Mejor dibujo"
+      best_votes:
+        one: "%{count} voto · +%{points}"
+        other: "%{count} votos · +%{points}"
+      your_drawing_won: "🎨 ¡Tu dibujo ganó la votación! +%{points}"
       got_it_first: "⚡ ¡El primero! +%{points}"
       first_toast: "⚡ ¡%{name} adivinó primero!"
       error: "Algo salió mal"

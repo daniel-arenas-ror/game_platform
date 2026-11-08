@@ -68,12 +68,30 @@
     <div data-doodle-dash-host-target="toasts"
          class="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2 pointer-events-none"></div>
 
+    <%# Gallery: every drawing of the game while the phones vote for the best one %>
+    <div data-doodle-dash-host-target="phaseGallery"
+         class="hidden absolute inset-0 z-30 flex flex-col items-center bg-slate-950/95 px-8 py-6 overflow-y-auto">
+      <h2 class="text-4xl font-black text-lime-400 tracking-wide"><%= t(".gallery_title") %></h2>
+      <p class="text-slate-300 text-xl mt-2"><%= t(".vote_on_phone") %></p>
+      <p class="mt-2 font-mono text-lg text-slate-400">
+        <span data-doodle-dash-host-target="galleryCountdown" class="font-black text-lime-400 tabular-nums"></span>
+        · <span data-doodle-dash-host-target="galleryVotes"></span>
+      </p>
+      <div data-doodle-dash-host-target="galleryGrid" class="mt-6 grid grid-cols-3 xl:grid-cols-4 gap-5 w-full max-w-6xl"></div>
+    </div>
+
     <%# Game over overlay %>
     <div data-doodle-dash-host-target="phaseGameOver"
-         class="hidden absolute inset-0 z-30 flex flex-col items-center justify-center bg-slate-950/95">
-      <p class="text-6xl mb-4">🏆</p>
-      <h2 class="text-5xl font-black text-lime-400 tracking-widest mb-8"><%= t("rooms.games.shared.game_over") %></h2>
-      <div data-doodle-dash-host-target="finalLeaderboard" class="space-y-3 w-full max-w-sm mb-10"></div>
+         class="hidden absolute inset-0 z-30 flex flex-col items-center justify-center-safe bg-slate-950/95 overflow-y-auto py-8 *:shrink-0">
+      <p class="text-5xl mb-3">🏆</p>
+      <h2 class="text-5xl font-black text-lime-400 tracking-widest mb-6"><%= t("rooms.games.shared.game_over") %></h2>
+      <div class="flex flex-wrap items-start justify-center gap-10 mb-8">
+        <div data-doodle-dash-host-target="finalLeaderboard" class="space-y-3 w-96 max-w-full"></div>
+        <%# The vote's winner (none when there was no vote) %>
+        <div data-doodle-dash-host-target="bestDrawing" class="hidden w-72"></div>
+      </div>
+      <%# Every drawing of the game, small %>
+      <div data-doodle-dash-host-target="galleryStrip" class="hidden flex justify-center-safe gap-3 overflow-x-auto max-w-5xl w-full px-4 pb-2 mb-8"></div>
       <button data-doodle-dash-host-target="playAgain"
               class="bg-lime-400 hover:bg-lime-300 text-slate-950 font-black px-10 py-3
                      rounded-xl uppercase tracking-widest text-lg transition-colors cursor-pointer">
@@ -186,6 +204,14 @@
         </div>
       </div>
 
+      <%# Gallery vote: the drawings are on the TV, numbered like these buttons %>
+      <div data-doodle-dash-player-target="panelVote" class="hidden flex-1 flex flex-col justify-center">
+        <p class="text-center font-black text-2xl"><%= t(".vote_title") %></p>
+        <p class="text-center text-slate-400 text-sm mt-1 mb-5"><%= t(".vote_hint") %></p>
+        <div data-doodle-dash-player-target="voteOptions" class="space-y-2"></div>
+        <p data-doodle-dash-player-target="voteDone" class="hidden text-center font-black text-2xl text-lime-400"><%= t(".voted") %></p>
+      </div>
+
       <%# Reveal %>
       <div data-doodle-dash-player-target="panelReveal" class="hidden flex-1 flex flex-col items-center justify-center text-center">
         <p class="text-slate-400 text-sm uppercase tracking-widest font-mono"><%= t(".word_was") %></p>
@@ -201,6 +227,7 @@
       <p data-doodle-dash-player-target="gameOverTitle" class="font-black text-3xl tracking-wide mb-4"></p>
       <p data-doodle-dash-player-target="finalScore" class="text-lime-400 font-mono font-black text-5xl"></p>
       <p class="text-slate-500 text-xs mt-1 font-mono"><%= t("rooms.games.shared.total_points") %></p>
+      <p data-doodle-dash-player-target="bestDrawingNote" class="hidden mt-6 font-black text-xl text-yellow-300"></p>
       <p class="text-slate-600 text-xs mt-8 font-mono"><%= t("rooms.games.shared.waiting_restart") %></p>
     </div>
 
