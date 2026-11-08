@@ -20,7 +20,7 @@ en:
           pick_word: "Pick a word. Only you can see it."
           draw: "Draw"
           no_letters: "Your drawing shows on the TV. No letters!"
-          undo: "↶ Undo"
+          undo: "Undo"
           clear: "Clear"
           guess_hint: "Look at the TV and guess the drawing"
           guess_placeholder: "Your guess…"

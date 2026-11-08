@@ -19,7 +19,7 @@ es:
           pick_word: "Elige una palabra. Solo tú la puedes ver."
           draw: "Dibuja"
           no_letters: "Tu dibujo se ve en la TV. ¡Nada de letras!"
-          undo: "↶ Deshacer"
+          undo: "Deshacer"
           clear: "Borrar"
           guess_hint: "Mira la TV y adivina el dibujo"
           guess_placeholder: "Tu respuesta…"
