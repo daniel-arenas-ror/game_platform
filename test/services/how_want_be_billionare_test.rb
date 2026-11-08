@@ -124,4 +124,87 @@ class HowWantBeBillionareTest < ActiveSupport::TestCase
     assert_nil svc.send(:new_leader, { "a" => 100, "b" => 0 }, { "a" => 100, "b" => 100 })
     assert_nil svc.send(:new_leader, { "a" => 0 }, { "a" => 0 })
   end
+
+  test "a bet on the final question is won on a right answer and lost on a wrong one" do
+    beto = @room.players.create!(nickname: "Beto")
+    svc  = GameServices::HowWantBeBillionare.new(@room)
+    svc.setup_game!
+    @room.atomic_set("game_state.user_points" => { @ana.id.to_s => 400, beto.id.to_s => 400 })
+
+    assert_equal 200, svc.place_bet!(@ana.id, 0.5)
+    assert_equal 400, svc.place_bet!(beto.id, 1)
+    assert_nil svc.place_bet!(@ana.id, 1), "one bet each"
+    assert_nil svc.place_bet!(beto.id, 0.3), "only the offered shares"
+
+    q = @questions.first
+    @room.atomic_set("game_state.question_id" => q.id, "game_state.question_points" => 100,
+                     "game_state.question_duration" => 20,
+                     "game_state.answers_history.#{q.id}" => { @ana.id.to_s => 0, beto.id.to_s => 1 },
+                     "game_state.answer_seconds.#{q.id}"  => { @ana.id.to_s => 0 })
+    result = svc.score_round!(9) # final: 100 × 2 + the bet
+
+    assert_equal 400 + 200 + 200, result[:user_points][@ana.id.to_s]
+    assert_equal 200, result[:round_details][@ana.id.to_s]["bet"]
+    assert_equal 0, result[:user_points][beto.id.to_s]
+    assert_equal(-400, result[:round_details][beto.id.to_s]["bet"])
+  ensure
+    beto&.delete
+  end
+
+  test "everyone with points has bet" do
+    svc = GameServices::HowWantBeBillionare.new(@room)
+    svc.setup_game!
+    @ana.set(connected: true)
+    assert svc.everyone_bet?, "no points, nothing to wait for"
+
+    @room.atomic_set("game_state.user_points.#{@ana.id}" => 300)
+    assert_not svc.everyone_bet?
+    svc.place_bet!(@ana.id, 0)
+    assert svc.everyone_bet?
+  end
+
+  test "50:50 takes away up to two wrong answers, once per game, before answering" do
+    svc = GameServices::HowWantBeBillionare.new(@room)
+    svc.setup_game!
+    @room.atomic_set("game_state.answers" => [ { "text" => "A", "correct" => true }, { "text" => "B", "correct" => false },
+                                              { "text" => "C", "correct" => false }, { "text" => "D", "correct" => false } ])
+
+    removed = svc.use_fifty!(@ana.id)
+    assert_equal 2, removed.size
+    assert_not_includes removed, 0
+    assert_equal removed, svc.fifty_removed(@ana.id)
+    assert_nil svc.use_fifty!(@ana.id), "only once"
+
+    beto = @room.players.create!(nickname: "Beto")
+    @room.atomic_set("game_state.answers" => [ { "text" => "A", "correct" => true }, { "text" => "B", "correct" => true },
+                                              { "text" => "C", "correct" => false }, { "text" => "D", "correct" => false } ])
+    assert_equal 1, svc.use_fifty!(beto.id).size, "one wrong answer always stays"
+  ensure
+    beto&.delete
+  end
+
+  test "awards: fastest answer, longest streak and the biggest comeback" do
+    svc = GameServices::HowWantBeBillionare.new(@room)
+    svc.setup_game!
+    @room.atomic_set("game_state.fastest" => { "a" => 2.5, "b" => 0.9 },
+                     "game_state.best_streaks" => { "a" => 5, "b" => 2 },
+                     "game_state.worst_ranks" => { "a" => 1, "b" => 2, "c" => 4 },
+                     "game_state.user_points" => { "a" => 500, "b" => 300, "c" => 400 })
+
+    awards = svc.awards.index_by { _1["key"] }
+    assert_equal [ "b", 0.9 ], awards["fastest"].values_at("player_id", "seconds")
+    assert_equal [ "a", 5 ], awards["streak"].values_at("player_id", "count")
+    assert_equal [ "c", 4, 2 ], awards["comeback"].values_at("player_id", "from", "to")
+  end
+
+  test "a picked pack only asks its questions" do
+    xmas = HowWantBeBillionare::Question.create!(text: "Xmas #{SecureRandom.hex(3)}?", points: 100, topic: "T", pack: "christmas",
+                                                 answers: [ { text: "A", correct: true }, { text: "B", correct: false } ])
+    @room.atomic_set("game_state.pack" => "christmas")
+    GameServices::HowWantBeBillionare.new(@room).setup_game!
+    pack = HowWantBeBillionare::Question.find(@room.reload.game_state["question_id"]).pack
+    assert_equal "christmas", pack
+  ensure
+    xmas&.delete
+  end
 end

@@ -458,12 +458,27 @@ es:
           pick_time_option: "%{count} seg"
       how_want_be_billionare:
         edit:
+          topics: "PREGUNTAS"
+          all_topics: "Todos los temas"
+          packs:
+            christmas: "🎄 Navidad"
+            general_knowledge: "Cultura general"
+            history: "Historia"
+            geography: "Geografía"
+            science: "Ciencia"
+            biology: "Biología"
+            food: "Comida"
+            sports: "Deportes"
+            literature: "Literatura"
+            art_and_music: "Arte y música"
+            math_and_technology: "Matemáticas y tecnología"
+            mythology_and_language: "Mitos y lenguaje"
           rounds: "NÚMERO DE RONDAS"
           rounds_option: "%{count} rondas"
           time: "TIEMPO POR RONDA (SEGUNDOS)"
           advance: "SIGUIENTE PREGUNTA"
           auto: "Automática"
-          auto_desc: "A los 5 segundos"
+          auto_desc: "Después de 7 segundos"
           manual: "Manual"
           manual_desc: "El anfitrión toca Siguiente"
       matching_pairs:

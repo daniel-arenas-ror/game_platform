@@ -6,6 +6,10 @@ module GameServices
     STREAKS          = { 5 => 2, 3 => 1.5 }.freeze # right answers in a row → points multiplier
     FINAL_MULTIPLIER = 2                     # the last question is worth double
     POINTS_LADDER    = (100..1000).step(100).to_a.freeze
+    BET_FRACTIONS    = [ 0, 0.25, 0.5, 1 ].freeze # share of your points you can bet on the final question
+    # Question packs (the import's file names) the host can pick from; nil = all of them.
+    PACKS = %w[christmas general_knowledge history geography science biology food sports literature
+               art_and_music math_and_technology mythology_and_language].freeze
 
     def initialize(room)
       @room = room
@@ -24,6 +28,11 @@ module GameServices
         'game_state.answers_history'    => {},
         'game_state.answer_seconds'     => {},
         'game_state.streaks'            => {},
+        'game_state.bets'               => {},
+        'game_state.fifty'              => {},
+        'game_state.fastest'            => {},
+        'game_state.best_streaks'       => {},
+        'game_state.worst_ranks'        => {},
         'game_state.screen'             => nil
       )
 
@@ -56,9 +65,85 @@ module GameServices
     # Every player still connected has answered, so the round can end before the time is up.
     def everyone_answered?
       @room.reload
-      answered  = (@room.game_state.dig('answers_history', @room.game_state['question_id'].to_s) || {}).keys
-      connected = @room.players.where(connected: true).pluck(:id).map(&:to_s)
-      connected.any? && (connected - answered).empty?
+      answered = (@room.game_state.dig('answers_history', @room.game_state['question_id'].to_s) || {}).keys
+      connected_ids.any? && (connected_ids - answered).empty?
+    end
+
+    # ── Final bet ──────────────────────────────────────────────────────────
+    # Before the final question each player bets a share of their points: won back on a right
+    # answer, lost on a wrong one (or none). Players with no points have nothing to bet.
+
+    def bets_open?
+      total_rounds > 1
+    end
+
+    def place_bet!(player_id, fraction)
+      fraction = fraction.to_f
+      return unless BET_FRACTIONS.include?(fraction)
+
+      @room.reload
+      id = player_id.to_s
+      return if @room.game_state.dig('bets', id)
+
+      amount = (@room.game_state.dig('user_points', id).to_i * fraction / 10.0).round * 10
+      @room.atomic_set("game_state.bets.#{id}" => amount)
+      amount
+    end
+
+    def bets_placed
+      (@room.reload.game_state['bets'] || {}).size
+    end
+
+    def everyone_bet?
+      @room.reload
+      points = @room.game_state['user_points'] || {}
+      waiting = connected_ids.select { |id| points[id].to_i.positive? } - (@room.game_state['bets'] || {}).keys
+      waiting.empty?
+    end
+
+    # ── 50:50 ─────────────────────────────────────────────────────────────
+    # Once per game a player can take away up to two wrong answers on their phone. At least one
+    # wrong answer always stays. Returns the removed indices, or nil when it can't be used.
+    def use_fifty!(player_id)
+      @room.reload
+      id          = player_id.to_s
+      question_id = @room.game_state['question_id'].to_s
+      return if @room.game_state.dig('fifty', id)
+      return unless @room.game_state.dig('answers_history', question_id, id).nil?
+
+      wrong   = (@room.game_state['answers'] || []).each_with_index.reject { |a, _| a['correct'] }.map(&:last)
+      removed = wrong.sample([ wrong.size - 1, 2 ].min).sort
+      @room.atomic_set("game_state.fifty.#{id}" => { 'question_id' => question_id, 'removed' => removed })
+      removed
+    end
+
+    # The answers this player took away on the current question (for a phone that reconnects).
+    def fifty_removed(player_id)
+      used = @room.game_state.dig('fifty', player_id.to_s)
+      used['removed'] if used && used['question_id'] == @room.game_state['question_id'].to_s
+    end
+
+    # ── Awards (game over) ──────────────────────────────────────────────────
+
+    def awards
+      @room.reload
+      state  = @room.game_state
+      points = state['user_points'] || {}
+      list   = []
+
+      fastest = (state['fastest'] || {}).min_by { |_, seconds| seconds.to_f }
+      list << { 'key' => 'fastest', 'player_id' => fastest[0], 'seconds' => fastest[1] } if fastest
+
+      streak = (state['best_streaks'] || {}).max_by { |_, best| best.to_i }
+      list << { 'key' => 'streak', 'player_id' => streak[0], 'count' => streak[1] } if streak && streak[1].to_i >= 3
+
+      climbs = (state['worst_ranks'] || {}).to_h { |id, worst| [ id, worst.to_i - rank_of(points, id) ] }
+      comeback = climbs.max_by { |_, climb| climb }
+      if comeback && comeback[1] >= 2
+        list << { 'key' => 'comeback', 'player_id' => comeback[0],
+                  'from' => state['worst_ranks'][comeback[0]], 'to' => rank_of(points, comeback[0]) }
+      end
+      list
     end
 
     # Score the current round; returns reveal data for broadcasting.
@@ -86,6 +171,15 @@ module GameServices
 
     private
 
+    def connected_ids
+      @room.players.where(connected: true).pluck(:id).map(&:to_s)
+    end
+
+    # 1 + how many have more points (ties share a place).
+    def rank_of(points, id)
+      1 + points.count { |other, p| other != id && p.to_i > points[id].to_i }
+    end
+
     # Questions climb the points ladder as the game goes on: cheap ones first, the most valuable at
     # the end. Falls back to any question not asked yet, then starts over when all were asked.
     def update_question!(round)
@@ -98,6 +192,8 @@ module GameServices
       end
 
       language  = ::HowWantBeBillionare::Question.match_for(@room.locale)
+      pack      = @room.game_state['pack'].presence
+      language  = language.merge('pack' => pack) if pack && ::HowWantBeBillionare::Question.where(language).where(pack: pack).exists?
       not_asked = asked_oids.empty? ? [] : [ { '$match' => { '_id' => { '$nin' => asked_oids } } } ]
       target    = ladder_points(round)
       near      = { '$match' => { 'points' => { '$gte' => target - 100, '$lte' => target + 100 } } }
@@ -156,6 +252,9 @@ module GameServices
       duration         = @room.game_state['question_duration'].to_f
       user_points      = @room.game_state['user_points'] || {}
       streaks          = @room.game_state['streaks'] || {}
+      bets             = final_round?(round) ? (@room.game_state['bets'] || {}) : {}
+      fastest          = @room.game_state['fastest'] || {}
+      best_streaks     = @room.game_state['best_streaks'] || {}
       worth            = question_points(round)
       previous_points  = user_points.dup
       round_scores     = {}
@@ -167,8 +266,13 @@ module GameServices
 
       (user_points.keys | question_answers.keys).each do |player_id|
         answer = question_answers[player_id]
+        bet    = bets[player_id].to_i
         unless answer && correct_indices.include?(answer.to_i)
           streaks[player_id] = 0
+          if bet.positive?
+            user_points[player_id]   = [ user_points[player_id].to_i - bet, 0 ].max
+            round_details[player_id] = { 'bet' => -bet }
+          end
           next
         end
 
@@ -179,12 +283,23 @@ module GameServices
         points     = (worth * (1 - (1 - SPEED_FLOOR) * late) * multiplier / 10.0).round * 10
 
         streaks[player_id]       = streak
-        user_points[player_id]   = user_points[player_id].to_i + points
-        round_scores[player_id]  = points
+        user_points[player_id]   = user_points[player_id].to_i + points + bet
+        round_scores[player_id]  = points + bet
         round_details[player_id] = { 'seconds' => seconds, 'streak' => streak, 'multiplier' => multiplier }
+        round_details[player_id]['bet'] = bet if bet.positive?
+        fastest[player_id]       = [ fastest[player_id], seconds ].compact.map(&:to_f).min if seconds
+        best_streaks[player_id]  = [ best_streaks[player_id].to_i, streak ].max
       end
 
-      @room.atomic_set('game_state.user_points' => user_points, 'game_state.streaks' => streaks)
+      # For the comeback award: the lowest place each player has been in (from round 2 on).
+      worst_ranks = @room.game_state['worst_ranks'] || {}
+      if round.positive?
+        user_points.each_key { |id| worst_ranks[id] = [ worst_ranks[id].to_i, rank_of(user_points, id) ].max }
+      end
+
+      @room.atomic_set('game_state.user_points' => user_points, 'game_state.streaks' => streaks,
+                       'game_state.fastest' => fastest, 'game_state.best_streaks' => best_streaks,
+                       'game_state.worst_ranks' => worst_ranks)
 
       {
         answer_counts:          question.answers.each_index.map { |i| question_answers.values.count { |a| a.to_i == i } },

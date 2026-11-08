@@ -68,6 +68,25 @@ class Games::MillionaireChannelTest < ActionCable::Channel::TestCase
     unsubscribe
   end
 
+  test "before the final question everyone bets; once all bets are in the question comes" do
+    @room.atomic_set("game_state.total_rounds" => 2)
+    ana = @room.players.first
+    ana.set(connected: true)
+    subscribe(room_code: @room.code, player_id: "")
+    perform :start_game_loop
+
+    Timeout.timeout(5) { sleep 0.05 until actions.any? { |a| a["action"] == "reveal_answer" } }
+    @room.atomic_set("game_state.user_points.#{ana.id}" => 300)
+    perform :next_question
+    bets = Timeout.timeout(5) { sleep 0.05 until (b = actions.find { |a| a["action"] == "place_bets" }); b }
+    assert_equal GameServices::HowWantBeBillionare::BET_FRACTIONS, bets["fractions"]
+
+    GameServices::HowWantBeBillionare.new(@room.reload).place_bet!(ana.id, 0.5)
+    Timeout.timeout(3) { sleep 0.05 until actions.count { |a| a["action"] == "send_question" } == 2 }
+    assert actions.select { |a| a["action"] == "send_question" }.last["final"]
+    unsubscribe
+  end
+
   test "players can't skip the question" do
     subscribe(room_code: @room.code, player_id: @room.players.first.id.to_s)
     assert_nothing_raised { perform :next_question }

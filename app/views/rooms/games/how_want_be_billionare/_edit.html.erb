@@ -1,3 +1,24 @@
+<%# Question packs: the import's files that have questions in the room's language. %>
+<% packs = HowWantBeBillionare::Question.where(HowWantBeBillionare::Question.match_for(@room.locale)).distinct(:pack) %>
+<% packs = GameServices::HowWantBeBillionare::PACKS & packs %>
+<% if packs.any? %>
+  <div class="space-y-6 bg-slate-900/50 p-6 rounded-2xl border border-slate-700 mb-2">
+    <label class="block text-xs font-bold text-slate-400 mb-3 tracking-widest"><%= t(".topics") %></label>
+    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+      <% [ [ "", t(".all_topics") ], *packs.map { |pack| [ pack, t(".packs.#{pack}") ] } ].each do |value, label| %>
+        <label class="relative cursor-pointer">
+          <input type="radio" name="room[game_state][pack]" value="<%= value %>"
+                 class="peer hidden" <%= 'checked' if @room.game_state['pack'].to_s == value %>>
+          <div class="h-full flex items-center justify-center text-center py-3 px-2 bg-slate-800 border-2 border-slate-700 rounded-xl text-white text-sm font-bold
+                      peer-checked:border-purple-500 peer-checked:bg-purple-500/10 transition-all">
+            <%= label %>
+          </div>
+        </label>
+      <% end %>
+    </div>
+  </div>
+<% end %>
+
 <div class="space-y-6 bg-slate-900/50 p-6 rounded-2xl border border-slate-700">
   <label class="block text-xs font-bold text-slate-400 mb-3 tracking-widest"><%= t(".rounds") %></label>
   <div class="grid grid-cols-3 gap-3">

@@ -54,7 +54,7 @@ A real-time multiplayer game platform. A host creates a **Room**, shares a QR co
 | Code | Name | Notes |
 |------|------|-------|
 | `fisherman` | The Fisherman | Social deduction with roles (fisherman/impostor/knower) |
-| `how_want_be_billionare` | How Want Be Billionaire | Timed trivia |
+| `how_want_be_billionare` | How Want Be Billionaire | Timed trivia: points climb each round, speed bonus, streaks, 50:50, a bet before the double-points final, awards. Rounds end once every connected player answered. Topic picker = question `pack` (the import file's name) |
 | `battle_city` | Battle City | Full |
 | `guess_the_color` | Guess The Color | Full |
 | `count_birds` | Count Birds | Full |

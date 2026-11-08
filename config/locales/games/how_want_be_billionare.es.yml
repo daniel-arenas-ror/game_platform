@@ -3,6 +3,9 @@ es:
     games:
       how_want_be_billionare:
         index:
+          final_question: "Última pregunta · puntos dobles"
+          place_bets: "¡Hagan sus apuestas!"
+          bets_explain: "Apuesta parte de tus puntos en la última pregunta: los ganas si aciertas y los pierdes si fallas."
           preparing: "Preparando las preguntas"
           vault: "Asegurando la bóveda del banco..."
           loading_question: "Cargando la pregunta..."
@@ -15,6 +18,24 @@ es:
           next_question: "Siguiente pregunta"
   js:
     how_want_be_billionare:
+      you_have: "Tienes %{points} pts. ¿Cuánto apuestas?"
+      nothing_to_bet: "Aún no tienes puntos para apostar. ¡Suerte!"
+      bet_none: "Nada"
+      bet_share: "%{percent}% · %{points}"
+      bet_all: "Todo · %{points}"
+      bet_placed: "Apuesta hecha: %{points} pts"
+      bets_in:
+        one: "%{count} apuesta hecha"
+        other: "%{count} apuestas hechas"
+      bet_won: "🎲 Apuesta ganada +%{points}"
+      bet_lost: "🎲 Apuesta perdida −%{points}"
+      awards: "Premios"
+      award_fastest: "⚡ El más rápido"
+      award_fastest_detail: "%{seconds} s"
+      award_streak: "🔥 Mejor racha"
+      award_streak_detail: "%{count} seguidas"
+      award_comeback: "🚀 Remontada"
+      award_comeback_detail: "#%{from} → #%{to}"
       picked:
         one: "%{count} la eligió"
         other: "%{count} la eligieron"

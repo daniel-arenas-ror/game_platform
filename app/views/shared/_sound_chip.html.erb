@@ -1,7 +1,7 @@
 <%# "Tap for sound" on every game screen (rooms/playing), bottom centre: game headers sit at the top,
     the Players button bottom-left and the join QR bottom-right. Browsers, iPhones above all, play sound only
     after a tap on the page, so a TV that nobody has touched stays silent. Hidden until a game asks
-    for a sound it can't play (sound_chip_controller). %>
+    for a sound it can't play, once per page and for a few seconds (sound_chip_controller). %>
 <div data-controller="sound-chip" class="hidden fixed bottom-3 left-1/2 -translate-x-1/2 z-[60]">
   <button type="button" data-action="sound-chip#turnOn"
           class="flex items-center gap-2 rounded-full border border-slate-700 bg-slate-900/90 px-4 py-2 text-sm font-bold text-white shadow-lg backdrop-blur transition-colors hover:border-slate-500 focus-visible:outline-2 focus-visible:outline-purple-400 motion-safe:animate-pulse">

@@ -8,6 +8,7 @@ module HowWantBeBillionare
     field :correct_answer, type: Array
     field :answers, type: Array
     field :topic, type: String
+    field :pack, type: String # the file it was imported from (christmas, history…), for the topic picker
     field :points, type: Integer
 
   end

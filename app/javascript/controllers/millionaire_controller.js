@@ -14,6 +14,7 @@ export default class extends Controller {
     "loading",
     "question",
     "input",
+    "bet",
     "reveal",
     "leaderboard",
     // question / input shared
@@ -37,8 +38,12 @@ export default class extends Controller {
     "revealHostScores",
     "nextInfo",
     "nextButton",
+    // bets (final question) and 50:50
+    "betProgress", "betPoints", "betOptions", "betStatus",
+    "fiftyButton",
     // leaderboard
-    "leaderboardList"
+    "leaderboardList",
+    "awards"
   ]
 
   static values = { status: String, roomCode: String, playerId: String }
@@ -73,6 +78,7 @@ export default class extends Controller {
     this.loadingTarget.classList.toggle("hidden",     s !== "loading")
     this.questionTarget.classList.toggle("hidden",    s !== "question")
     this.inputTarget.classList.toggle("hidden",       s !== "input")
+    this.betTarget.classList.toggle("hidden",         s !== "bet")
     this.revealTarget.classList.toggle("hidden",      s !== "reveal")
     this.leaderboardTarget.classList.toggle("hidden", s !== "leaderboard")
   }
@@ -144,6 +150,10 @@ export default class extends Controller {
   handleMessage(data) {
     switch (data.action) {
       case "send_question":    this.onSendQuestion(data);   break
+      case "place_bets":       this.onPlaceBets(data);      break
+      case "bet_placed":       this.onBetPlaced(data);      break
+      case "bets_progress":    this.onBetsProgress(data);   break
+      case "fifty_fifty":      this.applyFifty(data.removed); break
       case "reveal_answer":    this.onRevealAnswer(data);   break
       case "show_leaderboard": this.onShowLeaderboard(data); break
       case "player_presence":  break
@@ -163,9 +173,11 @@ export default class extends Controller {
 
     this.optionButtons().forEach(btn => {
       btn.disabled = false
-      btn.classList.remove("opacity-40", "cursor-not-allowed", "border-yellow-400")
+      btn.classList.remove("opacity-40", "opacity-10", "cursor-not-allowed", "border-yellow-400")
       btn.classList.add("border-blue-800")
     })
+    if (data.fifty_used) this.fiftyUsed = true
+    if (this.hasFiftyButtonTarget) this.fiftyButtonTarget.classList.toggle("hidden", !!this.fiftyUsed)
     if (this.hasLockedMessageTarget) this.lockedMessageTarget.classList.add("hidden")
     if (this.hasLockLabelTarget)     this.lockLabelTarget.classList.remove("hidden")
 
@@ -191,7 +203,82 @@ export default class extends Controller {
 
     // Reconnected after answering this question (sent with the current screen on connect).
     const picked = [...this.optionButtons()].find(btn => parseInt(btn.dataset.option, 10) === data.my_choice)
+    if (data.fifty_removed) this.applyFifty(data.fifty_removed)
     if (picked) this.lockChoice(picked)
+  }
+
+  // ── 50:50 (once per game, this phone only) ────────────────────────────────
+
+  useFifty() {
+    if (this.fiftyUsed || this.answered) return
+    this.fiftyUsed = true
+    this.fiftyButtonTarget.classList.add("hidden")
+    this.channel.perform("use_fifty", {})
+  }
+
+  applyFifty(removed) {
+    this.fiftyUsed = true
+    if (this.hasFiftyButtonTarget) this.fiftyButtonTarget.classList.add("hidden")
+    this.optionButtons().forEach(btn => {
+      if (!removed.includes(parseInt(btn.dataset.option, 10))) return
+      btn.disabled = true
+      btn.classList.add("opacity-10", "cursor-not-allowed")
+    })
+  }
+
+  // ── Bets before the final question ────────────────────────────────────────
+
+  onPlaceBets(data) {
+    this.hideNext()
+    this.clearRevealTimers()
+    this.statusValue = "bet"
+    this.startCountdown(data.duration)
+
+    if (this.playerIdValue === "") {
+      this.onBetsProgress({ placed: 0 })
+      return
+    }
+
+    const mine = data.points?.[this.playerIdValue] || 0
+    this.betStatusTarget.classList.add("hidden")
+    this.betOptionsTarget.innerHTML = ""
+    if (mine <= 0) {
+      this.betPointsTarget.textContent = t("how_want_be_billionare.nothing_to_bet")
+      return
+    }
+
+    this.betPointsTarget.textContent = t("how_want_be_billionare.you_have", { points: num(mine) })
+    data.fractions.forEach(fraction => {
+      const amount = Math.round(mine * fraction / 10) * 10
+      const button = document.createElement("button")
+      button.type = "button"
+      button.dataset.fraction = fraction
+      button.dataset.action = "millionaire#placeBet"
+      button.className = "rounded-2xl border-2 border-blue-800 bg-blue-950 py-5 px-3 text-lg font-black active:scale-95 transition-transform" +
+                         (fraction === 1 ? " border-yellow-400 text-yellow-300" : "")
+      button.textContent = fraction === 0 ? t("how_want_be_billionare.bet_none")
+                         : fraction === 1 ? t("how_want_be_billionare.bet_all", { points: num(amount) })
+                         : t("how_want_be_billionare.bet_share", { percent: num(fraction * 100), points: num(amount) })
+      this.betOptionsTarget.appendChild(button)
+    })
+    if (data.my_bet != null) this.onBetPlaced({ amount: data.my_bet })
+  }
+
+  placeBet(event) {
+    this.betOptionsTarget.querySelectorAll("button").forEach(b => { b.disabled = true; b.classList.add("opacity-40") })
+    event.currentTarget.classList.remove("opacity-40")
+    this.channel.perform("place_bet", { fraction: parseFloat(event.currentTarget.dataset.fraction) })
+  }
+
+  onBetPlaced({ amount }) {
+    if (!this.hasBetStatusTarget) return
+    this.betOptionsTarget.innerHTML = ""
+    this.betStatusTarget.textContent = t("how_want_be_billionare.bet_placed", { points: num(amount) })
+    this.betStatusTarget.classList.remove("hidden")
+  }
+
+  onBetsProgress({ placed }) {
+    if (this.hasBetProgressTarget) this.betProgressTarget.textContent = t("how_want_be_billionare.bets_in", { count: placed })
   }
 
   // The reveal comes in three beats: how many picked each answer (everyone guesses), then the
@@ -259,6 +346,7 @@ export default class extends Controller {
       const correct  = earned > 0
       const mine     = details[myId] || {}
       const lostRun  = !correct && (this.myStreak || 0) >= 2
+      const bet      = mine.bet || 0
       this.myStreak  = streaks[myId] || 0
 
       this.revealPlayerResultTarget.classList.remove("hidden")
@@ -272,6 +360,8 @@ export default class extends Controller {
       if (correct && mine.seconds != null) extras.push(t("how_want_be_billionare.answered_in", { seconds: this.seconds(mine.seconds) }))
       if (correct && mine.streak >= 2) extras.push(this.streakLabel(mine.streak, mine.multiplier))
       if (lostRun) extras.push(t("how_want_be_billionare.streak_lost"))
+      if (bet > 0) extras.push(t("how_want_be_billionare.bet_won", { points: num(bet) }))
+      if (bet < 0) extras.push(t("how_want_be_billionare.bet_lost", { points: num(-bet) }))
       const total = t("how_want_be_billionare.running_total", { points: num(myTotal) })
       this.revealTotalTextTarget.textContent = extras.length ? `${extras.join(" · ")}\n${total}` : total
       this.revealRankTextTarget.textContent  = this.rankLine(myId, user_points, nicknames)
@@ -297,6 +387,8 @@ export default class extends Controller {
     const speed    = scored && info.seconds != null
       ? `<span class="text-slate-500 ml-2">${this.seconds(info.seconds)} s</span>` : ""
     const bonus    = info.multiplier > 1 ? `<span class="text-orange-400 ml-1">×${num(info.multiplier)}</span>` : ""
+    const bet      = info.bet
+      ? `<span class="ml-2 ${info.bet > 0 ? "text-yellow-300" : "text-red-400"}">🎲${info.bet > 0 ? "+" : "−"}${num(Math.abs(info.bet))}</span>` : ""
 
     return `
       <div data-pid="${escapeHtml(pid)}" class="flex items-center justify-between p-3 rounded-xl border
@@ -305,7 +397,7 @@ export default class extends Controller {
         <div class="text-right font-mono text-xs">
           <span class="${scored ? "text-green-400 font-black" : "text-slate-600"}">
             ${scored ? "+" + num(earned) : "+0"}
-          </span>${bonus}${speed}
+          </span>${bonus}${bet}${speed}
           <span class="text-slate-600 ml-2">${t("how_want_be_billionare.total", { points: num(runTotal) })}</span>
         </div>
       </div>
@@ -394,6 +486,7 @@ export default class extends Controller {
       `
     }).join("")
 
+    this.renderAwards(data.awards || [], nicknames || {})
     this.statusValue = "leaderboard"
     if (this.playerIdValue && isTopScore(leaderboard, this.playerIdValue)) celebrateWin()
   }
@@ -432,6 +525,27 @@ export default class extends Controller {
       el.classList.toggle("text-yellow-400", remaining > 5)
       el.classList.toggle("text-red-500",    remaining <= 5)
     })
+  }
+
+  renderAwards(awards, nicknames) {
+    const details = {
+      fastest:  (a) => t("how_want_be_billionare.award_fastest_detail", { seconds: this.seconds(a.seconds) }),
+      streak:   (a) => t("how_want_be_billionare.award_streak_detail", { count: a.count }),
+      comeback: (a) => t("how_want_be_billionare.award_comeback_detail", { from: a.from, to: a.to })
+    }
+    const shown = awards.filter(a => details[a.key] && nicknames[a.player_id])
+    this.awardsTarget.classList.toggle("hidden", !shown.length)
+    this.awardsTarget.innerHTML = shown.length ? `
+      <p class="text-center text-xs font-bold uppercase tracking-widest text-blue-400">${t("how_want_be_billionare.awards")}</p>
+      ${shown.map(a => `
+        <div class="flex items-center gap-3 rounded-2xl border border-slate-700 bg-slate-900/80 p-3">
+          ${avatarHtml(nicknames[a.player_id], "size-9 shrink-0")}
+          <div class="min-w-0 flex-1">
+            <p class="text-sm font-black text-yellow-300">${t(`how_want_be_billionare.award_${a.key}`)}</p>
+            <p class="truncate font-bold text-slate-200">${escapeHtml(nicknames[a.player_id])}</p>
+          </div>
+          <span class="font-mono text-sm text-slate-400">${details[a.key](a)}</span>
+        </div>`).join("")}` : ""
   }
 
   // ── Next question: countdown ("auto") or the host's button ("manual") ────

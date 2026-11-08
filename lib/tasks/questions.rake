@@ -43,7 +43,8 @@ namespace :questions do
                   answers.size >= 2 && answers.all? { |a| a[:text].present? } && answers.any? { |a| a[:correct] }
           abort "#{file}, question ##{i + 1}: needs text, integer points, 2+ answers and at least one correct answer." unless valid
 
-          { text: q["text"].strip, points: q["points"], topic: q["topic"].to_s.strip.presence, answers: answers, locale: locale }
+          { text: q["text"].strip, points: q["points"], topic: q["topic"].to_s.strip.presence, answers: answers, locale: locale,
+            pack: File.basename(file, ".yml") }
         end
       end
 

@@ -2,6 +2,7 @@ class Games::MillionaireChannel < ApplicationCable::Channel
   REVEAL_DURATION = 7    # "auto" mode: seconds the reveal is shown (answer counts, answer, standings)
   ANSWER_POLL     = 0.25 # how often the loop checks whether everyone has answered
   ALL_IN_PAUSE    = 0.6  # once everyone answered: a beat before the reveal, so it doesn't feel cut off
+  BET_SECONDS     = 10   # time to place a bet before the final question
   MANUAL_WAIT_LIMIT = 1.minutes # "manual" mode: give up if the host never taps Next
 
   def subscribed
@@ -49,6 +50,21 @@ class Games::MillionaireChannel < ApplicationCable::Channel
         sleep_time = GameServices::HowWantBeBillionare::DEFAULT_SECONDS if sleep_time < 1
         svc        = GameServices::HowWantBeBillionare.new(@room)
 
+        # ── 0. Bets before the final question ────────────────────────────
+        if svc.final_round?(index) && svc.bets_open?
+          broadcast_screen(stream, {
+            action:    "place_bets",
+            round:     index + 1,
+            total:     total_rounds,
+            points:    @room.game_state["user_points"] || {},
+            fractions: GameServices::HowWantBeBillionare::BET_FRACTIONS,
+            duration:  BET_SECONDS
+          }, BET_SECONDS)
+          wait_until(BET_SECONDS) { svc.everyone_bet? }
+          break if @stop_loop
+          @room.reload
+        end
+
         # ── 1. Broadcast the current question ────────────────────────────
         svc.start_question!(sleep_time)
         broadcast_screen(stream, {
@@ -62,7 +78,7 @@ class Games::MillionaireChannel < ApplicationCable::Channel
           duration: sleep_time
         }, sleep_time)
 
-        wait_for_answers(svc, sleep_time)
+        wait_until(sleep_time) { svc.everyone_answered? }
         break if @stop_loop
 
         # ── 2. Score the round ────────────────────────────────────────────
@@ -110,7 +126,8 @@ class Games::MillionaireChannel < ApplicationCable::Channel
         ActionCable.server.broadcast(stream, {
           action:      "show_leaderboard",
           leaderboard: sorted,
-          nicknames:   nicknames
+          nicknames:   nicknames,
+          awards:      GameServices::HowWantBeBillionare.new(@room).awards
         })
       end
     rescue => e
@@ -149,6 +166,32 @@ class Games::MillionaireChannel < ApplicationCable::Channel
     GameServices::HowWantBeBillionare.new(@room).add_answer(@player.id, choice)
   end
 
+  # Final question bet: a share of the player's points (0, 0.25, 0.5 or 1), only while bets are open.
+  def place_bet(data)
+    return unless @player
+
+    @room.reload
+    return unless @room.game_state.dig("screen", "action") == "place_bets"
+
+    svc    = GameServices::HowWantBeBillionare.new(@room)
+    amount = svc.place_bet!(@player.id, data["fraction"])
+    return unless amount
+
+    transmit({ action: "bet_placed", amount: amount })
+    ActionCable.server.broadcast("millionaire_room_#{@room.code}", { action: "bets_progress", placed: svc.bets_placed })
+  end
+
+  # 50:50 on this player's phone: only they are told which answers to take away.
+  def use_fifty(_data = {})
+    return unless @player
+
+    @room.reload
+    return unless @room.game_state.dig("screen", "action") == "send_question"
+
+    removed = GameServices::HowWantBeBillionare.new(@room).use_fifty!(@player.id)
+    transmit({ action: "fifty_fifty", removed: removed }) if removed
+  end
+
   private
 
   # Every question and reveal is also saved as the room's current screen, so a phone that connects
@@ -172,19 +215,26 @@ class Games::MillionaireChannel < ApplicationCable::Channel
 
       screen["duration"] = left
       screen["my_choice"] = @room.game_state.dig("answers_history", @room.game_state["question_id"].to_s, @player.id.to_s)
+      screen["fifty_used"]    = @room.game_state.dig("fifty", @player.id.to_s).present?
+      screen["fifty_removed"] = GameServices::HowWantBeBillionare.new(@room).fifty_removed(@player.id)
+    when "place_bets"
+      return unless left && left.positive?
+
+      screen["duration"] = left
+      screen["my_bet"]   = @room.game_state.dig("bets", @player.id.to_s)
     when "reveal_answer"
       screen["next_in"] = left.clamp(0..) if left
     end
     transmit(screen)
   end
 
-  # Waits out the question's time, or less: when every connected player has answered, the reveal
-  # comes right away instead of everyone staring at the clock.
-  def wait_for_answers(svc, seconds)
+  # Waits out the time, or less: once everyone is in (all answers, all bets) the game goes on
+  # right away instead of everyone staring at the clock.
+  def wait_until(seconds)
     deadline = Time.current.to_f + seconds
     while Time.current.to_f < deadline
       return if @stop_loop
-      return sleep(ALL_IN_PAUSE) if svc.everyone_answered?
+      return sleep(ALL_IN_PAUSE) if yield
 
       sleep ANSWER_POLL
     end
