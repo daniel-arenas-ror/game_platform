@@ -324,6 +324,7 @@ es:
         link: "Cambiar juego"
         settings: "Cambiar configuración"
         scan: "Jugadores nuevos: escanea para unirte al próximo juego"
+        suggest: "Quizás también te gusten estos"
       battle_city:
         edit:
           map: "MAPA"

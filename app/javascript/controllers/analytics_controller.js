@@ -5,8 +5,9 @@ import { track } from "controllers/shared/analytics"
 //   data-action="submit->analytics#track"
 //   data-analytics-event-param="select_game" data-analytics-game-param="mind-match"
 //   data-analytics-language-param="es"
+// data-analytics-extra-param='{"room_code": "AB12"}' adds more parameters (a JSON object).
 export default class extends Controller {
-  track({ params: { event, game, language } }) {
-    track(event, { game, game_name: game, game_language: language })
+  track({ params: { event, game, language, extra } }) {
+    track(event, { game, game_name: game, game_language: language, ...(extra || {}) })
   }
 }

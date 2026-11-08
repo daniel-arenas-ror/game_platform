@@ -33,6 +33,17 @@ module AnalyticsHelper
   end
 
   # `form:` options for a button_to that starts a room: sends select_game when it's pressed.
+  # The game-over suggestions ("Maybe you'd like to play these too"): the form switches the room and
+  # stops this screen following the phones (open-settings), and sends `suggested_game` with the room's
+  # usual parameters, the suggested game as `game` and the one just played as `from_game`.
+  def suggested_game_analytics(game, room)
+    extra = room.analytics_params.slice(:room_code, :player_count).merge(from_game: room.game.slug)
+    { data: { controller: "open-settings analytics",
+              action: "submit->open-settings#stopListening submit->analytics#track",
+              analytics_event_param: "suggested_game", analytics_game_param: game.slug,
+              analytics_language_param: room.locale, analytics_extra_param: extra.to_json } }
+  end
+
   def select_game_analytics(game)
     { data: { controller: "analytics", action: "submit->analytics#track",
               analytics_event_param: "select_game", analytics_game_param: game.slug,

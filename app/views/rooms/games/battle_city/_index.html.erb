@@ -31,8 +31,8 @@
 
       <%# Game Over overlay (inside canvas area) %>
       <div id="battle-city-game-over"
-           class="hidden absolute inset-0 flex items-center justify-center bg-black/88 z-20">
-        <div class="text-center px-8 py-8 w-full">
+           class="hidden absolute inset-0 flex items-center-safe justify-center bg-black/88 z-20 overflow-y-auto">
+        <div class="text-center px-4 py-8 w-full">
           <h2 class="font-black text-yellow-400 mb-1 tracking-widest"
               style="font-size: 56px; text-shadow: 0 0 30px rgba(250,204,21,0.7);">
             <%= t(".game_over") %>
