@@ -70,4 +70,59 @@ class GuessTheColorTest < ActiveSupport::TestCase
     room&.delete
     game&.delete
   end
+
+  def with_room(state = {})
+    game = Game.create!(name: "Guess the Color", code: "guess_the_color", description: "x")
+    room = Room.create!(game: game, game_state: state)
+    yield room
+  ensure
+    Player.where(room_id: room&.id).delete_all
+    Event.where(room_id: room&.id).delete_all
+    room&.delete
+    game&.delete
+  end
+
+  test "every real-world thing has a colour and both languages" do
+    Color::REAL_WORLD.each do |key, item|
+      assert_equal 3, item["rgb"].size, key
+      assert(item["rgb"].all? { _1.between?(0, 255) }, key)
+      assert item["en"].present? && item["es"].present?, key
+    end
+  end
+
+  test "real-world mode names a thing in the room's language, without repeating, and its colour is the target" do
+    with_room("mode" => "real_world") do |room|
+      room.update!(locale: "es")
+      svc = Color.new(room)
+      svc.setup_game!
+      prompts = Array.new(5) { svc.next_target! }
+      assert_equal 5, prompts.map { _1[:prompt] }.uniq.size
+      first = Color::REAL_WORLD[room.reload.game_state["used_prompts"].first]
+      assert_equal first["es"], prompts.first[:prompt]
+      assert_equal %w[r g b].zip(first["rgb"]).to_h, prompts.first[:color]
+    end
+  end
+
+  test "other modes show a colour, each for its own time" do
+    with_room("mode" => "blink") do |room|
+      svc = Color.new(room)
+      svc.setup_game!
+      assert_nil svc.next_target![:prompt]
+      assert_equal 1, svc.show_time
+    end
+    with_room("mode" => "nonsense") do |room|
+      Color.new(room).setup_game!
+      assert_equal "memory", room.reload.game_state["mode"]
+    end
+  end
+
+  test "awards: best average, closest pick, and the furthest pick when it was really far" do
+    with_room do |room|
+      room.update!(game_state: { "history" => { "a" => [ 90, 80, nil ], "b" => [ 99, 20, 30 ], "c" => [ nil, nil, nil ] } })
+      awards = Color.new(room).awards.index_by { _1["key"] }
+      assert_equal [ "a", 57 ], awards["eagle_eye"].values_at("player_id", "value")
+      assert_equal [ "b", 99 ], awards["bullseye"].values_at("player_id", "value")
+      assert_equal [ "b", 20 ], awards["creative"].values_at("player_id", "value")
+    end
+  end
 end

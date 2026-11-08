@@ -471,6 +471,16 @@ es:
           best_of: "Al mejor de %{count}"
       guess_the_color:
         edit:
+          mode: "MODO DE JUEGO"
+          modes:
+            memory: "🧠 Memoria"
+            memory_desc: "5 segundos para mirar y luego mezclar"
+            blink: "⚡ Parpadeo"
+            blink_desc: "¡solo 1 segundo!"
+            match: "👁️ Copia"
+            match_desc: "se queda en la TV, ideal para niños"
+            real_world: "🍌 Mundo real"
+            real_world_desc: "sin color: \"un banano maduro\""
           rounds: "RONDAS"
           rounds_option: "%{count} rondas"
           difficulty: "DIFICULTAD"

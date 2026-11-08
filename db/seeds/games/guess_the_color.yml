@@ -18,12 +18,12 @@ long_description: >-
   vivid. The closer it looks, the more points you get, up to 1,000 per round. Then comes the reveal, with
   everyone's colors next to the real one, and that's where the laughing starts.
 how_to_play:
-  - The host picks the number of rounds and the difficulty. Easy uses bright, vivid colors. Hard can be any color at all.
+  - 'The host picks the mode, the number of rounds and the difficulty. Modes: Memory (look for 5 seconds), Blink (just 1 second), Match (the color stays on the TV, great for kids) and Real world (no color at all: "What color is a ripe banana?"). Easy uses bright, vivid colors. Hard can be any color at all.'
   - A color fills the host screen for 5 seconds. Look closely and remember it.
   - The color disappears. You get 10 seconds to mix it on your phone with three sliders: color (the hue), light (dark to light) and vivid (grey to bright).
   - The closer your color looks to the real one, the more points you get, up to 1,000 per round. Your phone shows your % match, and 97% or more is a 🎯 Perfect!
   - After each round, everyone's colors come out next to the real one, from the furthest to the closest, each with its name ("You made Salmon"). The closest gets the trophy.
-  - Three rounds in a row at 85% or more starts a streak: +150 every round while it lasts. The highest total after the last round wins.
+  - Three rounds in a row at 85% or more starts a streak: +150 every round while it lasts. The highest total after the last round wins, and awards go to the best average (🦅 Eagle eye), the closest pick (🎯 Bullseye) and the wildest miss (🌈 Most creative).
 tips:
   - Find the color first on the top slider, then fix how light it is, and last how vivid.
   - Pastel colors are light and a bit less vivid. Muddy browns and olives are darker and less vivid.
@@ -57,12 +57,12 @@ translations:
       1.000 por ronda. Luego viene la revelación, con los colores de todos junto al real, y ahí
       empiezan las risas.
     how_to_play:
-      - El anfitrión elige el número de rondas y la dificultad. Fácil usa colores vivos y brillantes. Difícil puede ser cualquier color.
+      - 'El anfitrión elige el modo, el número de rondas y la dificultad. Modos: Memoria (mirar 5 segundos), Parpadeo (solo 1 segundo), Copia (el color se queda en la TV, ideal para niños) y Mundo real (sin color: "¿De qué color es un banano maduro?"). Fácil usa colores vivos y brillantes. Difícil puede ser cualquier color.'
       - Un color llena la pantalla principal durante 5 segundos. Míralo bien y memorízalo.
       - El color desaparece. Tienes 10 segundos para mezclarlo en tu celular con tres controles: color (el tono), luz (de oscuro a claro) e intensidad (de gris a vivo).
       - Cuanto más se parezca tu color al real, más puntos ganas, hasta 1.000 por ronda. Tu celular muestra el % de parecido, y 97% o más es un 🎯 ¡Perfecto!
       - Después de cada ronda, los colores de todos aparecen junto al real, del más lejano al más cercano, cada uno con su nombre ("Hiciste Salmón"). El más cercano se lleva el trofeo.
-      - Tres rondas seguidas con 85% o más inician una racha: +150 en cada ronda mientras dure. Gana el total más alto tras la última ronda.
+      - Tres rondas seguidas con 85% o más inician una racha: +150 en cada ronda mientras dure. Gana el total más alto tras la última ronda, y hay premios al mejor promedio (🦅 Ojo de águila), al más cercano (🎯 En el blanco) y al fallo más loco (🌈 El más creativo).
     tips:
       - Busca primero el color en el control de arriba, luego ajusta la luz y al final la intensidad.
       - Los colores pastel son claros y un poco menos intensos. Los marrones y oliva son más oscuros y menos intensos.

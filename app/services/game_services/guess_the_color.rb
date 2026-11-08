@@ -29,6 +29,15 @@ module GameServices
     # Easy mode: 12 vivid hues spaced 30° apart, full saturation, mid lightness
     EASY_HUES = (0..330).step(30).to_a.freeze
 
+    # Round modes: memory (the colour shows, then goes), blink (it shows for a moment), match (it
+    # stays on the TV while players pick) and real_world (no colour: the TV names an everyday thing).
+    MODES      = %w[memory blink match real_world].freeze
+    SHOW_TIMES = { "memory" => 5, "blink" => 1, "match" => 3, "real_world" => 5 }.freeze
+    REAL_WORLD = YAML.load_file(Rails.root.join("config/guess_the_color/real_world.yml")).freeze
+
+    # End-of-game awards: "most creative" goes to the furthest pick, if one was under this % match.
+    CREATIVE_BELOW = 50
+
     # Seconds players get to mix the color, picked on the settings screen.
     PICK_TIMES        = [ 5, 10, 15 ].freeze
     DEFAULT_PICK_TIME = 10
@@ -54,6 +63,9 @@ module GameServices
           "round"         => 0,
           "total_rounds"  => total_rounds,
           "difficulty"    => difficulty,
+          "mode"          => MODES.include?(@room.game_state["mode"]) ? @room.game_state["mode"] : "memory",
+          "used_prompts"  => [],
+          "history"       => {}, # player id => % match per round (nil: no pick), for the awards
           "pick_time"     => self.class.pick_time(@room.game_state["pick_time"]),
           "scores"        => scores,
           "current_color" => nil,
@@ -77,6 +89,42 @@ module GameServices
       end
     end
 
+    def mode
+      @room.game_state["mode"] || "memory"
+    end
+
+    def show_time
+      SHOW_TIMES.fetch(mode, SHOW_TIMES["memory"])
+    end
+
+    # The next round's target: { color:, prompt: } (prompt only in real_world mode, in the room's
+    # language). Real-world things don't repeat in a game until they've all been used.
+    def next_target!
+      return { color: generate_color, prompt: nil } unless mode == "real_world"
+
+      used = @room.game_state["used_prompts"].to_a
+      key  = (REAL_WORLD.keys - used).sample || REAL_WORLD.keys.sample
+      @room.atomic_set("game_state.used_prompts" => (used | [ key ]), "game_state.prompt" => key)
+      item = REAL_WORLD[key]
+      { color: %w[r g b].zip(item["rgb"]).to_h, prompt: item[@room.locale.to_s] || item["en"] }
+    end
+
+    # 🦅 best average match, 🎯 closest single pick, 🌈 furthest pick (if one was really far).
+    def awards
+      history = (@room.reload.game_state["history"] || {}).select { |_, matches| matches.compact.any? }
+      return [] if history.empty?
+
+      average = history.transform_values { |m| m.sum(&:to_i) / m.size.to_f }
+      best    = history.flat_map { |id, m| m.compact.map { [ id, _1 ] } }
+      list = [
+        { "key" => "eagle_eye", "player_id" => average.max_by(&:last).first, "value" => average.values.max.round },
+        { "key" => "bullseye", "player_id" => best.max_by(&:last).first, "value" => best.map(&:last).max }
+      ]
+      furthest = best.min_by(&:last)
+      list << { "key" => "creative", "player_id" => furthest.first, "value" => furthest.last } if furthest.last < CREATIVE_BELOW
+      list
+    end
+
     # Scores the round's picks, adds streak bonuses, saves the totals and returns what the reveal shows.
     def score_round!
       @room.reload
@@ -85,6 +133,7 @@ module GameServices
       picks   = state["picks"] || {}
       scores  = state["scores"] || {}
       streaks = state["streaks"] || {}
+      history = state["history"] || {}
       round_scores, matches, bonuses = {}, {}, {}
 
       scores.each_key do |id|
@@ -95,10 +144,12 @@ module GameServices
         bonuses[id]  = STREAK_BONUS if streaks[id] >= STREAK_LENGTH
         round_scores[id] = points + bonuses[id].to_i
         scores[id]       = scores[id].to_i + round_scores[id]
+        history[id]      = history[id].to_a + [ matches[id] ]
       end
 
       @room.atomic_set("game_state.scores" => scores, "game_state.round_scores" => round_scores,
-                       "game_state.streaks" => streaks, "game_state.status" => "revealing")
+                       "game_state.streaks" => streaks, "game_state.history" => history,
+                       "game_state.status" => "revealing")
       {
         target_color: target,
         target_name:  self.class.color_name(target),

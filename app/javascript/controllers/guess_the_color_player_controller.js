@@ -10,7 +10,7 @@ export default class extends Controller {
     "colorPreview", "sliderHue", "sliderLight", "sliderSat",
     "pickingTimer", "submittedLabel", "submittedPreview",
     "targetPreview", "targetName", "myPickPreview", "matchLabel", "pickNote", "roundPointsLabel",
-    "score", "gameOverTitle", "finalScore"
+    "score", "gameOverTitle", "finalScore", "watchTitle", "watchHint", "pickPrompt", "awardNote"
   ]
 
   connect() {
@@ -18,6 +18,7 @@ export default class extends Controller {
     this.submitted   = false
     this.myPick      = null
     this.totalScore  = 0
+    this.watchTexts  = [ this.watchTitleTarget.textContent, this.watchHintTarget.textContent ] // memory, blink, match
     this.subscribe()
     this.resetSliders()
   }
@@ -74,12 +75,18 @@ export default class extends Controller {
     this.submitted = false
     this.myPick    = null
     this.resetSliders()
+    // Real-world mode: the thing to think of is right here too.
+    this.watchTitleTarget.textContent = data.prompt || this.watchTexts[0]
+    this.watchHintTarget.textContent  = data.prompt ? t("guess_the_color.think_of") : this.watchTexts[1]
     this.showPhase("phaseWatch")
   }
 
   onStartPicking(data) {
     this.stopTimer()
     this.submitted = false
+
+    this.pickPromptTarget.classList.toggle("hidden", !data.prompt)
+    this.pickPromptTarget.textContent = data.prompt || ""
 
     // Re-enable sliders for the new round
     this.sliders().forEach(slider => { slider.disabled = false })
@@ -151,6 +158,10 @@ export default class extends Controller {
 
     if (this.hasFinalScoreTarget)
       this.finalScoreTarget.textContent = finalScore
+
+    const mine = (data.awards || []).filter(a => a.player_id === this.playerIdValue)
+    this.awardNoteTarget.classList.toggle("hidden", !mine.length)
+    this.awardNoteTarget.textContent = mine.map(a => t("guess_the_color.you_won", { award: t(`guess_the_color.award_${a.key}`) })).join("\n")
 
     this.showPhase("phaseGameOver")
     if (isTopScore(data.scores, this.playerIdValue))

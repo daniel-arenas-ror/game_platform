@@ -11,7 +11,8 @@ export default class extends Controller {
   static targets = [
     "phaseWaiting", "phaseShowing", "phasePicking", "phaseReveal", "phaseGameOver",
     "colorBlock", "showingTimer", "pickingTimer", "submittedList",
-    "revealGrid", "roundScores", "finalLeaderboard", "roundCounter", "playAgain"
+    "revealGrid", "roundScores", "finalLeaderboard", "roundCounter", "playAgain",
+    "showingLabel", "pickingColor", "pickingPrompt", "revealPrompt", "awards"
   ]
 
   connect() {
@@ -79,9 +80,17 @@ export default class extends Controller {
     this.stopTimer()
     this.showPhase("phaseShowing")
 
-    const { r, g, b } = data.color
-    if (this.hasColorBlockTarget)
+    // Real-world mode names a thing instead of showing a colour.
+    const mode = data.prompt ? "real_world" : (data.mode || "memory")
+    this.showingLabelTarget.textContent = t(`guess_the_color.showing.${mode}`)
+    if (data.prompt) {
+      this.colorBlockTarget.style.background = "#1e293b"
+      this.colorBlockTarget.textContent = data.prompt
+    } else {
+      const { r, g, b } = data.color
       this.colorBlockTarget.style.background = `rgb(${r},${g},${b})`
+      this.colorBlockTarget.textContent = ""
+    }
 
     this.updateRoundCounter(data.round, data.total_rounds)
     this.startCountdown(this.showingTimerTarget, data.duration)
@@ -92,6 +101,10 @@ export default class extends Controller {
     this.showPhase("phasePicking")
 
     if (this.hasSubmittedListTarget) this.submittedListTarget.innerHTML = ""
+    this.pickingColorTarget.classList.toggle("hidden", !data.color)
+    if (data.color) this.pickingColorTarget.style.background = `rgb(${data.color.r},${data.color.g},${data.color.b})`
+    this.pickingPromptTarget.classList.toggle("hidden", !data.prompt)
+    this.pickingPromptTarget.textContent = data.prompt || ""
     this.updateRoundCounter(data.round, data.total_rounds)
     this.startCountdown(this.pickingTimerTarget, data.duration)
   }
@@ -112,6 +125,8 @@ export default class extends Controller {
     this.revealTimers = []
     this.showPhase("phaseReveal")
     this.updateRoundCounter(data.round, data.total_rounds)
+    this.revealPromptTarget.classList.toggle("hidden", !data.prompt)
+    this.revealPromptTarget.textContent = data.prompt || ""
 
     const matches = data.matches || {}
     const missing = Object.keys(data.scores).filter(id => !data.picks[id])
@@ -173,6 +188,25 @@ export default class extends Controller {
     }).join("")
   }
 
+  // 🦅 Eagle eye, 🎯 Bullseye, 🌈 Most creative, each with its winner's avatar.
+  renderAwards(awards, data) {
+    this.awardsTarget.classList.toggle("hidden", !awards.length)
+    this.awardsTarget.innerHTML = awards.length ? `
+      <p class="text-center text-xs font-bold uppercase tracking-widest text-slate-400">${t("guess_the_color.awards")}</p>
+      ${awards.map(a => {
+        const name = this.nicknameFor(a.player_id, data)
+        return `
+          <div class="flex items-center gap-3 rounded-xl border border-slate-700 bg-slate-900 p-3">
+            ${avatarHtml(name, "size-9 shrink-0")}
+            <div class="min-w-0 flex-1">
+              <p class="text-sm font-black text-yellow-300">${t(`guess_the_color.award_${a.key}`)}</p>
+              <p class="truncate font-bold text-white">${escapeHtml(name)}</p>
+            </div>
+            <span class="font-mono text-sm text-slate-400">${t(`guess_the_color.award_${a.key}_detail`, { value: a.value })}</span>
+          </div>`
+      }).join("")}` : ""
+  }
+
   colorName(key) {
     return key ? t(`guess_the_color.colors.${key}`) : ""
   }
@@ -200,6 +234,8 @@ export default class extends Controller {
           </div>`
       }).join("")
     }
+
+    this.renderAwards(data.awards || [], data)
 
     if (this.hasPlayAgainTarget && !this.playAgainTarget._wired) {
       this.playAgainTarget._wired = true

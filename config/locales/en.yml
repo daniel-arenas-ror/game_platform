@@ -482,6 +482,16 @@ en:
           best_of: "Best of %{count}"
       guess_the_color:
         edit:
+          mode: "GAME MODE"
+          modes:
+            memory: "🧠 Memory"
+            memory_desc: "5 seconds to look, then mix it"
+            blink: "⚡ Blink"
+            blink_desc: "just 1 second!"
+            match: "👁️ Match"
+            match_desc: "it stays on the TV, great for kids"
+            real_world: "🍌 Real world"
+            real_world_desc: "no color: \"a ripe banana\""
           rounds: "ROUNDS"
           rounds_option: "%{count} rounds"
           difficulty: "DIFFICULTY"

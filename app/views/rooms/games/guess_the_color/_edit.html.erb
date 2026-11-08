@@ -1,3 +1,21 @@
+<%# Game mode %>
+<div class="space-y-4 bg-slate-900/50 p-6 rounded-2xl border border-slate-700 mb-2">
+  <label class="block text-xs font-bold text-slate-400 mb-3 tracking-widest"><%= t(".mode") %></label>
+  <div class="grid grid-cols-2 gap-3">
+    <% GameServices::GuessTheColor::MODES.each do |mode| %>
+      <label class="relative cursor-pointer">
+        <input type="radio" name="room[game_state][mode]" value="<%= mode %>" class="peer hidden"
+               <%= 'checked' if (@room.game_state['mode'] || 'memory') == mode %>>
+        <div class="h-full text-center py-3 px-2 bg-slate-800 border-2 border-slate-700 rounded-xl transition-all
+                    peer-checked:border-yellow-500 peer-checked:bg-yellow-500/10">
+          <p class="text-white font-bold"><%= t(".modes.#{mode}") %></p>
+          <p class="text-slate-500 text-xs mt-1"><%= t(".modes.#{mode}_desc") %></p>
+        </div>
+      </label>
+    <% end %>
+  </div>
+</div>
+
 <%# Rounds picker %>
 <div class="space-y-4 bg-slate-900/50 p-6 rounded-2xl border border-slate-700">
   <label class="block text-xs font-bold text-slate-400 mb-3 tracking-widest"><%= t(".rounds") %></label>

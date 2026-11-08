@@ -56,7 +56,7 @@ A real-time multiplayer game platform. A host creates a **Room**, shares a QR co
 | `fisherman` | The Fisherman | Social deduction with roles (fisherman/impostor/knower) |
 | `how_want_be_billionare` | How Want Be Billionaire | Timed trivia: points climb each round, speed bonus, streaks, 50:50, a bet before the double-points final, awards. Rounds end once every connected player answered. Topic picker = question `pack` (the import file's name) |
 | `battle_city` | Battle City | Full |
-| `guess_the_color` | Guess The Color | Full |
+| `guess_the_color` | Guess The Color | Colour, light and vivid sliders; scored by eye (OKLab, `% match`). Modes: memory / blink / match / real_world (`config/guess_the_color/real_world.yml`). Staged reveal with colour names, streak bonus, end-of-game awards |
 | `count_birds` | Count Birds | Full |
 | `sequence_memory` | Sequence Memory | Full |
 | `submarine_combat` | Submarine Combat | Ship placement + battle loop |

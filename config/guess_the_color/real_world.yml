@@ -1,0 +1,32 @@
+# Guess the Color, "Real world" mode: no colour is shown, the TV names an everyday thing and players
+# mix its colour from memory. rgb is a typical colour for it; en/es is the prompt. No brands.
+banana:         { rgb: [ 245, 215, 60 ],  en: "A ripe banana",            es: "Un banano maduro" }
+fire_truck:     { rgb: [ 200, 30, 30 ],   en: "A fire truck",             es: "Un camión de bomberos" }
+grass:          { rgb: [ 90, 160, 50 ],   en: "Fresh grass",              es: "Pasto fresco" }
+sky:            { rgb: [ 110, 170, 235 ], en: "The sky on a sunny day",   es: "El cielo en un día soleado" }
+chocolate:      { rgb: [ 90, 55, 35 ],    en: "A chocolate bar",          es: "Una barra de chocolate" }
+strawberry:     { rgb: [ 210, 40, 50 ],   en: "A strawberry",             es: "Una fresa" }
+orange:         { rgb: [ 245, 140, 30 ],  en: "An orange (the fruit)",    es: "Una naranja (la fruta)" }
+lemon:          { rgb: [ 250, 230, 70 ],  en: "A lemon",                  es: "Un limón amarillo" }
+eggplant:       { rgb: [ 80, 40, 90 ],    en: "An eggplant",              es: "Una berenjena" }
+flamingo:       { rgb: [ 245, 140, 170 ], en: "A flamingo",               es: "Un flamenco" }
+school_bus:     { rgb: [ 250, 190, 10 ],  en: "A school bus",             es: "Un bus escolar" }
+pumpkin:        { rgb: [ 230, 120, 30 ],  en: "A pumpkin",                es: "Una calabaza" }
+mint_ice_cream: { rgb: [ 180, 230, 200 ], en: "Mint ice cream",           es: "Helado de menta" }
+carrot:         { rgb: [ 240, 120, 30 ],  en: "A carrot",                 es: "Una zanahoria" }
+blueberry:      { rgb: [ 70, 80, 140 ],   en: "A blueberry",              es: "Un arándano" }
+coffee_milk:    { rgb: [ 180, 135, 95 ],  en: "Coffee with milk",         es: "Café con leche" }
+snow:           { rgb: [ 245, 248, 252 ], en: "Fresh snow",               es: "Nieve fresca" }
+coal:           { rgb: [ 35, 35, 35 ],    en: "A piece of coal",          es: "Un pedazo de carbón" }
+salmon_fish:    { rgb: [ 245, 140, 115 ], en: "Raw salmon",               es: "Salmón crudo" }
+pine_tree:      { rgb: [ 30, 90, 50 ],    en: "A pine tree",              es: "Un pino" }
+lime:           { rgb: [ 130, 190, 40 ],  en: "A lime",                   es: "Un limón verde" }
+tomato:         { rgb: [ 220, 50, 40 ],   en: "A ripe tomato",            es: "Un tomate maduro" }
+sand:           { rgb: [ 220, 195, 150 ], en: "Beach sand",               es: "Arena de playa" }
+lavender:       { rgb: [ 180, 150, 220 ], en: "A lavender flower",        es: "Una flor de lavanda" }
+cherry:         { rgb: [ 150, 20, 40 ],   en: "A cherry",                 es: "Una cereza" }
+peanut_butter:  { rgb: [ 190, 130, 70 ],  en: "Peanut butter",            es: "Mantequilla de maní" }
+cotton_candy:   { rgb: [ 250, 180, 210 ], en: "Pink cotton candy",        es: "Algodón de azúcar rosado" }
+ocean:          { rgb: [ 30, 100, 160 ],  en: "The deep ocean",           es: "El mar profundo" }
+gold_medal:     { rgb: [ 220, 180, 60 ],  en: "A gold medal",             es: "Una medalla de oro" }
+avocado:        { rgb: [ 170, 190, 80 ],  en: "The inside of an avocado", es: "Un aguacate por dentro" }

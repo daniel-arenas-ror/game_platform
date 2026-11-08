@@ -1,6 +1,5 @@
 class Games::GuessTheColorChannel < ApplicationCable::Channel
   STREAM_PREFIX    = "guess_the_color_room_"
-  SHOW_DURATION    = 5   # seconds the color is shown on host screen
   REVEAL_DURATION  = 5   # seconds the reveal stays up once every colour is out
   REVEAL_STEP      = 0.5 # seconds between two colours coming out on the TV (furthest first)
   REVEAL_STEPS_MAX = 4   # …all of them within this many seconds, however many players
@@ -47,8 +46,9 @@ class Games::GuessTheColorChannel < ApplicationCable::Channel
         break if @stop_loop
         round = i + 1
 
-        # ── 1. Generate & show color ───────────────────────────────────────
-        color = service.generate_color
+        # ── 1. Generate & show color (or, in real-world mode, name the thing) ─
+        target = service.next_target!
+        color  = target[:color]
         @room.atomic_set(
           "game_state.current_color" => color,
           "game_state.picks"         => {},
@@ -57,17 +57,21 @@ class Games::GuessTheColorChannel < ApplicationCable::Channel
         )
         broadcast({
           action:       "show_color",
-          color:        color,
+          color:        (color unless target[:prompt]),
+          prompt:       target[:prompt],
+          mode:         service.mode,
           round:        round,
           total_rounds: total_rounds,
-          duration:     SHOW_DURATION
+          duration:     service.show_time
         })
-        sleep SHOW_DURATION
+        sleep service.show_time
 
         # ── 2. Picking phase ───────────────────────────────────────────────
         @room.atomic_set("game_state.status" => "picking")
         broadcast({
           action:       "start_picking",
+          color:        (color if service.mode == "match"), # match mode: the colour stays on the TV
+          prompt:       target[:prompt],
           duration:     pick_time,
           round:        round,
           total_rounds: total_rounds
@@ -81,6 +85,7 @@ class Games::GuessTheColorChannel < ApplicationCable::Channel
         broadcast({
           action:       "reveal",
           **result,
+          prompt:       target[:prompt],
           step_ms:      (step * 1000).round,
           nicknames:    nicknames_map,
           round:        round,
@@ -99,6 +104,7 @@ class Games::GuessTheColorChannel < ApplicationCable::Channel
         broadcast({
           action:    "game_over",
           scores:    @room.game_state["scores"],
+          awards:    service.awards,
           nicknames: nicknames_map
         })
       end

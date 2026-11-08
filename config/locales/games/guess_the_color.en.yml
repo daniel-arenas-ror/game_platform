@@ -21,6 +21,20 @@ en:
           points_round: "points this round"
   js:
     guess_the_color:
+      showing:
+        memory: "Memorize this color!"
+        blink: "Quick! Look!"
+        match: "Match this color!"
+        real_world: "What color is…"
+      think_of: "Think of its color"
+      awards: "Awards"
+      award_eagle_eye: "🦅 Eagle eye"
+      award_eagle_eye_detail: "%{value}% average"
+      award_bullseye: "🎯 Bullseye"
+      award_bullseye_detail: "%{value}% match"
+      award_creative: "🌈 Most creative"
+      award_creative_detail: "%{value}% match 😅"
+      you_won: "You won %{award}!"
       you_made: "You made %{name}"
       it_was: "It was %{name}"
       streak_bonus: "🔥 %{count} in a row +%{points}"

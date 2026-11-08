@@ -29,9 +29,10 @@
       <%# Showing color phase %>
       <div data-guess-the-color-host-target="phaseShowing"
            class="hidden text-center">
-        <p class="text-slate-400 text-xs uppercase tracking-widest mb-4 font-mono"><%= t(".memorize") %></p>
+        <p data-guess-the-color-host-target="showingLabel" class="text-slate-400 text-xs uppercase tracking-widest mb-4 font-mono"><%= t(".memorize") %></p>
+        <%# The colour, or in real-world mode the thing to think of %>
         <div data-guess-the-color-host-target="colorBlock"
-             class="w-full rounded-3xl shadow-2xl"
+             class="w-full rounded-3xl shadow-2xl flex items-center justify-center px-8 text-center font-black text-6xl text-balance"
              style="height: 320px;"></div>
         <p data-guess-the-color-host-target="showingTimer"
            class="text-slate-400 font-mono text-2xl mt-6"></p>
@@ -41,6 +42,9 @@
       <div data-guess-the-color-host-target="phasePicking"
            class="hidden text-center">
         <p class="text-slate-400 text-xs uppercase tracking-widest mb-2 font-mono"><%= t(".picking") %></p>
+        <%# Match mode: the colour stays up. Real-world mode: the thing stays up. %>
+        <div data-guess-the-color-host-target="pickingColor" class="hidden mx-auto w-full h-40 rounded-3xl shadow-2xl mb-2"></div>
+        <p data-guess-the-color-host-target="pickingPrompt" class="hidden font-black text-4xl text-balance mb-2"></p>
         <p data-guess-the-color-host-target="pickingTimer"
            class="text-yellow-400 font-black text-8xl my-4"></p>
         <div data-guess-the-color-host-target="submittedList"
@@ -50,7 +54,8 @@
       <%# Reveal phase %>
       <div data-guess-the-color-host-target="phaseReveal"
            class="hidden">
-        <p class="text-center text-slate-400 text-xs uppercase tracking-widest mb-6 font-mono"><%= t("rooms.games.shared.results") %></p>
+        <p class="text-center text-slate-400 text-xs uppercase tracking-widest mb-2 font-mono"><%= t("rooms.games.shared.results") %></p>
+        <p data-guess-the-color-host-target="revealPrompt" class="hidden text-center font-black text-3xl mb-4 text-balance"></p>
         <div data-guess-the-color-host-target="revealGrid"
              class="flex gap-4 flex-wrap justify-center"></div>
         <div data-guess-the-color-host-target="roundScores"
@@ -63,6 +68,7 @@
         <h2 class="text-5xl font-black text-yellow-400 tracking-widest mb-2"><%= t("rooms.games.shared.game_over") %></h2>
         <div data-guess-the-color-host-target="finalLeaderboard"
              class="mt-8 space-y-3 max-w-sm mx-auto"></div>
+        <div data-guess-the-color-host-target="awards" class="hidden mt-6 space-y-2 max-w-sm mx-auto text-left"></div>
         <button data-guess-the-color-host-target="playAgain"
                 class="mt-10 bg-yellow-400 hover:bg-yellow-300 text-slate-950 font-black px-10 py-3
                        rounded-xl uppercase tracking-widest text-lg transition-colors cursor-pointer">
@@ -112,8 +118,8 @@
       <div data-guess-the-color-player-target="phaseWatch"
            class="hidden text-center">
         <p class="text-6xl mb-4">👀</p>
-        <p class="text-white font-black text-2xl tracking-wide"><%= t(".watch") %></p>
-        <p class="text-slate-400 text-sm mt-2 font-mono"><%= t(".memorize_short") %></p>
+        <p data-guess-the-color-player-target="watchTitle" class="text-white font-black text-2xl tracking-wide text-balance"><%= t(".watch") %></p>
+        <p data-guess-the-color-player-target="watchHint" class="text-slate-400 text-sm mt-2 font-mono"><%= t(".memorize_short") %></p>
       </div>
 
       <%# Picking phase %>
@@ -126,6 +132,9 @@
           <p data-guess-the-color-player-target="pickingTimer"
              class="font-mono font-black text-2xl text-yellow-400"></p>
         </div>
+
+        <%# Real-world mode: what to mix %>
+        <p data-guess-the-color-player-target="pickPrompt" class="hidden text-center font-black text-xl mb-3 text-balance"></p>
 
         <%# Live color preview %>
         <div data-guess-the-color-player-target="colorPreview"
@@ -213,6 +222,7 @@
         <p data-guess-the-color-player-target="finalScore"
            class="text-yellow-400 font-mono font-black text-5xl mt-4"></p>
         <p class="text-slate-500 text-xs mt-1 font-mono"><%= t("rooms.games.shared.total_points") %></p>
+        <p data-guess-the-color-player-target="awardNote" class="hidden mt-6 font-black text-xl text-yellow-300 whitespace-pre-line"></p>
         <p class="text-slate-600 text-xs mt-8 font-mono"><%= t("rooms.games.shared.waiting_restart") %></p>
       </div>
     </div>
