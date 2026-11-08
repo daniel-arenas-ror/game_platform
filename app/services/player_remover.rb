@@ -2,8 +2,9 @@
 # game_state (scores, answers, placements, …) and tells the lobby and the game screens.
 class PlayerRemover
   # How long a player may stay fully disconnected before being removed. Covers page reloads,
-  # the lobby → game navigation, a phone screen lock and short network drops.
-  GRACE_PERIOD = 30.seconds
+  # the lobby → game navigation, a phone screen lock, slow phones and weak Wi-Fi (classrooms).
+  # Games keep running on their own timers meanwhile; the host can still remove someone by hand.
+  GRACE_PERIOD = 2.minutes
 
   def self.schedule(player_id)
     Thread.new do

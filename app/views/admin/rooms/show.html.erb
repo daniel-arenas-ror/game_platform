@@ -32,7 +32,7 @@
 <section class="mt-10" aria-labelledby="players">
   <h2 id="players" class="text-xl font-extrabold text-white">Players now</h2>
   <% if @players.empty? %>
-    <p class="mt-4 rounded-2xl border border-dashed border-slate-700 px-5 py-8 text-center text-slate-400">Nobody is in the room. Players are removed 30 seconds after they leave.</p>
+    <p class="mt-4 rounded-2xl border border-dashed border-slate-700 px-5 py-8 text-center text-slate-400">Nobody is in the room. Players are removed <%= PlayerRemover::GRACE_PERIOD.inspect %> after they leave.</p>
   <% else %>
     <% scores = @room.game_state.values.find { |v| v.is_a?(Hash) && @players.any? { |p| v.key?(p.id.to_s) } && v.values.all?(Numeric) } %>
     <div class="mt-4 overflow-x-auto rounded-2xl border border-slate-800 bg-slate-900">
