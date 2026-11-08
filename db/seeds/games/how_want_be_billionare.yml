@@ -22,12 +22,13 @@ how_to_play:
   - The host picks the number of questions and how many seconds everyone gets for each one.
   - A question and four answers appear on the big screen.
   - Tap your answer on your phone before time runs out. You only get one tap, so choose well.
-  - The correct answer is revealed and everyone who got it right wins the question's points.
-  - Harder questions are worth more. The highest total after the last question wins.
+  - The correct answer is revealed and everyone who got it right wins points. The faster you answer, the more you get. Once everyone has answered, the reveal comes right away.
+  - Questions get harder and worth more as the game goes on, and the final question counts double. 3 right in a row gives ×1.5, 5 in a row ×2. The highest total after the last question wins.
 tips:
   - Read all four answers before you tap. The first one that looks right isn't always right.
   - If you're not sure, rule out the answers that are clearly wrong and guess between the rest.
-  - Keep an eye on the points. A 1,000-point question late in the game can change everything.
+  - Speed pays, but a wrong answer pays nothing and breaks your streak. Be quick only when you're sure.
+  - Nobody is out of it: the final question counts double and can change everything.
   - "Hosts: shorter timers (5 or 10 seconds) make it loud and frantic. 20 or 30 seconds is great for kids."
   - Playing again in the same room skips questions you already saw.
 perfect_for: [classroom, family, party, work, video_call]
@@ -59,12 +60,13 @@ translations:
       - El anfitrión elige el número de preguntas y cuántos segundos tiene cada uno para responder.
       - Una pregunta y cuatro respuestas aparecen en la pantalla grande.
       - Toca tu respuesta en el celular antes de que se acabe el tiempo. Solo tienes un toque, así que elige bien.
-      - Se revela la respuesta correcta y todos los que acertaron ganan los puntos de la pregunta.
-      - Las preguntas difíciles valen más. Gana el total más alto después de la última pregunta.
+      - Se revela la respuesta correcta y todos los que acertaron ganan puntos. Cuanto más rápido respondas, más ganas. Cuando todos han respondido, la respuesta se revela de inmediato.
+      - Las preguntas son más difíciles y valen más a medida que avanza el juego, y la última vale el doble. 3 aciertos seguidos dan ×1,5 y 5 seguidos ×2. Gana el total más alto después de la última pregunta.
     tips:
       - Lee las cuatro respuestas antes de tocar. La primera que parece correcta no siempre lo es.
       - Si no estás seguro, descarta las respuestas claramente falsas y adivina entre las demás.
-      - Pendiente de los puntos. Una pregunta de 1.000 puntos al final puede cambiarlo todo.
+      - La rapidez paga, pero una respuesta equivocada no da puntos y rompe tu racha. Sé rápido solo cuando estés seguro.
+      - Nadie está fuera: la última pregunta vale el doble y puede cambiarlo todo.
       - "Anfitriones: con tiempos cortos (5 o 10 segundos) el juego se vuelve ruidoso y frenético. 20 o 30 segundos es ideal para niños."
       - Si vuelven a jugar en la misma sala, no se repiten las preguntas que ya vieron.
     faq:

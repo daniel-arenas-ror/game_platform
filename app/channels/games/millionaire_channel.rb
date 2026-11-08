@@ -1,5 +1,7 @@
 class Games::MillionaireChannel < ApplicationCable::Channel
   REVEAL_DURATION = 5    # "auto" mode: seconds the reveal is shown before the next question
+  ANSWER_POLL     = 0.25 # how often the loop checks whether everyone has answered
+  ALL_IN_PAUSE    = 0.6  # once everyone answered: a beat before the reveal, so it doesn't feel cut off
   MANUAL_WAIT_LIMIT = 1.minutes # "manual" mode: give up if the host never taps Next
 
   def subscribed
@@ -35,8 +37,7 @@ class Games::MillionaireChannel < ApplicationCable::Channel
     @next_signal = Queue.new
     @room        = Room.find_by(code: params[:room_code])
     manual       = @room.game_state["advance"] == "manual"
-    total_rounds = @room.game_state["total_rounds"].to_i
-    total_rounds = 5 if total_rounds < 1
+    total_rounds = GameServices::HowWantBeBillionare.new(@room).total_rounds
     stream       = "millionaire_room_#{@room.code}"
 
     Thread.new do
@@ -46,23 +47,26 @@ class Games::MillionaireChannel < ApplicationCable::Channel
         @room.reload
         sleep_time = @room.game_state["time_per_round"].to_i
         sleep_time = 10 if sleep_time < 1
+        svc        = GameServices::HowWantBeBillionare.new(@room)
 
         # ── 1. Broadcast the current question ────────────────────────────
+        svc.start_question!(sleep_time)
         broadcast_screen(stream, {
           action:   "send_question",
           round:    index + 1,
           total:    total_rounds,
           text:     @room.game_state["question"],
           options:  @room.game_state["answers"],
+          points:   svc.question_points(index),
+          final:    svc.final_round?(index),
           duration: sleep_time
         }, sleep_time)
 
-        sleep sleep_time
+        wait_for_answers(svc, sleep_time)
         break if @stop_loop
 
         # ── 2. Score the round ────────────────────────────────────────────
-        svc      = GameServices::HowWantBeBillionare.new(@room)
-        result   = svc.score_round!
+        result   = svc.score_round!(index)
         @room.reload
         nicknames = @room.players.each_with_object({}) { |p, h| h[p.id.to_s] = p.nickname }
 
@@ -74,6 +78,8 @@ class Games::MillionaireChannel < ApplicationCable::Channel
           options:                @room.game_state["answers"],
           correct_answer_indices: result[:correct_answer_indices],
           round_scores:           result[:round_scores],
+          round_details:          result[:round_details],
+          streaks:                result[:streaks],
           user_points:            result[:user_points],
           question_points:        result[:question_points],
           nicknames:              nicknames,
@@ -86,7 +92,7 @@ class Games::MillionaireChannel < ApplicationCable::Channel
         break if @stop_loop
 
         # ── 3. Load next question (skip on final round) ───────────────────
-        svc.advance_question! if index < total_rounds - 1
+        svc.advance_question!(index + 1) if index < total_rounds - 1
       end
 
       unless @stop_loop
@@ -167,6 +173,18 @@ class Games::MillionaireChannel < ApplicationCable::Channel
       screen["next_in"] = left.clamp(0..) if left
     end
     transmit(screen)
+  end
+
+  # Waits out the question's time, or less: when every connected player has answered, the reveal
+  # comes right away instead of everyone staring at the clock.
+  def wait_for_answers(svc, seconds)
+    deadline = Time.current.to_f + seconds
+    while Time.current.to_f < deadline
+      return if @stop_loop
+      return sleep(ALL_IN_PAUSE) if svc.everyone_answered?
+
+      sleep ANSWER_POLL
+    end
   end
 
   # Blocks the game loop until the host taps Next. Wakes up every second so a restart or the host

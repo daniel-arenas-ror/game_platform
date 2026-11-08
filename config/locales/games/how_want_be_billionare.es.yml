@@ -15,6 +15,13 @@ es:
           next_question: "Siguiente pregunta"
   js:
     how_want_be_billionare:
+      worth: "%{points} pts"
+      final_question: "Última pregunta · puntos dobles"
+      lock_in: "Elige tu respuesta final"
+      answered_in: "%{seconds} s"
+      streak: "🔥 %{count} seguidas"
+      streak_bonus: "🔥 %{count} seguidas ×%{multiplier}"
+      streak_lost: "💔 Racha perdida"
       round: "Ronda %{round} / %{total}"
       round_reveal: "Ronda %{round} / %{total} — Respuesta"
       correct: "¡Correcto! +%{points} pts"

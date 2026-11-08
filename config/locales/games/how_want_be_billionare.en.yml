@@ -16,6 +16,13 @@ en:
           next_question: "Next question"
   js:
     how_want_be_billionare:
+      worth: "%{points} pts"
+      final_question: "Final question · double points"
+      lock_in: "Lock in your final answer"
+      answered_in: "%{seconds} s"
+      streak: "🔥 %{count} in a row"
+      streak_bonus: "🔥 %{count} in a row ×%{multiplier}"
+      streak_lost: "💔 Streak lost"
       round: "Round %{round} / %{total}"
       round_reveal: "Round %{round} / %{total} — Reveal"
       correct: "Correct! +%{points} pts"

@@ -48,6 +48,26 @@ class Games::MillionaireChannelTest < ActionCable::Channel::TestCase
     unsubscribe # ends the loop instead of waiting the 5 seconds
   end
 
+  test "the reveal comes as soon as every connected player has answered, with speed and streaks" do
+    @room.atomic_set("game_state.time_per_round" => 30)
+    ana = @room.players.first
+    ana.set(connected: true)
+    subscribe(room_code: @room.code, player_id: "")
+    perform :start_game_loop
+    Timeout.timeout(5) { sleep 0.05 until actions.any? { |a| a["action"] == "send_question" } }
+    question = actions.find { |a| a["action"] == "send_question" }
+    assert question["final"], "the only question is the final one"
+
+    @room.reload
+    GameServices::HowWantBeBillionare.new(@room).add_answer(ana.id, 0)
+    reveal = Timeout.timeout(5) { sleep 0.05 until (r = actions.find { |a| a["action"] == "reveal_answer" }); r }
+
+    assert_equal 1, reveal["streaks"][ana.id.to_s]
+    assert reveal["round_details"][ana.id.to_s]["seconds"]
+    assert_operator reveal["round_scores"][ana.id.to_s], :>, 100, "final question counts double"
+    unsubscribe
+  end
+
   test "players can't skip the question" do
     subscribe(room_code: @room.code, player_id: @room.players.first.id.to_s)
     assert_nothing_raised { perform :next_question }

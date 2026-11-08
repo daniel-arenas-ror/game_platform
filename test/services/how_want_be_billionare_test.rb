@@ -30,4 +30,72 @@ class HowWantBeBillionareTest < ActiveSupport::TestCase
     assert_not_equal first_id, state["question_id"].to_s
     assert_includes state["asked_question_ids"], first_id
   end
+
+  # Ana answers right on every question; question_id is fixed so other tests' questions don't matter.
+  def answer_round(svc, round, seconds:, right: true)
+    q = @questions.first
+    @room.atomic_set("game_state.question_id" => q.id, "game_state.question_points" => 100,
+                     "game_state.question_duration" => 20,
+                     "game_state.answers_history.#{q.id}" => { @ana.id.to_s => right ? 0 : 1 },
+                     "game_state.answer_seconds.#{q.id}"  => { @ana.id.to_s => seconds })
+    svc.score_round!(round)
+  end
+
+  test "faster right answers earn more, down to half at the buzzer" do
+    svc = GameServices::HowWantBeBillionare.new(@room)
+    svc.setup_game!
+
+    assert_equal 100, answer_round(svc, 0, seconds: 0)[:round_scores][@ana.id.to_s]
+    @room.atomic_set("game_state.streaks" => {})
+    assert_equal 80, answer_round(svc, 1, seconds: 8)[:round_scores][@ana.id.to_s]
+    @room.atomic_set("game_state.streaks" => {})
+    assert_equal 50, answer_round(svc, 2, seconds: 20)[:round_scores][@ana.id.to_s]
+  end
+
+  test "3 right in a row pays ×1.5, 5 in a row ×2, and a miss starts over" do
+    svc = GameServices::HowWantBeBillionare.new(@room)
+    svc.setup_game!
+
+    scores = 5.times.map { |round| answer_round(svc, round, seconds: 0)[:round_scores][@ana.id.to_s] }
+    assert_equal [ 100, 100, 150, 150, 200 ], scores
+
+    result = answer_round(svc, 5, seconds: 0, right: false)
+    assert_equal 0, result[:streaks][@ana.id.to_s]
+    assert_nil result[:round_scores][@ana.id.to_s]
+    assert_equal 100, answer_round(svc, 6, seconds: 0)[:round_scores][@ana.id.to_s]
+  end
+
+  test "the final question counts double" do
+    svc = GameServices::HowWantBeBillionare.new(@room)
+    svc.setup_game!
+    assert svc.final_round?(9)
+    assert_equal 200, answer_round(svc, 9, seconds: 0)[:round_scores][@ana.id.to_s]
+  end
+
+  test "questions climb the points ladder" do
+    svc = GameServices::HowWantBeBillionare.new(@room)
+    assert_equal [ 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000 ],
+                 10.times.map { |round| svc.send(:ladder_points, round) }
+  end
+
+  test "an answer remembers how long it took" do
+    svc = GameServices::HowWantBeBillionare.new(@room)
+    svc.setup_game!
+    svc.start_question!(20)
+    @room.atomic_set("game_state.question_started_at" => Time.current.to_f - 3)
+    svc.add_answer(@ana.id, 0)
+
+    seconds = @room.reload.game_state.dig("answer_seconds", @room.game_state["question_id"].to_s, @ana.id.to_s)
+    assert_in_delta 3, seconds, 0.5
+  end
+
+  test "the round can end early once every connected player answered" do
+    svc = GameServices::HowWantBeBillionare.new(@room)
+    svc.setup_game!
+    @ana.set(connected: true)
+    assert_not svc.everyone_answered?
+
+    svc.add_answer(@ana.id, 0)
+    assert svc.everyone_answered?
+  end
 end

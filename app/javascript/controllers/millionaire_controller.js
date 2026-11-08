@@ -95,6 +95,18 @@ export default class extends Controller {
     if (this.hasLockLabelTarget)     this.lockLabelTarget.classList.add("hidden")
   }
 
+  // 1.234 → "1.2" (or "1,2" in Spanish)
+  seconds(value) {
+    return num(Math.round(value * 10) / 10)
+  }
+
+  // "🔥 3 in a row", plus "×1.5" once the streak pays extra.
+  streakLabel(streak, multiplier) {
+    return multiplier > 1
+      ? t("how_want_be_billionare.streak_bonus", { count: streak, multiplier: num(multiplier) })
+      : t("how_want_be_billionare.streak", { count: streak })
+  }
+
   // ── Host: Play Again ──────────────────────────────────────────────────────
 
   restartGame(event) {
@@ -150,8 +162,17 @@ export default class extends Controller {
 
     // Populate question text (targets appear in both host and player sections)
     const roundLabel = t("how_want_be_billionare.round", { round: data.round, total: data.total })
+    const worth      = data.points ? ` · ${t("how_want_be_billionare.worth", { points: num(data.points) })}` : ""
+    const finalLabel = t("how_want_be_billionare.final_question")
     this.questionTextTargets.forEach(el => { el.textContent = data.text })
-    this.questionMetaTargets.forEach(el => { el.textContent = roundLabel })
+    this.questionMetaTargets.forEach(el => {
+      el.textContent = (data.final ? finalLabel : roundLabel) + worth
+      el.classList.toggle("text-yellow-400", !!data.final)
+      el.classList.toggle("text-blue-400", !data.final)
+    })
+    if (this.hasLockLabelTarget) {
+      this.lockLabelTarget.textContent = data.final ? finalLabel : t("how_want_be_billionare.lock_in")
+    }
 
     const labels = [this.optionATarget, this.optionBTarget, this.optionCTarget, this.optionDTarget]
     data.options.forEach((opt, i) => { labels[i].textContent = opt.text })
@@ -167,7 +188,9 @@ export default class extends Controller {
   onRevealAnswer(data) {
     this.stopCountdown()
     this.showNext(data)
-    const { options, correct_answer_indices, round_scores, user_points, question_points, nicknames, round, total } = data
+    const { options, correct_answer_indices, round_scores, user_points, nicknames, round, total } = data
+    const details = data.round_details || {}
+    const streaks = data.streaks || {}
 
     this.revealRoundLabelTarget.textContent = t("how_want_be_billionare.round_reveal", { round, total })
 
@@ -196,10 +219,13 @@ export default class extends Controller {
 
     if (this.playerIdValue !== "") {
       // ── Player view: show their own result ─────────────────────────────
-      const myId    = this.playerIdValue
-      const earned  = round_scores[myId] || 0
-      const myTotal = user_points[myId]  || 0
-      const correct = earned > 0
+      const myId     = this.playerIdValue
+      const earned   = round_scores[myId] || 0
+      const myTotal  = user_points[myId]  || 0
+      const correct  = earned > 0
+      const mine     = details[myId] || {}
+      const lostRun  = !correct && (this.myStreak || 0) >= 2
+      this.myStreak  = streaks[myId] || 0
 
       this.revealPlayerResultTarget.classList.remove("hidden")
       this.revealHostScoresTarget.classList.add("hidden")
@@ -208,7 +234,13 @@ export default class extends Controller {
         ? t("how_want_be_billionare.correct", { points: num(earned) })
         : t("how_want_be_billionare.incorrect")
       this.revealResultTextTarget.style.color = correct ? "#4ade80" : "#f87171"
-      this.revealTotalTextTarget.textContent  = t("how_want_be_billionare.running_total", { points: num(myTotal) })
+      // Speed and streak on one line, the total on the next.
+      const extras = []
+      if (correct && mine.seconds != null) extras.push(t("how_want_be_billionare.answered_in", { seconds: this.seconds(mine.seconds) }))
+      if (correct && mine.streak >= 2) extras.push(this.streakLabel(mine.streak, mine.multiplier))
+      if (lostRun) extras.push(t("how_want_be_billionare.streak_lost"))
+      const total = t("how_want_be_billionare.running_total", { points: num(myTotal) })
+      this.revealTotalTextTarget.textContent = extras.length ? `${extras.join(" · ")}\n${total}` : total
     } else {
       // ── Host view: show per-player round summary ────────────────────────
       this.revealPlayerResultTarget.classList.add("hidden")
@@ -221,15 +253,21 @@ export default class extends Controller {
           const earned = round_scores[pid] || 0
           const runTotal = user_points[pid] || 0
           const scored = earned > 0
+          const info   = details[pid] || {}
+          const fire   = (streaks[pid] || 0) >= 2
+            ? `<span class="ml-2 text-orange-400 font-black">🔥${streaks[pid]}</span>` : ""
+          const speed  = scored && info.seconds != null
+            ? `<span class="text-slate-500 ml-2">${this.seconds(info.seconds)} s</span>` : ""
+          const bonus  = info.multiplier > 1 ? `<span class="text-orange-400 ml-1">×${num(info.multiplier)}</span>` : ""
 
           return `
             <div class="flex items-center justify-between p-3 rounded-xl border
                         ${scored ? "border-green-700/50 bg-green-900/10" : "border-slate-800 bg-slate-900/30"}">
-              <span class="font-bold text-sm ${scored ? "text-green-300" : "text-slate-500"}">${name}</span>
+              <span class="font-bold text-sm ${scored ? "text-green-300" : "text-slate-500"}">${name}${fire}</span>
               <div class="text-right font-mono text-xs">
                 <span class="${scored ? "text-green-400 font-black" : "text-slate-600"}">
                   ${scored ? "+" + num(earned) : "+0"}
-                </span>
+                </span>${bonus}${speed}
                 <span class="text-slate-600 ml-2">${t("how_want_be_billionare.total", { points: num(runTotal) })}</span>
               </div>
             </div>

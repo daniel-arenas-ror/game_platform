@@ -1,6 +1,11 @@
-
 module GameServices
   class HowWantBeBillionare < Base
+    DEFAULT_ROUNDS   = 5
+    SPEED_FLOOR      = 0.5                   # a right answer at the buzzer keeps half its points
+    STREAKS          = { 5 => 2, 3 => 1.5 }.freeze # right answers in a row → points multiplier
+    FINAL_MULTIPLIER = 2                     # the last question is worth double
+    POINTS_LADDER    = (100..1000).step(100).to_a.freeze
+
     def initialize(room)
       @room = room
       @players = room.players.to_a
@@ -16,22 +21,53 @@ module GameServices
         'game_state.user_points'        => user_points,
         'game_state.asked_question_ids' => asked_ids,
         'game_state.answers_history'    => {},
+        'game_state.answer_seconds'     => {},
+        'game_state.streaks'            => {},
         'game_state.screen'             => nil
       )
 
-      update_question!
+      update_question!(0)
       broadcast_start
       true
     end
 
+    def total_rounds
+      rounds = @room.game_state['total_rounds'].to_i
+      rounds < 1 ? DEFAULT_ROUNDS : rounds
+    end
+
+    def final_round?(round)
+      round == total_rounds - 1
+    end
+
+    # What the current question is worth, before speed and streaks.
+    def question_points(round)
+      points = @room.game_state['question_points'].to_i
+      points = POINTS_LADDER.first if points <= 0
+      final_round?(round) ? points * FINAL_MULTIPLIER : points
+    end
+
+    # The clock starts when the question goes out; answers are timed from here.
+    def start_question!(duration)
+      @room.atomic_set('game_state.question_started_at' => Time.current.to_f, 'game_state.question_duration' => duration)
+    end
+
+    # Every player still connected has answered, so the round can end before the time is up.
+    def everyone_answered?
+      @room.reload
+      answered  = (@room.game_state.dig('answers_history', @room.game_state['question_id'].to_s) || {}).keys
+      connected = @room.players.where(connected: true).pluck(:id).map(&:to_s)
+      connected.any? && (connected - answered).empty?
+    end
+
     # Score the current round; returns reveal data for broadcasting.
-    def score_round!
-      calc_points!
+    def score_round!(round)
+      calc_points!(round)
     end
 
     # Load the next question into game_state.
-    def advance_question!
-      update_question!
+    def advance_question!(round)
+      update_question!(round)
     end
 
     def add_answer(player_id, choice)
@@ -41,12 +77,17 @@ module GameServices
       existing = @room.game_state.dig('answers_history', question_id, player_id_str)
       return if !existing.nil?
 
-      @room.atomic_set("game_state.answers_history.#{question_id}.#{player_id_str}" => choice.to_i)
+      started = @room.game_state['question_started_at'].to_f
+      seconds = started.positive? ? (Time.current.to_f - started).round(2) : nil
+      @room.atomic_set("game_state.answers_history.#{question_id}.#{player_id_str}" => choice.to_i,
+                       "game_state.answer_seconds.#{question_id}.#{player_id_str}"  => seconds)
     end
 
     private
 
-    def update_question!
+    # Questions climb the points ladder as the game goes on: cheap ones first, the most valuable at
+    # the end. Falls back to any question not asked yet, then starts over when all were asked.
+    def update_question!(round)
       @room.reload
       asked_ids  = @room.game_state['asked_question_ids'] || []
       asked_oids = asked_ids.filter_map do |id|
@@ -55,55 +96,90 @@ module GameServices
         nil
       end
 
-      language = ::HowWantBeBillionare::Question.match_for(@room.locale)
-      pipeline = [ { "$match" => language } ]
-      pipeline << { '$match' => { '_id' => { '$nin' => asked_oids } } } unless asked_oids.empty?
-      pipeline << { '$sample' => { size: 1 } }
+      language  = ::HowWantBeBillionare::Question.match_for(@room.locale)
+      not_asked = asked_oids.empty? ? [] : [ { '$match' => { '_id' => { '$nin' => asked_oids } } } ]
+      target    = ladder_points(round)
+      near      = { '$match' => { 'points' => { '$gte' => target - 100, '$lte' => target + 100 } } }
+      sample    = { '$sample' => { size: 1 } }
+      questions = ::HowWantBeBillionare::Question.collection
 
-      question = ::HowWantBeBillionare::Question.collection.aggregate(pipeline).first
+      question = questions.aggregate([ { "$match" => language }, *not_asked, near, sample ]).first ||
+                 questions.aggregate([ { "$match" => language }, *not_asked, sample ]).first
 
       if question.nil?
         asked_ids = []
         @room.atomic_set('game_state.asked_question_ids' => [])
-        question = ::HowWantBeBillionare::Question.collection.aggregate([ { "$match" => language }, { "$sample" => { size: 1 } } ]).first
+        question = questions.aggregate([ { "$match" => language }, near, sample ]).first ||
+                   questions.aggregate([ { "$match" => language }, sample ]).first
       end
 
       @room.atomic_set(
         'game_state.question_id'        => question['_id'],
         'game_state.question'           => question['text'],
         'game_state.answers'            => question['answers'],
+        'game_state.question_points'    => question['points'],
         'game_state.asked_question_ids' => asked_ids + [question['_id'].to_s]
       )
     end
 
-    # Scores the current round and returns a hash with all data needed for the reveal broadcast.
-    def calc_points!
+    # Round 1 aims at 100 points, the last round at 1000, evenly in between.
+    def ladder_points(round)
+      progress = total_rounds > 1 ? round.to_f / (total_rounds - 1) : 1.0
+      POINTS_LADDER[(progress * (POINTS_LADDER.size - 1)).round]
+    end
+
+    def streak_multiplier(streak)
+      STREAKS.find { |length, _| streak >= length }&.last || 1
+    end
+
+    # A right answer earns the question's points, less the slower it came (down to SPEED_FLOOR at
+    # the buzzer), times the streak multiplier. A wrong answer or none breaks the streak.
+    # Returns everything the reveal broadcast needs.
+    def calc_points!(round)
       @room.reload
       question_id      = @room.game_state['question_id'].to_s
       question         = ::HowWantBeBillionare::Question.find(question_id)
       question_answers = @room.game_state.dig('answers_history', question_id) || {}
+      answer_seconds   = @room.game_state.dig('answer_seconds', question_id) || {}
+      duration         = @room.game_state['question_duration'].to_f
       user_points      = @room.game_state['user_points'] || {}
+      streaks          = @room.game_state['streaks'] || {}
+      worth            = question_points(round)
       round_scores     = {}
+      round_details    = {}
 
       correct_indices = question.answers.each_with_index
                         .select { |a, _| a['correct'] }
                         .map    { |_, i| i }
 
-      question_answers.each do |player_id, answer_index|
-        next unless correct_indices.include?(answer_index.to_i)
+      (user_points.keys | question_answers.keys).each do |player_id|
+        answer = question_answers[player_id]
+        unless answer && correct_indices.include?(answer.to_i)
+          streaks[player_id] = 0
+          next
+        end
 
-        user_points[player_id] ||= 0
-        user_points[player_id] += question.points.to_i
-        round_scores[player_id] = question.points.to_i
+        seconds    = answer_seconds[player_id]
+        late       = duration.positive? && seconds ? (seconds.to_f / duration).clamp(0, 1) : 0
+        streak     = streaks[player_id].to_i + 1
+        multiplier = streak_multiplier(streak)
+        points     = (worth * (1 - (1 - SPEED_FLOOR) * late) * multiplier / 10.0).round * 10
+
+        streaks[player_id]       = streak
+        user_points[player_id]   = user_points[player_id].to_i + points
+        round_scores[player_id]  = points
+        round_details[player_id] = { 'seconds' => seconds, 'streak' => streak, 'multiplier' => multiplier }
       end
 
-      @room.atomic_set('game_state.user_points' => user_points)
+      @room.atomic_set('game_state.user_points' => user_points, 'game_state.streaks' => streaks)
 
       {
         round_scores:           round_scores,
+        round_details:          round_details,
+        streaks:                streaks,
         user_points:            user_points,
         correct_answer_indices: correct_indices,
-        question_points:        question.points.to_i
+        question_points:        worth
       }
     end
   end
