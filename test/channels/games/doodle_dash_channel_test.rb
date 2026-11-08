@@ -86,6 +86,15 @@ class Games::DoodleDashChannelTest < ActionCable::Channel::TestCase
     assert_equal [ stroke ], transmissions.last["state"]["strokes"]
   end
 
+  test "a fill tap goes to the TV as a fill; a fill flag on a line is dropped" do
+    subscribe(room_code: @room.code, player_id: @artist.id.to_s)
+    perform :stroke_end, id: 1, color: "#ef4444", size: 10, points: [ [ 0.5, 0.5 ] ], fill: true
+    assert JSON.parse(broadcasts(host_stream).last)["stroke"]["fill"]
+
+    perform :stroke_end, id: 2, color: "#ef4444", size: 10, points: [ [ 0.1, 0.1 ], [ 0.2, 0.2 ] ], fill: true
+    assert_nil JSON.parse(broadcasts(host_stream).last)["stroke"]["fill"]
+  end
+
   test "one phone can't flood the TV with drawing messages" do
     subscribe(room_code: @room.code, player_id: @artist.id.to_s)
     limit = Games::DoodleDashChannel::DRAW_RATE_LIMIT

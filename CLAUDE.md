@@ -62,7 +62,7 @@ A real-time multiplayer game platform. A host creates a **Room**, shares a QR co
 | `submarine_combat` | Submarine Combat | Ship placement + battle loop |
 | `mind_match` | Mind Match | Word-matching telepathy game |
 | `soup_of_numbers` | Soup of Numbers | Digit word-search race; first to tap the host's number scores |
-| `doodle_dash` | Doodle Dash | Drawing + guessing: artist draws on their phone, the drawing shows on the TV only |
+| `doodle_dash` | Doodle Dash | Drawing + guessing: artist draws on their phone, the drawing shows on the TV only. Words: classic lists, packs (`config/doodle_dash/packs.yml`) or the host's own. Reactions, game-over gallery vote (TV-side snapshots), fill bucket (a one-point stroke with `fill: true`, replayed in order) |
 | `haunted_house` | Haunted House | Halloween Werewolf-style: secret roles (ghosts, Medium, trick-or-treaters), night moves + day vote; loop id + heartbeat in `game_state`, TV sounds made with Web Audio |
 | `monster_mash` | Monster Mash | Halloween drawing relay: head → body → legs passed around, guide strip from the part above, reveal + vote; drawings in `MonsterMash::Drawing` |
 | `tug_of_war` | Tug of War | Team math race: right answers pull the rope, wrong ones freeze the phone |

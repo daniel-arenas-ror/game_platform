@@ -4,7 +4,7 @@ import { t } from "controllers/shared/i18n"
 import { avatarHtml } from "controllers/shared/avatar"
 import {
   fitCanvas, clearCanvas, createPen, patternHtml, ranked, esc, secondsUntil,
-  restartAnimation, injectStyles, floatEmoji, MEDALS
+  restartAnimation, injectStyles, floatEmoji, floodFill, MEDALS
 } from "controllers/doodle_dash/drawing"
 import { confetti } from "controllers/shared/celebration"
 import { soundFile } from "controllers/shared/sound"
@@ -198,6 +198,7 @@ export default class extends Controller {
   repaint() {
     clearCanvas(this.canvasTarget)
     this.strokes.forEach(s => {
+      if (s.fill) return floodFill(this.canvasTarget, s.points[0], s.color)
       const pen = createPen(this.canvasTarget, s.color, s.size)
       pen.add(s.points)
       if (s.pen) s.pen = pen

@@ -361,6 +361,21 @@ en:
           dense_desc: "10–25 birds per round"
       doodle_dash:
         edit:
+          source: "WORDS FROM"
+          mix: "🎲 Mix"
+          mix_desc: "a bit of everything"
+          classic: "Classic"
+          classic_desc: "pick the difficulty"
+          pack_words: "%{count} words"
+          packs:
+            christmas: "🎄 Christmas"
+            animals: "🐾 Animals"
+            food: "🍕 Food"
+            objects: "🎒 Objects"
+            actions: "🏃 Actions"
+          custom_label: "YOUR OWN WORDS (OPTIONAL)"
+          custom_placeholder: "grandma's cat\nour teacher\nthe beach trip"
+          custom_hint: "One per line or separated by commas. They join any category: each turn one of the 3 choices is one of yours, until they're all used. Inside jokes welcome!"
           draw_time: "DRAWING TIME"
           sprint: "Sprint"
           quick: "Quick"

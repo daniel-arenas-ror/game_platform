@@ -5,7 +5,8 @@ class DoodleDashTest < ActiveSupport::TestCase
 
   setup do
     @game = Game.create!(name: "Doodle Dash", code: "doodle_dash", description: "Draw")
-    @room = Room.create!(game: @game, game_state: { "draw_time" => "60", "turns_per_player" => "2", "difficulty" => "easy" })
+    @room = Room.create!(game: @game, game_state: { "draw_time" => "60", "turns_per_player" => "2", "difficulty" => "easy",
+                                                 "word_source" => "classic" })
     @ana, @beto, @caro = %w[Ana Beto Caro].map { |n| @room.players.create!(nickname: n) }
 
     @svc = Doodle.new(@room)
@@ -352,5 +353,65 @@ class DoodleDashTest < ActiveSupport::TestCase
     assert svc.voting?
     @caro.delete
     assert_not svc.voting?
+  end
+
+  test "every word pack has both languages, enough unique lowercase words, none hidden on the TV" do
+    Doodle::PACKS.each do |pack, languages|
+      assert_equal %w[en es], languages.keys.sort, pack
+      languages.each do |locale, words|
+        assert_operator words.size, :>=, 25, "#{pack}.#{locale}"
+        assert_equal words.uniq, words, "#{pack}.#{locale} has duplicates"
+        assert(words.all? { |w| w == w.downcase }, "#{pack}.#{locale} must be lowercase")
+        assert_empty words.select { |w| Doodle.feed_text(w) == "***" }, "#{pack}.#{locale} hidden by blocked_words.yml"
+      end
+    end
+  end
+
+  test "a picked pack offers its words, in the room's language" do
+    @room.update!(locale: "es")
+    @room.atomic_set("game_state.word_source" => "christmas")
+    Doodle.new(@room).setup_game!
+    choices = Doodle.new(@room.reload).start_turn!(0)[:choices]
+    assert(choices.all? { |w| Doodle::PACKS["christmas"]["es"].include?(w) }, choices.inspect)
+  end
+
+  test "the host's own words: cleaned, one of the 3 choices each turn in any category, kept from the guessers" do
+    @room.atomic_set("game_state.word_source" => "animals",
+                     "game_state.custom_words" => "Grandma's Cat\nour teacher, the beach trip;our teacher\n\nx")
+    Doodle.new(@room).setup_game!
+    state = @room.reload.game_state
+    own   = [ "grandma's cat", "our teacher", "the beach trip" ]
+    assert_equal own, state["custom_words"]
+    assert_equal "animals", state["word_source"]
+
+    first, *rest = Doodle.new(@room).start_turn!(0)[:choices]
+    assert_includes own, first
+    assert(rest.all? { |w| Doodle::PACKS["animals"]["en"].include?(w) }, rest.inspect)
+    assert_not Doodle.new(@room.reload).public_state.key?("custom_words")
+
+    @room.atomic_set("game_state.used_words" => own) # all used: back to the category alone
+    assert(Doodle.new(@room).start_turn!(1)[:choices].all? { |w| Doodle::PACKS["animals"]["en"].include?(w) })
+  end
+
+  test "mix is the default and draws from the packs and the classic easy and medium words" do
+    @room.atomic_set("game_state.word_source" => nil)
+    Doodle.new(@room).setup_game!
+    assert_equal "mix", @room.reload.game_state["word_source"]
+
+    everything = Doodle::PACKS.values.flat_map { _1["en"] } + Doodle::WORDS["en"]["easy"] + Doodle::WORDS["en"]["medium"]
+    choices = Doodle.new(@room).start_turn!(0)[:choices]
+    assert_equal 3, choices.uniq.size
+    assert(choices.all? { |w| everything.include?(w) }, choices.inspect)
+  end
+
+  test "a fill is a one-point stroke, kept like any other, up to a limit per drawing" do
+    artist, _word, _ = start_drawing
+    fill = ->(id) { { "id" => id, "color" => "#ef4444", "size" => 10, "points" => [ [ 0.5, 0.5 ] ], "fill" => true } }
+    assert svc.save_stroke!(artist.id, fill.(1))
+
+    @room.atomic_set("game_state.strokes" => (1..Doodle::MAX_FILLS).map { fill.(_1) })
+    assert_not svc.save_stroke!(artist.id, fill.(999)), "too many fills"
+    line = { "id" => 1000, "color" => "#111827", "size" => 4, "points" => [ [ 0.1, 0.1 ], [ 0.2, 0.2 ] ] }
+    assert svc.save_stroke!(artist.id, line), "lines still go through"
   end
 end

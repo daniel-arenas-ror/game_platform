@@ -130,6 +130,7 @@ class Games::DoodleDashChannel < ApplicationCable::Channel
 
   # The whole stroke, once the finger lifts. The live batches can arrive in any order, so the TV
   # redraws from this one, and it's what is kept for a reload. data: { id:, points:, color:, size: }
+  # A fill bucket tap comes here too, as one point with fill: true.
   def stroke_end(data)
     return unless @player
 
@@ -139,6 +140,7 @@ class Games::DoodleDashChannel < ApplicationCable::Channel
     return unless id && points && style
 
     stroke = style.merge("id" => id, "points" => points)
+    stroke["fill"] = true if data["fill"] == true && points.size == 1
     return unless service.save_stroke!(@player.id, stroke)
 
     ActionCable.server.broadcast(host_stream, { action: "stroke_end", stroke: stroke })

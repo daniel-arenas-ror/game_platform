@@ -3,7 +3,7 @@ import consumer from "channels/consumer"
 import { t } from "controllers/shared/i18n"
 import {
   PALETTE, ERASER, BRUSH_SIZES, fitCanvas, clearCanvas, createPen, redraw, patternHtml, ranked, esc,
-  secondsUntil, restartAnimation, injectStyles, floatEmoji, MEDALS
+  secondsUntil, restartAnimation, injectStyles, floatEmoji, floodFill, MEDALS
 } from "controllers/doodle_dash/drawing"
 import { celebrateWin, confetti, isTopScore, pop } from "controllers/shared/celebration"
 import { soundFile } from "controllers/shared/sound"
@@ -17,6 +17,7 @@ const SEND_EVERY   = 50     // ms between two batches of points while drawing
 const BATCH_LIMIT  = 100    // points: send early when a batch gets this big (server max is 120)
 const MIN_STEP     = 0.002  // canvas fractions: smaller moves are skipped
 const STROKE_LIMIT = 2000   // points per stroke (the server's max); longer lines continue as a new stroke
+const MAX_FILLS    = 30     // bucket fills per drawing (the server's max)
 
 const SYNC_AFTER   = 1000   // ms: the artist asks again for their words if they haven't arrived
 const GUESS_PAUSE  = 400    // ms the Send button rests after a guess (the server's cooldown)
@@ -44,6 +45,7 @@ export default class extends Controller {
     this.hasGuessed  = false
     this.color       = PALETTE[0]
     this.size        = BRUSH_SIZES[1]
+    this.tool        = "pen" // or "fill" (the bucket)
     this.strokes     = []   // the artist's own drawing this turn, to redraw after undo or a resize
     this.lastId      = 0    // stroke ids count up from 1 each turn (the server keys strokes by id)
     this.pointerId   = null // the finger that is drawing; other fingers are ignored
@@ -310,6 +312,7 @@ export default class extends Controller {
   penDown(event) {
     if (!this.isArtist || this.pointerId !== null) return
     event.preventDefault()
+    if (this.tool === "fill") return this.fillAt(this.pointFrom(event))
     this.canvasTarget.setPointerCapture(event.pointerId)
     this.pointerId = event.pointerId
 
@@ -353,6 +356,16 @@ export default class extends Controller {
     this.finishStroke()
     this.pointerId = null
     this.stroke = null
+  }
+
+  // A bucket tap: fills here at once, then the TV does the same from the one point.
+  fillAt(point) {
+    if (this.strokes.filter(s => s.fill).length >= MAX_FILLS) return
+    const stroke = { id: ++this.lastId, color: this.color, size: this.size, points: [ point ], fill: true }
+    floodFill(this.canvasTarget, point, this.color)
+    this.strokes.push(stroke)
+    this.channel.perform("stroke_end", stroke)
+    navigator.vibrate?.(15)
   }
 
   // Sends the rest of the live points, then the whole stroke to keep.
@@ -401,15 +414,20 @@ export default class extends Controller {
       <button type="button" data-size="${size}" aria-label="${t("doodle_dash.brush", { size })}"
               class="size-12 rounded-xl bg-slate-800 border-2 border-slate-700 cursor-pointer grid place-items-center">
         <span class="block rounded-full bg-white" style="width:${4 + size * 0.8}px;height:${4 + size * 0.8}px"></span>
-      </button>`).join("")
+      </button>`).join("") + `
+      <button type="button" data-fill aria-label="${t("doodle_dash.fill")}"
+              class="size-12 rounded-xl bg-slate-800 border-2 border-slate-700 cursor-pointer grid place-items-center text-2xl">🪣</button>`
 
     this.colorsTarget.addEventListener("click", (e) => {
       const btn = e.target.closest("[data-color]")
       if (btn) { this.color = btn.dataset.color; this.markTools() }
     })
     this.sizesTarget.addEventListener("click", (e) => {
-      const btn = e.target.closest("[data-size]")
-      if (btn) { this.size = Number(btn.dataset.size); this.markTools() }
+      const btn = e.target.closest("[data-size], [data-fill]")
+      if (!btn) return
+      if (btn.hasAttribute("data-fill")) this.tool = this.tool === "fill" ? "pen" : "fill"
+      else { this.size = Number(btn.dataset.size); this.tool = "pen" }
+      this.markTools()
     })
     this.markTools()
   }
@@ -421,8 +439,8 @@ export default class extends Controller {
       btn.classList.toggle("ring-lime-400", on)
       btn.setAttribute("aria-pressed", on)
     })
-    this.sizesTarget.querySelectorAll("[data-size]").forEach(btn => {
-      const on = Number(btn.dataset.size) === this.size
+    this.sizesTarget.querySelectorAll("[data-size], [data-fill]").forEach(btn => {
+      const on = btn.hasAttribute("data-fill") ? this.tool === "fill" : this.tool === "pen" && Number(btn.dataset.size) === this.size
       btn.classList.toggle("border-lime-400", on)
       btn.classList.toggle("bg-lime-500/10", on)
       btn.classList.toggle("border-slate-700", !on)

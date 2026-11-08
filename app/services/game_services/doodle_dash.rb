@@ -25,7 +25,8 @@ module GameServices
     MAX_GUESS_LENGTH = 40
 
     # Drawing. Points are fractions of the canvas (0–1); brush sizes are per 1000 px of canvas width.
-    PALETTE     = %w[#111827 #ef4444 #f97316 #facc15 #22c55e #3b82f6 #a855f7 #92400e #ffffff].freeze
+    # #f8fafc is white paint (for snow on a blue sky); #ffffff, the paper, is the eraser.
+    PALETTE     = %w[#111827 #ef4444 #f97316 #facc15 #22c55e #3b82f6 #a855f7 #92400e #f8fafc #ffffff].freeze
     BRUSH_SIZES = [ 4, 10, 24 ].freeze
     MAX_POINTS_PER_MESSAGE = 120  # one live batch
     MAX_STROKE_POINTS      = 2000 # one whole stroke
@@ -37,6 +38,18 @@ module GameServices
       YAML.load_file(Rails.root.join("config/doodle_dash", file)).transform_values(&:freeze).freeze
     end.freeze
     BLOCKED = YAML.load_file(Rails.root.join("config/doodle_dash/blocked_words.yml")).freeze
+
+    # Word packs the host can pick instead of the classic lists: { pack => { locale => [words] } }.
+    PACKS = YAML.load_file(Rails.root.join("config/doodle_dash/packs.yml")).transform_values(&:freeze).freeze
+    # "mix" (the default): every pack plus the easy and medium classic words.
+    WORD_SOURCES = [ "mix", "classic", *PACKS.keys ].freeze
+    # The host's own words (typed in the settings, one per line or comma separated), on top of any
+    # category: while some are unused, one of the artist's 3 choices each turn is one of them.
+    MAX_CUSTOM_WORDS = 100
+    MAX_CUSTOM_WORD  = 30 # letters
+
+    # Fill bucket: a "stroke" with one point and fill: true, flood-filled on every screen.
+    MAX_FILLS = 30 # per drawing: each one costs every screen a full-canvas pass when it redraws
 
     # Never sent to guessers or the TV while a turn is being played.
     SECRET_KEYS = %w[word choices].freeze
@@ -53,6 +66,8 @@ module GameServices
       laps       = state["turns_per_player"].to_i
       laps       = 1 unless TURN_CHOICES.include?(laps)
       difficulty = DIFFICULTIES.include?(state["difficulty"]) ? state["difficulty"] : "mixed"
+      custom     = self.class.clean_custom_words(state["custom_words"])
+      source     = WORD_SOURCES.include?(state["word_source"]) ? state["word_source"] : "mix"
       order      = @players.map { |p| p.id.to_s }.shuffle
 
       @room.update!(
@@ -63,6 +78,8 @@ module GameServices
           "draw_time"        => draw_time,
           "turns_per_player" => laps,
           "difficulty"       => difficulty,
+          "word_source"      => source,
+          "custom_words"     => custom,
           "show_guesses"     => state["show_guesses"].to_s != "false",
           # Same order every lap, so everyone draws once before anyone draws twice.
           "turns"            => Array.new(laps) { order }.flatten,
@@ -307,6 +324,7 @@ module GameServices
     # phone can redraw everything. Saving the same stroke twice does nothing.
     def save_stroke!(player_id, stroke)
       return false unless stroke
+      return false if stroke["fill"] && fresh_state["strokes"].to_a.count { |s| s["fill"] } >= MAX_FILLS
 
       id     = stroke["id"]
       filter = artist_filter(player_id).merge(
@@ -347,6 +365,16 @@ module GameServices
       return nil unless PALETTE.include?(color) && BRUSH_SIZES.include?(size)
 
       { "color" => color, "size" => size }
+    end
+
+    # The host's typed list: one word or phrase per line (or comma), trimmed, lowercase, no repeats,
+    # nothing the TV feed would hide.
+    def self.clean_custom_words(text)
+      list = text.is_a?(Array) ? text : text.to_s.split(/[\n,;]+/)
+      list.map { |word| word.to_s.squish.downcase }
+          .select { |word| word.length.between?(2, MAX_CUSTOM_WORD) && normalize(word).present? && feed_text(word) != "***" }
+          .uniq { |word| normalize(word) }
+          .first(MAX_CUSTOM_WORDS)
     end
 
     # ── Guess matching ───────────────────────────────────────────────────────
@@ -413,7 +441,7 @@ module GameServices
     # Guessers' phones: no word, no choices, no strokes (the drawing is on the TV only).
     def public_state
       state = @room.game_state
-      shown = state.except(*SECRET_KEYS, "strokes", "turns", "used_words", "loop_running", "votes")
+      shown = state.except(*SECRET_KEYS, "strokes", "turns", "used_words", "loop_running", "votes", "custom_words")
       shown["votes_count"] = state["votes"].to_h.size
       shown["total_turns"] = total_turns
       shown["word"] = state["word"] if %w[reveal game_over].include?(state["status"])
@@ -443,14 +471,24 @@ module GameServices
 
     # Three unused words. "mixed" offers one easy, one medium and one hard word.
     def pick_words
-      used  = @room.game_state["used_words"].to_a
-      words = WORDS.fetch(@room.locale, WORDS["en"])
+      used   = @room.game_state["used_words"].to_a
+      words  = WORDS.fetch(@room.locale, WORDS["en"])
+      source = @room.game_state["word_source"]
+      pack   = ->(name) { PACKS[name].fetch(@room.locale, PACKS[name]["en"]) }
       pools =
-        if @room.game_state["difficulty"] == "mixed"
+        if PACKS.key?(source)
+          Array.new(CHOICES) { pack.(source) }
+        elsif source == "classic" && @room.game_state["difficulty"] == "mixed"
           %w[easy medium hard].map { |level| words[level] }
-        else
+        elsif source == "classic"
           Array.new(CHOICES) { words[@room.game_state["difficulty"]] }
+        else
+          mix = (PACKS.keys.flat_map(&pack) + words["easy"] + words["medium"]).uniq
+          Array.new(CHOICES) { mix }
         end
+
+      own = @room.game_state["custom_words"].to_a - used
+      pools[0] = own if own.any?
 
       pools.each_with_object([]) do |pool, picked|
         fresh = pool - used - picked

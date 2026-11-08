@@ -1,0 +1,317 @@
+# Doodle Dash word packs: the host picks one instead of the classic easy/medium/hard lists.
+# Each pack has the same idea in every room language; lowercase, family-friendly and drawable.
+christmas:
+  en:
+    - santa
+    - reindeer
+    - snowman
+    - christmas tree
+    - present
+    - stocking
+    - candy cane
+    - sleigh
+    - elf
+    - star
+    - bell
+    - snowflake
+    - gingerbread man
+    - chimney
+    - wreath
+    - candle
+    - angel
+    - ornament
+    - mistletoe
+    - hot chocolate
+    - cookies
+    - north pole
+    - scarf
+    - mittens
+    - fireplace
+    - lights
+    - nativity
+    - carols
+    - snowball
+    - penguin
+  es:
+    - papá noel
+    - reno
+    - muñeco de nieve
+    - árbol de navidad
+    - regalo
+    - calcetín
+    - bastón de caramelo
+    - trineo
+    - duende
+    - estrella
+    - campana
+    - copo de nieve
+    - galleta de jengibre
+    - chimenea
+    - corona
+    - vela
+    - ángel
+    - esfera
+    - muérdago
+    - chocolate caliente
+    - galletas
+    - polo norte
+    - bufanda
+    - guantes
+    - pesebre
+    - luces
+    - villancico
+    - bola de nieve
+    - pingüino
+    - buñuelo
+animals:
+  en:
+    - cat
+    - dog
+    - elephant
+    - giraffe
+    - lion
+    - monkey
+    - penguin
+    - snake
+    - turtle
+    - rabbit
+    - shark
+    - octopus
+    - butterfly
+    - spider
+    - owl
+    - frog
+    - horse
+    - cow
+    - pig
+    - duck
+    - crocodile
+    - zebra
+    - kangaroo
+    - snail
+    - bat
+    - whale
+    - parrot
+    - bee
+    - fox
+    - camel
+  es:
+    - gato
+    - perro
+    - elefante
+    - jirafa
+    - león
+    - mono
+    - pingüino
+    - serpiente
+    - tortuga
+    - conejo
+    - tiburón
+    - pulpo
+    - mariposa
+    - araña
+    - búho
+    - rana
+    - caballo
+    - vaca
+    - cerdo
+    - pato
+    - cocodrilo
+    - cebra
+    - canguro
+    - caracol
+    - murciélago
+    - ballena
+    - loro
+    - abeja
+    - zorro
+    - camello
+food:
+  en:
+    - pizza
+    - hamburger
+    - hot dog
+    - ice cream
+    - banana
+    - apple
+    - cake
+    - donut
+    - sandwich
+    - spaghetti
+    - taco
+    - popcorn
+    - watermelon
+    - carrot
+    - egg
+    - cheese
+    - bread
+    - cookie
+    - strawberry
+    - pineapple
+    - sushi
+    - french fries
+    - pancakes
+    - lollipop
+    - corn
+    - grapes
+    - cupcake
+    - soup
+    - lemon
+    - chocolate
+  es:
+    - pizza
+    - hamburguesa
+    - perro caliente
+    - helado
+    - banano
+    - manzana
+    - pastel
+    - dona
+    - sándwich
+    - espagueti
+    - taco
+    - palomitas
+    - sandía
+    - zanahoria
+    - huevo
+    - queso
+    - pan
+    - galleta
+    - fresa
+    - piña
+    - sushi
+    - papas fritas
+    - panqueques
+    - chupeta
+    - mazorca
+    - uvas
+    - cupcake
+    - sopa
+    - limón
+    - chocolate
+objects:
+  en:
+    - chair
+    - lamp
+    - umbrella
+    - glasses
+    - key
+    - clock
+    - phone
+    - book
+    - scissors
+    - toothbrush
+    - backpack
+    - guitar
+    - camera
+    - bicycle
+    - balloon
+    - kite
+    - hammer
+    - ladder
+    - candle
+    - shoe
+    - hat
+    - cup
+    - pencil
+    - television
+    - door
+    - window
+    - bed
+    - rocket
+    - robot
+    - crown
+  es:
+    - silla
+    - lámpara
+    - paraguas
+    - gafas
+    - llave
+    - reloj
+    - teléfono
+    - libro
+    - tijeras
+    - cepillo de dientes
+    - mochila
+    - guitarra
+    - cámara
+    - bicicleta
+    - globo
+    - cometa
+    - martillo
+    - escalera
+    - vela
+    - zapato
+    - sombrero
+    - taza
+    - lápiz
+    - televisor
+    - puerta
+    - ventana
+    - cama
+    - cohete
+    - robot
+    - corona
+actions:
+  en:
+    - swimming
+    - dancing
+    - sleeping
+    - running
+    - jumping
+    - singing
+    - cooking
+    - reading
+    - painting
+    - fishing
+    - flying
+    - laughing
+    - crying
+    - skiing
+    - surfing
+    - climbing
+    - juggling
+    - sneezing
+    - yawning
+    - waving
+    - hugging
+    - skating
+    - eating
+    - driving
+    - camping
+    - snoring
+    - knitting
+    - bowling
+    - diving
+    - clapping
+  es:
+    - nadar
+    - bailar
+    - dormir
+    - correr
+    - saltar
+    - cantar
+    - cocinar
+    - leer
+    - pintar
+    - pescar
+    - volar
+    - reír
+    - llorar
+    - esquiar
+    - surfear
+    - escalar
+    - hacer malabares
+    - estornudar
+    - bostezar
+    - saludar
+    - abrazar
+    - patinar
+    - comer
+    - manejar
+    - acampar
+    - roncar
+    - tejer
+    - jugar bolos
+    - bucear
+    - aplaudir

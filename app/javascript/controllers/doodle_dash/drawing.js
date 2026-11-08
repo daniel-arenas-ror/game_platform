@@ -3,7 +3,7 @@
 // Points are fractions of the canvas (0–1), so a drawing made on a phone fits any TV.
 // Brush sizes are per 1000 px of canvas width. Both lists must match GameServices::DoodleDash.
 
-export const PALETTE     = [ "#111827", "#ef4444", "#f97316", "#facc15", "#22c55e", "#3b82f6", "#a855f7", "#92400e", "#ffffff" ]
+export const PALETTE     = [ "#111827", "#ef4444", "#f97316", "#facc15", "#22c55e", "#3b82f6", "#a855f7", "#92400e", "#f8fafc", "#ffffff" ]
 export const ERASER      = "#ffffff"
 export const BRUSH_SIZES = [ 4, 10, 24 ]
 export const ASPECT      = 4 / 3 // canvas width / height, the same on every screen
@@ -78,14 +78,73 @@ export function createPen(canvas, color, size) {
   }
 }
 
-// strokes: [{ color, size, points }]
+// strokes: [{ color, size, points, fill? }]
 export function redraw(canvas, strokes) {
   clearCanvas(canvas)
   strokes.forEach(s => {
+    if (s.fill) return floodFill(canvas, s.points[0], s.color)
     const pen = createPen(canvas, s.color, s.size)
     pen.add(s.points)
     pen.end()
   })
+}
+
+const FILL_TOLERANCE = 48  // per colour channel: how far a pixel may be from the tapped one and still fill
+const EDGE_TOLERANCE = 160 // the soft pixels along a line's edge get painted too, so no pale halo is left
+
+// Fill bucket: paints the area around `point` (fractions of the canvas) that has the tapped pixel's
+// colour. Runs on every screen at its own size, so the TV and the phone get the same picture.
+export function floodFill(canvas, point, color) {
+  const w = canvas.width, h = canvas.height
+  const x = Math.floor(point[0] * w), y = Math.floor(point[1] * h)
+  if (x < 0 || y < 0 || x >= w || y >= h) return
+
+  const ctx    = canvas.getContext("2d", { willReadFrequently: true })
+  const image  = ctx.getImageData(0, 0, w, h)
+  const pixels = new Uint32Array(image.data.buffer)
+  const target = pixels[y * w + x]
+  const paint  = packColor(color)
+  if (near(target, paint, 0)) return
+
+  const filled = new Uint8Array(w * h)
+  const open   = (i) => !filled[i] && near(pixels[i], target, FILL_TOLERANCE)
+  const stack  = [ y * w + x ]
+  while (stack.length) {
+    const i = stack.pop()
+    if (!open(i)) continue
+    const row = i - (i % w)
+    let left = i, right = i
+    while (left > row && open(left - 1)) left--
+    while (right < row + w - 1 && open(right + 1)) right++
+    for (let j = left; j <= right; j++) {
+      pixels[j] = paint
+      filled[j] = 1
+      if (j >= w && open(j - w)) stack.push(j - w)
+      if (j < w * (h - 1) && open(j + w)) stack.push(j + w)
+    }
+  }
+
+  // One pixel more into the soft edge of the lines around the area.
+  for (let i = 0; i < pixels.length; i++) {
+    if (!filled[i]) continue
+    const col = i % w
+    for (const n of [ col > 0 ? i - 1 : -1, col < w - 1 ? i + 1 : -1, i - w, i + w ]) {
+      if (n >= 0 && n < pixels.length && !filled[n] && near(pixels[n], target, EDGE_TOLERANCE)) pixels[n] = paint
+    }
+  }
+  ctx.putImageData(image, 0, 0)
+}
+
+// "#rrggbb" as one pixel of ImageData read through a Uint32Array (little-endian: A B G R).
+function packColor(hex) {
+  const n = parseInt(hex.slice(1), 16)
+  return ((255 << 24) | ((n & 0xff) << 16) | (n & 0xff00) | ((n >> 16) & 0xff)) >>> 0
+}
+
+function near(a, b, tolerance) {
+  return Math.abs((a & 0xff) - (b & 0xff)) <= tolerance &&
+         Math.abs(((a >> 8) & 0xff) - ((b >> 8) & 0xff)) <= tolerance &&
+         Math.abs(((a >> 16) & 0xff) - ((b >> 16) & 0xff)) <= tolerance
 }
 
 // "c _ _ " pattern for the word: nil letters are hidden, spaces and punctuation are shown.

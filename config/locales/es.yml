@@ -350,6 +350,21 @@ es:
           dense_desc: "10–25 pájaros por ronda"
       doodle_dash:
         edit:
+          source: "PALABRAS"
+          mix: "🎲 Mezcla"
+          mix_desc: "un poco de todo"
+          classic: "Clásicas"
+          classic_desc: "eliges la dificultad"
+          pack_words: "%{count} palabras"
+          packs:
+            christmas: "🎄 Navidad"
+            animals: "🐾 Animales"
+            food: "🍕 Comida"
+            objects: "🎒 Objetos"
+            actions: "🏃 Acciones"
+          custom_label: "TUS PROPIAS PALABRAS (OPCIONAL)"
+          custom_placeholder: "el gato de la abuela\nnuestro profe\nel paseo a la playa"
+          custom_hint: "Una por línea o separadas por comas. Se suman a cualquier categoría: en cada turno una de las 3 opciones es tuya, hasta que se usen todas. ¡Valen los chistes internos!"
           draw_time: "TIEMPO PARA DIBUJAR"
           sprint: "Exprés"
           quick: "Rápido"

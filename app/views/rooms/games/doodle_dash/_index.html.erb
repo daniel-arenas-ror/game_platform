@@ -167,12 +167,13 @@
         <%# Tools %>
         <div class="short-landscape:max-w-[15rem]">
           <div data-doodle-dash-player-target="colors" class="flex flex-wrap justify-center gap-2 mt-4 short-landscape:mt-0"></div>
-          <div class="flex flex-wrap items-center justify-center gap-3 mt-3">
+          <%# One row on a 360px phone: 3 sizes, the bucket, Undo and Clear as icons %>
+          <div class="flex flex-wrap items-center justify-center gap-2 mt-3">
             <div data-doodle-dash-player-target="sizes" class="flex gap-2"></div>
-            <button type="button" data-action="doodle-dash-player#undo"
-                    class="h-12 px-4 rounded-xl bg-slate-800 border border-slate-700 font-bold cursor-pointer active:scale-95 transition-transform"><%= t(".undo") %></button>
-            <button type="button" data-action="doodle-dash-player#clear"
-                    class="h-12 px-4 rounded-xl bg-slate-800 border border-slate-700 font-bold cursor-pointer active:scale-95 transition-transform"><%= t(".clear") %></button>
+            <button type="button" data-action="doodle-dash-player#undo" aria-label="<%= t(".undo") %>" title="<%= t(".undo") %>"
+                    class="size-12 grid place-items-center rounded-xl bg-slate-800 border border-slate-700 text-2xl font-black cursor-pointer active:scale-95 transition-transform">↶</button>
+            <button type="button" data-action="doodle-dash-player#clear" aria-label="<%= t(".clear") %>" title="<%= t(".clear") %>"
+                    class="size-12 grid place-items-center rounded-xl bg-slate-800 border border-slate-700 text-2xl cursor-pointer active:scale-95 transition-transform">🗑️</button>
           </div>
         </div>
       </div>

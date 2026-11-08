@@ -28,6 +28,7 @@ es:
           word_was: "La palabra era"
   js:
     doodle_dash:
+      fill: "Bote de pintura"
       gallery_status: "Galería"
       votes_in:
         one: "%{count} voto"

@@ -29,6 +29,7 @@ en:
           word_was: "The word was"
   js:
     doodle_dash:
+      fill: "Fill bucket"
       gallery_status: "Gallery"
       votes_in:
         one: "%{count} vote"
