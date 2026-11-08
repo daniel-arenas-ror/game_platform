@@ -2,7 +2,7 @@
 name: Guess the Color
 slug: guess-the-color
 description: The host screen shows a color for 5 seconds. Match it on your phone with
-  RGB sliders before time runs out!
+  three simple sliders before time runs out!
 tagline: You saw it for 5 seconds. Now mix it from memory.
 category: perception
 min_players: 1
@@ -14,25 +14,25 @@ duration_minutes: 5
 age: 8
 long_description: >-
   Think you have a good eye for color? The host screen flashes a color for 5 seconds, then it's
-  gone. Everyone has 10 seconds to recreate it on their phone with red, green and blue sliders. The
-  closer your mix, the more points you get, up to 1,000 per round. Then comes the reveal, with
+  gone. Everyone has 10 seconds to recreate it on their phone with three sliders: color, light and
+  vivid. The closer it looks, the more points you get, up to 1,000 per round. Then comes the reveal, with
   everyone's colors next to the real one, and that's where the laughing starts.
 how_to_play:
   - The host picks the number of rounds and the difficulty. Easy uses bright, vivid colors. Hard can be any color at all.
   - A color fills the host screen for 5 seconds. Look closely and remember it.
-  - The color disappears. You get 10 seconds to mix it on your phone with the red, green and blue sliders.
-  - The closer your color is to the real one, the more points you get, up to 1,000 per round.
+  - The color disappears. You get 10 seconds to mix it on your phone with three sliders: color (the hue), light (dark to light) and vivid (grey to bright).
+  - The closer your color looks to the real one, the more points you get, up to 1,000 per round. Your phone shows your % match, and 97% or more is a 🎯 Perfect!
   - After each round, everyone's colors are shown next to the real one. The highest total after the last round wins.
 tips:
-  - Find the strongest channel first. Is it mostly red, green or blue? Set that slider, then adjust the others.
-  - All three sliders high makes light colors. All three low makes dark ones.
-  - Yellow is red plus green. Purple is red plus blue. Cyan is green plus blue.
+  - Find the color first on the top slider, then fix how light it is, and last how vivid.
+  - Pastel colors are light and a bit less vivid. Muddy browns and olives are darker and less vivid.
+  - Scores go by what your eyes see, so a shade that looks almost the same scores almost full points.
   - Don't trust the screen's glow. Most colors look a little brighter on a TV than they really are.
-  - Start with Easy and switch to Hard once everyone gets the hang of the sliders.
+  - Start with Easy and switch to Hard once everyone gets the hang of it.
 perfect_for: [family, classroom, party]
 faq:
   - q: How is Guess the Color scored?
-    a: Each round is worth up to 1,000 points. The closer your color is to the target, the more you get.
+    a: Each round is worth up to 1,000 points, by how alike the two colors look to the eye (not by their numbers). Your phone shows your % match after each round.
   - q: What's the difference between Easy and Hard?
     a: Easy uses 12 bright, fully saturated colors. Hard can be any color, including muddy and pastel tones.
   - q: Can we play Guess the Color over a video call?
@@ -43,7 +43,7 @@ translations:
   es:
     name: Adivina el Color
     description: La pantalla principal muestra un color durante 5 segundos. ¡Recréalo en tu
-      celular con los controles RGB antes de que se acabe el tiempo!
+      celular con tres controles sencillos antes de que se acabe el tiempo!
     tagline: Lo viste 5 segundos. Ahora mézclalo de memoria.
     players_note: >-
       Todos mezclan su color al mismo tiempo, así que funciona con cualquier tamaño de grupo. Con 3
@@ -51,25 +51,25 @@ translations:
       carcajadas.
     long_description: >-
       ¿Crees que tienes buen ojo para el color? La pantalla principal muestra un color durante 5
-      segundos y luego desaparece. Todos tienen 10 segundos para recrearlo en su celular con los
-      controles de rojo, verde y azul. Cuanto más se parezca tu mezcla, más puntos ganas, hasta
+      segundos y luego desaparece. Todos tienen 10 segundos para recrearlo en su celular con tres
+      controles: color, luz e intensidad. Cuanto más se parezca, más puntos ganas, hasta
       1.000 por ronda. Luego viene la revelación, con los colores de todos junto al real, y ahí
       empiezan las risas.
     how_to_play:
       - El anfitrión elige el número de rondas y la dificultad. Fácil usa colores vivos y brillantes. Difícil puede ser cualquier color.
       - Un color llena la pantalla principal durante 5 segundos. Míralo bien y memorízalo.
-      - El color desaparece. Tienes 10 segundos para mezclarlo en tu celular con los controles de rojo, verde y azul.
-      - Cuanto más se parezca tu color al real, más puntos ganas, hasta 1.000 por ronda.
+      - El color desaparece. Tienes 10 segundos para mezclarlo en tu celular con tres controles: color (el tono), luz (de oscuro a claro) e intensidad (de gris a vivo).
+      - Cuanto más se parezca tu color al real, más puntos ganas, hasta 1.000 por ronda. Tu celular muestra el % de parecido, y 97% o más es un 🎯 ¡Perfecto!
       - Después de cada ronda, los colores de todos se muestran junto al real. Gana el total más alto tras la última ronda.
     tips:
-      - Encuentra primero el canal más fuerte. ¿Es sobre todo rojo, verde o azul? Ajusta ese control y luego los demás.
-      - Los tres controles altos dan colores claros. Los tres bajos dan colores oscuros.
-      - El amarillo es rojo más verde. El morado es rojo más azul. El cian es verde más azul.
+      - Busca primero el color en el control de arriba, luego ajusta la luz y al final la intensidad.
+      - Los colores pastel son claros y un poco menos intensos. Los marrones y oliva son más oscuros y menos intensos.
+      - La puntuación va por lo que ven tus ojos, así que un tono casi igual se lleva casi todos los puntos.
       - No te fíes del brillo de la pantalla. La mayoría de colores se ven un poco más claros en una TV de lo que son.
-      - Empiecen en Fácil y pasen a Difícil cuando todos le agarren el truco a los controles.
+      - Empiecen en Fácil y pasen a Difícil cuando todos le agarren el truco.
     faq:
       - q: ¿Cómo se puntúa Adivina el Color?
-        a: Cada ronda vale hasta 1.000 puntos. Cuanto más se acerque tu color al objetivo, más ganas.
+        a: Cada ronda vale hasta 1.000 puntos, según cuánto se parecen los dos colores a la vista (no por sus números). Tu celular muestra el % de parecido después de cada ronda.
       - q: ¿Cuál es la diferencia entre Fácil y Difícil?
         a: Fácil usa 12 colores brillantes y saturados. Difícil puede ser cualquier color, incluidos tonos apagados y pastel.
       - q: ¿Se puede jugar Adivina el Color por videollamada?

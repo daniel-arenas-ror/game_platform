@@ -1,15 +1,15 @@
 import { Controller } from "@hotwired/stimulus"
 import consumer from "channels/consumer"
-import { placeTitle } from "controllers/shared/i18n"
+import { t, placeTitle } from "controllers/shared/i18n"
 import { celebrateWin, isTopScore } from "controllers/shared/celebration"
 
 export default class extends Controller {
   static values  = { roomCode: String, playerId: String }
   static targets = [
     "phaseWaiting", "phaseWatch", "phasePicking", "phaseSubmitted", "phaseReveal", "phaseGameOver",
-    "colorPreview", "sliderR", "sliderG", "sliderB", "valueR", "valueG", "valueB",
+    "colorPreview", "sliderHue", "sliderLight", "sliderSat",
     "pickingTimer", "submittedLabel", "submittedPreview",
-    "targetPreview", "myPickPreview", "roundPointsLabel",
+    "targetPreview", "myPickPreview", "matchLabel", "roundPointsLabel",
     "score", "gameOverTitle", "finalScore"
   ]
 
@@ -19,7 +19,7 @@ export default class extends Controller {
     this.myPick      = null
     this.totalScore  = 0
     this.subscribe()
-    this.bindSliders()
+    this.resetSliders()
   }
 
   disconnect() {
@@ -73,8 +73,7 @@ export default class extends Controller {
     this.stopTimer()
     this.submitted = false
     this.myPick    = null
-    // Reset sliders to mid-grey
-    this.setSliderValues(128, 128, 128)
+    this.resetSliders()
     this.showPhase("phaseWatch")
   }
 
@@ -83,9 +82,7 @@ export default class extends Controller {
     this.submitted = false
 
     // Re-enable sliders for the new round
-    if (this.hasSliderRTarget) this.sliderRTarget.disabled = false
-    if (this.hasSliderGTarget) this.sliderGTarget.disabled = false
-    if (this.hasSliderBTarget) this.sliderBTarget.disabled = false
+    this.sliders().forEach(slider => { slider.disabled = false })
     if (this.hasSubmittedLabelTarget) this.submittedLabelTarget.classList.add("hidden")
 
     this.showPhase("phasePicking")
@@ -120,6 +117,14 @@ export default class extends Controller {
     if (this.hasRoundPointsLabelTarget)
       this.roundPointsLabelTarget.textContent = `+${roundPoints}`
 
+    // "94% match", or "🎯 Perfect!" when it's spot on
+    const match = data.matches?.[this.playerIdValue]
+    if (this.hasMatchLabelTarget) {
+      this.matchLabelTarget.textContent = match == null ? "" :
+        match >= (data.perfect ?? 97) ? t("guess_the_color.perfect") : t("guess_the_color.match", { percent: match })
+      this.matchLabelTarget.style.color = match >= 85 ? "#4ade80" : match >= 60 ? "#facc15" : "#f87171"
+    }
+
     this.showPhase("phaseReveal")
   }
 
@@ -140,54 +145,51 @@ export default class extends Controller {
       celebrateWin(this.hasGameOverTitleTarget ? this.gameOverTitleTarget : null)
   }
 
-  // ── Sliders ───────────────────────────────────────────────────────────────
+  // ── Sliders: colour (hue), light, vivid ───────────────────────────────────
 
-  bindSliders() {
-    if (this.hasSliderRTarget) this.sliderRTarget.addEventListener("input", () => this.onSliderChange())
-    if (this.hasSliderGTarget) this.sliderGTarget.addEventListener("input", () => this.onSliderChange())
-    if (this.hasSliderBTarget) this.sliderBTarget.addEventListener("input", () => this.onSliderChange())
+  sliders() {
+    return [ this.sliderHueTarget, this.sliderLightTarget, this.sliderSatTarget ]
   }
 
+  // Each round starts on a random colour at medium light and vividness, so no colour is favoured.
+  resetSliders() {
+    this.sliderHueTarget.value   = Math.floor(Math.random() * 360)
+    this.sliderLightTarget.value = 50
+    this.sliderSatTarget.value   = 70
+    this.onSliderChange()
+  }
+
+  hsl() {
+    return [ Number(this.sliderHueTarget.value), Number(this.sliderSatTarget.value), Number(this.sliderLightTarget.value) ]
+  }
+
+  // Paints the preview and each track's scale for the colour being mixed.
   onSliderChange() {
     if (this.submitted) return
-    const r = this.sliderRTarget.value
-    const g = this.sliderGTarget.value
-    const b = this.sliderBTarget.value
+    const [ h, s, l ] = this.hsl()
+    const color = `hsl(${h} ${s}% ${l}%)`
+    this.colorPreviewTarget.style.background = color
+    this.sliders().forEach(slider => slider.style.setProperty("--gtc-color", color))
 
-    if (this.hasValueRTarget) this.valueRTarget.textContent = r
-    if (this.hasValueGTarget) this.valueGTarget.textContent = g
-    if (this.hasValueBTarget) this.valueBTarget.textContent = b
-
-    if (this.hasColorPreviewTarget)
-      this.colorPreviewTarget.style.background = `rgb(${r},${g},${b})`
-  }
-
-  setSliderValues(r, g, b) {
-    if (this.hasSliderRTarget) { this.sliderRTarget.value = r; if (this.hasValueRTarget) this.valueRTarget.textContent = r }
-    if (this.hasSliderGTarget) { this.sliderGTarget.value = g; if (this.hasValueGTarget) this.valueGTarget.textContent = g }
-    if (this.hasSliderBTarget) { this.sliderBTarget.value = b; if (this.hasValueBTarget) this.valueBTarget.textContent = b }
-    if (this.hasColorPreviewTarget)
-      this.colorPreviewTarget.style.background = `rgb(${r},${g},${b})`
+    const hues = Array.from({ length: 13 }, (_, i) => `hsl(${i * 30} ${s}% ${l}%)`).join(", ")
+    this.sliderHueTarget.style.background   = `linear-gradient(to right, ${hues})`
+    this.sliderLightTarget.style.background = `linear-gradient(to right, #000, hsl(${h} ${s}% 50%), #fff)`
+    this.sliderSatTarget.style.background   = `linear-gradient(to right, hsl(${h} 0% ${l}%), hsl(${h} 100% ${l}%))`
   }
 
   // ── Submit ────────────────────────────────────────────────────────────────
 
-  // Called automatically when the timer runs out — no manual button.
+  // Called automatically when the timer runs out — no manual button. The server takes {r, g, b}.
   submitColor() {
     if (this.submitted) return
     this.submitted = true
 
-    const r = parseInt(this.sliderRTarget.value)
-    const g = parseInt(this.sliderGTarget.value)
-    const b = parseInt(this.sliderBTarget.value)
+    const [ r, g, b ] = hslToRgb(...this.hsl())
     this.myPick = { r, g, b }
-
     this.channel?.perform("submit_color", { r, g, b })
 
     // Disable sliders so the player can't change after submission
-    if (this.hasSliderRTarget) this.sliderRTarget.disabled = true
-    if (this.hasSliderGTarget) this.sliderGTarget.disabled = true
-    if (this.hasSliderBTarget) this.sliderBTarget.disabled = true
+    this.sliders().forEach(slider => { slider.disabled = true })
 
     // Show small confirmation label instead of navigating away
     if (this.hasSubmittedLabelTarget)
@@ -232,4 +234,14 @@ export default class extends Controller {
   updateScore(score) {
     if (this.hasScoreTarget) this.scoreTarget.textContent = score
   }
+}
+
+// h 0–360, s and l 0–100 → [r, g, b] 0–255
+function hslToRgb(h, s, l) {
+  s /= 100
+  l /= 100
+  const k = (n) => (n + h / 30) % 12
+  const a = s * Math.min(l, 1 - l)
+  const f = (n) => l - a * Math.max(-1, Math.min(k(n) - 3, 9 - k(n), 1))
+  return [ f(0), f(8), f(4) ].map(v => Math.round(v * 255))
 }

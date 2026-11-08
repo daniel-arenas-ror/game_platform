@@ -97,6 +97,8 @@ class Games::GuessTheColorChannel < ApplicationCable::Channel
           target_color: target,
           picks:        picks,
           round_scores: round_scores,
+          matches:      round_scores.select { |id, _| picks[id] }.transform_values { |pts| GameServices::GuessTheColor.match_percent(pts) },
+          perfect:      GameServices::GuessTheColor::PERFECT_MATCH,
           scores:       scores,
           nicknames:    nicknames_map,
           round:        round,

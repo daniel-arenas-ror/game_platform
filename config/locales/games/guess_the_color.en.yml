@@ -4,6 +4,9 @@ en:
     games:
       guess_the_color:
         index:
+          slider_hue: "Color"
+          slider_light: "Light"
+          slider_vivid: "Vivid"
           memorize: "Memorize this color!"
           picking: "Players are picking…"
           watch: "Watch the screen!"
@@ -18,5 +21,7 @@ en:
           points_round: "points this round"
   js:
     guess_the_color:
+      match: "%{percent}% match"
+      perfect: "🎯 Perfect!"
       target: "Target"
       no_pick: "%{name} (no pick)"

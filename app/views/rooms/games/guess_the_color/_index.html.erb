@@ -132,37 +132,34 @@
              class="w-full rounded-2xl mb-6"
              style="height: 160px; background: rgb(128,128,128);"></div>
 
-        <%# RGB Sliders %>
+        <%# Colour, light and vivid sliders (hue, lightness, saturation): easier than mixing red, green
+            and blue. Each track shows its own scale for the colour being mixed (set by the controller);
+            a functional colour scale is the one place a gradient belongs. %>
         <style>
-          .gtc-slider { -webkit-appearance: none; appearance: none; height: 2.5rem; border-radius: 9999px; outline: none; }
+          .gtc-slider { -webkit-appearance: none; appearance: none; height: 2.75rem; border-radius: 9999px; outline: none; }
           .gtc-slider:disabled { opacity: 0.5; cursor: not-allowed; }
           .gtc-slider::-webkit-slider-thumb {
             -webkit-appearance: none; appearance: none;
-            width: 2.75rem; height: 2.75rem; border-radius: 9999px;
-            background: #fff; border: 4px solid var(--gtc-color);
+            width: 3rem; height: 3rem; border-radius: 9999px;
+            background: var(--gtc-color); border: 4px solid #fff;
             box-shadow: 0 2px 8px rgba(0,0,0,0.5); cursor: pointer;
           }
           .gtc-slider::-moz-range-thumb {
-            width: 2.75rem; height: 2.75rem; border-radius: 9999px;
-            background: #fff; border: 4px solid var(--gtc-color);
+            width: 3rem; height: 3rem; border-radius: 9999px;
+            background: var(--gtc-color); border: 4px solid #fff;
             box-shadow: 0 2px 8px rgba(0,0,0,0.5); cursor: pointer;
           }
-          .gtc-slider::-moz-range-track { height: 2.5rem; border-radius: 9999px; background: transparent; }
+          .gtc-slider::-moz-range-track { height: 2.75rem; border-radius: 9999px; background: transparent; }
         </style>
-        <div class="space-y-6">
-          <% [["r", "R", "text-red-500", "#ef4444", "#ff0000"],
-              ["g", "G", "text-green-500", "#22c55e", "#00ff00"],
-              ["b", "B", "text-blue-500", "#3b82f6", "#0000ff"]].each do |ch, label, text_color, thumb_color, pure| %>
-            <div class="flex items-center gap-3">
-              <span class="text-lg font-black w-5 <%= text_color %>"><%= label %></span>
-              <input type="range" min="0" max="255" value="128"
-                     data-guess-the-color-player-target="slider<%= ch.upcase %>"
-                     data-channel="<%= ch %>"
-                     class="gtc-slider flex-1 cursor-pointer"
-                     style="--gtc-color: <%= thumb_color %>; background: linear-gradient(to right, #000, <%= pure %>);">
-              <span data-guess-the-color-player-target="value<%= ch.upcase %>"
-                    class="text-sm font-mono font-bold w-9 text-right <%= text_color %>">128</span>
-            </div>
+        <div class="space-y-5">
+          <% [ [ "Hue", "🎨", t(".slider_hue"), 360 ], [ "Light", "☀️", t(".slider_light"), 100 ], [ "Sat", "💧", t(".slider_vivid"), 100 ] ].each do |name, icon, label, max| %>
+            <label class="block">
+              <span class="flex items-center gap-2 mb-1.5 text-xs font-bold uppercase tracking-widest text-slate-400"><span aria-hidden="true"><%= icon %></span><%= label %></span>
+              <input type="range" min="0" max="<%= max %>" value="<%= max / 2 %>"
+                     data-guess-the-color-player-target="slider<%= name %>"
+                     data-action="input->guess-the-color-player#onSliderChange"
+                     class="gtc-slider w-full cursor-pointer">
+            </label>
           <% end %>
         </div>
 
@@ -199,6 +196,7 @@
             <p class="text-slate-500 text-xs mt-2 font-mono"><%= t(".your_pick") %></p>
           </div>
         </div>
+        <p data-guess-the-color-player-target="matchLabel" class="font-black text-3xl mb-1"></p>
         <p data-guess-the-color-player-target="roundPointsLabel"
            class="text-yellow-400 font-black text-4xl"></p>
         <p class="text-slate-500 text-xs mt-1 font-mono"><%= t(".points_round") %></p>

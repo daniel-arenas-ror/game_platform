@@ -3,6 +3,9 @@ es:
     games:
       guess_the_color:
         index:
+          slider_hue: "Color"
+          slider_light: "Luz"
+          slider_vivid: "Intensidad"
           memorize: "¡Memoriza este color!"
           picking: "Los jugadores están eligiendo…"
           watch: "¡Mira la pantalla!"
@@ -17,5 +20,7 @@ es:
           points_round: "puntos esta ronda"
   js:
     guess_the_color:
+      match: "%{percent}% parecido"
+      perfect: "🎯 ¡Perfecto!"
       target: "Objetivo"
       no_pick: "%{name} (sin color)"

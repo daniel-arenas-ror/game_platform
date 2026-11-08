@@ -1,6 +1,9 @@
 module GameServices
   class GuessTheColor < Base
-    MAX_DISTANCE = Math.sqrt(255**2 * 3)  # ≈ 441.67
+    # Scoring compares colours the way eyes do (OKLab), not by RGB numbers. A pick this far away in
+    # OKLab keeps ~37% of the points; closer picks score much higher (0.03 ≈ 97%, a "perfect").
+    MATCH_SPREAD  = 0.17
+    PERFECT_MATCH = 97 # % shown as "Perfect!" on the phones and the TV
 
     # Easy mode: 12 vivid hues spaced 30° apart, full saturation, mid lightness
     EASY_HUES = (0..330).step(30).to_a.freeze
@@ -52,14 +55,31 @@ module GameServices
       end
     end
 
-    # Returns 0–1000 points based on RGB distance between target and pick.
+    # 0–1000 points: 1000 × how alike the two colours look (a bell curve on their OKLab distance).
     def self.calculate_score(target, pick)
       return 0 unless target && pick
-      dr = (target["r"].to_i - pick["r"].to_i)
-      dg = (target["g"].to_i - pick["g"].to_i)
-      db = (target["b"].to_i - pick["b"].to_i)
-      distance = Math.sqrt(dr**2 + dg**2 + db**2)
-      (1000 * (1.0 - distance / MAX_DISTANCE)).round.clamp(0, 1000)
+
+      distance = Math.sqrt(oklab(target).zip(oklab(pick)).sum { |a, b| (a - b)**2 })
+      (1000 * Math.exp(-(distance / MATCH_SPREAD)**2)).round.clamp(0, 1000)
+    end
+
+    # "94" for 940 points: the % match the phones and the TV show.
+    def self.match_percent(points)
+      (points / 10.0).round
+    end
+
+    # sRGB {r, g, b} (0–255) → OKLab [L, a, b] (Björn Ottosson's OKLab).
+    def self.oklab(color)
+      r, g, b = %w[r g b].map do |key|
+        c = color[key].to_f.clamp(0, 255) / 255
+        c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055)**2.4
+      end
+      l = Math.cbrt(0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b)
+      m = Math.cbrt(0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b)
+      s = Math.cbrt(0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b)
+      [ 0.2104542553 * l + 0.7936177850 * m - 0.0040720468 * s,
+        1.9779984951 * l - 2.4285922050 * m + 0.4505937099 * s,
+        0.0259040371 * l + 0.7827717662 * m - 0.8086757660 * s ]
     end
 
     private

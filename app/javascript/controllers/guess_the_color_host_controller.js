@@ -114,7 +114,7 @@ export default class extends Controller {
         const pr = pick.r ?? 128
         const pg = pick.g ?? 128
         const pb = pick.b ?? 128
-        html += this.colorCard(`rgb(${pr},${pg},${pb})`, nickname, false)
+        html += this.colorCard(`rgb(${pr},${pg},${pb})`, nickname, false, false, data.matches?.[playerId], data.perfect)
       })
 
       // Players who didn't submit
@@ -222,14 +222,19 @@ export default class extends Controller {
       this.roundCounterTarget.textContent = t("shared.round_of", { round, total })
   }
 
-  colorCard(bg, label, isTarget, dimmed = false) {
+  // match: the pick's % match ("🎯" at `perfect` or more), shown under the name.
+  colorCard(bg, label, isTarget, dimmed = false, match = null, perfect = 97) {
     const border  = isTarget ? "border-2 border-yellow-400" : "border border-slate-700"
     const opacity = dimmed ? "opacity-40" : ""
+    const color   = match >= 85 ? "text-green-400" : match >= 60 ? "text-yellow-400" : "text-red-400"
+    const score   = match == null ? "" :
+      `<p class="font-mono font-black text-lg ${color}">${match >= perfect ? "🎯 " : ""}${match}%</p>`
     return `
       <div class="text-center ${opacity}">
         <div class="w-28 h-28 rounded-2xl shadow-lg ${border}"
              style="background:${bg}"></div>
         <p class="text-xs font-bold mt-2 text-slate-300 max-w-[112px] truncate">${escapeHtml(label)}</p>
+        ${score}
       </div>`
   }
 
