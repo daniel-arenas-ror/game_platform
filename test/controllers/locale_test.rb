@@ -50,6 +50,9 @@ class LocaleTest < ActionDispatch::IntegrationTest
 
     get switch_locale_path(lang: "fr", return_to: games_path)
     assert_redirected_to games_path
+
+    get switch_locale_path
+    assert_redirected_to root_path
   end
 
   test "a visitor who picked Spanish is sent to the Spanish page" do

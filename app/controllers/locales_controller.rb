@@ -16,6 +16,7 @@ class LocalesController < ApplicationController
   def localized_return_path(lang)
     locale = (lang == I18n.default_locale.to_s ? nil : lang)
     path, query = params[:return_to].to_s.split("?", 2)
+    path = path.to_s # no return_to at all (bots open a bare /language)
     return root_path(locale: locale) unless path.start_with?("/") && !path.start_with?("//", "/\\")
 
     route = Rails.application.routes.recognize_path(path)
