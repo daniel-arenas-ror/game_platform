@@ -23,6 +23,22 @@ module AnalyticsHelper
     ], "\n")
   end
 
+  # Microsoft Clarity (session recordings and heatmaps). Production only, like Google Analytics.
+  # The project ID comes from the CLARITY_PROJECT_ID env var, else clarity_project_id in the credentials.
+  # Room screens are masked (layouts/application: data-clarity-mask), so nicknames, guesses and
+  # words never reach the recordings.
+  def clarity_tag
+    return unless clarity_enabled?
+
+    javascript_tag(<<~JS)
+      (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+      })(window, document, "clarity", "script", #{clarity_project_id.to_json});
+    JS
+  end
+
   # Events the server queued for this page (ApplicationController#track_analytics). In the body,
   # not the head: Turbo runs a body's inline scripts on every visit.
   def queued_analytics_events_tag
@@ -54,6 +70,14 @@ module AnalyticsHelper
 
   def analytics_enabled?
     Rails.env.production? && ga_measurement_id.present?
+  end
+
+  def clarity_enabled?
+    Rails.env.production? && clarity_project_id.present?
+  end
+
+  def clarity_project_id
+    ENV["CLARITY_PROJECT_ID"].presence || Rails.application.credentials.clarity_project_id
   end
 
   def ga_measurement_id

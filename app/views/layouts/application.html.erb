@@ -2,6 +2,7 @@
 <html lang="<%= I18n.locale %>">
   <head>
     <%= google_analytics_tag %>
+    <%= clarity_tag %>
     <title><%= page_title %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="description" content="<%= page_description %>">
@@ -53,7 +54,7 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body class="bg-slate-900 min-h-screen <%= "site-page" if site_header? %>">
+  <body class="bg-slate-900 min-h-screen <%= "site-page" if site_header? %>" <%= tag.attributes(data: { clarity_mask: ("True" unless site_header?) }) %>>
     <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-lg focus:bg-purple-600 focus:px-4 focus:py-2 focus:text-sm focus:font-bold focus:text-white"><%= t(".skip_to_content") %></a>
     <%= render "shared/site_header" if site_header? %>
     <% if @outdated_browser %>

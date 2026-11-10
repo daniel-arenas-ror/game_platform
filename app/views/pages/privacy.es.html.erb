@@ -1,5 +1,5 @@
 <% content_for :title, "Política de privacidad" %>
-<% content_for :description, "Cómo maneja Grouparty tus datos: qué guardamos cuando juegas, las cookies que usamos, Google Analytics y cómo Google AdSense muestra anuncios." %>
+<% content_for :description, "Cómo maneja Grouparty tus datos: qué guardamos cuando juegas, las cookies que usamos, Google Analytics, Microsoft Clarity y cómo Google AdSense muestra anuncios." %>
 <% link = "text-purple-400 hover:text-purple-300 underline" %>
 
 <div class="min-h-screen py-12 px-4 sm:px-6">
@@ -32,7 +32,7 @@
       <ul class="list-disc pl-6 space-y-2">
         <li><strong class="text-white">Cookies esenciales:</strong> una cookie de sesión recuerda qué jugador eres en una sala, para que puedas recargar la página o reconectarte sin perder tu lugar. El juego no funciona sin ella.</li>
         <li><strong class="text-white">Cookie de preferencia:</strong> recuerda el idioma que elegiste (inglés o español), para que el sitio se abra en ese idioma la próxima vez.</li>
-        <li><strong class="text-white">Cookies de analítica:</strong> las coloca Google Analytics para contar las visitas y ver cómo se usa el sitio (ver la sección 4).</li>
+        <li><strong class="text-white">Cookies de analítica:</strong> las colocan Google Analytics y Microsoft Clarity para contar las visitas y ver cómo se usa el sitio (ver la sección 4).</li>
         <li><strong class="text-white">Cookies publicitarias:</strong> las colocan Google y sus socios cuando se muestran anuncios (ver la siguiente sección).</li>
       </ul>
       <p>Puedes bloquear o borrar las cookies en la configuración de tu navegador. Si bloqueas las cookies esenciales, no podrás unirte a un juego.</p>
@@ -57,7 +57,7 @@
     </section>
 
     <section class="space-y-4">
-      <h2 class="text-2xl font-bold text-white">4. Analítica (Google Analytics)</h2>
+      <h2 class="text-2xl font-bold text-white">4. Analítica (Google Analytics y Microsoft Clarity)</h2>
       <p>
         Usamos Google Analytics para entender cómo se usa <%= SeoHelper::SITE_NAME %>: cuántas personas lo visitan,
         qué páginas y juegos abren, cuánto tiempo se quedan, y el tipo de dispositivo, el navegador y el país
@@ -69,6 +69,12 @@
         <li>Más información en <%= link_to "Cómo utiliza Google la información de los sitios o aplicaciones que usan sus servicios", "https://policies.google.com/technologies/partner-sites?hl=es", class: link, target: "_blank", rel: "noopener" %>.</li>
         <li>Puedes impedir que Google Analytics recopile datos sobre ti con el <%= link_to "complemento de inhabilitación para navegadores de Google Analytics", "https://tools.google.com/dlpage/gaoptout?hl=es", class: link, target: "_blank", rel: "noopener" %>, o bloqueando las cookies en tu navegador.</li>
       </ul>
+      <p>
+        También usamos Microsoft Clarity para ver cómo se mueven los visitantes por el sitio: dónde hacen clic y
+        hasta dónde bajan, y grabaciones de las visitas con lo que se escribe y las pantallas de juego ocultas,
+        así que tu apodo y lo que haces dentro de un juego no se graban. Clarity usa cookies y recopila esta
+        información en nombre de Microsoft. Más información en la <%= link_to "Declaración de privacidad de Microsoft", "https://www.microsoft.com/es-es/privacy/privacystatement", class: link, target: "_blank", rel: "noopener" %>.
+      </p>
     </section>
 
     <section class="space-y-4">
@@ -77,7 +83,7 @@
         <li>Para crear salas, conectar a los jugadores y hacer funcionar los juegos en tiempo real.</li>
         <li>Para mostrar puntajes, resultados y tablas de posiciones a las personas de la misma sala.</li>
         <li>Para mantener el sitio seguro, encontrar errores y mejorar los juegos.</li>
-        <li>Para medir cuántas personas nos visitan y qué juegos juegan (Google Analytics).</li>
+        <li>Para medir cuántas personas nos visitan y qué juegos juegan (Google Analytics y Microsoft Clarity).</li>
         <li>Para mostrar anuncios que ayudan a pagar el servicio.</li>
       </ul>
     </section>

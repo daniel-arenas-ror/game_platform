@@ -1,5 +1,5 @@
 <% content_for :title, "Privacy Policy" %>
-<% content_for :description, "How Grouparty handles your data: what we store when you play, the cookies we use, Google Analytics, and how Google AdSense shows ads." %>
+<% content_for :description, "How Grouparty handles your data: what we store when you play, the cookies we use, Google Analytics, Microsoft Clarity, and how Google AdSense shows ads." %>
 <% link = "text-purple-400 hover:text-purple-300 underline" %>
 
 <div class="min-h-screen py-12 px-4 sm:px-6">
@@ -32,7 +32,7 @@
       <ul class="list-disc pl-6 space-y-2">
         <li><strong class="text-white">Essential cookies:</strong> a session cookie remembers which player you are in a room, so you can reload the page or reconnect without losing your place. The game can't work without it.</li>
         <li><strong class="text-white">Preference cookie:</strong> remembers the language you picked (English or Spanish), so the site opens in that language next time.</li>
-        <li><strong class="text-white">Analytics cookies:</strong> set by Google Analytics to count visits and see how the site is used (see section 4).</li>
+        <li><strong class="text-white">Analytics cookies:</strong> set by Google Analytics and Microsoft Clarity to count visits and see how the site is used (see section 4).</li>
         <li><strong class="text-white">Advertising cookies:</strong> set by Google and its partners when ads are shown (see the next section).</li>
       </ul>
       <p>You can block or delete cookies in your browser settings. If you block essential cookies, you won't be able to join a game.</p>
@@ -57,7 +57,7 @@
     </section>
 
     <section class="space-y-4">
-      <h2 class="text-2xl font-bold text-white">4. Analytics (Google Analytics)</h2>
+      <h2 class="text-2xl font-bold text-white">4. Analytics (Google Analytics and Microsoft Clarity)</h2>
       <p>
         We use Google Analytics to understand how people use <%= SeoHelper::SITE_NAME %>: how many people visit,
         which pages and games they open, how long they stay, and the type of device, browser and approximate
@@ -69,6 +69,12 @@
         <li>Learn more in <%= link_to "How Google uses information from sites or apps that use its services", "https://policies.google.com/technologies/partner-sites", class: link, target: "_blank", rel: "noopener" %>.</li>
         <li>You can stop Google Analytics from collecting data about you with the <%= link_to "Google Analytics Opt-out Browser Add-on", "https://tools.google.com/dlpage/gaoptout", class: link, target: "_blank", rel: "noopener" %>, or by blocking cookies in your browser.</li>
       </ul>
+      <p>
+        We also use Microsoft Clarity to see how visitors move around the site: where they click and scroll,
+        and recordings of visits with what's typed and the game screens hidden, so your nickname and what you
+        do inside a game aren't recorded. Clarity uses cookies and collects this information on Microsoft's
+        behalf. Learn more in the <%= link_to "Microsoft Privacy Statement", "https://www.microsoft.com/privacy/privacystatement", class: link, target: "_blank", rel: "noopener" %>.
+      </p>
     </section>
 
     <section class="space-y-4">
@@ -77,7 +83,7 @@
         <li>To create rooms, connect players and run the games in real time.</li>
         <li>To show scores, results and leaderboards to the people in the same room.</li>
         <li>To keep the website secure, find bugs and improve the games.</li>
-        <li>To measure how many people visit and which games they play (Google Analytics).</li>
+        <li>To measure how many people visit and which games they play (Google Analytics and Microsoft Clarity).</li>
         <li>To show ads that help pay for the service.</li>
       </ul>
     </section>

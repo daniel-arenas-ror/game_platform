@@ -12,5 +12,13 @@ class AnalyticsHelperTest < ActionView::TestCase
   test "nothing outside production (the test env)" do
     flash[:analytics_events] = [ { "name" => "room_created", "params" => {} } ]
     assert_nil queued_analytics_events_tag
+    assert_nil clarity_tag
+  end
+
+  test "Clarity loads with the project ID in production" do
+    define_singleton_method(:clarity_enabled?) { true } # production
+    define_singleton_method(:clarity_project_id) { "abc123" }
+
+    assert_includes clarity_tag, %("clarity", "script", "abc123")
   end
 end
