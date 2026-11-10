@@ -1,7 +1,11 @@
 # On server start, any room still marked "playing" has no live game thread
 # driving it (the previous server process died). Reset them to "finished" so
 # hosts can restart without the room being permanently stuck.
+# Only when the web server boots: a `rails runner` / `db:seed` next to a live server would stop
+# every game being played right now.
 Rails.application.config.after_initialize do
+  next unless defined?(Rails::Server)
+
   begin
     stuck = Room.where(status: "playing")
     count = stuck.count
