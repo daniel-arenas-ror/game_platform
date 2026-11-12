@@ -36,8 +36,29 @@ module AnalyticsHelper
         t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
         y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
       })(window, document, "clarity", "script", #{clarity_project_id.to_json});
+      #{CLARITY_CONSENT_JS}
     JS
   end
+
+  # Clarity keeps its cookies (one session across pages) for EU/UK/Swiss visitors only with their
+  # consent. The consent message comes from AdSense (Google's CMP, IAB TCF): once it has loaded or the
+  # visitor answered, pass on "store information on a device" (TCF purpose 1). Outside those regions
+  # gdprApplies is false and Clarity works as before. Pages without the AdSense script have no CMP.
+  CLARITY_CONSENT_JS = <<~JS.freeze
+    (function() {
+      var tries = 0;
+      function listen() {
+        if (typeof window.__tcfapi !== "function") { if (++tries < 40) setTimeout(listen, 500); return; }
+        window.__tcfapi("addEventListener", 2, function(data, ok) {
+          if (!ok || !data || (data.eventStatus !== "tcloaded" && data.eventStatus !== "useractioncomplete")) return;
+          var granted = !data.gdprApplies || !!(data.purpose && data.purpose.consents && data.purpose.consents[1]);
+          var value = granted ? "granted" : "denied";
+          window.clarity("consentv2", { ad_Storage: value, analytics_Storage: value });
+        });
+      }
+      listen();
+    })();
+  JS
 
   # Events the server queued for this page (ApplicationController#track_analytics). In the body,
   # not the head: Turbo runs a body's inline scripts on every visit.

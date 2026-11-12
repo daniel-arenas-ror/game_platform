@@ -20,5 +20,6 @@ class AnalyticsHelperTest < ActionView::TestCase
     define_singleton_method(:clarity_project_id) { "abc123" }
 
     assert_includes clarity_tag, %("clarity", "script", "abc123")
+    assert_includes clarity_tag, 'window.clarity("consentv2"' # passes the AdSense consent on (EU visitors)
   end
 end
