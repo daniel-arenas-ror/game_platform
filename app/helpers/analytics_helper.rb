@@ -43,17 +43,22 @@ module AnalyticsHelper
   # Clarity keeps its cookies (one session across pages) for EU/UK/Swiss visitors only with their
   # consent. The consent message comes from AdSense (Google's CMP, IAB TCF): once it has loaded or the
   # visitor answered, pass on "store information on a device" (TCF purpose 1). Outside those regions
-  # gdprApplies is false and Clarity works as before. Pages without the AdSense script have no CMP.
+  # gdprApplies is false and Clarity works as before. Pages without the AdSense script (join, lobby,
+  # game screens) have no CMP, so the last answer is kept in localStorage and passed on at the start
+  # of every page: otherwise each full page load there starts a new Clarity session.
   CLARITY_CONSENT_JS = <<~JS.freeze
     (function() {
-      var tries = 0;
+      var KEY = "clarity_consent", tries = 0;
+      function send(value) { window.clarity("consentv2", { ad_Storage: value, analytics_Storage: value }); }
+      try { var saved = localStorage.getItem(KEY); if (saved === "granted" || saved === "denied") send(saved); } catch (e) {}
       function listen() {
         if (typeof window.__tcfapi !== "function") { if (++tries < 40) setTimeout(listen, 500); return; }
         window.__tcfapi("addEventListener", 2, function(data, ok) {
           if (!ok || !data || (data.eventStatus !== "tcloaded" && data.eventStatus !== "useractioncomplete")) return;
           var granted = !data.gdprApplies || !!(data.purpose && data.purpose.consents && data.purpose.consents[1]);
           var value = granted ? "granted" : "denied";
-          window.clarity("consentv2", { ad_Storage: value, analytics_Storage: value });
+          send(value);
+          try { localStorage.setItem(KEY, value); } catch (e) {}
         });
       }
       listen();

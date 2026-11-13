@@ -21,5 +21,6 @@ class AnalyticsHelperTest < ActionView::TestCase
 
     assert_includes clarity_tag, %("clarity", "script", "abc123")
     assert_includes clarity_tag, 'window.clarity("consentv2"' # passes the AdSense consent on (EU visitors)
+    assert_includes clarity_tag, "localStorage.getItem(KEY)" # and replays it on pages without the CMP
   end
 end
