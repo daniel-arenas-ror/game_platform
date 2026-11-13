@@ -360,3 +360,25 @@
     animation-delay: calc(var(--i) * -0.45s);
   }
 }
+
+/* Christmas mode (shared/_christmas_link): the header's tree. The star glows and the lights twinkle;
+   with reduced motion they just stay lit. */
+.xmas-tree .xmas-star {
+  filter: drop-shadow(0 0 2px #fde047);
+}
+
+@keyframes xmas-glow {
+  0%, 100% { filter: drop-shadow(0 0 1px #fde047); }
+  50% { filter: drop-shadow(0 0 5px #fde047) drop-shadow(0 0 2px #fff); }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .xmas-tree .xmas-star {
+    animation: xmas-glow 2s ease-in-out infinite;
+  }
+
+  .xmas-tree .xmas-light {
+    animation: xmas-twinkle 1.6s ease-in-out infinite;
+    animation-delay: calc(var(--i) * -0.35s);
+  }
+}

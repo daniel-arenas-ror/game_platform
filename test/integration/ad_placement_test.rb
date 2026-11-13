@@ -22,6 +22,15 @@ class AdPlacementTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "the Christmas page shows an ad after its first section and one at the end" do
+    { christmas_path => "Advertisement", christmas_path(locale: "es") => "Publicidad" }.each do |path, label|
+      ad = "aside[aria-label=#{label}]"
+      get path
+      assert_select ad, 2
+      assert_select "article > div:first-child + #{ad}", 1
+    end
+  end
+
   # AdSense policy: no ads on waiting/navigation screens or thin pages
   test "the lobby, settings, join, contact and privacy pages never show ads" do
     [ room_path(@room.code), find_room_path, contact_path, privacy_path ].each do |path|

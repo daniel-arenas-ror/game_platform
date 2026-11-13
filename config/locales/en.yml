@@ -27,6 +27,8 @@ en:
       outdated_browser: "Your browser is out of date, so some games may not work well. Update it for the best experience."
 
   shared:
+    christmas_link:
+      label: "Christmas"
     room_players:
       button: "Players"
       title: "Players"

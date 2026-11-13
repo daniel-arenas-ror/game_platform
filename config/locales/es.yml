@@ -21,6 +21,8 @@ es:
       outdated_browser: "Tu navegador está desactualizado y algunos juegos pueden no funcionar bien. Actualízalo para una mejor experiencia."
 
   shared:
+    christmas_link:
+      label: "Navidad"
     room_players:
       button: "Jugadores"
       title: "Jugadores"

@@ -1,5 +1,6 @@
 <% footer_link = "inline-block py-1.5 rounded text-slate-400 hover:text-white transition-colors focus-visible:outline-2 focus-visible:outline-purple-400" %>
-<footer class="border-t border-slate-800 bg-slate-950 px-4 sm:px-6 lg:px-8 pt-14 pb-8">
+<% drift = christmas? && site_header? %>
+<footer class="relative border-t border-slate-800 bg-slate-950 px-4 sm:px-6 lg:px-8 pt-14 <%= drift ? "pb-16 sm:pb-20" : "pb-8" %>">
   <div class="max-w-7xl mx-auto">
     <div class="grid gap-10 sm:grid-cols-[1fr_auto_auto] sm:gap-16">
       <div class="max-w-xs">
@@ -42,4 +43,5 @@
 
     <p class="mt-12 border-t border-slate-800 pt-6 text-sm text-slate-400">© <%= Date.current.year %> <%= SeoHelper::SITE_NAME %> · <%= t(".tagline") %></p>
   </div>
+  <%= render "shared/snow_drift" if drift %>
 </footer>

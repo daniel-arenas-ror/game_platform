@@ -21,6 +21,8 @@ class ChristmasModeTest < ActionDispatch::IntegrationTest
       assert_select "link[rel=icon][href^='/favicon.ico']", 0
       assert_select "[data-controller=snow]", 1
       assert_select "title", /Christmas/
+      assert_select "footer svg[viewBox='0 0 1200 60']", 1 # the snowdrift
+      assert_select "header a[href=?] svg.xmas-tree", christmas_path # the tree link
       assert_select "a[href=?]", christmas_path, text: /Christmas games for the whole group/
     end
   end
@@ -32,6 +34,8 @@ class ChristmasModeTest < ActionDispatch::IntegrationTest
       assert_select "[data-controller=snow]", 0
       assert_select "link[rel=icon][href^='/icon-christmas.svg']", 0
       assert_select "title", { text: /Christmas/, count: 0 }
+      assert_select "footer svg[viewBox='0 0 1200 60']", 0
+      assert_select "header svg.xmas-tree", 0
     end
   end
 
