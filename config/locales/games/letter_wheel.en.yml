@@ -1,0 +1,45 @@
+# Letter Wheel: in-game screen and its JS.
+en:
+  rooms:
+    games:
+      letter_wheel:
+        edit:
+          word_time: "TIME PER WORD"
+          seconds:
+            one: "%{count} sec"
+            other: "%{count} sec"
+          length: "GAME LENGTH"
+          length_short: "Short"
+          length_full: "Whole alphabet"
+          letters:
+            one: "%{count} letter"
+            other: "%{count} letters"
+        index:
+          title: "Letter Wheel"
+          sound: "Sound"
+          words_points: "Words · Points"
+          solutions: "The answers"
+          get_ready: "Get ready…"
+          look_tv: "Look at the TV"
+          your_answer: "Your answer"
+          send: "Send"
+          one_try: "One try per word"
+  js:
+    letter_wheel:
+      get_ready: "Get ready…"
+      look_tv: "Look at the TV"
+      letter_of: "Letter %{round} of %{total}"
+      starts_with: "Starts with %{letter}"
+      contains: "Contains %{letter}"
+      answered: "%{done} of %{total} answered"
+      got_it: "%{count} of %{total} got it"
+      words:
+        one: "%{count} word"
+        other: "%{count} words"
+      sent: "Sent ✓"
+      wait_others: "Waiting for the others…"
+      right: "Right!"
+      wrong: "Not quite ✗"
+      time_up: "Time's up!"
+      answer_was: "The answer was: %{answer}"
+      error: "Something went wrong. Reload this page."

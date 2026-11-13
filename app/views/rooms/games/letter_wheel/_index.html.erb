@@ -1,0 +1,115 @@
+<% is_host = session[:player_id].blank? %>
+
+<% if is_host %>
+  <%# ================================================================= %>
+  <%# HOST VIEW — TV: the ring of letters, the clue in the middle        %>
+  <%# ================================================================= %>
+  <div data-controller="letter-wheel-host"
+       data-letter-wheel-host-room-code-value="<%= @room.code %>"
+       class="flex flex-col h-dvh bg-slate-950 text-white overflow-hidden">
+
+    <%# Header %>
+    <div class="flex items-center justify-between gap-6 px-6 pt-5 pb-3">
+      <h1 class="text-2xl font-black tracking-widest uppercase text-amber-400"><%= t(".title") %></h1>
+      <p data-letter-wheel-host-target="roundLabel" class="text-slate-300 font-bold text-lg"></p>
+      <div class="flex items-center gap-4">
+        <button type="button" data-action="letter-wheel-host#toggleSound" data-letter-wheel-host-target="soundButton"
+                class="rounded-full border border-slate-700 bg-slate-900 px-3 py-1 text-xs font-bold text-slate-300 hover:text-white cursor-pointer">
+          🔊 <%= t(".sound") %>
+        </button>
+        <p class="text-slate-500 text-xs font-mono tracking-widest">
+          <%= t("rooms.games.shared.room") %> <span class="text-white font-bold"><%= @room.code %></span>
+        </p>
+      </div>
+    </div>
+
+    <%# Bottom margin keeps the ring clear of the Players button. %>
+    <div class="flex-1 min-h-0 flex gap-6 px-6 pb-16">
+      <div class="flex-1 min-w-0 flex items-center justify-center">
+        <%# The ring: letters placed around the circle by the controller. Sizes in cqmin follow the ring. %>
+        <div data-letter-wheel-host-target="ring" class="relative h-full max-w-full aspect-square [container-type:size]">
+          <div class="absolute inset-[16%] flex flex-col items-center justify-center gap-[2cqmin] rounded-full border border-slate-800 bg-slate-900 p-[6cqmin] text-center">
+            <p data-letter-wheel-host-target="hint" class="font-bold uppercase tracking-widest text-amber-400 text-[3.2cqmin]"></p>
+            <p data-letter-wheel-host-target="clue" class="font-black text-balance leading-tight text-[4.6cqmin]"><%= t(".get_ready") %></p>
+            <p data-letter-wheel-host-target="answer" class="hidden font-black uppercase tracking-wide text-green-400 text-[6.5cqmin]"></p>
+            <p data-letter-wheel-host-target="countdown" class="font-mono font-black tabular-nums text-[6cqmin]"></p>
+            <p data-letter-wheel-host-target="status" class="font-bold text-slate-300 text-[2.8cqmin]"></p>
+          </div>
+        </div>
+      </div>
+
+      <aside class="hidden md:flex w-72 shrink-0 flex-col gap-2 overflow-hidden">
+        <p class="text-xs font-bold text-slate-400 tracking-widest uppercase"><%= t(".words_points") %></p>
+        <div data-letter-wheel-host-target="board" class="flex flex-col gap-2 min-h-0 overflow-hidden"></div>
+      </aside>
+    </div>
+
+    <%# Game over %>
+    <div data-letter-wheel-host-target="phaseGameOver"
+         class="hidden absolute inset-0 z-30 overflow-y-auto bg-slate-950 px-8 py-10">
+      <div class="flex flex-col items-center text-center">
+        <p class="text-7xl mb-3">🏆</p>
+        <h2 class="text-5xl font-black tracking-wide"><%= t("rooms.games.shared.game_over") %></h2>
+        <div data-letter-wheel-host-target="finalBoard" class="flex flex-col gap-2 w-full max-w-xl mt-6 text-left"></div>
+        <p class="mt-6 text-xs font-bold text-slate-400 tracking-widest uppercase"><%= t(".solutions") %></p>
+        <div data-letter-wheel-host-target="solutions" class="flex flex-wrap justify-center gap-2 max-w-3xl mt-2"></div>
+        <div class="flex flex-col items-center mt-6">
+          <button data-action="letter-wheel-host#restart"
+                  class="bg-amber-400 hover:bg-amber-300 text-slate-950 font-black px-10 py-3 rounded-xl uppercase tracking-widest text-lg transition-colors cursor-pointer">
+            <%= t("rooms.games.shared.play_again") %>
+          </button>
+          <%= render partial: "rooms/games/change_game", locals: { room: @room, games: @games } %>
+        </div>
+        <%= game_over_ad %>
+      </div>
+    </div>
+  </div>
+
+<% else %>
+  <%# ================================================================= %>
+  <%# PLAYER VIEW — phone: the clue and a box to type the answer         %>
+  <%# ================================================================= %>
+  <% current_player %>
+  <div data-controller="letter-wheel-player"
+       data-letter-wheel-player-room-code-value="<%= @room.code %>"
+       data-letter-wheel-player-player-id-value="<%= session[:player_id] %>"
+       class="fixed inset-0 bg-slate-950 text-white overflow-y-auto">
+
+    <%# Waiting, answer sent, the reveal %>
+    <div data-letter-wheel-player-target="phaseMessage"
+         class="absolute inset-0 flex flex-col items-center justify-center gap-3 px-6 text-center">
+      <p data-letter-wheel-player-target="messageTitle" class="font-black text-4xl text-balance"><%= t(".get_ready") %></p>
+      <p data-letter-wheel-player-target="messageHint" class="text-slate-300 text-lg text-balance"><%= t(".look_tv") %></p>
+      <p data-letter-wheel-player-target="messagePoints" class="mt-4 font-black text-2xl tabular-nums"></p>
+    </div>
+
+    <%# The clue and the answer box %>
+    <form data-letter-wheel-player-target="phaseAnswer" data-action="submit->letter-wheel-player#send"
+          class="hidden min-h-full flex flex-col items-center justify-start gap-4 px-5 pt-8 pb-24 text-center">
+      <div class="flex items-center gap-4">
+        <span data-letter-wheel-player-target="letter"
+              class="flex size-16 items-center justify-center rounded-full bg-amber-400 text-slate-950 font-black text-4xl uppercase"></span>
+        <p data-letter-wheel-player-target="countdown" class="font-mono font-black text-3xl tabular-nums"></p>
+      </div>
+      <p data-letter-wheel-player-target="hint" class="font-bold uppercase tracking-widest text-amber-400 text-sm"></p>
+      <p data-letter-wheel-player-target="clue" class="font-bold text-xl text-balance"></p>
+      <input data-letter-wheel-player-target="input" type="text" maxlength="40" required
+             autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" enterkeyhint="send"
+             aria-label="<%= t(".your_answer") %>" placeholder="<%= t(".your_answer") %>"
+             class="w-full max-w-sm rounded-xl border-2 border-slate-700 bg-slate-900 px-4 py-3 text-center text-2xl font-bold text-white focus:border-amber-400 focus:outline-none">
+      <button type="submit"
+              class="w-full max-w-sm rounded-xl bg-amber-400 py-3 text-lg font-black uppercase tracking-widest text-slate-950 active:bg-amber-300 cursor-pointer">
+        <%= t(".send") %>
+      </button>
+      <p class="text-slate-500 text-sm"><%= t(".one_try") %></p>
+    </form>
+
+    <%# Game over %>
+    <div data-letter-wheel-player-target="phaseGameOver"
+         class="hidden absolute inset-0 flex flex-col items-center justify-center gap-2 bg-slate-950 text-center px-6">
+      <p data-letter-wheel-player-target="gameOverTitle" class="font-black text-4xl tracking-wide text-balance"></p>
+      <p data-letter-wheel-player-target="gameOverWords" class="text-slate-300 font-bold text-xl tabular-nums"></p>
+      <p class="text-slate-600 text-xs mt-6 font-mono"><%= t("rooms.games.shared.waiting_restart") %></p>
+    </div>
+  </div>
+<% end %>

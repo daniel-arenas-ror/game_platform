@@ -1,0 +1,45 @@
+# Rueda de Letras: pantalla del juego y su JS.
+es:
+  rooms:
+    games:
+      letter_wheel:
+        edit:
+          word_time: "TIEMPO POR PALABRA"
+          seconds:
+            one: "%{count} s"
+            other: "%{count} s"
+          length: "DURACIÓN"
+          length_short: "Corta"
+          length_full: "Todo el abecedario"
+          letters:
+            one: "%{count} letra"
+            other: "%{count} letras"
+        index:
+          title: "Rueda de Letras"
+          sound: "Sonido"
+          words_points: "Palabras · Puntos"
+          solutions: "Las respuestas"
+          get_ready: "Prepárate…"
+          look_tv: "Mira la TV"
+          your_answer: "Tu respuesta"
+          send: "Enviar"
+          one_try: "Un intento por palabra"
+  js:
+    letter_wheel:
+      get_ready: "Prepárate…"
+      look_tv: "Mira la TV"
+      letter_of: "Letra %{round} de %{total}"
+      starts_with: "Empieza por %{letter}"
+      contains: "Contiene la %{letter}"
+      answered: "%{done} de %{total} respondieron"
+      got_it: "%{count} de %{total} acertaron"
+      words:
+        one: "%{count} palabra"
+        other: "%{count} palabras"
+      sent: "Enviado ✓"
+      wait_others: "Esperando a los demás…"
+      right: "¡Correcto!"
+      wrong: "Casi… ✗"
+      time_up: "¡Se acabó el tiempo!"
+      answer_was: "La respuesta era: %{answer}"
+      error: "Algo salió mal. Recarga esta página."

@@ -1,0 +1,37 @@
+<% wheel = GameServices::LetterWheel %>
+<% state = @room.game_state %>
+<% picked = "peer-checked:border-amber-400 peer-checked:bg-amber-400/10" %>
+
+<%# Seconds players get for each word %>
+<div class="space-y-4 bg-slate-900/50 p-6 rounded-2xl border border-slate-700">
+  <label class="block text-xs font-bold text-slate-400 mb-3 tracking-widest"><%= t(".word_time") %></label>
+  <div class="grid grid-cols-4 gap-3">
+    <% word_time = (state["word_time"] || wheel::DEFAULT_TIME).to_i %>
+    <% wheel::TIME_CHOICES.each do |n| %>
+      <label class="relative cursor-pointer">
+        <input type="radio" name="room[game_state][word_time]" value="<%= n %>" class="peer hidden" <%= "checked" if word_time == n %>>
+        <div class="text-center py-3 bg-slate-800 border-2 border-slate-700 rounded-xl text-white font-bold <%= picked %> transition-all">
+          <%= t(".seconds", count: n) %>
+        </div>
+      </label>
+    <% end %>
+  </div>
+</div>
+
+<%# Some letters, or the whole alphabet %>
+<div class="space-y-4 bg-slate-900/50 p-6 rounded-2xl border border-slate-700 mt-2">
+  <label class="block text-xs font-bold text-slate-400 mb-3 tracking-widest"><%= t(".length") %></label>
+  <div class="grid grid-cols-2 gap-3">
+    <% length = state["length"].presence || wheel::DEFAULT_LENGTH %>
+    <% letters = { "short" => wheel::SHORT_LETTERS, "full" => (wheel::ALPHABETS[@room.locale.to_s] || wheel::ALPHABETS["en"]).size } %>
+    <% wheel::LENGTH_CHOICES.each do |option| %>
+      <label class="relative cursor-pointer">
+        <input type="radio" name="room[game_state][length]" value="<%= option %>" class="peer hidden" <%= "checked" if length == option %>>
+        <div class="text-center py-3 bg-slate-800 border-2 border-slate-700 rounded-xl text-white font-bold <%= picked %> transition-all">
+          <%= t(".length_#{option}") %>
+          <span class="block text-xs font-normal text-slate-400"><%= t(".letters", count: letters[option]) %></span>
+        </div>
+      </label>
+    <% end %>
+  </div>
+</div>
