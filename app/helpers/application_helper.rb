@@ -6,6 +6,11 @@ module ApplicationHelper
     SITE_HEADER_CONTROLLERS.include?(controller_name)
   end
 
+  # Christmas mode (admin switch, SiteSetting): Santa hat on the logo, snow and lights on the public pages.
+  def christmas?
+    SiteSetting.christmas?
+  end
+
   # Renders a tiny SVG thumbnail of a BattleCity::MapPreset.
   # Used in the map picker on the room edit/lobby page.
   def battle_city_map_preview(preset, size: 60)

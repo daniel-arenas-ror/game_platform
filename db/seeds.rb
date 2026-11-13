@@ -2,7 +2,8 @@ BattleCity::MapPreset.destroy_all
 
 # One YAML file per game in db/seeds/games/<code>.yml. Upserts by code, so re-running the seeds
 # updates the content without changing game IDs that live rooms point to (or their rooms_count).
-# The catalog is ordered by `position:` in the YAML, then by popularity — see Game.catalog.
+# The catalog order (`position`) and whether a game is shown (`listed`) belong to the admin Games page:
+# the YAML only sets them when it creates the game (e.g. `listed: false` for a game being built).
 GAME_CODES = %w[
   fisherman how_want_be_billionare battle_city guess_the_color count_birds
   sequence_memory submarine_combat mind_match soup_of_numbers matching_pairs doodle_dash haunted_house monster_mash
@@ -12,8 +13,9 @@ GAME_CODES = %w[
 Game.not_in(code: GAME_CODES).destroy_all
 GAME_CODES.each do |code|
   attrs = YAML.load_file(Rails.root.join("db/seeds/games/#{code}.yml"))
-  # A position removed from the YAML is cleared too, so the YAML stays the source of truth.
-  Game.find_or_initialize_by(code: code).update!(attrs.reverse_merge("position" => nil, "listed" => true))
+  game  = Game.find_or_initialize_by(code: code)
+  attrs = game.new_record? ? attrs.reverse_merge("listed" => true) : attrs.except("listed", "position")
+  game.update!(attrs)
 end
 
 # ---------------------------------------------------------------------------

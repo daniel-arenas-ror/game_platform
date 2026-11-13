@@ -14,7 +14,8 @@ module AdminHelper
 
   # The pages in the admin menu: label, path helper and the controller that marks it current.
   def admin_menu
-    [ [ "Dashboard", admin_root_path, "admin/dashboard" ], [ "Rooms", admin_rooms_path, "admin/rooms" ] ]
+    [ [ "Dashboard", admin_root_path, "admin/dashboard" ], [ "Rooms", admin_rooms_path, "admin/rooms" ],
+      [ "Games", admin_games_path, "admin/games" ] ]
   end
 
   def admin_room_status(status)

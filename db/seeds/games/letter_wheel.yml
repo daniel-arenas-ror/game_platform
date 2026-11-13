@@ -2,7 +2,7 @@
 # Hidden from the public site until it has been tried with real players.
 name: Letter Wheel
 slug: letter-wheel
-listed: false
+listed: false # only when the game is first created; after that the admin Games page decides
 description: Go round the alphabet one clue at a time. Each letter hides a word, and everyone types
   their answer on their phone at once. Get the most words to win.
 tagline: One clue per letter. Everyone answers. Fastest gets more.

@@ -1,0 +1,7 @@
+<%# Christmas mode: a string of lights along the bottom of the site header (styles in application.css). %>
+<% colors = %w[#ef4444 #facc15 #22c55e #3b82f6] %>
+<div aria-hidden="true" class="xmas-lights pointer-events-none absolute inset-x-0 -bottom-px">
+  <% 32.times do |i| %>
+    <span class="xmas-bulb <%= "max-sm:hidden" if i.odd? %>" style="--bulb: <%= colors[i % colors.size] %>; --i: <%= i % 4 %>"></span>
+  <% end %>
+</div>

@@ -27,6 +27,8 @@ Rails.application.routes.draw do
     namespace :admin, path: admin_path do
       root "dashboard#show"
       resources :rooms, only: %i[index show]
+      resource :games, only: %i[show update], as: :games # every game at once: the catalog order and who's shown
+      resource :settings, only: :update # site-wide switches (Christmas mode), on the Games page
     end
   end
 

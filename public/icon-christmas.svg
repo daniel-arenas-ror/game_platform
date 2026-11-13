@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-24 -96 600 600" width="512" height="512">
+  <!-- icon.svg in Christmas mode: the same mark wearing the Santa hat from shared/_santa_hat. -->
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#a855f7"/>
+      <stop offset="1" stop-color="#db2777"/>
+    </linearGradient>
+    <clipPath id="g-edge"><circle cx="256" cy="256" r="162"/></clipPath>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <path d="M329.4 151.2A128 128 0 1 0 384 256" fill="none" stroke="#fff" stroke-width="68"/>
+  <circle cx="329.4" cy="151.2" r="34" fill="#fff"/>
+  <path d="M290 222H430V290H290A34 34 0 0 1 290 222Z" fill="#fff" clip-path="url(#g-edge)"/>
+  <g transform="rotate(10 290 130)">
+    <path d="M130 118C160 20 250 -52 345 -54C420 -56 476 -8 492 52L446 72C434 44 414 30 398 34L428 118Z" fill="#dc2626"/>
+    <path d="M345 -54C420 -56 476 -8 492 52L446 72C434 44 414 30 398 34C390 -4 372 -34 345 -54Z" fill="#b91c1c"/>
+    <rect x="104" y="92" width="350" height="74" rx="37" fill="#fff"/>
+    <circle cx="474" cy="70" r="40" fill="#fff"/>
+  </g>
+</svg>

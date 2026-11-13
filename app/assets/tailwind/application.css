@@ -331,3 +331,32 @@
     animation: none;
   }
 }
+
+/* Christmas mode (shared/_christmas_lights): a string of bulbs under the site header. They glow
+   in turn; with reduced motion they just stay lit. */
+.xmas-lights {
+  display: flex;
+  justify-content: space-around;
+  border-top: 1px solid #14532d;
+}
+
+.xmas-bulb {
+  width: 6px;
+  height: 9px;
+  margin-top: -1px;
+  border-radius: 0 0 9999px 9999px;
+  background: var(--bulb);
+  box-shadow: 0 0 6px var(--bulb);
+}
+
+@keyframes xmas-twinkle {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; box-shadow: none; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .xmas-bulb {
+    animation: xmas-twinkle 1.8s ease-in-out infinite;
+    animation-delay: calc(var(--i) * -0.45s);
+  }
+}

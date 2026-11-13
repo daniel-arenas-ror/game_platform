@@ -7,9 +7,11 @@ class Game
   field :description, type: String
 
   # Catalog order: games with a position come first (1, 2, 3…), then the rest, most rooms first.
+  # Set in the admin (Admin::GamesController); db:seed only sets it on a new game.
   field :position, type: Integer
   field :rooms_count, type: Integer, default: 0 # +1 for every room created with this game
-  # false while a game is being built: hidden from the public site in production, shown in development.
+  # false: hidden from the public site in production, shown in development. Set in the admin like
+  # position; a new game's YAML can start it hidden (`listed: false`) while it's being built.
   field :listed, type: Boolean, default: true
 
   # Public game page (/games/:slug). Content lives in db/seeds/games/<code>.yml.
@@ -54,7 +56,11 @@ class Game
   validates :slug, presence: true, format: { with: /\A[a-z0-9]+(?:-[a-z0-9]+)*\z/ }
 
   def self.catalog
-    visible.to_a.sort_by { |g| [ g.position ? 0 : 1, g.position.to_i, -g.rooms_count.to_i, g.name.to_s ] }
+    in_catalog_order(visible.to_a)
+  end
+
+  def self.in_catalog_order(games)
+    games.sort_by { |g| [ g.position ? 0 : 1, g.position.to_i, -g.rooms_count.to_i, g.name.to_s ] }
   end
 
   # The games the public site shows.
