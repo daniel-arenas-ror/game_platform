@@ -1,0 +1,101 @@
+# Slug is a public URL (/games/letter-wheel) — never change it once live.
+# Hidden from the public site until it has been tried with real players.
+name: Letter Wheel
+slug: letter-wheel
+listed: false
+description: Go round the alphabet one clue at a time. Each letter hides a word, and everyone types
+  their answer on their phone at once. Get the most words to win.
+tagline: One clue per letter. Everyone answers. Fastest gets more.
+category: trivia
+min_players: 1
+max_players: 30
+players_note: >-
+  Everyone answers on their own phone at the same time, so it plays the same alone or with a full
+  room. With a group, the race to type first is half the fun.
+duration_minutes: 8
+age: 8
+long_description: >-
+  Letter Wheel is a word quiz for the whole room. The big screen shows the alphabet as a ring of
+  letters and lights them up one by one. For each letter there's a clue in the middle: "Starts with
+  A: a large grey animal with a trunk", or for the tricky letters, "Contains X". Every phone shows the
+  same clue and a box to type the answer, and you get one try per word. A right answer scores 100
+  points plus up to 100 more for answering fast, and your phone tells you straight away if you got it.
+  When the time is up, the big screen shows the answer, who got it, and colours the letter green,
+  orange or red by how many players knew it. Spelling doesn't have to be perfect: accents, capitals,
+  "the" and plurals don't matter, and one typo is forgiven on longer words. The player with the most
+  words wins, and points break a tie. The host picks the time per word and whether to play 12 random
+  letters or the whole alphabet.
+how_to_play:
+  - The host picks the time per word (10, 15, 20 or 30 seconds) and the length (12 random letters or the whole alphabet).
+  - The big screen lights up a letter and shows its clue. The answer starts with that letter, or contains it when the screen says so.
+  - Type your answer on your phone and send it. You get one try per word, and your phone tells you at once if it's right.
+  - A right answer scores 100 points plus up to 100 more for speed. When the time is up, the big screen shows the answer.
+  - After the last letter, the player with the most words wins. Points break a tie.
+tips:
+  - Read the hint above the clue. "Contains" means the letter can be anywhere in the word.
+  - Don't worry about accents or capitals. One small typo still counts on longer words.
+  - Speed only adds points. Being right is what counts most, so think for a second before you send.
+  - If you're stuck, type your best guess before the time runs out. Whatever is in the box is sent anyway.
+  - Watch the colours on the ring to see which letters beat the room.
+perfect_for: [party, family, classroom, work]
+faq:
+  - q: How do you score points in Letter Wheel?
+    a: A right answer scores 100 points plus a speed bonus of up to 100, which shrinks as the time runs out. A wrong answer or no answer scores 0.
+  - q: Who wins, the most points or the most words?
+    a: The most words. Points only decide between players with the same number of words, so speed matters most in a close game.
+  - q: Does my answer have to be spelled exactly right?
+    a: No. Accents, capitals, a leading "the" or "a" and plurals don't matter, and one wrong, missing or extra letter is forgiven on words of 6 letters or more.
+  - q: Can I change my answer?
+    a: No, you get one try per word. Whatever you've typed when the time runs out is sent for you.
+  - q: Does it work in Spanish?
+    a: Yes. A Spanish room gets Spanish clues and the Spanish alphabet, with Ñ.
+  - q: Can someone join after the game has started?
+    a: Yes. They scan the QR code and can answer from the current letter with 0 words.
+
+# Spanish. Same fields as above; anything missing falls back to English.
+translations:
+  es:
+    name: Rueda de Letras
+    description: Recorre el abecedario pista a pista. Cada letra esconde una palabra y todos escriben su
+      respuesta en el celular a la vez. Gana quien acierte más palabras.
+    tagline: Una pista por letra. Todos responden. El más rápido suma más.
+    players_note: >-
+      Cada uno responde en su celular al mismo tiempo, así que funciona igual solo o con la sala llena.
+      En grupo, la carrera por escribir primero es la mitad de la diversión.
+    long_description: >-
+      Rueda de Letras es un concurso de palabras para toda la sala. La pantalla grande muestra el
+      abecedario como una rueda de letras y las ilumina una por una. Para cada letra hay una pista en el
+      centro: "Empieza por A: transporte que vuela con alas y motores" o, en las letras difíciles,
+      "Contiene la X". Todos los celulares muestran la misma pista y una casilla para escribir la
+      respuesta, y tienes un solo intento por palabra. Una respuesta correcta vale 100 puntos más hasta
+      100 extra por responder rápido, y tu celular te dice al instante si acertaste. Cuando se acaba el
+      tiempo, la pantalla grande muestra la respuesta, quién acertó y pinta la letra de verde, naranja o
+      rojo según cuántos la sabían. No hace falta escribir perfecto: las tildes, las mayúsculas, el
+      artículo y el plural no importan, y en las palabras largas se perdona una errata. Gana quien
+      acierte más palabras, y los puntos deciden un empate. El anfitrión elige el tiempo por palabra y si
+      se juegan 12 letras al azar o todo el abecedario, con la Ñ.
+    how_to_play:
+      - El anfitrión elige el tiempo por palabra (10, 15, 20 o 30 segundos) y la duración (12 letras al azar o todo el abecedario).
+      - La pantalla grande ilumina una letra y muestra su pista. La respuesta empieza por esa letra, o la contiene si la pantalla lo dice.
+      - Escribe tu respuesta en el celular y envíala. Tienes un intento por palabra y el celular te dice al momento si acertaste.
+      - Una respuesta correcta vale 100 puntos más hasta 100 extra por rapidez. Al acabar el tiempo, la pantalla grande muestra la respuesta.
+      - Tras la última letra, gana quien tenga más palabras. Los puntos deciden un empate.
+    tips:
+      - Lee el aviso encima de la pista. "Contiene" significa que la letra puede estar en cualquier parte de la palabra.
+      - No te preocupes por las tildes ni las mayúsculas. Una pequeña errata cuenta igual en las palabras largas.
+      - La rapidez solo suma puntos. Lo que más cuenta es acertar, así que piensa un segundo antes de enviar.
+      - Si no la sabes, escribe tu mejor intento antes de que se acabe el tiempo. Lo que haya en la casilla se envía igual.
+      - Mira los colores de la rueda para ver qué letras pudieron con la sala.
+    faq:
+      - q: ¿Cómo se ganan puntos en Rueda de Letras?
+        a: Una respuesta correcta vale 100 puntos más un extra por rapidez de hasta 100, que baja a medida que se acaba el tiempo. Una respuesta incorrecta o en blanco vale 0.
+      - q: ¿Quién gana, el que tiene más puntos o más palabras?
+        a: El que tiene más palabras. Los puntos solo deciden entre jugadores con las mismas palabras, así que la rapidez importa en una partida reñida.
+      - q: ¿Tengo que escribir la respuesta perfecta?
+        a: No. Las tildes, las mayúsculas, el artículo ("el", "la", "un"…) y el plural no importan, y en palabras de 6 letras o más se perdona una letra de más, de menos o cambiada.
+      - q: ¿Puedo cambiar mi respuesta?
+        a: No, tienes un intento por palabra. Lo que hayas escrito cuando se acaba el tiempo se envía por ti.
+      - q: ¿Funciona en español?
+        a: Sí. Una sala en español recibe pistas en español y el abecedario español, con la Ñ.
+      - q: ¿Alguien puede unirse cuando el juego ya empezó?
+        a: Sí. Escanea el código QR y puede responder desde la letra actual, con 0 palabras.

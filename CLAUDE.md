@@ -67,7 +67,7 @@ A real-time multiplayer game platform. A host creates a **Room**, shares a QR co
 | `monster_mash` | Monster Mash | Halloween drawing relay: head → body → legs passed around, guide strip from the part above, reveal + vote; drawings in `MonsterMash::Drawing` |
 | `tug_of_war` | Tug of War | Team math race: right answers pull the rope, wrong ones freeze the phone |
 | `color_chain` | Color Chain | Repeat the TV's colour sequence, one colour longer each round; the colours go to the TV alone (`_host` stream) until the reveal |
-| `letter_wheel` | Letter Wheel | Alphabet clue game: one clue per letter ("starts with" / "contains"), every phone answers at once, one try each; base + speed points, most words wins (points break ties). Clues in `config/letter_wheel/words.{en,es}.yml` (Spanish adds Ñ). TV ring of letters coloured by how many got each one; phone types the answer and hears right/wrong at once (`answer_result`). Not in the seeds yet (no game page) |
+| `letter_wheel` | Letter Wheel | Alphabet clue game: one clue per letter ("starts with" / "contains"), every phone answers at once, one try each; base + speed points, most words wins (points break ties). Clues in `config/letter_wheel/words.{en,es}.yml` (Spanish adds Ñ). TV ring of letters coloured by how many got each one; phone types the answer and hears right/wrong at once (`answer_result`). `listed: false` until tried with real players |
 | `impostor` | Impostor | TODO stub in GameFactory |
 
 FIFA World Cup has data models only (no game logic).

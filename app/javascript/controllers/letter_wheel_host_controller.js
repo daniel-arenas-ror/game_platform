@@ -159,7 +159,7 @@ export default class extends Controller {
       const share = this.state.results?.[letter]
       const color = share >= 0.5 ? "border-green-500" : share > 0 ? "border-orange-500" : "border-red-500"
       return `<span class="rounded-lg border-2 ${color} bg-slate-900 px-2 py-1 text-sm font-bold">
-        <span class="text-amber-400">${escapeHtml(letter.toUpperCase())}</span> ${escapeHtml(answer)}</span>`
+        <span class="text-teal-400">${escapeHtml(letter.toUpperCase())}</span> ${escapeHtml(answer)}</span>`
     }).join("")
   }
 
@@ -183,7 +183,7 @@ export default class extends Controller {
         <span class="flex-1 min-w-0 truncate font-bold">${escapeHtml(name)}</span>
         <span class="font-bold tabular-nums">${note}</span>
         <span class="text-right leading-tight">
-          <span class="block font-black tabular-nums text-amber-400">${t("letter_wheel.words", { count: words })}</span>
+          <span class="block font-black tabular-nums text-teal-400">${t("letter_wheel.words", { count: words })}</span>
           <span class="block text-xs text-slate-400 tabular-nums">${t("shared.pts", { points: num(points) })}</span>
         </span>
       </div>`
