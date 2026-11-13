@@ -1,3 +1,5 @@
 <%= render "rooms/games/#{@room.game.code}/index" %>
 <%= render "shared/room_players", room: @room %>
 <%= render "shared/sound_chip" %>
+<%# Christmas mode: a jingle on the TV when the game screen opens (christmas_jingle_controller) %>
+<%= tag.div(hidden: true, data: { controller: "christmas-jingle" }) if christmas? && session[:player_id].blank? %>

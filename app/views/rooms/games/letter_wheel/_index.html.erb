@@ -34,6 +34,8 @@
             <p data-letter-wheel-host-target="answer" class="hidden font-black uppercase tracking-wide text-green-400 text-[6.5cqmin]"></p>
             <p data-letter-wheel-host-target="countdown" class="font-mono font-black tabular-nums text-[6cqmin]"></p>
             <p data-letter-wheel-host-target="status" class="font-bold text-slate-300 text-[2.8cqmin]"></p>
+            <%# The reveal: the wrong answers players typed, with who typed them %>
+            <div data-letter-wheel-host-target="misses" class="hidden flex flex-wrap justify-center gap-[1cqmin] max-w-full"></div>
           </div>
         </div>
       </div>
@@ -80,6 +82,7 @@
          class="absolute inset-0 flex flex-col items-center justify-center gap-3 px-6 text-center">
       <p data-letter-wheel-player-target="messageTitle" class="font-black text-4xl text-balance"><%= t(".get_ready") %></p>
       <p data-letter-wheel-player-target="messageHint" class="text-slate-300 text-lg text-balance"><%= t(".look_tv") %></p>
+      <p data-letter-wheel-player-target="messageCountdown" class="font-mono font-black text-7xl tabular-nums text-teal-400"></p>
       <p data-letter-wheel-player-target="messagePoints" class="mt-4 font-black text-2xl tabular-nums"></p>
     </div>
 

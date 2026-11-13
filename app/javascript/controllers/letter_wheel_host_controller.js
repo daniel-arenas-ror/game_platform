@@ -9,6 +9,7 @@ import { WheelSounds } from "controllers/letter_wheel/sounds"
 
 const BOARD_SIZE = 8  // players listed beside the ring
 const TICK_FROM  = 5  // seconds left when the countdown starts ticking
+const MISSES     = 6  // wrong answers shown in the ring at the reveal; the rest are counted
 const RING_SIZE  = 9  // each letter's bubble, in % of the ring
 const BUBBLE     = "absolute flex items-center justify-center rounded-full border-2 font-black transition-[background-color,scale] duration-300"
 
@@ -18,7 +19,7 @@ const BUBBLE     = "absolute flex items-center justify-center rounded-full borde
 export default class extends Controller {
   static values  = { roomCode: String }
   static targets = [
-    "soundButton", "roundLabel", "ring", "hint", "clue", "answer", "countdown", "status", "board",
+    "soundButton", "roundLabel", "ring", "hint", "clue", "answer", "countdown", "status", "misses", "board",
     "phaseGameOver", "finalBoard", "solutions"
   ]
 
@@ -71,7 +72,7 @@ export default class extends Controller {
     this.nicknames = nicknames || {}
 
     this.roundLabelTarget.textContent = state.round ? t("letter_wheel.letter_of", { round: state.round, total: state.total_rounds }) : ""
-    if (state.phase === "clue") startCountdown(this.countdownTarget, state.seconds_left, (left) => this.onTick(left))
+    if (state.phase === "clue" || state.phase === "intro") startCountdown(this.countdownTarget, state.seconds_left, (left) => this.onTick(left))
     else stopCountdown(this.countdownTarget)
 
     this.renderRing()
@@ -138,8 +139,10 @@ export default class extends Controller {
     const showing = phase === "clue" || phase === "reveal"
     const total   = Object.keys(scores).length
 
-    this.hintTarget.textContent = showing ? t(contains ? "letter_wheel.contains" : "letter_wheel.starts_with", { letter: letter.toUpperCase() }) : ""
-    this.clueTarget.textContent = showing ? clue : phase === "game_over" ? "" : t("letter_wheel.get_ready")
+    const intro = phase === "intro"
+    this.hintTarget.textContent = showing ? t(contains ? "letter_wheel.contains" : "letter_wheel.starts_with", { letter: letter.toUpperCase() })
+      : intro ? t("letter_wheel.ready") : ""
+    this.clueTarget.textContent = showing ? clue : intro ? t("letter_wheel.starts_in") : phase === "game_over" ? "" : t("letter_wheel.get_ready")
     this.answerTarget.classList.toggle("hidden", phase !== "reveal")
     this.answerTarget.textContent = answer || ""
 
@@ -147,6 +150,22 @@ export default class extends Controller {
     this.statusTarget.textContent =
       phase === "clue"   ? t("letter_wheel.answered", { done: answered.length, total }) :
       phase === "reveal" ? t("letter_wheel.got_it", { count: right, total }) : ""
+    this.renderMisses()
+  }
+
+  // The wrong answers, each with who typed it (player text: escaped).
+  renderMisses() {
+    const { phase, guesses = {} } = this.state
+    const misses = Object.entries(guesses).filter(([ , guess ]) => !guess.right)
+    this.missesTarget.classList.toggle("hidden", phase !== "reveal" || misses.length === 0)
+    if (phase !== "reveal") return
+
+    const chip = (html) => `<span class="rounded-full border border-red-500/40 bg-red-500/10 px-[1.6cqmin] py-[0.5cqmin] text-[2.3cqmin] font-bold text-red-300">${html}</span>`
+    const shown = misses.slice(0, MISSES).map(([ id, guess ]) => chip(
+      `<span class="line-through decoration-2">${escapeHtml(guess.text)}</span> <span class="font-normal text-slate-400">· ${escapeHtml(this.nicknames[id] || "?")}</span>`
+    ))
+    if (misses.length > MISSES) shown.push(chip(t("letter_wheel.more", { count: misses.length - MISSES })))
+    this.missesTarget.innerHTML = shown.join("")
   }
 
   renderBoard() {

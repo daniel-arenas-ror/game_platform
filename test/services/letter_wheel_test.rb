@@ -194,4 +194,12 @@ class LetterWheelTest < ActiveSupport::TestCase
     assert_equal state["letters"], shown["solutions"].map { _1["letter"] }
     assert_equal @ana.id.to_s, shown["ranking"].first
   end
+
+  test "the countdown before the first letter: every screen gets the seconds left, and nobody can answer" do
+    svc.start_intro!(5)
+    shown = svc.public_state
+    assert_equal "intro", shown["phase"]
+    assert_includes 4..5, shown["seconds_left"]
+    assert_nil svc.answer!(@ana.id, "anything")
+  end
 end

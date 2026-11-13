@@ -27,7 +27,7 @@ class Games::LetterWheelChannelTest < ActionCable::Channel::TestCase
   end
 
   def fast(&)
-    with_constants(Games::LetterWheelChannel, REVEAL_DURATION: 0.05, GRACE_PERIOD: 0, EARLY_END_DELAY: 0, POLL_INTERVAL: 0.02, &)
+    with_constants(Games::LetterWheelChannel, INTRO_DURATION: 0.05, REVEAL_DURATION: 0.05, GRACE_PERIOD: 0, EARLY_END_DELAY: 0, POLL_INTERVAL: 0.02, &)
   end
 
   def room_stream = "letter_wheel_room_#{@room.code}"
@@ -57,7 +57,7 @@ class Games::LetterWheelChannelTest < ActionCable::Channel::TestCase
 
     assert_equal "finished", @room.reload.status
     assert_equal 2, state["correct"][@ana.id.to_s]
-    assert_equal %w[clue reveal game_over], phases.uniq
+    assert_equal %w[intro clue reveal game_over], phases.uniq, "the countdown comes first"
     clues = messages.select { _1.dig("state", "phase") == "clue" }
     assert(clues.none? { _1["state"].key?("answer") })
   end

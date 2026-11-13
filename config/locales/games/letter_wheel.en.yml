@@ -37,6 +37,8 @@ en:
     letter_wheel:
       get_ready: "Get ready…"
       look_tv: "Look at the TV"
+      ready: "Are you ready?"
+      starts_in: "The game starts in…"
       letter_of: "Letter %{round} of %{total}"
       starts_with: "Starts with %{letter}"
       contains: "Contains %{letter}"
@@ -51,4 +53,6 @@ en:
       wrong: "Not quite ✗"
       time_up: "Time's up!"
       answer_was: "The answer was: %{answer}"
+      you_wrote: "You wrote: %{text}"
+      more: "+%{count} more"
       error: "Something went wrong. Reload this page."

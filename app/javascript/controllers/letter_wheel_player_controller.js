@@ -12,7 +12,7 @@ const SEND_MARGIN = 300 // ms before the time runs out: what's typed is sent, so
 export default class extends Controller {
   static values  = { roomCode: String, playerId: String }
   static targets = [
-    "phaseMessage", "messageTitle", "messageHint", "messagePoints",
+    "phaseMessage", "messageTitle", "messageHint", "messageCountdown", "messagePoints",
     "phaseAnswer", "letter", "countdown", "hint", "clue", "input",
     "phaseGameOver", "gameOverTitle", "gameOverWords"
   ]
@@ -37,6 +37,7 @@ export default class extends Controller {
   disconnect() {
     document.removeEventListener("visibilitychange", this.onVisible)
     stopCountdown(this.countdownTarget)
+    stopCountdown(this.messageCountdownTarget)
     clearTimeout(this.sendTimer)
     this.wakeLock?.release().catch(() => {})
     this.sounds.close()
@@ -87,6 +88,8 @@ export default class extends Controller {
     if (guess && !this.result) this.result = { right: guess.right, points: state.round_points?.[this.playerIdValue] || 0 }
 
     clearTimeout(this.sendTimer)
+    if (state.phase === "intro") startCountdown(this.messageCountdownTarget, state.seconds_left)
+    else stopCountdown(this.messageCountdownTarget)
     if (state.phase === "clue" && !this.sent) {
       startCountdown(this.countdownTarget, state.seconds_left)
       this.sendTimer = setTimeout(() => this.send(), state.seconds_left * 1000 - SEND_MARGIN)
@@ -127,14 +130,22 @@ export default class extends Controller {
     const verdict = this.result?.right ? `${t("letter_wheel.right")} +${num(this.result.points)}`
       : this.result ? t("letter_wheel.wrong") : null
     const messages = {
+      intro:  [ t("letter_wheel.ready"), t("letter_wheel.starts_in") ],
       clue:   [ verdict ?? t("letter_wheel.sent"), t("letter_wheel.wait_others") ],
-      reveal: [ verdict ?? t("letter_wheel.time_up"), t("letter_wheel.answer_was", { answer }) ]
+      reveal: [ verdict ?? t("letter_wheel.time_up"), this.revealHint(answer) ]
     }
     const [ title, hint ] = messages[phase] ?? [ t("letter_wheel.get_ready"), t("letter_wheel.look_tv") ]
     this.messageTitleTarget.textContent = title
     this.messageHintTarget.textContent  = hint
     this.messageTitleTarget.classList.toggle("text-green-400", !!this.result?.right)
     this.messageTitleTarget.classList.toggle("text-red-400", !!this.result && !this.result.right)
+  }
+
+  // The answer, and what this player wrote when it was wrong (so they can see how close they were).
+  revealHint(answer) {
+    const mine = this.state.guesses?.[this.playerIdValue]
+    const hint = t("letter_wheel.answer_was", { answer })
+    return mine && !mine.right ? `${hint} · ${t("letter_wheel.you_wrote", { text: mine.text })}` : hint
   }
 
   showGameOver() {

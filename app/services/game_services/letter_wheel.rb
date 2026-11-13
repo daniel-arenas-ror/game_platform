@@ -123,6 +123,11 @@ module GameServices
             "$set" => { "game_state.scores.#{player_id}" => 0, "game_state.correct.#{player_id}" => 0 })
     end
 
+    # "Are you ready?": every screen counts down before the first letter.
+    def start_intro!(seconds)
+      @room.atomic_set("game_state.phase" => "intro", "game_state.phase_ends_at" => Time.now.to_f + seconds)
+    end
+
     def start_round!(round)
       @room.atomic_set("game_state.phase" => "clue", "game_state.round" => round, "game_state.answers" => {},
                        "game_state.round_points" => {},

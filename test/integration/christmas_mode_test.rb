@@ -44,6 +44,11 @@ class ChristmasModeTest < ActionDispatch::IntegrationTest
       assert_response :success
       assert_select "[data-controller=snow]", 0
       assert_select ".xmas-lights", 0
+      assert_select "[data-controller=christmas-jingle]", 1, "the TV plays the jingle"
+    end
+    with_christmas(false) do
+      get playing_room_path(room.code)
+      assert_select "[data-controller=christmas-jingle]", 0
     end
   ensure
     Event.where(room_id: room&.id).delete_all

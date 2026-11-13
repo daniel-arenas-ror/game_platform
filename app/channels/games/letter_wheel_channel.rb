@@ -3,6 +3,7 @@ class Games::LetterWheelChannel < ApplicationCable::Channel
 
   STREAM_PREFIX = "letter_wheel_room_"
 
+  INTRO_DURATION  = 5 # "Are you ready?" countdown before the first letter
   REVEAL_DURATION = 5
   GRACE_PERIOD    = 1.0 # after the time limit, for answers already on their way
   EARLY_END_DELAY = 0.5 # so the last answer shows before the reveal
@@ -68,11 +69,16 @@ class Games::LetterWheelChannel < ApplicationCable::Channel
 
   private
 
-  # For each letter: the clue (until the time runs out or everyone answered) → the reveal. Then game
-  # over. A loop that takes over from a dead one replays the current letter.
+  # The "Are you ready?" countdown, then for each letter: the clue (until the time runs out or everyone
+  # answered) → the reveal. Then game over. A loop that takes over from a dead one replays the current
+  # letter (the countdown only plays before the first one).
   def run_game(loop_id)
     svc   = GameServices::LetterWheel.new(Room.find_by(code: params[:room_code]))
     state = svc.room.game_state
+
+    if state["round"].to_i.zero?
+      phase(svc, loop_id, INTRO_DURATION) { svc.start_intro!(INTRO_DURATION) } or return
+    end
 
     ([ state["round"].to_i, 1 ].max..state["words"].to_a.size).each do |round|
       phase(svc, loop_id, state["word_time"].to_i + GRACE_PERIOD, early: -> { svc.all_answered? }) { svc.start_round!(round) } or return
