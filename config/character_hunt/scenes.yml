@@ -43,3 +43,21 @@ haunted_street:
   areas: [[0.02, 0.36, 0.98, 0.99]]
   holes: []
   heights: [0.065, 0.12]
+christmas_market:
+  theme: christmas
+  ratio: 1.6
+  areas: [[0.02, 0.36, 0.98, 0.99]]
+  holes: [[0.42, 0.34, 0.58, 0.62]] # the big Christmas tree
+  heights: [0.065, 0.12]
+ice_rink:
+  theme: christmas
+  ratio: 1.6
+  areas: [[0.02, 0.34, 0.98, 0.99]]
+  holes: [[0.03, 0.42, 0.11, 0.6]] # the snowman
+  heights: [0.065, 0.12]
+snowy_village:
+  theme: christmas
+  ratio: 1.6
+  areas: [[0.02, 0.36, 0.98, 0.99]]
+  holes: [[0.45, 0.5, 0.55, 0.74]] # the snowman
+  heights: [0.065, 0.12]

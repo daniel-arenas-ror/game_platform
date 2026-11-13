@@ -16,7 +16,8 @@ class RoomsController < ApplicationController
     "doodle_dash"            => { "word_source" => "christmas" },
     "mind_match"             => { "theme" => "christmas" },
     "letter_wheel"           => { "level" => "christmas" },
-    "guess_the_color"        => { "mode" => "christmas" }
+    "guess_the_color"        => { "mode" => "christmas" },
+    "character_hunt"         => { "theme" => "christmas" }
   }.freeze
 
   def create

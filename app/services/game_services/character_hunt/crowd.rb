@@ -28,8 +28,8 @@ module GameServices::CharacterHunt::Crowd
   # Parts that hide others: a pumpkin head covers hair, glasses and face.
   HEAD_COVERS = %w[pumpkin].freeze
   # Parts drawn in their own colours (no colour trait).
-  FIXED_COLOR_HATS   = %w[none pumpkin].freeze
-  FIXED_COLOR_EXTRAS = %w[none broom candy_bucket].freeze
+  FIXED_COLOR_HATS   = %w[none pumpkin antlers].freeze
+  FIXED_COLOR_EXTRAS = %w[none broom candy_bucket candy_cane].freeze
 
   # Chance of none (index 0) for the optional parts.
   NONE_CHANCE = { "pattern" => 0.45, "hat" => 0.45, "glasses" => 0.65, "extra" => 0.6, "beard" => 0.75 }.freeze

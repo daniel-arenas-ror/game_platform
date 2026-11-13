@@ -69,29 +69,34 @@ class CharacterHuntTest < ActiveSupport::TestCase
     end
   end
 
-  test "a Halloween game uses the Halloween scenes; a bad theme falls back to classic" do
-    @room.update!(game_state: { "theme" => "halloween" })
-    Hunt.new(@room).setup_game!
-    assert_equal "halloween", state["theme"]
-    assert(state["scene_order"].all? { |id| Crowd::SCENES[id]["theme"] == "halloween" })
+  test "a Halloween or Christmas game uses that theme's scenes; a bad theme falls back to classic" do
+    %w[halloween christmas].each do |theme|
+      @room.update!(game_state: { "theme" => theme })
+      Hunt.new(@room).setup_game!
+      assert_equal theme, state["theme"]
+      assert(state["scene_order"].all? { |id| Crowd::SCENES[id]["theme"] == theme })
+    end
 
-    @room.update!(game_state: { "theme" => "christmas" })
+    @room.update!(game_state: { "theme" => "easter" })
     Hunt.new(@room).setup_game!
     assert_equal "classic", state["theme"]
   end
 
   test "each theme's crowd wears only that theme's clothes" do
     names = ->(traits, key) { Crowd::CATALOG[Crowd::TRAITS[key]][traits[key]] if traits.key?(key) }
-    { "plaza" => "classic", "graveyard" => "halloween" }.each do |scene_id, theme|
+    costumes = { "halloween" => %w[witch horns cat_ears pumpkin], "christmas" => %w[santa elf antlers] }
+    { "plaza" => "classic", "graveyard" => "halloween", "snowy_village" => "christmas" }.each do |scene_id, theme|
       people = Crowd.build(scene_id, count: 150, decoys: 4, size: 0.85)["scene"]["characters"].map { _1["traits"] }
       people.each do |t|
         t.each { |key, value| assert_includes Crowd::THEMES[theme][key], value, "#{theme} #{key}" }
       end
       hats = people.filter_map { names.(_1, "hat") }.uniq
-      if theme == "halloween"
-        assert_operator (hats & %w[witch horns cat_ears pumpkin]).size, :>=, 3
-      else
-        assert_empty hats & %w[witch horns cat_ears pumpkin]
+      costumes.each do |costume_theme, costume_hats|
+        if theme == costume_theme
+          assert_operator (hats & costume_hats).size, :>=, costume_hats.size - 1, theme
+        else
+          assert_empty hats & costume_hats, "#{theme} wears no #{costume_theme} hats"
+        end
       end
     end
   end

@@ -436,6 +436,8 @@ es:
           theme_classic_desc: "Parque, playa y plaza"
           theme_halloween: "🎃 Halloween"
           theme_halloween_desc: "Cementerio, campo de calabazas y calle embrujada, todos disfrazados"
+          theme_christmas: "🎄 Navidad"
+          theme_christmas_desc: "Mercadillo navideño, pista de hielo y pueblo nevado: gorros de Papá Noel, elfos y cuernos de reno"
           difficulty: "DIFICULTAD"
           easy: "Fácil"
           normal: "Normal"

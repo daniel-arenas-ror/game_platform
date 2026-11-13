@@ -447,6 +447,8 @@ en:
           theme_classic_desc: "Park, beach and town square"
           theme_halloween: "🎃 Halloween"
           theme_halloween_desc: "Graveyard, pumpkin patch and haunted street, everyone in costume"
+          theme_christmas: "🎄 Christmas"
+          theme_christmas_desc: "Christmas market, ice rink and snowy village: Santa hats, elves and reindeer antlers"
           difficulty: "DIFFICULTY"
           easy: "Easy"
           normal: "Normal"

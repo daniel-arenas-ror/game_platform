@@ -87,6 +87,8 @@ export function drawCharacter(ctx, x, y, h, flip, t, cat) {
   shape(ctx, top, c => { roundRect(c, -0.235, -0.77, 0.09, 0.3, 0.04); roundRect(c, 0.145, -0.77, 0.09, 0.3, 0.04) })
   if (extra === "broom") drawBroom(ctx)
   if (extra === "candy_bucket") drawCandyBucket(ctx)
+  if (extra === "present") drawPresent(ctx, color(t.extra_color))
+  if (extra === "candy_cane") drawCandyCane(ctx)
   shape(ctx, skin, c => { c.arc(-0.19, -0.45, 0.042, 0, Math.PI * 2); c.moveTo(0.232, -0.45); c.arc(0.19, -0.45, 0.042, 0, Math.PI * 2) })
   shape(ctx, top, c => roundRect(c, -0.165, -0.79, 0.33, 0.4, 0.06))
   drawPattern(ctx, cat.patterns[t.pattern], color(t.pattern_color))
@@ -151,6 +153,20 @@ function drawPattern(ctx, pattern, color) {
     ctx.beginPath()
     ctx.ellipse(0, -0.46, 0.08, 0.035, 0, 0, Math.PI * 2)
     ctx.fill()
+  } else if (pattern === "sweater") {
+    // A Christmas jumper: a zigzag band across the chest and snowflake dots.
+    ctx.beginPath()
+    ctx.moveTo(-0.2, -0.6)
+    for (let x = -0.2, up = true; x <= 0.2; x += 0.04, up = !up) ctx.lineTo(x, up ? -0.65 : -0.6)
+    ctx.lineTo(0.2, -0.55)
+    for (let x = 0.2, up = true; x >= -0.2; x -= 0.04, up = !up) ctx.lineTo(x, up ? -0.5 : -0.55)
+    ctx.closePath()
+    ctx.fill()
+    ;[ [ -0.09, -0.72 ], [ 0.0, -0.74 ], [ 0.09, -0.72 ], [ -0.07, -0.44 ], [ 0.07, -0.44 ] ].forEach(([ dx, dy ]) => {
+      ctx.beginPath()
+      ctx.arc(dx, dy, 0.02, 0, Math.PI * 2)
+      ctx.fill()
+    })
   } else if (pattern === "bandages") {
     ctx.save()
     ctx.rotate(-0.25)
@@ -197,6 +213,16 @@ function drawHair(ctx, style, color) {
 function drawFace(ctx, beard, hair, glasses) {
   if (beard === "beard") shape(ctx, hair, c => c.arc(0, -0.85, 0.11, Math.PI * 0.05, Math.PI * 0.95))
   if (beard === "mustache") shape(ctx, hair, c => c.ellipse(0, -0.835, 0.055, 0.018, 0, 0, Math.PI * 2))
+  if (beard === "santa_beard") {
+    // Big, white and curly, whatever the hair colour.
+    shape(ctx, "#f8fafc", c => {
+      c.moveTo(-0.125, -0.88)
+      c.quadraticCurveTo(-0.14, -0.7, 0, -0.66)
+      c.quadraticCurveTo(0.14, -0.7, 0.125, -0.88)
+      c.quadraticCurveTo(0, -0.82, -0.125, -0.88)
+    })
+    shape(ctx, "#f8fafc", c => c.ellipse(0, -0.84, 0.06, 0.02, 0, 0, Math.PI * 2))
+  }
   if (beard === "fangs") {
     ctx.lineWidth = 0.01
     shape(ctx, "#ffffff", c => {
@@ -268,6 +294,30 @@ function drawHat(ctx, hat, color) {
         c.moveTo(0.1, -0.96); c.lineTo(0.095, -1.04); c.lineTo(0.05, -0.99); c.closePath()
       })
       break
+    case "santa":
+      // The point flops over to one side, with a white pompom; red or green.
+      shape(ctx, color, c => { c.moveTo(-0.13, -0.95); c.quadraticCurveTo(-0.04, -1.24, 0.19, -1.12); c.lineTo(0.13, -1.05); c.quadraticCurveTo(0.08, -1.04, 0.13, -0.95); c.closePath() })
+      shape(ctx, "#f8fafc", c => roundRect(c, -0.155, -0.995, 0.31, 0.06, 0.03))
+      shape(ctx, "#f8fafc", c => c.arc(0.195, -1.115, 0.035, 0, Math.PI * 2))
+      break
+    case "elf":
+      // Tall and pointy, with a gold band and a bell on the tip.
+      shape(ctx, color, c => { c.moveTo(-0.12, -0.96); c.lineTo(0.06, -1.3); c.lineTo(0.12, -0.96); c.closePath() })
+      shape(ctx, "#facc15", c => roundRect(c, -0.14, -0.995, 0.28, 0.05, 0.02))
+      shape(ctx, "#facc15", c => c.arc(0.06, -1.3, 0.03, 0, Math.PI * 2))
+      break
+    case "antlers":
+      // Reindeer antlers, always brown.
+      ctx.strokeStyle = "#78350f"
+      ctx.lineWidth   = 0.026
+      ;[ -1, 1 ].forEach(side => {
+        line(ctx, [ [ side * 0.07, -0.98 ], [ side * 0.12, -1.1 ], [ side * 0.15, -1.18 ] ])
+        line(ctx, [ [ side * 0.11, -1.08 ], [ side * 0.19, -1.11 ] ])
+        line(ctx, [ [ side * 0.135, -1.14 ], [ side * 0.1, -1.2 ] ])
+      })
+      ctx.strokeStyle = OUTLINE
+      ctx.lineWidth   = 0.022
+      break
     case "pumpkin":
       // Covers the whole head (the crowd builder drops the hair and face underneath).
       shape(ctx, "#16a34a", c => c.rect(-0.015, -1.06, 0.03, 0.05))
@@ -307,6 +357,30 @@ function drawCandyBucket(ctx) {
     c.moveTo(0.255, -0.35); c.lineTo(0.28, -0.35); c.lineTo(0.2675, -0.375); c.closePath()
     c.rect(0.2, -0.32, 0.07, 0.02)
   })
+}
+
+// A wrapped present held by its ribbon.
+function drawPresent(ctx, color) {
+  const ribbon = color === "#ef4444" ? "#facc15" : "#ef4444"
+  shape(ctx, color, c => roundRect(c, 0.14, -0.43, 0.16, 0.13, 0.015))
+  fill(ctx, ribbon, c => { c.rect(0.205, -0.43, 0.03, 0.13); c.rect(0.14, -0.38, 0.16, 0.03) })
+  shape(ctx, ribbon, c => { c.ellipse(0.195, -0.445, 0.025, 0.014, -0.5, 0, Math.PI * 2); c.moveTo(0.27, -0.445); c.ellipse(0.245, -0.445, 0.025, 0.014, 0.5, 0, Math.PI * 2) })
+}
+
+// A red and white striped candy cane, held like a walking stick.
+function drawCandyCane(ctx) {
+  const path = c => { c.moveTo(0.22, -0.1); c.lineTo(0.22, -0.6); c.arc(0.17, -0.6, 0.05, 0, Math.PI, true) }
+  ctx.save()
+  ctx.lineCap = "round"
+  ;[ [ OUTLINE, 0.05, [] ], [ "#f8fafc", 0.03, [] ], [ "#dc2626", 0.03, [ 0.03, 0.03 ] ] ].forEach(([ color, width, dash ]) => {
+    ctx.strokeStyle = color
+    ctx.lineWidth   = width
+    ctx.setLineDash(dash)
+    ctx.beginPath()
+    path(ctx)
+    ctx.stroke()
+  })
+  ctx.restore()
 }
 
 function drawBalloon(ctx, color) {
@@ -565,6 +639,145 @@ Object.assign(BACKGROUNDS, {
     }
   }
 })
+
+// ── Christmas places ───────────────────────────────────────────────────────
+
+Object.assign(BACKGROUNDS, {
+  christmas_market(ctx, w) {
+    const rand = seeded(131)
+    winterSky(ctx, w, 0.36, rand)
+    // Wooden stalls with striped roofs along the back.
+    for (let x = 0.02, i = 0; x < w - 0.1; x += 0.2, i++) {
+      if (Math.abs(x + 0.08 - w / 2) < 0.14) continue // room for the tree
+      fill(ctx, "#92400e", c => c.rect(x, 0.2, 0.16, 0.16))
+      fill(ctx, "#fde68a", c => c.rect(x + 0.015, 0.23, 0.13, 0.07))
+      fill(ctx, "#78350f", c => c.rect(x - 0.01, 0.3, 0.18, 0.03))
+      for (let k = 0; k < 6; k++) fill(ctx, k % 2 ? "#f8fafc" : (i % 2 ? "#16a34a" : "#dc2626"), c => c.rect(x - 0.01 + k * 0.03, 0.15, 0.03, 0.05))
+      fill(ctx, "#f8fafc", c => c.rect(x - 0.01, 0.145, 0.18, 0.012)) // snow on the roof
+    }
+    // A string of lights across the market.
+    ctx.strokeStyle = "#1f2937"
+    ctx.lineWidth   = 0.003
+    ctx.beginPath()
+    ctx.moveTo(0, 0.08)
+    for (let x = 0; x < w; x += 0.2) ctx.quadraticCurveTo(x + 0.1, 0.13, x + 0.2, 0.08)
+    ctx.stroke()
+    const bulbs = [ "#ef4444", "#facc15", "#22c55e", "#3b82f6" ]
+    for (let x = 0.05, i = 0; x < w; x += 0.05, i++) {
+      const t = (x % 0.2) / 0.2, y = 0.08 + 0.05 * 4 * t * (1 - t) * 0.5
+      fill(ctx, bulbs[i % bulbs.length], c => c.arc(x, y + 0.008, 0.007, 0, Math.PI * 2))
+    }
+    // Snowy ground with paths of footprints.
+    fill(ctx, "#e2e8f0", c => c.rect(0, 0.35, w, 0.65))
+    for (let i = 0; i < 160; i++) fill(ctx, "#cbd5e1", c => c.ellipse(rand() * w, 0.37 + rand() * 0.63, 0.006, 0.003, 0, 0, Math.PI * 2))
+    // The big Christmas tree (Crowd's hole).
+    const tx = w / 2
+    fill(ctx, "#78350f", c => c.rect(tx - 0.015, 0.54, 0.03, 0.05))
+    ;[ [ 0.56, 0.11 ], [ 0.47, 0.09 ], [ 0.39, 0.07 ] ].forEach(([ base, half ]) => {
+      fill(ctx, "#166534", c => { c.moveTo(tx - half, base); c.lineTo(tx, base - 0.13); c.lineTo(tx + half, base); c.closePath() })
+    })
+    for (let i = 0; i < 18; i++) {
+      const by = 0.32 + rand() * 0.23, spread = (by - 0.27) * 0.4
+      fill(ctx, bulbs[i % bulbs.length], c => c.arc(tx + (rand() * 2 - 1) * spread, by, 0.008, 0, Math.PI * 2))
+    }
+    fill(ctx, "#facc15", c => star(c, tx, 0.255, 0.025))
+    ;[ [ -0.06, "#dc2626" ], [ 0.05, "#2563eb" ], [ -0.01, "#facc15" ] ].forEach(([ dx, color ]) => {
+      fill(ctx, color, c => c.rect(tx + dx, 0.565, 0.035, 0.03))
+      fill(ctx, "#f8fafc", c => c.rect(tx + dx + 0.015, 0.565, 0.005, 0.03))
+    })
+  },
+
+  ice_rink(ctx, w) {
+    const rand = seeded(149)
+    fill(ctx, "#bfdbfe", c => c.rect(0, 0, w, 0.3))
+    // Snowy pines along the back.
+    for (let x = 0.02; x < w; x += 0.06 + rand() * 0.04) {
+      const h = 0.1 + rand() * 0.06
+      fill(ctx, "#14532d", c => { c.moveTo(x - 0.035, 0.3); c.lineTo(x, 0.3 - h); c.lineTo(x + 0.035, 0.3); c.closePath() })
+      fill(ctx, "#f8fafc", c => { c.moveTo(x - 0.012, 0.3 - h + 0.035); c.lineTo(x, 0.3 - h); c.lineTo(x + 0.012, 0.3 - h + 0.035); c.closePath() })
+    }
+    fill(ctx, "#f1f5f9", c => c.rect(0, 0.29, w, 0.71))
+    // The rink: ice with skate marks, and its wooden rail.
+    fill(ctx, "#a16207", c => c.ellipse(w * 0.55, 0.66, w * 0.43, 0.27, 0, 0, Math.PI * 2))
+    fill(ctx, "#bae6fd", c => c.ellipse(w * 0.55, 0.66, w * 0.42, 0.26, 0, 0, Math.PI * 2))
+    ctx.strokeStyle = "#e0f2fe"
+    ctx.lineWidth   = 0.004
+    for (let i = 0; i < 24; i++) {
+      const x = w * 0.55 + (rand() * 2 - 1) * w * 0.32, y = 0.5 + rand() * 0.32
+      ctx.beginPath()
+      ctx.ellipse(x, y, 0.06 + rand() * 0.06, 0.015, rand() - 0.5, 0, Math.PI)
+      ctx.stroke()
+    }
+    // The snowman (Crowd's hole).
+    snowman(ctx, 0.12, 0.6, 1)
+    for (let i = 0; i < 80; i++) fill(ctx, "#ffffff", c => c.arc(rand() * w, rand() * 0.3, 0.003, 0, Math.PI * 2))
+  },
+
+  snowy_village(ctx, w) {
+    const rand = seeded(167)
+    winterSky(ctx, w, 0.36, rand)
+    // Houses with snowy roofs, warm windows and a wreath on each door.
+    const walls = [ "#b91c1c", "#1e3a8a", "#166534", "#92400e", "#6d28d9", "#be185d" ]
+    let x = 0
+    for (let i = 0; x < w; i++) {
+      const bw = 0.18 + rand() * 0.06, top = 0.14 + rand() * 0.05
+      fill(ctx, walls[i % walls.length], c => c.rect(x, top, bw, 0.36 - top))
+      fill(ctx, "#f8fafc", c => { c.moveTo(x - 0.015, top + 0.01); c.lineTo(x + bw / 2, top - 0.08); c.lineTo(x + bw + 0.015, top + 0.01); c.closePath() })
+      for (let wy = top + 0.03; wy < 0.27; wy += 0.06) {
+        for (let wx = x + 0.025; wx < x + bw - 0.03; wx += 0.055) fill(ctx, "#fde047", c => c.rect(wx, wy, 0.022, 0.03))
+      }
+      fill(ctx, "#451a03", c => c.rect(x + bw / 2 - 0.02, 0.29, 0.04, 0.07))
+      ctx.strokeStyle = "#15803d"
+      ctx.lineWidth   = 0.006
+      ctx.beginPath()
+      ctx.arc(x + bw / 2, 0.31, 0.012, 0, Math.PI * 2)
+      ctx.stroke()
+      x += bw
+    }
+    fill(ctx, "#f1f5f9", c => c.rect(0, 0.35, w, 0.65))
+    for (let i = 0; i < 120; i++) fill(ctx, "#e2e8f0", c => c.ellipse(rand() * w, 0.37 + rand() * 0.63, 0.012, 0.004, 0, 0, Math.PI * 2))
+    // Lamp posts with a bit of holly.
+    ;[ 0.2, 0.6, 1.0, 1.4 ].forEach(lx => {
+      fill(ctx, "rgba(253, 224, 71, 0.3)", c => c.arc(lx, 0.3, 0.035, 0, Math.PI * 2))
+      ctx.strokeStyle = "#111827"
+      ctx.lineWidth   = 0.008
+      line(ctx, [ [ lx, 0.38 ], [ lx, 0.3 ] ])
+      fill(ctx, "#fde047", c => c.arc(lx, 0.3, 0.012, 0, Math.PI * 2))
+      fill(ctx, "#dc2626", c => c.arc(lx, 0.33, 0.006, 0, Math.PI * 2))
+    })
+    // The snowman (Crowd's hole) and falling snow.
+    snowman(ctx, w / 2, 0.72, 0.95)
+    for (let i = 0; i < 120; i++) fill(ctx, "#ffffff", c => c.arc(rand() * w, rand() * 0.95, 0.0025 + rand() * 0.002, 0, Math.PI * 2))
+  }
+})
+
+// A winter evening sky down to `horizon`: deep blue, stars and a moon.
+function winterSky(ctx, w, horizon, rand) {
+  fill(ctx, "#1e3a8a", c => c.rect(0, 0, w, horizon))
+  for (let i = 0; i < 60; i++) fill(ctx, "#e0e7ff", c => c.arc(rand() * w, rand() * horizon * 0.7, 0.002 + rand() * 0.002, 0, Math.PI * 2))
+  fill(ctx, "#fef9c3", c => c.arc(w * 0.88, 0.07, 0.04, 0, Math.PI * 2))
+}
+
+// A snowman standing at x, y (its base), `s` times its usual size.
+function snowman(ctx, x, y, s) {
+  ctx.strokeStyle = "#94a3b8"
+  ctx.lineWidth   = 0.004
+  shape(ctx, "#ffffff", c => c.arc(x, y - 0.05 * s, 0.05 * s, 0, Math.PI * 2))
+  shape(ctx, "#ffffff", c => c.arc(x, y - 0.125 * s, 0.035 * s, 0, Math.PI * 2))
+  shape(ctx, "#ffffff", c => c.arc(x, y - 0.18 * s, 0.025 * s, 0, Math.PI * 2))
+  fill(ctx, "#1f2937", c => { c.rect(x - 0.02 * s, y - 0.235 * s, 0.04 * s, 0.03 * s); c.rect(x - 0.03 * s, y - 0.207 * s, 0.06 * s, 0.006 * s) })
+  fill(ctx, "#f97316", c => { c.moveTo(x, y - 0.18 * s); c.lineTo(x + 0.03 * s, y - 0.175 * s); c.lineTo(x, y - 0.17 * s); c.closePath() })
+  fill(ctx, "#dc2626", c => c.rect(x - 0.03 * s, y - 0.16 * s, 0.06 * s, 0.012 * s))
+}
+
+// A five-pointed star centred on x, y.
+function star(c, x, y, r) {
+  for (let i = 0; i < 10; i++) {
+    const angle = -Math.PI / 2 + i * Math.PI / 5, radius = i % 2 ? r * 0.45 : r
+    i ? c.lineTo(x + Math.cos(angle) * radius, y + Math.sin(angle) * radius) : c.moveTo(x + Math.cos(angle) * radius, y + Math.sin(angle) * radius)
+  }
+  c.closePath()
+}
 
 // Night sky down to `horizon`: stars, a moon and a few bats.
 function nightSky(ctx, w, horizon, rand) {

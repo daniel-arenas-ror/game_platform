@@ -14,7 +14,7 @@ module GameServices
     }.freeze
     DEFAULT_DIFFICULTY = "normal".freeze
     # Which scenes the rounds use, and what the crowd wears (config/character_hunt/*.yml).
-    THEMES             = %w[classic halloween].freeze
+    THEMES             = %w[classic halloween christmas].freeze
     DEFAULT_THEME      = "classic".freeze
     ROUND_CHOICES      = [ 3, 5, 8 ].freeze
     DEFAULT_ROUNDS     = 5

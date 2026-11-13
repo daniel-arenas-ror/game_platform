@@ -59,7 +59,8 @@
              [ @doodle_dash, "Christmas drawing", "30 Christmas words to draw and guess: Santa, reindeer, a snowman, a Christmas tree, presents, stockings and more. In the game's settings, pick the 🎄 Christmas pack." ],
              [ @christmas_packs[0], "Christmas words", "16 Christmas categories, like \"Things you hang on a Christmas tree\" or \"Christmas songs\": everyone tries to write the same word. In the game's settings, pick 🎄 Christmas as the categories." ],
              [ @christmas_packs[1], "Christmas alphabet", "A Christmas clue for every letter: \"Starts with S: Santa's flying sled\". In the game's settings, pick 🎄 Christmas as the words." ],
-             [ @christmas_packs[2], "Christmas colors", "Mix the color of Santa's suit, a candy cane or the gold star on the tree from memory. In the game's settings, pick the 🎄 Christmas mode." ] ].each do |game, label, text| %>
+             [ @christmas_packs[2], "Christmas colors", "Mix the color of Santa's suit, a candy cane or the gold star on the tree from memory. In the game's settings, pick the 🎄 Christmas mode." ],
+             [ @christmas_packs[3], "Christmas search", "Find one person in a crowd of Santa hats, elves and reindeer antlers, at a Christmas market, an ice rink or a snowy village. In the game's settings, pick the 🎄 Christmas theme." ] ].each do |game, label, text| %>
           <% next unless game %>
           <div class="flex flex-col gap-4 rounded-3xl border border-slate-700 bg-slate-800 p-6">
             <p class="eyebrow text-green-400"><%= label %></p>

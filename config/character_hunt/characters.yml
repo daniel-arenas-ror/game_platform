@@ -8,13 +8,13 @@ hair_colors: ["#1c1917", "#5c3a1e", "#a16207", "#facc15", "#c2410c", "#d1d5db"]
 hair_styles: [bald, short, long, curly, ponytail, spiky, bun]
 # Tops, hats, bags, scarves, capes and balloons.
 colors: ["#ef4444", "#f97316", "#facc15", "#22c55e", "#14b8a6", "#3b82f6", "#1e3a8a", "#a855f7", "#ec4899", "#f8fafc", "#27272a", "#92400e"]
-patterns: [plain, stripes, dots, split, bones, bandages]
+patterns: [plain, stripes, dots, split, bones, bandages, sweater]
 legs: [pants, shorts, skirt]
 leg_colors: ["#2563eb", "#27272a", "#d6b98c", "#6b7280", "#7c2d12", "#166534", "#b91c1c"]
-hats: [none, cap, beanie, top_hat, cowboy, party, witch, horns, cat_ears, pumpkin]
+hats: [none, cap, beanie, top_hat, cowboy, party, witch, horns, cat_ears, pumpkin, santa, elf, antlers]
 glasses: [none, round, sunglasses]
-extras: [none, backpack, balloon, scarf, cape, broom, candy_bucket]
-beards: [none, mustache, beard, fangs]
+extras: [none, backpack, balloon, scarf, cape, broom, candy_bucket, present, candy_cane]
+beards: [none, mustache, beard, fangs, santa_beard]
 
 # What each theme's crowd wears, by value. A list a theme doesn't name uses every value.
 themes:
@@ -31,3 +31,11 @@ themes:
     hats: [none, top_hat, witch, horns, cat_ears, pumpkin]
     extras: [none, balloon, cape, broom, candy_bucket]
     beards: [none, mustache, fangs]
+  christmas:
+    # Santa hats (red or green), elf hats, reindeer antlers, Santa beards, jumpers, presents and candy canes.
+    skin: ["#fde0c5", "#f1c09a", "#d99c6b", "#b0713f", "#7d4b28", "#4f2f1a"]
+    colors: ["#ef4444", "#facc15", "#22c55e", "#14b8a6", "#3b82f6", "#1e3a8a", "#f8fafc", "#27272a", "#92400e"]
+    patterns: [plain, stripes, dots, sweater]
+    hats: [none, beanie, santa, elf, antlers]
+    extras: [none, scarf, present, candy_cane]
+    beards: [none, beard, santa_beard]
