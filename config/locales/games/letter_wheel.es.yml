@@ -14,6 +14,13 @@ es:
           letters:
             one: "%{count} letra"
             other: "%{count} letras"
+          level: "PALABRAS"
+          level_easy: "Cotidianas"
+          level_easy_hint: "Animales, comida, cosas de casa"
+          level_hard: "Cultura general"
+          level_hard_hint: "Historia, ciencia, geografía"
+          level_mix: "Mezcla"
+          level_mix_hint: "Un poco de cada"
         index:
           title: "Rueda de Letras"
           sound: "Sonido"

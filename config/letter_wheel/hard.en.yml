@@ -1,0 +1,326 @@
+# Letter Wheel "General knowledge" clues for English rooms: history, science, geography and culture.
+# Same format and rules as words.en.yml. Clues never name another answer of this list, so two letters
+# in one game can't give each other away.
+a:
+  - answer: "Athens"
+    clue: "Greek city named after the goddess of wisdom"
+  - answer: "atom"
+    clue: "The smallest unit of a chemical element"
+  - answer: "Amazon"
+    clue: "The largest rainforest in the world, and its river"
+  - answer: "Armstrong"
+    also: ["neil armstrong"]
+    clue: "Surname of the first person to walk on the Moon, in 1969"
+  - answer: "aorta"
+    clue: "The largest artery in the human body"
+b:
+  - answer: "Beethoven"
+    clue: "German composer who kept writing music after he went deaf"
+  - answer: "Brazil"
+    clue: "The largest country in South America, where Portuguese is spoken"
+  - answer: "bacteria"
+    also: ["bacterium"]
+    clue: "Tiny single-celled living things; some cause illness"
+  - answer: "Berlin"
+    clue: "City divided by a wall from 1961 to 1989"
+  - answer: "bronze"
+    clue: "Alloy of copper and tin that gave its name to an age of history"
+c:
+  - answer: "Cleopatra"
+    clue: "Last queen of the Ptolemaic dynasty, ally of Julius Caesar and Mark Antony"
+  - answer: "carbon"
+    clue: "Element with symbol C, the basis of all life on Earth"
+  - answer: "Columbus"
+    also: ["christopher columbus"]
+    clue: "Navigator who reached the Americas in 1492"
+  - answer: "Canberra"
+    clue: "The capital city of Australia"
+  - answer: "chlorophyll"
+    also: ["chlorophyl"]
+    clue: "Green pigment that lets plants capture sunlight"
+d:
+  - answer: "Darwin"
+    also: ["charles darwin"]
+    clue: "Naturalist who wrote On the Origin of Species"
+  - answer: "Da Vinci"
+    also: ["davinci", "leonardo", "leonardo da vinci"]
+    clue: "Painter of the Mona Lisa, who also designed flying machines"
+  - answer: "diamond"
+    clue: "The hardest natural material, often set in rings"
+  - answer: "DNA"
+    clue: "Molecule shaped like a double helix that carries genetic instructions"
+  - answer: "Danube"
+    clue: "European river that flows through Vienna, Budapest and Belgrade"
+e:
+  - answer: "Einstein"
+    also: ["albert einstein"]
+    clue: "Physicist famous for the theory of relativity and E = mc²"
+  - answer: "Everest"
+    also: ["mount everest"]
+    clue: "The highest mountain on Earth"
+  - answer: "electron"
+    clue: "Negatively charged particle that moves around the nucleus"
+  - answer: "equator"
+    clue: "Imaginary line that divides the Earth into the Northern and Southern hemispheres"
+  - answer: "Egypt"
+    clue: "Country of the pharaohs and the Sphinx"
+f:
+  - answer: "fossil"
+    clue: "Remains of an ancient animal or plant preserved in rock"
+  - answer: "Frida Kahlo"
+    also: ["frida", "kahlo"]
+    clue: "Mexican painter famous for her self-portraits"
+  - answer: "friction"
+    clue: "Force that slows things down when two surfaces rub together"
+  - answer: "France"
+    clue: "Country where a famous revolution began in 1789"
+  - answer: "Florence"
+    clue: "Italian city on the Arno, home of Michelangelo's David"
+g:
+  - answer: "Galileo"
+    also: ["galileo galilei"]
+    clue: "Italian astronomer put on trial for saying the Earth goes round the Sun"
+  - answer: "gravity"
+    clue: "The force that makes things fall to the ground"
+  - answer: "Gutenberg"
+    clue: "German inventor of the printing press with movable type, around 1450"
+  - answer: "glacier"
+    clue: "Huge river of ice that moves slowly down a valley"
+  - answer: "Greece"
+    clue: "Country of the ancient philosophers Socrates, Plato and Aristotle"
+h:
+  - answer: "hydrogen"
+    clue: "The lightest and most common element in the universe, symbol H"
+  - answer: "Himalayas"
+    also: ["himalaya"]
+    clue: "The world's highest mountain range, in Asia"
+  - answer: "helium"
+    clue: "Light gas that makes balloons float and voices squeaky"
+  - answer: "Hawaii"
+    clue: "US state made of volcanic islands in the Pacific Ocean"
+  - answer: "Homer"
+    clue: "Ancient Greek poet said to have written the Iliad and the Odyssey"
+i:
+  - answer: "iron"
+    clue: "Metal with symbol Fe that rusts"
+  - answer: "Inca"
+    also: ["incas", "inca empire"]
+    clue: "Empire of the Andes that built Machu Picchu"
+  - answer: "India"
+    clue: "The country where the Taj Mahal stands"
+  - answer: "iceberg"
+    clue: "Huge block of floating ice; most of it is hidden underwater"
+  - answer: "Istanbul"
+    clue: "City on two continents that was once called Constantinople"
+j:
+  - answer: "Jupiter"
+    clue: "The largest planet in the Solar System"
+  - answer: "Japan"
+    clue: "Island country of samurai and Mount Fuji"
+  - answer: "Joan of Arc"
+    also: ["joan"]
+    clue: "French heroine who led an army as a teenager in the 1400s"
+  - answer: "joule"
+    clue: "Unit of energy named after an English physicist"
+  - answer: "Jerusalem"
+    clue: "Ancient city holy to Jews, Christians and Muslims"
+k:
+  - answer: "Kremlin"
+    clue: "Fortress in Moscow, the seat of the government"
+  - answer: "kilometre"
+    also: ["kilometer", "km"]
+    clue: "A thousand metres"
+  - answer: "Kenya"
+    clue: "East African country whose capital is Nairobi"
+  - answer: "krypton"
+    clue: "Noble gas that is also the name of Superman's home planet"
+  - answer: "Kafka"
+    also: ["franz kafka"]
+    clue: "Czech writer whose story begins with a man waking up as an insect"
+l:
+  - answer: "Lincoln"
+    also: ["abraham lincoln"]
+    clue: "US president who abolished slavery"
+  - answer: "lava"
+    clue: "Molten rock that flows out of a volcano"
+  - answer: "Louvre"
+    clue: "Paris museum where the Mona Lisa hangs"
+  - answer: "Lisbon"
+    clue: "Capital city of Portugal"
+  - answer: "larynx"
+    also: ["voice box"]
+    clue: "Organ in your throat that holds the vocal cords"
+m:
+  - answer: "Mars"
+    clue: "The red planet"
+  - answer: "Magellan"
+    also: ["ferdinand magellan"]
+    clue: "Explorer whose expedition was the first to sail around the world"
+  - answer: "mammal"
+    clue: "Animal that feeds its young with milk"
+  - answer: "Mozart"
+    clue: "Austrian composer who wrote music as a small child"
+  - answer: "Mexico"
+    clue: "Country where the Aztecs had their capital, Tenochtitlan"
+n:
+  - answer: "Napoleon"
+    also: ["napoleon bonaparte", "bonaparte"]
+    clue: "French general who crowned himself emperor in 1804"
+  - answer: "Nile"
+    clue: "The longest river in Africa"
+  - answer: "nitrogen"
+    clue: "Gas that makes up most of the air we breathe, symbol N"
+  - answer: "neutron"
+    clue: "Particle with no electric charge, found in the nucleus"
+  - answer: "Newton"
+    also: ["isaac newton"]
+    clue: "English scientist who, legend says, was hit on the head by an apple"
+o:
+  - answer: "oxygen"
+    clue: "Gas we need to breathe, symbol O"
+  - answer: "Olympics"
+    also: ["olympic games"]
+    clue: "Sports festival held every four years, with five rings as its symbol"
+  - answer: "orbit"
+    clue: "The curved path of a planet around the Sun"
+  - answer: "Oslo"
+    clue: "Capital city of Norway"
+  - answer: "ozone"
+    also: ["ozone layer"]
+    clue: "Layer of gas high in the atmosphere that blocks ultraviolet rays"
+p:
+  - answer: "pyramid"
+    clue: "Huge tomb built for the pharaohs"
+  - answer: "Picasso"
+    also: ["pablo picasso"]
+    clue: "Spanish painter of Guernica, one of the founders of Cubism"
+  - answer: "Pacific"
+    also: ["pacific ocean"]
+    clue: "The largest ocean on Earth"
+  - answer: "Pompeii"
+    clue: "Ancient city buried by Vesuvius in AD 79"
+  - answer: "Pluto"
+    clue: "Former ninth planet, called a dwarf planet since 2006"
+q:
+  - answer: "quartz"
+    clue: "Common hard mineral used to keep time in watches"
+  - answer: "Quebec"
+    clue: "French-speaking province of Canada"
+  - answer: "quarantine"
+    clue: "Time someone stays apart so they don't spread an illness"
+  - answer: "quill"
+    clue: "A feather that people used as a pen"
+  - answer: "quotient"
+    clue: "The result of a division"
+r:
+  - answer: "Rome"
+    clue: "Capital of an ancient empire, home of the Colosseum"
+  - answer: "Renaissance"
+    clue: "Rebirth of art and science in the time of Leonardo and Michelangelo"
+  - answer: "radius"
+    clue: "Distance from the centre of a circle to its edge"
+  - answer: "rhinoceros"
+    also: ["rhino"]
+    clue: "Large animal with one or two horns on its nose"
+  - answer: "Russia"
+    clue: "The largest country in the world"
+s:
+  - answer: "Saturn"
+    clue: "Planet famous for its bright rings"
+  - answer: "sodium"
+    clue: "Element with symbol Na, found in table salt"
+  - answer: "Shakespeare"
+    also: ["william shakespeare"]
+    clue: "Writer of Romeo and Juliet and Hamlet"
+  - answer: "Sahara"
+    clue: "The largest hot desert in the world"
+  - answer: "satellite"
+    clue: "Body that orbits a planet, like the Moon"
+t:
+  - answer: "Tokyo"
+    clue: "The most populous city in the world, capital of an island country in Asia"
+  - answer: "Titanic"
+    clue: "Ship that sank on its first voyage, in 1912"
+  - answer: "telescope"
+    clue: "Instrument for looking at faraway stars"
+  - answer: "Thames"
+    clue: "River that flows through London"
+  - answer: "tsunami"
+    clue: "Giant sea wave caused by an earthquake"
+u:
+  - answer: "Uranus"
+    clue: "Seventh planet from the Sun, which spins on its side"
+  - answer: "uranium"
+    clue: "Radioactive element used as fuel in nuclear power stations"
+  - answer: "Ukraine"
+    clue: "European country whose capital is Kyiv"
+  - answer: "Uruguay"
+    clue: "Country that hosted and won the first football World Cup, in 1930"
+  - answer: "Uluru"
+    also: ["ayers rock"]
+    clue: "Huge red rock in the middle of Australia"
+v:
+  - answer: "Venus"
+    clue: "The hottest planet in the Solar System"
+  - answer: "Vikings"
+    also: ["viking"]
+    clue: "Norse seafarers who raided Europe in longships"
+  - answer: "Venice"
+    clue: "Italian city built on canals, with gondolas"
+  - answer: "vaccine"
+    clue: "Injection that teaches your body to fight a disease"
+  - answer: "Vatican"
+    also: ["vatican city"]
+    clue: "The smallest country in the world, home of the Pope"
+w:
+  - answer: "Washington"
+    also: ["george washington"]
+    clue: "First president of the United States"
+  - answer: "Waterloo"
+    clue: "Battle in Belgium in 1815 that ended an empire"
+  - answer: "watt"
+    clue: "Unit of power named after a Scottish steam-engine inventor"
+  - answer: "Wright"
+    also: ["wright brothers"]
+    clue: "Surname of the brothers who made the first powered aeroplane flight, in 1903"
+  - answer: "Wellington"
+    clue: "Capital city of New Zealand"
+x:
+  - answer: "x-ray"
+    also: ["xray", "x ray"]
+    clue: "Picture that lets doctors see your bones"
+  - answer: "Xerxes"
+    clue: "Persian king who fought the Spartans at Thermopylae"
+  - answer: "Luxembourg"
+    contains: true
+    clue: "Small European country whose capital has the same name"
+  - answer: "Texas"
+    contains: true
+    clue: "US state whose capital is Austin"
+  - answer: "Marx"
+    also: ["karl marx"]
+    contains: true
+    clue: "German philosopher who wrote Das Kapital"
+y:
+  - answer: "yen"
+    clue: "Currency whose symbol is ¥"
+  - answer: "Yangtze"
+    also: ["yangtze river", "chang jiang"]
+    clue: "The longest river in Asia"
+  - answer: "yeast"
+    clue: "Fungus that makes bread dough rise"
+  - answer: "yeti"
+    clue: "Legendary snow monster said to live in the mountains of Nepal and Tibet"
+  - answer: "Yellowstone"
+    clue: "The world's first national park, in the USA"
+z:
+  - answer: "zinc"
+    clue: "Metal with symbol Zn, used to coat steel"
+  - answer: "Zeus"
+    clue: "King of the gods in Greek mythology"
+  - answer: "zenith"
+    clue: "The point in the sky directly above you"
+  - answer: "Zimbabwe"
+    clue: "African country that shares Victoria Falls with Zambia"
+  - answer: "zoology"
+    clue: "The science that studies animals"

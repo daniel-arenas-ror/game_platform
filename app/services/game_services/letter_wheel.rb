@@ -9,15 +9,21 @@ module GameServices
       "es" => ("a".."n").to_a + [ "ñ" ] + ("o".."z").to_a
     }.transform_values(&:freeze).freeze
 
-    # Clues per room language: config/letter_wheel/words.<locale>.yml.
+    # Clues per room language and level: config/letter_wheel/words.<locale>.yml (everyday words, ages 8+)
+    # and hard.<locale>.yml (general knowledge: history, science, geography, culture).
+    LEVEL_FILES = { "easy" => "words", "hard" => "hard" }.freeze
     WORDS = ALPHABETS.keys.to_h do |locale|
-      [ locale, YAML.load_file(Rails.root.join("config/letter_wheel/words.#{locale}.yml")).transform_values(&:freeze).freeze ]
+      [ locale, LEVEL_FILES.transform_values do |file|
+        YAML.load_file(Rails.root.join("config/letter_wheel/#{file}.#{locale}.yml")).transform_values(&:freeze).freeze
+      end.freeze ]
     end.freeze
 
     TIME_CHOICES   = [ 10, 15, 20, 30 ].freeze # seconds per word
     DEFAULT_TIME   = 20
     LENGTH_CHOICES = %w[short full].freeze     # short: SHORT_LETTERS random letters, full: the alphabet
     DEFAULT_LENGTH = "short"
+    LEVEL_CHOICES  = %w[easy hard mix].freeze  # mix: each letter's clue from both lists
+    DEFAULT_LEVEL  = "easy"
     SHORT_LETTERS  = 12
 
     BASE_POINTS  = 100
@@ -44,7 +50,9 @@ module GameServices
       word_time = DEFAULT_TIME unless TIME_CHOICES.include?(word_time)
       length    = @room.game_state["length"].to_s
       length    = DEFAULT_LENGTH unless LENGTH_CHOICES.include?(length)
-      words     = self.class.pick_words(locale, length)
+      level     = @room.game_state["level"].to_s
+      level     = DEFAULT_LEVEL unless LEVEL_CHOICES.include?(level)
+      words     = self.class.pick_words(locale, length, level)
 
       @room.update!(
         status: "playing",
@@ -55,6 +63,7 @@ module GameServices
           "round"         => 0,
           "word_time"     => word_time,
           "length"        => length,
+          "level"         => level,
           "letters"       => words.map { _1["letter"] },
           "words"         => words,
           "phase_ends_at" => nil,
@@ -71,11 +80,12 @@ module GameServices
     end
 
     # One random clue per letter, in alphabet order. Short games take SHORT_LETTERS of the letters.
-    def self.pick_words(locale, length)
+    def self.pick_words(locale, length, level = DEFAULT_LEVEL)
       alphabet = ALPHABETS[locale]
       letters  = length == "full" ? alphabet : alphabet.sample(SHORT_LETTERS).sort_by { alphabet.index(_1) }
       letters.map do |letter|
-        word = WORDS[locale].fetch(letter).sample
+        lists = level == "mix" ? WORDS[locale].values : [ WORDS[locale].fetch(level) ]
+        word  = lists.flat_map { _1.fetch(letter) }.sample
         { "letter" => letter, "answer" => word["answer"], "also" => Array(word["also"]),
           "clue" => word["clue"], "contains" => word["contains"] == true }
       end

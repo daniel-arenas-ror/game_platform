@@ -14,6 +14,13 @@ en:
           letters:
             one: "%{count} letter"
             other: "%{count} letters"
+          level: "WORDS"
+          level_easy: "Everyday"
+          level_easy_hint: "Animals, food, things at home"
+          level_hard: "General knowledge"
+          level_hard_hint: "History, science, geography"
+          level_mix: "Mix"
+          level_mix_hint: "Some of each"
         index:
           title: "Letter Wheel"
           sound: "Sound"

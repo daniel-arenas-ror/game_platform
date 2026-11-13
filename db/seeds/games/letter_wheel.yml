@@ -23,10 +23,11 @@ long_description: >-
   When the time is up, the big screen shows the answer, who got it, and colours the letter green,
   orange or red by how many players knew it. Spelling doesn't have to be perfect: accents, capitals,
   "the" and plurals don't matter, and one typo is forgiven on longer words. The player with the most
-  words wins, and points break a tie. The host picks the time per word and whether to play 12 random
-  letters or the whole alphabet.
+  words wins, and points break a tie. The host picks the time per word, whether to play 12 random
+  letters or the whole alphabet, and the words: everyday ones for the whole family, general knowledge
+  (history, science, geography and culture) for a tougher game, or a mix.
 how_to_play:
-  - The host picks the time per word (10, 15, 20 or 30 seconds) and the length (12 random letters or the whole alphabet).
+  - The host picks the time per word (10, 15, 20 or 30 seconds), the length (12 random letters or the whole alphabet) and the words (everyday, general knowledge or a mix).
   - The big screen lights up a letter and shows its clue. The answer starts with that letter, or contains it when the screen says so.
   - Type your answer on your phone and send it. You get one try per word, and your phone tells you at once if it's right.
   - A right answer scores 100 points plus up to 100 more for speed. When the time is up, the big screen shows the answer.
@@ -47,6 +48,8 @@ faq:
     a: No. Accents, capitals, a leading "the" or "a" and plurals don't matter, and one wrong, missing or extra letter is forgiven on words of 6 letters or more.
   - q: Can I change my answer?
     a: No, you get one try per word. Whatever you've typed when the time runs out is sent for you.
+  - q: Is it too hard for kids?
+    a: Not with everyday words, which are animals, food and things at home. General knowledge asks about history, science, geography and culture (planets, capitals, painters, chemical elements), so pick it for teenagers and adults, or a mix for a family with both.
   - q: Does it work in Spanish?
     a: Yes. A Spanish room gets Spanish clues and the Spanish alphabet, with Ñ.
   - q: Can someone join after the game has started?
@@ -72,10 +75,12 @@ translations:
       tiempo, la pantalla grande muestra la respuesta, quién acertó y pinta la letra de verde, naranja o
       rojo según cuántos la sabían. No hace falta escribir perfecto: las tildes, las mayúsculas, el
       artículo y el plural no importan, y en las palabras largas se perdona una errata. Gana quien
-      acierte más palabras, y los puntos deciden un empate. El anfitrión elige el tiempo por palabra y si
-      se juegan 12 letras al azar o todo el abecedario, con la Ñ.
+      acierte más palabras, y los puntos deciden un empate. El anfitrión elige el tiempo por palabra, si
+      se juegan 12 letras al azar o todo el abecedario con la Ñ, y las palabras: cotidianas para toda la
+      familia, de cultura general (historia, ciencia, geografía y cultura) para una partida más difícil,
+      o una mezcla.
     how_to_play:
-      - El anfitrión elige el tiempo por palabra (10, 15, 20 o 30 segundos) y la duración (12 letras al azar o todo el abecedario).
+      - El anfitrión elige el tiempo por palabra (10, 15, 20 o 30 segundos), la duración (12 letras al azar o todo el abecedario) y las palabras (cotidianas, cultura general o una mezcla).
       - La pantalla grande ilumina una letra y muestra su pista. La respuesta empieza por esa letra, o la contiene si la pantalla lo dice.
       - Escribe tu respuesta en el celular y envíala. Tienes un intento por palabra y el celular te dice al momento si acertaste.
       - Una respuesta correcta vale 100 puntos más hasta 100 extra por rapidez. Al acabar el tiempo, la pantalla grande muestra la respuesta.
@@ -95,6 +100,8 @@ translations:
         a: No. Las tildes, las mayúsculas, el artículo ("el", "la", "un"…) y el plural no importan, y en palabras de 6 letras o más se perdona una letra de más, de menos o cambiada.
       - q: ¿Puedo cambiar mi respuesta?
         a: No, tienes un intento por palabra. Lo que hayas escrito cuando se acaba el tiempo se envía por ti.
+      - q: ¿Es muy difícil para los niños?
+        a: No con las palabras cotidianas, que son animales, comida y cosas de casa. Cultura general pregunta por historia, ciencia, geografía y cultura (planetas, capitales, pintores, elementos químicos), así que elígela para adolescentes y adultos, o una mezcla para una familia con todos.
       - q: ¿Funciona en español?
         a: Sí. Una sala en español recibe pistas en español y el abecedario español, con la Ñ.
       - q: ¿Alguien puede unirse cuando el juego ya empezó?

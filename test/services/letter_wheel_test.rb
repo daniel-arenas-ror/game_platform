@@ -24,23 +24,49 @@ class LetterWheelTest < ActiveSupport::TestCase
   def answer = svc.current_word["answer"]
   def right?(guess, answer, locale = "en", also: []) = Wheel.right_answer?(guess, { "answer" => answer, "also" => also }, locale)
 
-  test "every letter of both alphabets has clues, and every answer fits its letter" do
+  test "every letter of both alphabets has clues at every level, and every answer fits its letter" do
+    plain = ->(text) { text.unicode_normalize(:nfkd).gsub(/\p{Mn}/, "") }
+
     Wheel::ALPHABETS.each do |locale, alphabet|
-      assert_equal alphabet.sort, Wheel::WORDS[locale].keys.sort, "#{locale} letters"
-      Wheel::WORDS[locale].each do |letter, words|
-        assert words.size >= 5, "#{locale} #{letter}: at least 5 clues, so games don't repeat"
-        words.each do |w|
-          assert w["clue"].present?, "#{locale} #{letter}: clue"
-          word = w["answer"].downcase
-          fits = w["contains"] ? word.include?(letter) : word.unicode_normalize(:nfkd).gsub(/\p{Mn}/, "").start_with?(letter.unicode_normalize(:nfkd).gsub(/\p{Mn}/, ""))
-          fits &&= word.include?(letter) if letter == "ñ"
-          assert fits, "#{locale} #{letter}: #{w["answer"]}"
-          assert_not_includes w["clue"].downcase, word, "#{locale} #{letter}: the clue gives the answer away"
+      Wheel::WORDS[locale].each do |level, list|
+        assert_equal alphabet.sort, list.keys.sort, "#{locale} #{level} letters"
+        list.each do |letter, words|
+          assert words.size >= 5, "#{locale} #{level} #{letter}: at least 5 clues, so games don't repeat"
+          words.each do |w|
+            assert w["clue"].present?, "#{locale} #{level} #{letter}: clue"
+            word = w["answer"].downcase
+            fits = w["contains"] ? word.include?(letter) : plain.(word).start_with?(plain.(letter))
+            fits &&= word.include?(letter) if letter == "ñ"
+            assert fits, "#{locale} #{level} #{letter}: #{w["answer"]}"
+            assert_not_includes w["clue"].downcase, word, "#{locale} #{level} #{letter}: the clue gives the answer away"
+          end
         end
       end
-      answers = Wheel::WORDS[locale].values.flatten.map { Wheel.comparable(_1["answer"], locale) }
+
+      # Across levels too: a mixed game draws from both lists.
+      answers = Wheel::WORDS[locale].values.flat_map { _1.values.flatten }.map { Wheel.comparable(_1["answer"], locale) }
       assert_empty answers.tally.select { |_, n| n > 1 }.keys, "#{locale}: the same answer twice"
     end
+  end
+
+  test "the level picks the list: everyday, general knowledge or both" do
+    hard = ->(locale) { Wheel::WORDS[locale]["hard"].values.flatten.map { _1["answer"] } }
+    easy = ->(locale) { Wheel::WORDS[locale]["easy"].values.flatten.map { _1["answer"] } }
+
+    assert_equal "easy", state["level"]
+    assert_empty state["words"].map { _1["answer"] } - easy.("en")
+
+    @room.atomic_set("game_state.level" => "hard")
+    Wheel.new(@room).setup_game!
+    assert_empty state["words"].map { _1["answer"] } - hard.("en")
+
+    picked = 20.times.flat_map { Wheel.pick_words("es", "full", "mix").map { _1["answer"] } }
+    assert_empty picked - hard.("es") - easy.("es")
+    assert(picked.intersect?(hard.("es")) && picked.intersect?(easy.("es")), "a mix draws from both")
+
+    @room.atomic_set("game_state.level" => "impossible")
+    Wheel.new(@room).setup_game!
+    assert_equal "easy", state["level"]
   end
 
   test "reads the settings, falls back on values it doesn't offer, and keeps the letters in order" do

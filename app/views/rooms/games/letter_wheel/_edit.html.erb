@@ -35,3 +35,20 @@
     <% end %>
   </div>
 </div>
+
+<%# Which clues: everyday words, general knowledge, or both %>
+<div class="space-y-4 bg-slate-900/50 p-6 rounded-2xl border border-slate-700 mt-2">
+  <label class="block text-xs font-bold text-slate-400 mb-3 tracking-widest"><%= t(".level") %></label>
+  <div class="grid grid-cols-3 gap-3">
+    <% level = state["level"].presence || wheel::DEFAULT_LEVEL %>
+    <% wheel::LEVEL_CHOICES.each do |option| %>
+      <label class="relative cursor-pointer">
+        <input type="radio" name="room[game_state][level]" value="<%= option %>" class="peer hidden" <%= "checked" if level == option %>>
+        <div class="h-full text-center py-3 px-2 bg-slate-800 border-2 border-slate-700 rounded-xl text-white font-bold <%= picked %> transition-all">
+          <%= t(".level_#{option}") %>
+          <span class="block text-xs font-normal text-slate-400"><%= t(".level_#{option}_hint") %></span>
+        </div>
+      </label>
+    <% end %>
+  </div>
+</div>

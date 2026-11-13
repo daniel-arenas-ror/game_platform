@@ -1,0 +1,351 @@
+# Pistas de "Cultura general" de Letter Wheel para salas en español: historia, ciencia, geografía y
+# cultura. Mismo formato y reglas que words.es.yml. Ninguna pista nombra otra respuesta de esta lista.
+a:
+  - answer: "Atenas"
+    clue: "Ciudad griega que lleva el nombre de la diosa de la sabiduría"
+  - answer: "átomo"
+    clue: "La unidad más pequeña de un elemento químico"
+  - answer: "Amazonas"
+    clue: "El río más caudaloso del mundo, en Sudamérica"
+  - answer: "Armstrong"
+    also: ["neil armstrong"]
+    clue: "Apellido del primer hombre que pisó la Luna, en 1969"
+  - answer: "aorta"
+    clue: "La arteria más grande del cuerpo humano"
+b:
+  - answer: "Beethoven"
+    clue: "Compositor alemán que siguió componiendo tras quedarse sordo"
+  - answer: "Brasil"
+    clue: "El país más grande de Sudamérica, donde se habla portugués"
+  - answer: "bacteria"
+    clue: "Ser vivo de una sola célula; algunas causan enfermedades"
+  - answer: "Berlín"
+    clue: "Ciudad dividida por un muro entre 1961 y 1989"
+  - answer: "bronce"
+    clue: "Aleación de cobre y estaño que da nombre a una edad de la historia"
+c:
+  - answer: "Cleopatra"
+    clue: "Última reina de la dinastía ptolemaica, aliada de Julio César y Marco Antonio"
+  - answer: "carbono"
+    clue: "Elemento de símbolo C, base de toda la vida en la Tierra"
+  - answer: "Colón"
+    also: ["cristobal colon"]
+    clue: "Navegante que llegó a América en 1492"
+  - answer: "Canberra"
+    clue: "Capital de Australia"
+  - answer: "Cervantes"
+    also: ["miguel de cervantes"]
+    clue: "Autor del libro más famoso en lengua castellana, publicado en 1605"
+d:
+  - answer: "Darwin"
+    also: ["charles darwin"]
+    clue: "Naturalista que escribió El origen de las especies"
+  - answer: "diamante"
+    clue: "El material natural más duro, muy usado en anillos"
+  - answer: "Dalí"
+    also: ["salvador dali"]
+    clue: "Pintor surrealista español famoso por sus relojes blandos"
+  - answer: "Danubio"
+    clue: "Río europeo que pasa por Viena, Budapest y Belgrado"
+  - answer: "dinosaurio"
+    clue: "Reptil gigante que se extinguió hace 66 millones de años"
+e:
+  - answer: "Einstein"
+    also: ["albert einstein"]
+    clue: "Físico famoso por la teoría de la relatividad y E = mc²"
+  - answer: "Everest"
+    also: ["monte everest"]
+    clue: "La montaña más alta de la Tierra"
+  - answer: "electrón"
+    clue: "Partícula con carga negativa que gira alrededor del núcleo"
+  - answer: "ecuador"
+    clue: "Línea imaginaria que divide la Tierra en los hemisferios norte y sur"
+  - answer: "Egipto"
+    clue: "País de los faraones y la Esfinge"
+f:
+  - answer: "fósil"
+    clue: "Resto de un animal o planta antiguo conservado en la roca"
+  - answer: "Frida Kahlo"
+    also: ["frida", "kahlo"]
+    clue: "Pintora mexicana famosa por sus autorretratos"
+  - answer: "fricción"
+    also: ["rozamiento"]
+    clue: "Fuerza que frena las cosas cuando dos superficies se rozan"
+  - answer: "Francia"
+    clue: "País donde empezó una famosa revolución en 1789"
+  - answer: "Florencia"
+    clue: "Ciudad italiana a orillas del Arno, hogar del David de Miguel Ángel"
+g:
+  - answer: "Galileo"
+    also: ["galileo galilei"]
+    clue: "Astrónomo italiano juzgado por decir que la Tierra gira alrededor del Sol"
+  - answer: "gravedad"
+    also: ["gravitacion"]
+    clue: "Fuerza que hace que las cosas caigan al suelo"
+  - answer: "Gutenberg"
+    clue: "Inventor alemán de los tipos móviles para imprimir libros, hacia 1450"
+  - answer: "glaciar"
+    clue: "Enorme río de hielo que avanza despacio por un valle"
+  - answer: "Grecia"
+    clue: "País de los filósofos Sócrates, Platón y Aristóteles"
+h:
+  - answer: "hidrógeno"
+    clue: "El elemento más ligero y abundante del universo, símbolo H"
+  - answer: "Himalaya"
+    clue: "La cordillera más alta del mundo, en Asia"
+  - answer: "helio"
+    clue: "Gas ligero que hace flotar los globos y pone la voz aguda"
+  - answer: "Hawái"
+    also: ["hawaii"]
+    clue: "Estado de EE. UU. formado por islas volcánicas en el Pacífico"
+  - answer: "Homero"
+    clue: "Poeta de la antigua Grecia al que se atribuyen la Ilíada y la Odisea"
+i:
+  - answer: "incas"
+    also: ["inca", "imperio inca"]
+    clue: "Imperio de los Andes que construyó Machu Picchu"
+  - answer: "India"
+    clue: "País donde se encuentra el Taj Mahal"
+  - answer: "iceberg"
+    clue: "Gran bloque de hielo flotante; la mayor parte queda bajo el agua"
+  - answer: "Isla de Pascua"
+    also: ["rapa nui"]
+    clue: "Isla chilena famosa por sus estatuas gigantes de piedra, los moáis"
+  - answer: "imprenta"
+    clue: "Máquina que permitió hacer muchas copias de un libro, inventada hacia 1450"
+j:
+  - answer: "Júpiter"
+    clue: "El planeta más grande del sistema solar"
+  - answer: "Japón"
+    clue: "País insular de los samuráis y el monte Fuji"
+  - answer: "jeroglífico"
+    clue: "Escritura con dibujos de los escribas de los faraones"
+  - answer: "Jerusalén"
+    clue: "Ciudad sagrada para judíos, cristianos y musulmanes"
+  - answer: "Juana de Arco"
+    also: ["juana"]
+    clue: "Heroína francesa que dirigió un ejército siendo adolescente"
+k:
+  - answer: "Kremlin"
+    clue: "Fortaleza de Moscú, sede del gobierno"
+  - answer: "kilómetro"
+    also: ["km"]
+    clue: "Mil metros"
+  - answer: "Kenia"
+    also: ["kenya"]
+    clue: "País de África oriental cuya capital es Nairobi"
+  - answer: "kriptón"
+    clue: "Gas noble que también da nombre al planeta natal de Superman"
+  - answer: "Kafka"
+    also: ["franz kafka"]
+    clue: "Escritor checo cuya novela empieza con un hombre convertido en insecto"
+l:
+  - answer: "Lincoln"
+    also: ["abraham lincoln"]
+    clue: "Presidente de EE. UU. que abolió la esclavitud"
+  - answer: "lava"
+    clue: "Roca fundida que sale de un volcán"
+  - answer: "Louvre"
+    also: ["museo del louvre"]
+    clue: "Museo de París donde está la Mona Lisa"
+  - answer: "Lisboa"
+    clue: "Capital de Portugal"
+  - answer: "laringe"
+    clue: "Órgano de la garganta donde están las cuerdas vocales"
+m:
+  - answer: "Marte"
+    clue: "El planeta rojo"
+  - answer: "Magallanes"
+    also: ["fernando de magallanes"]
+    clue: "Navegante cuya expedición dio la primera vuelta al mundo"
+  - answer: "mamífero"
+    clue: "Animal que alimenta a sus crías con leche"
+  - answer: "Mozart"
+    clue: "Compositor austriaco que ya componía música de niño"
+  - answer: "México"
+    also: ["mejico"]
+    clue: "País donde los aztecas tuvieron su capital, Tenochtitlan"
+n:
+  - answer: "Napoleón"
+    also: ["napoleon bonaparte", "bonaparte"]
+    clue: "General francés que se coronó emperador en 1804"
+  - answer: "Nilo"
+    clue: "El río más largo de África"
+  - answer: "nitrógeno"
+    clue: "Gas que forma la mayor parte del aire, símbolo N"
+  - answer: "neutrón"
+    clue: "Partícula sin carga eléctrica que está en el núcleo"
+  - answer: "Newton"
+    also: ["isaac newton"]
+    clue: "Científico inglés al que, según la leyenda, le cayó una manzana en la cabeza"
+ñ:
+  - answer: "España"
+    contains: true
+    clue: "País de la Alhambra, la Sagrada Familia y el Museo del Prado"
+  - answer: "ñandú"
+    clue: "Ave grande de Sudamérica que corre muy rápido pero no vuela"
+  - answer: "Cataluña"
+    contains: true
+    clue: "Comunidad española cuya capital es Barcelona"
+  - answer: "cañón"
+    contains: true
+    clue: "Valle profundo y estrecho, como el del Colorado"
+  - answer: "año luz"
+    also: ["año-luz"]
+    contains: true
+    clue: "Distancia que recorre la luz en doce meses"
+o:
+  - answer: "oxígeno"
+    clue: "Gas que necesitamos para respirar, símbolo O"
+  - answer: "Olimpiadas"
+    also: ["olimpiada", "juegos olimpicos"]
+    clue: "Fiesta deportiva que se celebra cada cuatro años, con cinco anillos como símbolo"
+  - answer: "órbita"
+    clue: "Camino curvo de un planeta alrededor del Sol"
+  - answer: "Oslo"
+    clue: "Capital de Noruega"
+  - answer: "ozono"
+    also: ["capa de ozono"]
+    clue: "Capa de gas que nos protege de los rayos ultravioleta"
+p:
+  - answer: "pirámide"
+    clue: "Enorme tumba construida para los faraones"
+  - answer: "Picasso"
+    also: ["pablo picasso"]
+    clue: "Pintor español del Guernica, uno de los creadores del cubismo"
+  - answer: "Pacífico"
+    also: ["oceano pacifico"]
+    clue: "El océano más grande de la Tierra"
+  - answer: "Pompeya"
+    clue: "Ciudad antigua sepultada por el Vesubio en el año 79"
+  - answer: "Plutón"
+    clue: "Antiguo noveno planeta, considerado planeta enano desde 2006"
+q:
+  - answer: "Quebec"
+    clue: "Provincia de Canadá donde se habla francés"
+  - answer: "química"
+    clue: "Ciencia que estudia la materia y sus transformaciones"
+  - answer: "quetzal"
+    clue: "Ave de plumas verdes de Centroamérica que da nombre a la moneda de Guatemala"
+  - answer: "Quito"
+    clue: "Capital andina situada casi en la mitad del mundo"
+  - answer: "Quijote"
+    also: ["don quijote"]
+    clue: "Caballero de La Mancha que luchaba contra molinos de viento"
+r:
+  - answer: "Roma"
+    clue: "Capital de un antiguo imperio, hogar del Coliseo"
+  - answer: "Renacimiento"
+    clue: "Época de renacer del arte y la ciencia, la de Leonardo y Miguel Ángel"
+  - answer: "radio"
+    clue: "Distancia del centro de un círculo a su borde"
+  - answer: "rinoceronte"
+    clue: "Gran animal con uno o dos cuernos en la nariz"
+  - answer: "Rusia"
+    clue: "El país más grande del mundo"
+s:
+  - answer: "Saturno"
+    clue: "Planeta famoso por sus anillos brillantes"
+  - answer: "sodio"
+    clue: "Elemento de símbolo Na, presente en la sal de mesa"
+  - answer: "Shakespeare"
+    also: ["william shakespeare"]
+    clue: "Autor de Romeo y Julieta y de Hamlet"
+  - answer: "Sahara"
+    also: ["sahara"]
+    clue: "El desierto cálido más grande del mundo"
+  - answer: "satélite"
+    clue: "Cuerpo que gira alrededor de un planeta, como la Luna"
+t:
+  - answer: "Tokio"
+    also: ["tokyo"]
+    clue: "La ciudad más poblada del mundo, capital de un país insular de Asia"
+  - answer: "Titanic"
+    clue: "Barco que se hundió en su primer viaje, en 1912"
+  - answer: "telescopio"
+    clue: "Instrumento para mirar estrellas lejanas"
+  - answer: "Támesis"
+    clue: "Río que atraviesa Londres"
+  - answer: "tsunami"
+    also: ["maremoto"]
+    clue: "Ola gigante provocada por un terremoto"
+u:
+  - answer: "Urano"
+    clue: "Séptimo planeta desde el Sol, que gira de lado"
+  - answer: "uranio"
+    clue: "Elemento radiactivo usado en las centrales nucleares"
+  - answer: "Ucrania"
+    clue: "País europeo cuya capital es Kiev"
+  - answer: "Uruguay"
+    clue: "País que organizó y ganó el primer Mundial de fútbol, en 1930"
+  - answer: "Uluru"
+    clue: "Enorme roca roja en el centro de Australia"
+v:
+  - answer: "Venus"
+    clue: "El planeta más caliente del sistema solar"
+  - answer: "vikingos"
+    also: ["vikingo"]
+    clue: "Navegantes nórdicos que asaltaban Europa en barcos alargados"
+  - answer: "Venecia"
+    clue: "Ciudad italiana construida sobre canales, con góndolas"
+  - answer: "vacuna"
+    clue: "Inyección que enseña a tu cuerpo a defenderse de una enfermedad"
+  - answer: "Vaticano"
+    also: ["ciudad del vaticano"]
+    clue: "El país más pequeño del mundo, donde vive el Papa"
+w:
+  - answer: "Washington"
+    also: ["george washington"]
+    clue: "Primer presidente de Estados Unidos"
+  - answer: "Waterloo"
+    clue: "Batalla de 1815, en Bélgica, que puso fin a un imperio"
+  - answer: "Wellington"
+    clue: "Capital de Nueva Zelanda"
+  - answer: "Wright"
+    also: ["hermanos wright"]
+    clue: "Apellido de los hermanos que hicieron el primer vuelo en avión a motor, en 1903"
+  - answer: "Wall Street"
+    clue: "Calle de Nueva York famosa por su bolsa de valores"
+x:
+  - answer: "rayos X"
+    also: ["radiografia"]
+    contains: true
+    clue: "Imagen que permite a los médicos ver tus huesos"
+  - answer: "Luxemburgo"
+    contains: true
+    clue: "Pequeño país europeo cuya capital tiene el mismo nombre"
+  - answer: "óxido"
+    also: ["herrumbre"]
+    contains: true
+    clue: "Capa rojiza que aparece en el hierro mojado"
+  - answer: "Texas"
+    contains: true
+    clue: "Estado de EE. UU. cuya capital es Austin"
+  - answer: "Marx"
+    also: ["karl marx"]
+    contains: true
+    clue: "Filósofo alemán que escribió El capital"
+y:
+  - answer: "yen"
+    clue: "Moneda cuyo símbolo es ¥"
+  - answer: "Yangtsé"
+    also: ["yangtze", "yangtse"]
+    clue: "El río más largo de Asia"
+  - answer: "yeti"
+    clue: "Monstruo legendario de las nieves de Nepal y el Tíbet"
+  - answer: "Yucatán"
+    clue: "Península mexicana donde está Chichén Itzá"
+  - answer: "yacimiento"
+    clue: "Lugar donde los arqueólogos excavan restos antiguos"
+z:
+  - answer: "zinc"
+    clue: "Metal de símbolo Zn usado para recubrir el acero"
+  - answer: "Zeus"
+    clue: "Rey de los dioses en la mitología griega"
+  - answer: "zoología"
+    clue: "Ciencia que estudia los animales"
+  - answer: "Zimbabue"
+    also: ["zimbabwe"]
+    clue: "País africano que comparte las cataratas Victoria con Zambia"
+  - answer: "zigurat"
+    clue: "Templo escalonado de la antigua Mesopotamia"
