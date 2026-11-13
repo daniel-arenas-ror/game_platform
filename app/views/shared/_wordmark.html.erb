@@ -1,6 +1,7 @@
 <%# The Grouparty mark (the "G" from icon.svg on solid house purple) + name. The mark wiggles
-    when its link is hovered (the link needs the `group` class). `compact` drops the name on narrow
-    phones (the link carries it as its label). In Christmas mode the mark wears a Santa hat. %>
+    when its link is hovered (the link needs the `group` class). `compact` drops the name below 640px,
+    where the header needs the room (the link carries it as its label). In Christmas mode the mark
+    wears a Santa hat. %>
 <% compact = local_assigns[:compact] %>
 <span class="inline-flex items-center gap-2.5">
   <svg class="size-8 shrink-0 overflow-visible group-hover:animate-wiggle" viewBox="0 0 512 512" aria-hidden="true">
@@ -10,5 +11,5 @@
     <path d="M290 222H414V290H290A34 34 0 0 1 290 222Z" fill="#fff"/>
     <%= render "shared/santa_hat" if christmas? %>
   </svg>
-  <span class="<%= "max-[419px]:hidden" if compact %> font-display text-xl font-extrabold tracking-tight text-white"><%= SeoHelper::SITE_NAME %></span>
+  <span class="<%= "max-sm:hidden" if compact %> font-display text-xl font-extrabold tracking-tight text-white"><%= SeoHelper::SITE_NAME %></span>
 </span>

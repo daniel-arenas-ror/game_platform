@@ -31,14 +31,21 @@
 
 <div class="min-h-screen py-12 px-4 sm:px-6">
   <article class="max-w-5xl mx-auto text-slate-300 leading-relaxed space-y-14">
-    <div class="max-w-3xl">
-      <%= render "pages/header", title: "Christmas party games for the whole group", subtitle: "One TV, everyone's phone, and games that the grandparents and the kids can play together." %>
-      <ul id="summary" class="space-y-2 rounded-2xl bg-slate-800 border border-slate-700 p-6 text-lg text-white">
-        <li><strong>What it is:</strong> free party games for Christmas get-togethers. The game shows on a TV or laptop, and everyone plays on their phone at the same time.</li>
-        <li><strong>Christmas packs:</strong> Christmas trivia, drawing, word and color games, plus games for any group.</li>
-        <li><strong>How to start:</strong> open <%= games_link %> on the big screen and press Start game. Players scan the QR code. No app and no sign-up.</li>
-      </ul>
-      <%= render "shared/three_steps", css: "mt-6" %>
+    <div class="grid gap-10 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-center">
+      <div class="max-w-3xl">
+        <%= render "pages/header", title: "Christmas party games for the whole group", subtitle: "One TV, everyone's phone, and games that the grandparents and the kids can play together." %>
+        <ul id="summary" class="space-y-2 rounded-2xl bg-slate-800 border border-slate-700 p-6 text-lg text-white">
+          <li><strong>What it is:</strong> free party games for Christmas get-togethers. The game shows on a TV or laptop, and everyone plays on their phone at the same time.</li>
+          <li><strong>Christmas packs:</strong> Christmas trivia, drawing, word and color games, plus games for any group.</li>
+          <li><strong>How to start:</strong> open <%= games_link %> on the big screen and press Start game. Players scan the QR code. No app and no sign-up.</li>
+        </ul>
+        <%= render "shared/three_steps", css: "mt-6" %>
+      </div>
+      <%# Santa playing with a family (public/christmas: the PNG is the source, pages load the WebP) %>
+      <img src="/christmas/santa-family-640.webp?v=1" srcset="/christmas/santa-family-400.webp?v=1 400w, /christmas/santa-family-640.webp?v=1 640w"
+           sizes="(min-width: 1024px) 20rem, (min-width: 640px) 24rem, 80vw" width="640" height="960" fetchpriority="high"
+           alt="Santa Claus and a family in a cosy Christmas living room, cheering as they play a party game on the TV with their phones"
+           class="mx-auto w-full max-w-xs sm:max-w-sm lg:max-w-none rounded-[1.75rem] border-2 border-slate-700 shadow-2xl shadow-green-950/40 rotate-1">
     </div>
 
     <%= ad_slot :page %>

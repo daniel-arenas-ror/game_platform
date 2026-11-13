@@ -2,7 +2,7 @@
     with a glowing star and twinkling lights (styles in application.css); just the tree on narrow phones. %>
 <% active = controller_name == "pages" && action_name == "christmas" %>
 <%= link_to christmas_path, aria: { current: (active ? "page" : nil), label: t(".label") },
-      class: "flex items-center gap-1.5 px-2 py-1.5 rounded-lg transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-400 #{active ? "text-white" : "text-green-300 hover:text-white"}" do %>
+      class: "flex items-center gap-1.5 px-1 sm:px-2 py-1.5 rounded-lg transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-400 #{active ? "text-white" : "text-green-300 hover:text-white"}" do %>
   <svg class="xmas-tree size-7 shrink-0 overflow-visible" viewBox="0 0 32 34" aria-hidden="true">
     <rect x="13.5" y="27" width="5" height="5" rx="1" fill="#92400e"/>
     <path d="M16 6L5 18h4.5L3 27h26l-6.5-9H27Z" fill="#16a34a"/>
