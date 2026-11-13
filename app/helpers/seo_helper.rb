@@ -9,12 +9,13 @@ module SeoHelper
   }.freeze
 
   # Views set these with `content_for :title` / `content_for :description`.
+  # Pages without their own title (the home page) get the site's, a Christmas one in Christmas mode.
   def page_title
-    content_for?(:title) ? "#{content_for(:title)} | #{SITE_NAME}" : t("seo.default_title", site: SITE_NAME)
+    content_for?(:title) ? "#{content_for(:title)} | #{SITE_NAME}" : t(christmas? ? "seo.christmas_title" : "seo.default_title", site: SITE_NAME)
   end
 
   def page_description
-    content_for?(:description) ? content_for(:description) : t("seo.default_description")
+    content_for?(:description) ? content_for(:description) : t(christmas? ? "seo.christmas_description" : "seo.default_description")
   end
 
   def canonical_url

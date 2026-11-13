@@ -18,7 +18,7 @@ module AdsHelper
   ADS_ALLOWED = {
     "home"  => %w[index],
     "games" => %w[index show],
-    "pages" => %w[about]
+    "pages" => %w[about christmas]
   }.freeze
 
   def ads_allowed?

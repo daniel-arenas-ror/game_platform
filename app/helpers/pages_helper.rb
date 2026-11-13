@@ -22,4 +22,18 @@ module PagesHelper
 
     { "@context" => "https://schema.org", "@graph" => [ organization, website, about, questions ] }
   end
+
+  # schema.org JSON-LD for the Christmas page: the page as a list of its games, and its FAQ.
+  def christmas_structured_data(faq, games)
+    page = { "@type" => "CollectionPage", "@id" => "#{christmas_url}#page", "url" => christmas_url, "name" => page_title,
+             "description" => page_description, "inLanguage" => I18n.locale.to_s,
+             "mainEntity" => { "@type" => "ItemList", "numberOfItems" => games.size,
+                               "itemListElement" => games.each_with_index.map { |g, i|
+                                 { "@type" => "ListItem", "position" => i + 1, "url" => game_url(g), "name" => g.name }
+                               } } }
+    questions = { "@type" => "FAQPage", "@id" => "#{christmas_url}#faq",
+                  "mainEntity" => faq.map { |q, a| { "@type" => "Question", "name" => q, "acceptedAnswer" => { "@type" => "Answer", "text" => a } } } }
+
+    { "@context" => "https://schema.org", "@graph" => [ page, questions ] }
+  end
 end

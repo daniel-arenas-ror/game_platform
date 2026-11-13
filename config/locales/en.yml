@@ -11,6 +11,10 @@ en:
     default_description: >-
       Free multiplayer party games for groups. Put the host screen on your TV, friends join by
       scanning a QR code and play from their phones — no app, no sign-up.
+    christmas_title: "%{site} – Free Christmas Party Games You Play From Your Phone"
+    christmas_description: >-
+      Free Christmas party games for family, friends and work: put the game on your TV, everyone
+      joins by scanning a QR code and plays on their phone. Christmas trivia and drawing, no app, no sign-up.
     og_locale: en_US
 
   locale_picker:
@@ -34,6 +38,7 @@ en:
       games: "Games"
       join: "Join"
     footer:
+      christmas: "Christmas games"
       tagline: "Free party games"
       nav: "Footer"
       about: "About"
@@ -74,6 +79,7 @@ en:
 
   home:
     index:
+      christmas_banner: "🎄 Christmas games for the whole group: trivia, drawing and more"
       hero_text: "Free party games for one big screen and everyone's phones."
       start_game: "Pick a game"
       join_game: "Join a game"

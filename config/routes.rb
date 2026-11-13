@@ -42,6 +42,7 @@ Rails.application.routes.draw do
     get "privacy", to: "pages#privacy", as: :privacy
     get "about",   to: "pages#about",   as: :about
     get "contact", to: "pages#contact", as: :contact
+    get "christmas-games", to: "pages#christmas", as: :christmas
 
     resources :rooms, only: [:create, :show, :edit, :update] do
       member do

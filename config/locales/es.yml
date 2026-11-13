@@ -5,6 +5,10 @@ es:
     default_description: >-
       Juegos de fiesta multijugador gratis para grupos. Pon la pantalla principal en tu TV, tus
       amigos se unen escaneando un código QR y juegan desde su celular — sin app y sin registro.
+    christmas_title: "%{site} – Juegos de Navidad gratis que se juegan desde el celular"
+    christmas_description: >-
+      Juegos de fiesta gratis para Navidad en familia, con amigos o en la empresa: pon el juego en tu TV,
+      todos se unen escaneando un código QR y juegan desde su celular. Preguntas y dibujos de Navidad, sin app y sin registro.
     og_locale: es_LA
 
   locale_picker:
@@ -28,6 +32,7 @@ es:
       games: "Juegos"
       join: "Unirse"
     footer:
+      christmas: "Juegos de Navidad"
       tagline: "Juegos de fiesta gratis"
       nav: "Pie de página"
       about: "Acerca de"
@@ -66,6 +71,7 @@ es:
 
   home:
     index:
+      christmas_banner: "🎄 Juegos de Navidad para todo el grupo: preguntas, dibujos y más"
       hero_text: "Juegos de fiesta gratis para una pantalla grande y el celular de cada uno."
       start_game: "Elige un juego"
       join_game: "Unirse a un juego"

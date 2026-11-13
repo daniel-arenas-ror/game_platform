@@ -63,20 +63,30 @@ class AdminGamesTest < ActionDispatch::IntegrationTest
     assert_equal [ @first.id, @second.id ], order, "a numbered game goes before a more popular one"
   end
 
+  # Flips its own SiteSetting, not the one every other test reads (SiteSetting.current is the oldest),
+  # so tests running in parallel never see Christmas mode on.
   test "the Christmas switch needs a login, then turns the mode on and off" do
+    SiteSetting.first || SiteSetting.create!
+    mine     = SiteSetting.create!
+    original = SiteSetting.method(:current)
+    SiteSetting.define_singleton_method(:current) { mine }
+    SiteSetting.reset_cache!
+
     patch admin_settings_path, params: { christmas: "1" }
     assert_redirected_to new_admin_user_session_path
 
     log_in
     patch admin_settings_path, params: { christmas: "1" }
     assert_redirected_to admin_games_path
-    assert SiteSetting.current.christmas
+    assert mine.reload.christmas
     get admin_games_path
     assert_select "#christmas-mode", /On/
 
     patch admin_settings_path, params: { christmas: "0" }
-    assert_not SiteSetting.current.christmas
+    assert_not mine.reload.christmas
   ensure
-    SiteSetting.current.update!(christmas: false)
+    SiteSetting.define_singleton_method(:current, original)
+    SiteSetting.reset_cache!
+    mine&.delete
   end
 end

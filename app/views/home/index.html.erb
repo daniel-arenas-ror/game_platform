@@ -24,6 +24,15 @@
 
 <div class="bg-slate-900 overflow-x-clip" data-controller="reveal">
 
+  <%# Christmas mode: points to the (all-year) Christmas games page %>
+  <% if christmas? %>
+    <div class="px-4 sm:px-6 lg:px-8 pt-4">
+      <%= link_to christmas_path, class: "max-w-6xl mx-auto flex items-center justify-center gap-2 rounded-2xl border border-green-500/30 bg-green-500/10 px-4 py-2.5 text-center text-sm font-semibold text-green-200 hover:bg-green-500/15 transition-colors focus-visible:outline-2 focus-visible:outline-purple-400" do %>
+        <%= t(".christmas_banner") %> <span aria-hidden="true">→</span>
+      <% end %>
+    </div>
+  <% end %>
+
   <%# ── Hero ─────────────────────────────────────────────────────────────── %>
   <section class="px-4 sm:px-6 lg:px-8 pt-6 pb-20 sm:pt-12 lg:pt-14 lg:pb-28">
     <div class="max-w-6xl mx-auto grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] gap-16 items-center">

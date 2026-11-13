@@ -4,6 +4,7 @@ locales = I18n.available_locales.map { |l| [ l, (l == I18n.default_locale ? nil 
 
 pages = [ [ :root_url, "weekly", "1.0" ], [ :games_url, "weekly", "0.8" ], [ :find_room_url, "weekly", "0.8" ] ]
 pages += Game.visible.where(:slug.nin => [ nil, "" ]).map { |game| [ :game_url, "monthly", "0.8", game ] }
+pages += [ [ :christmas_url, "weekly", "0.7" ] ]
 pages += [ [ :about_url, "monthly", "0.5" ], [ :contact_url, "monthly", "0.5" ], [ :privacy_url, "monthly", "0.5" ] ]
 
 xml.urlset xmlns: "http://www.sitemaps.org/schemas/sitemap/0.9", "xmlns:xhtml" => "http://www.w3.org/1999/xhtml" do

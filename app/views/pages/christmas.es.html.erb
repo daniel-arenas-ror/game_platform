@@ -1,0 +1,90 @@
+<%# Juegos de fiesta para Navidad (todo el año, no solo en el modo Navidad). Mantener igual que christmas.html.erb. %>
+<% games_link = link_to games_url.sub(%r{\Ahttps?://}, ""), games_path, class: "text-purple-400 hover:text-purple-300 underline" %>
+<% occasions = {
+     family:     [ "🎄 Cena de Navidad en familia", "Para abuelos y niños en la misma mesa: reglas rápidas, nadie se queda fuera y cada ronda es corta." ],
+     office:     [ "🎁 Fiesta de Navidad de la oficina", "Preguntas, trabajo en equipo y un poco de sospecha amistosa para que los compañeros se suelten." ],
+     kids:       [ "⛄ Niños y la última clase antes de vacaciones", "Fáciles de entender, rápidos de jugar y con algo para todos los niños a la vez." ],
+     video_call: [ "📞 La familia en videollamada", "Comparte la pantalla del juego en la llamada y cada uno se une desde su celular, esté donde esté." ]
+   } %>
+<%# Se muestra en la página y se envía como datos estructurados FAQPage, así siempre dicen lo mismo. %>
+<% faq = [
+     [ "¿Qué juegos de Navidad sirven para un grupo grande?",
+       "Juegos en los que todos juegan a la vez, para que nadie espere su turno. En #{SeoHelper::SITE_NAME} el juego se ve en una TV o portátil y cada jugador responde desde su celular, con sitio para hasta 30 jugadores en muchos juegos." ],
+     [ "¿Hay un juego de preguntas de Navidad?",
+       "Sí. ¿Quién Quiere Ser Billonario? tiene un tema de Navidad con preguntas sobre tradiciones, villancicos, películas, comida e historia de la Navidad. Elige 🎄 Navidad en la configuración del juego." ],
+     [ "¿Hay un juego de dibujar de Navidad?",
+       "Sí. Dibuja y Adivina tiene un paquete de palabras de Navidad: Papá Noel, un reno, un muñeco de nieve, el árbol de Navidad, regalos y más. Un jugador dibuja en su celular y los demás adivinan." ],
+     [ "¿Puede jugar la familia que está lejos?",
+       "Sí. Los jugadores se unen por internet con un código de sala de 4 letras, así que funciona en una videollamada: el anfitrión comparte la pantalla del juego y cada uno juega desde su celular." ],
+     [ "¿Hay que descargar una app o registrarse?",
+       "No. Los jugadores escanean un código QR con la cámara del celular y escriben un apodo. No hay nada que instalar ni cuentas, ni siquiera para el anfitrión." ],
+     [ "¿Los juegos son aptos para niños?",
+       "Sí. Los juegos están hechos para mayores de 8 años, así que toda la familia puede jugar junta." ],
+     [ "¿Es gratis?",
+       "Sí. Todos los juegos son gratis, sin pagos ni compras dentro del juego." ]
+   ] %>
+<% content_for :title, "Juegos de Navidad para jugar en grupo" %>
+<% content_for :description, "Juegos de fiesta gratis para Navidad: cenas en familia, fiestas de empresa y clases. Una TV muestra el juego y todos juegan desde el celular. Preguntas y dibujos de Navidad. Sin app y sin registro." %>
+<% content_for :head do %>
+  <script type="application/ld+json"><%= raw json_escape(christmas_structured_data(faq, @occasions.values.flatten.uniq).to_json) %></script>
+<% end %>
+
+<div class="min-h-screen py-12 px-4 sm:px-6">
+  <article class="max-w-5xl mx-auto text-slate-300 leading-relaxed space-y-14">
+    <div class="max-w-3xl">
+      <%= render "pages/header", title: "Juegos de Navidad para todo el grupo", subtitle: "Una TV, el celular de cada uno y juegos que pueden jugar juntos los abuelos y los niños." %>
+      <ul id="summary" class="space-y-2 rounded-2xl bg-slate-800 border border-slate-700 p-6 text-lg text-white">
+        <li><strong>Qué es:</strong> juegos de fiesta gratis para las reuniones de Navidad. El juego se ve en una TV o portátil y todos juegan desde su celular a la vez.</li>
+        <li><strong>Paquetes de Navidad:</strong> preguntas de Navidad y un juego de dibujar de Navidad, además de juegos para cualquier grupo.</li>
+        <li><strong>Cómo empezar:</strong> abre <%= games_link %> en la pantalla grande y pulsa Empezar juego. Los jugadores escanean el código QR. Sin app y sin registro.</li>
+      </ul>
+      <%= render "shared/three_steps", css: "mt-6" %>
+    </div>
+
+    <section class="space-y-6" aria-labelledby="packs-title">
+      <h2 id="packs-title" class="text-3xl font-bold text-white">Paquetes de Navidad</h2>
+      <div class="grid gap-6 md:grid-cols-2">
+        <% [ [ @billionaire, "Preguntas de Navidad", "#{@christmas_questions.positive? ? @christmas_questions : "Muchas"} preguntas de Navidad sobre tradiciones, villancicos, películas, comida e historia de la Navidad. En la configuración del juego, elige 🎄 Navidad como tema." ],
+             [ @doodle_dash, "Dibujos de Navidad", "30 palabras de Navidad para dibujar y adivinar: Papá Noel, un reno, un muñeco de nieve, el árbol de Navidad, regalos, calcetines y más. En la configuración del juego, elige el paquete 🎄 Navidad." ] ].each do |game, label, text| %>
+          <% next unless game %>
+          <div class="flex flex-col gap-4 rounded-3xl border border-slate-700 bg-slate-800 p-6">
+            <p class="eyebrow text-green-400"><%= label %></p>
+            <h3 class="text-2xl font-bold text-white"><%= link_to game.name, game_path(game), class: "hover:underline underline-offset-4" %></h3>
+            <p><%= text %></p>
+            <%= link_to "Jugar a #{game.name}", game_path(game), class: "btn btn-sm self-start" %>
+          </div>
+        <% end %>
+      </div>
+    </section>
+
+    <% occasions.each do |key, (heading, text)| %>
+      <% next if @occasions[key].blank? %>
+      <section class="space-y-6" aria-labelledby="<%= key %>-title">
+        <div class="max-w-3xl">
+          <h2 id="<%= key %>-title" class="text-3xl font-bold text-white"><%= heading %></h2>
+          <p class="mt-2"><%= text %></p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <% @occasions[key].each do |game| %>
+            <%= render "games/card", game: game, priority: false %>
+          <% end %>
+        </div>
+      </section>
+    <% end %>
+
+    <section class="max-w-3xl space-y-4" aria-labelledby="faq-title">
+      <h2 id="faq-title" class="text-3xl font-bold text-white">Preguntas</h2>
+      <% faq.each do |question, answer| %>
+        <details class="group rounded-2xl border border-slate-700 bg-slate-800 p-5">
+          <summary class="cursor-pointer font-bold text-white"><%= question %></summary>
+          <p class="mt-3"><%= answer %></p>
+        </details>
+      <% end %>
+    </section>
+
+    <div class="max-w-3xl">
+      <%= link_to "Ver todos los juegos", games_path, class: "btn btn-lg" %>
+    </div>
+  </article>
+  <%= ad_slot :page, css: "max-w-3xl mx-auto mt-12" %>
+</div>

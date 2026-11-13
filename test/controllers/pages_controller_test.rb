@@ -66,4 +66,32 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
     get sitemap_path
     [ about_url, contact_url, privacy_url ].each { |url| assert_includes response.body, url }
   end
+
+  test "the Christmas page, in both languages: packs, games for each get-together and its FAQ" do
+    tag     = SecureRandom.hex(3)
+    trivia  = Game.create!(name: "Xmas Trivia #{tag}", code: "how_want_be_billionare", slug: "xmas-trivia-#{tag}", description: "x")
+    hidden  = Game.create!(name: "Xmas Hidden #{tag}", code: "mind_match", slug: "xmas-hidden-#{tag}", description: "x", listed: false)
+
+    { christmas_path => [ "Christmas party games for the whole group", "Christmas trivia" ],
+      christmas_path(locale: "es") => [ "Juegos de Navidad para todo el grupo", "Preguntas de Navidad" ] }.each do |path, (heading, pack)|
+      get path
+      assert_response :success
+      assert_select "h1", heading
+      assert_includes response.body, pack
+      assert_select "a[href=?]", game_path(trivia, locale: path.start_with?("/es") ? "es" : nil)
+      assert_not_includes response.body, hidden.name, "hidden games are left out"
+
+      graph = JSON.parse(css_select("script[type='application/ld+json']").first.text).fetch("@graph")
+      assert_equal %w[CollectionPage FAQPage], graph.map { _1["@type"] }
+      assert_operator graph.last["mainEntity"].size, :>=, 5
+      assert_select "footer a[href=?]", christmas_path(locale: path.start_with?("/es") ? "es" : nil)
+    end
+
+    get sitemap_path(format: :xml)
+    assert_includes response.body, christmas_url
+    assert_includes response.body, christmas_url(locale: "es")
+  ensure
+    trivia&.delete
+    hidden&.delete
+  end
 end
