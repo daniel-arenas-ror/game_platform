@@ -1,0 +1,9 @@
+<%# Christmas mode: a little snow resting on the top edge of a game card's art. Only about a third of
+    the games get it, always the same ones, and its side (left or right) comes from the game's code. %>
+<% if christmas? && (game.code.to_s.sum % 3).zero? %>
+  <% left = game.code.to_s.sum.even? %>
+  <svg aria-hidden="true" viewBox="0 0 200 26" preserveAspectRatio="none"
+       class="pointer-events-none absolute top-0 <%= left ? "left-0" : "right-0 -scale-x-100" %> h-5 w-1/2 drop-shadow-[0_2px_2px_rgba(15,23,42,0.35)]">
+    <path d="M0 0H200V4C188 9 178 6 168 10S148 18 132 13 108 8 92 14 66 22 48 16 22 10 0 14Z" fill="#f8fafc"/>
+  </svg>
+<% end %>

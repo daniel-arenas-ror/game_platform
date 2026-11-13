@@ -23,6 +23,7 @@ class ChristmasModeTest < ActionDispatch::IntegrationTest
       assert_select "title", /Christmas/
       assert_select "footer svg[viewBox='0 0 1200 60']", 1 # the snowdrift
       assert_select "header a[href=?] svg.xmas-tree", christmas_path # the tree link
+      assert_select "html[data-christmas]" # avatars put on the Santa hat (controllers/shared/avatar)
       assert_select "a[href=?]", christmas_path, text: /Christmas games for the whole group/
     end
   end
@@ -36,6 +37,7 @@ class ChristmasModeTest < ActionDispatch::IntegrationTest
       assert_select "title", { text: /Christmas/, count: 0 }
       assert_select "footer svg[viewBox='0 0 1200 60']", 0
       assert_select "header svg.xmas-tree", 0
+      assert_select "html[data-christmas]", 0
     end
   end
 
@@ -49,6 +51,7 @@ class ChristmasModeTest < ActionDispatch::IntegrationTest
       assert_select "[data-controller=snow]", 0
       assert_select ".xmas-lights", 0
       assert_select "[data-controller=christmas-jingle]", 1, "the TV plays the jingle"
+      assert_select "html[data-christmas]", 1, "game screens too: the avatars wear the hat"
     end
     with_christmas(false) do
       get playing_room_path(room.code)
@@ -73,5 +76,19 @@ class ChristmasModeTest < ActionDispatch::IntegrationTest
     Event.where(:room_id.in => rooms.compact.map(&:id)).delete_all
     rooms&.compact&.each(&:delete)
     game&.delete
+  end
+
+  test "some game cards get a little snow, only in Christmas mode" do
+    snowy = Game.create!(name: "Snowy #{SecureRandom.hex(2)}", code: "fisherman", slug: "snowy-#{SecureRandom.hex(3)}", description: "x")
+    with_christmas(true) do
+      get games_path
+      assert_select "article svg[viewBox='0 0 200 26']", minimum: 1
+    end
+    with_christmas(false) do
+      get games_path
+      assert_select "article svg[viewBox='0 0 200 26']", 0
+    end
+  ensure
+    snowy&.delete
   end
 end

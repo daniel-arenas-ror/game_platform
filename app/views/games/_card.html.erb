@@ -15,6 +15,7 @@
     <%= game_art_tag game, alt: t("games.index.image_alt", game: game.name), card: true, priority: local_assigns[:priority],
           sizes: local_assigns[:sizes] || "(min-width: 1280px) 400px, (min-width: 1024px) 32vw, (min-width: 768px) 48vw, 100vw",
           class: "w-full h-full object-cover object-top transition-transform duration-500 ease-out-expo group-hover:scale-105" %>
+    <%= render "games/card_snow", game: game %>
     <span class="absolute top-3 left-3 rounded-full bg-slate-950/80 px-3 py-1 text-xs font-bold text-white"><%= game_category_label(game) %></span>
     <% if current_game %>
       <span class="absolute top-3 right-3 rounded-full bg-purple-600 px-3 py-1 text-xs font-bold text-white"><%= t("games.index.current_game") %></span>
