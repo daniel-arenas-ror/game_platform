@@ -25,6 +25,8 @@
    ] %>
 <% content_for :title, "Christmas Party Games for Groups" %>
 <% content_for :description, "Free Christmas party games for family dinners, office parties and classrooms: one TV shows the game and everyone plays on their phone. Christmas trivia and drawing. No app, no sign-up." %>
+<%# Share image: rake games:christmas_og builds it from the Santa picture %>
+<% content_for :og_image, "/christmas/og.png?v=1" %>
 <% content_for :head do %>
   <script type="application/ld+json"><%= raw json_escape(christmas_structured_data(faq, @occasions.values.flatten.uniq).to_json) %></script>
 <% end %>

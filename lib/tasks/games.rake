@@ -43,59 +43,83 @@ namespace :games do
 
   desc "Build the 1200×630 share image of each game page (public/games/<code>/og.png). ONLY=code builds one. Needs ImageMagick + pngquant."
   task og_images: :environment do
-    bold    = ENV.fetch("OG_FONT_BOLD", "/System/Library/Fonts/Supplemental/Arial Bold.ttf")
-    regular = ENV.fetch("OG_FONT", "/System/Library/Fonts/Supplemental/Arial.ttf")
-
-    run = lambda do |*cmd|
-      _out, err, status = Open3.capture3(*cmd)
-      abort "#{cmd.first} failed: #{err}" unless status.success?
-    end
-
     Dir[Rails.root.join("db/seeds/games/*.yml")].sort.each do |file|
-      code  = File.basename(file, ".yml")
+      code = File.basename(file, ".yml")
       next if ENV["ONLY"].present? && ENV["ONLY"] != code
 
-      game  = YAML.load_file(file)
-      art   = Rails.public_path.join("games", code, "instructions.png")
-      out   = Rails.public_path.join("games", code, "og.png")
-      color = GamePagesHelper::ACCENTS.dig(code, :hex) || "#d8b4fe"
+      game = YAML.load_file(file)
+      art  = Rails.public_path.join("games", code, "instructions.png")
       next puts("skip #{code}: no instructions.png") unless File.exist?(art)
 
-      Dir.mktmpdir do |dir|
-        card = File.join(dir, "card.png")
-
-        # The instruction image: 360×540, rounded corners, a soft shadow, tilted like on the page.
-        run.call("magick", art.to_s, "-resize", "360x540^", "-gravity", "north", "-extent", "360x540",
-                 "(", "+clone", "-alpha", "extract", "-fill", "black", "-colorize", "100",
-                 "-fill", "white", "-draw", "roundrectangle 0,0 359,539 28,28", ")",
-                 "-alpha", "off", "-compose", "CopyOpacity", "-composite",
-                 "(", "+clone", "-background", "black", "-shadow", "60x18+0+12", ")",
-                 "+swap", "-background", "none", "-compose", "over", "-layers", "merge", "+repage",
-                 "-rotate", "3", card)
-
-        run.call("magick", "-size", "1200x630", "xc:#0b1120",
-                 "(", "-size", "1100x1100", "radial-gradient:#3b0764-#0b1120", ")",
-                 "-geometry", "-420-520", "-compose", "over", "-composite",
-                 card, "-geometry", "+760+28", "-composite",
-                 "-font", bold, "-fill", "#c084fc", "-pointsize", "22", "-kerning", "3",
-                 "-annotate", "+72+92", "GROUPARTY  ·  FREE PARTY GAME", "-kerning", "0",
-                 # Name and tagline stacked, so the tagline sits under the name however it wraps.
-                 "(", "(", "-size", "640x", "-background", "none", "-fill", "white", "-font", bold,
-                 "-pointsize", "72", "-interline-spacing", "-6", "caption:#{game.fetch('name')}", ")",
-                 "(", "-size", "640x28", "xc:none", ")",
-                 # Settings carry over: without resetting the name's tight spacing, the tagline's last
-                 # line loses the bottom of its g, y and p.
-                 "(", "-size", "620x", "-background", "none", "-fill", color, "-font", bold, "-interline-spacing", "0",
-                 "-pointsize", "32", "caption:#{game.fetch('tagline')}", ")",
-                 "-background", "none", "-append", ")",
-                 "-geometry", "+70+120", "-composite",
-                 "-font", regular, "-fill", "#94a3b8", "-pointsize", "26",
-                 "-annotate", "+72+560", "Host on the TV  ·  Play from your phone",
-                 out.to_s)
-      end
-
-      run.call("pngquant", "--quality=70-90", "--force", "--skip-if-larger", "--output", out.to_s, out.to_s)
+      out = OgImage.build(art: art, out: Rails.public_path.join("games", code, "og.png"),
+                          eyebrow: "GROUPARTY  ·  FREE PARTY GAME", title: game.fetch("name"), tagline: game.fetch("tagline"),
+                          footer: "Host on the TV  ·  Play from your phone",
+                          color: GamePagesHelper::ACCENTS.dig(code, :hex) || "#d8b4fe")
       puts "#{code}: #{out.relative_path_from(Rails.root)} (#{File.size(out) / 1024} KB)"
     end
+  end
+
+  desc "Build the Christmas page's share images (public/christmas/og.png and og-es.png) from santa-family.png."
+  task christmas_og: :environment do
+    art = Rails.public_path.join("christmas", "santa-family.png")
+    {
+      "og.png"    => [ "GROUPARTY  ·  CHRISTMAS", "Christmas party games for the whole group",
+                       "Trivia, drawing and word games with Christmas packs", "One TV  ·  Everyone plays on their phone" ],
+      "og-es.png" => [ "GROUPARTY  ·  NAVIDAD", "Juegos de Navidad para todo el grupo",
+                       "Preguntas, dibujos y palabras con paquetes navideños", "Una TV  ·  Todos juegan desde el celular" ]
+    }.each do |file, (eyebrow, title, tagline, footer)|
+      out = OgImage.build(art: art, out: Rails.public_path.join("christmas", file), eyebrow: eyebrow, title: title,
+                          tagline: tagline, footer: footer, color: "#86efac", title_size: 60)
+      puts "#{out.relative_path_from(Rails.root)} (#{File.size(out) / 1024} KB)"
+    end
+  end
+end
+
+# A 1200×630 share card: eyebrow, title and tagline on the left, the art as a tilted card on the right.
+module OgImage
+  BOLD    = ENV.fetch("OG_FONT_BOLD", "/System/Library/Fonts/Supplemental/Arial Bold.ttf")
+  REGULAR = ENV.fetch("OG_FONT", "/System/Library/Fonts/Supplemental/Arial.ttf")
+
+  def self.build(art:, out:, eyebrow:, title:, tagline:, footer:, color:, title_size: 72)
+    Dir.mktmpdir do |dir|
+      card = File.join(dir, "card.png")
+
+      # The art: 360×540, rounded corners, a soft shadow, tilted like on the page.
+      run("magick", art.to_s, "-resize", "360x540^", "-gravity", "north", "-extent", "360x540",
+          "(", "+clone", "-alpha", "extract", "-fill", "black", "-colorize", "100",
+          "-fill", "white", "-draw", "roundrectangle 0,0 359,539 28,28", ")",
+          "-alpha", "off", "-compose", "CopyOpacity", "-composite",
+          "(", "+clone", "-background", "black", "-shadow", "60x18+0+12", ")",
+          "+swap", "-background", "none", "-compose", "over", "-layers", "merge", "+repage",
+          "-rotate", "3", card)
+
+      run("magick", "-size", "1200x630", "xc:#0b1120",
+          "(", "-size", "1100x1100", "radial-gradient:#3b0764-#0b1120", ")",
+          "-geometry", "-420-520", "-compose", "over", "-composite",
+          card, "-geometry", "+760+28", "-composite",
+          "-font", BOLD, "-fill", "#c084fc", "-pointsize", "22", "-kerning", "3",
+          "-annotate", "+72+92", eyebrow, "-kerning", "0",
+          # Title and tagline stacked, so the tagline sits under the title however it wraps.
+          "(", "(", "-size", "640x", "-background", "none", "-fill", "white", "-font", BOLD,
+          "-pointsize", title_size.to_s, "-interline-spacing", "-6", "caption:#{title}", ")",
+          "(", "-size", "640x28", "xc:none", ")",
+          # Settings carry over: without resetting the title's tight spacing, the tagline's last
+          # line loses the bottom of its g, y and p.
+          "(", "-size", "620x", "-background", "none", "-fill", color, "-font", BOLD, "-interline-spacing", "0",
+          "-pointsize", "32", "caption:#{tagline}", ")",
+          "-background", "none", "-append", ")",
+          "-geometry", "+70+120", "-composite",
+          "-font", REGULAR, "-fill", "#94a3b8", "-pointsize", "26",
+          "-annotate", "+72+560", footer,
+          out.to_s)
+    end
+
+    run("pngquant", "--quality=70-90", "--force", "--skip-if-larger", "--output", out.to_s, out.to_s)
+    out
+  end
+
+  def self.run(*cmd)
+    _out, err, status = Open3.capture3(*cmd)
+    abort "#{cmd.first} failed: #{err}" unless status.success?
   end
 end

@@ -25,6 +25,8 @@
    ] %>
 <% content_for :title, "Juegos de Navidad para jugar en grupo" %>
 <% content_for :description, "Juegos de fiesta gratis para Navidad: cenas en familia, fiestas de empresa y clases. Una TV muestra el juego y todos juegan desde el celular. Preguntas y dibujos de Navidad. Sin app y sin registro." %>
+<%# Share image: rake games:christmas_og builds it from the Santa picture %>
+<% content_for :og_image, "/christmas/og-es.png?v=1" %>
 <% content_for :head do %>
   <script type="application/ld+json"><%= raw json_escape(christmas_structured_data(faq, @occasions.values.flatten.uniq).to_json) %></script>
 <% end %>

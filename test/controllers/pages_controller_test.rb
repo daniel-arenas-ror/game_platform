@@ -86,6 +86,7 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
       assert_equal %w[CollectionPage FAQPage], graph.map { _1["@type"] }
       assert_operator graph.last["mainEntity"].size, :>=, 5
       assert_select "footer a[href=?]", christmas_path(locale: path.start_with?("/es") ? "es" : nil)
+      assert_select "meta[property='og:image'][content$=?]", path.start_with?("/es") ? "/christmas/og-es.png?v=1" : "/christmas/og.png?v=1"
     end
 
     get sitemap_path(format: :xml)
