@@ -499,6 +499,8 @@ en:
             match_desc: "it stays on the TV, great for kids"
             real_world: "🍌 Real world"
             real_world_desc: "no color: \"a ripe banana\""
+            christmas: "🎄 Christmas"
+            christmas_desc: "no color: \"Santa's suit\""
           rounds: "ROUNDS"
           rounds_option: "%{count} rounds"
           difficulty: "DIFFICULTY"
@@ -559,6 +561,12 @@ en:
           normal: "Normal"
           relaxed: "Relaxed"
           time_note: "Players have this long to type their word each round."
+          theme: "CATEGORIES"
+          themes:
+            all: "🎲 All"
+            all_desc: "kitchens, superheroes, Mondays…"
+            christmas: "🎄 Christmas"
+            christmas_desc: "trees, presents, carols…"
       sequence_memory:
         edit:
           grid: "GRID SIZE"

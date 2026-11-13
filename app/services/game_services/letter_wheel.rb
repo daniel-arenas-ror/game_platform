@@ -9,9 +9,9 @@ module GameServices
       "es" => ("a".."n").to_a + [ "ñ" ] + ("o".."z").to_a
     }.transform_values(&:freeze).freeze
 
-    # Clues per room language and level: config/letter_wheel/words.<locale>.yml (everyday words, ages 8+)
-    # and hard.<locale>.yml (general knowledge: history, science, geography, culture).
-    LEVEL_FILES = { "easy" => "words", "hard" => "hard" }.freeze
+    # Clues per room language and level: config/letter_wheel/words.<locale>.yml (everyday words, ages 8+),
+    # hard.<locale>.yml (general knowledge: history, science, geography, culture) and christmas.<locale>.yml.
+    LEVEL_FILES = { "easy" => "words", "hard" => "hard", "christmas" => "christmas" }.freeze
     WORDS = ALPHABETS.keys.to_h do |locale|
       [ locale, LEVEL_FILES.transform_values do |file|
         YAML.load_file(Rails.root.join("config/letter_wheel/#{file}.#{locale}.yml")).transform_values(&:freeze).freeze
@@ -22,7 +22,8 @@ module GameServices
     DEFAULT_TIME   = 20
     LENGTH_CHOICES = %w[short full].freeze     # short: SHORT_LETTERS random letters, full: the alphabet
     DEFAULT_LENGTH = "short"
-    LEVEL_CHOICES  = %w[easy hard mix].freeze  # mix: each letter's clue from both lists
+    LEVEL_CHOICES  = %w[easy hard mix christmas].freeze # mix: each letter's clue from easy and hard
+    MIX_LEVELS     = %w[easy hard].freeze
     DEFAULT_LEVEL  = "easy"
     SHORT_LETTERS  = 12
 
@@ -84,7 +85,7 @@ module GameServices
       alphabet = ALPHABETS[locale]
       letters  = length == "full" ? alphabet : alphabet.sample(SHORT_LETTERS).sort_by { alphabet.index(_1) }
       letters.map do |letter|
-        lists = level == "mix" ? WORDS[locale].values : [ WORDS[locale].fetch(level) ]
+        lists = level == "mix" ? WORDS[locale].values_at(*MIX_LEVELS) : [ WORDS[locale].fetch(level) ]
         word  = lists.flat_map { _1.fetch(letter) }.sample
         { "letter" => letter, "answer" => word["answer"], "also" => Array(word["also"]),
           "clue" => word["clue"], "contains" => word["contains"] == true }

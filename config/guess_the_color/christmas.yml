@@ -1,0 +1,28 @@
+# Guess the Color, "Christmas" mode: like real_world (no colour shown, the TV names a thing and players
+# mix its colour from memory), with Christmas things only. rgb is a typical colour; en/es the prompt. No brands.
+christmas_tree:  { rgb: [ 25, 95, 50 ],    en: "A Christmas tree",              es: "Un árbol de Navidad" }
+santa_suit:      { rgb: [ 200, 25, 35 ],   en: "Santa's suit",                  es: "El traje de Papá Noel" }
+santa_beard:     { rgb: [ 245, 245, 240 ], en: "Santa's beard",                 es: "La barba de Papá Noel" }
+candy_cane:      { rgb: [ 220, 35, 45 ],   en: "The red stripes of a candy cane", es: "Las rayas rojas de un bastón de caramelo" }
+gingerbread:     { rgb: [ 175, 105, 50 ],  en: "A gingerbread man",             es: "Un muñeco de jengibre" }
+reindeer:        { rgb: [ 125, 85, 55 ],   en: "A reindeer's fur",              es: "El pelo de un reno" }
+red_nose:        { rgb: [ 230, 20, 30 ],   en: "Rudolph's shiny nose",          es: "La nariz brillante de Rudolph" }
+holly_leaf:      { rgb: [ 30, 110, 45 ],   en: "A holly leaf",                  es: "Una hoja de acebo" }
+holly_berry:     { rgb: [ 190, 20, 35 ],   en: "A holly berry",                 es: "Una baya de acebo" }
+poinsettia:      { rgb: [ 205, 30, 40 ],   en: "A poinsettia flower",           es: "Una flor de Pascua" }
+gold_star:       { rgb: [ 245, 200, 50 ],  en: "The gold star on top of the tree", es: "La estrella dorada del árbol" }
+silver_bauble:   { rgb: [ 195, 200, 210 ], en: "A silver Christmas bauble",     es: "Una bola de Navidad plateada" }
+snowman_nose:    { rgb: [ 240, 120, 30 ],  en: "A snowman's carrot nose",       es: "La nariz de zanahoria de un muñeco de nieve" }
+fresh_snow:      { rgb: [ 248, 250, 255 ], en: "Fresh snow on Christmas morning", es: "Nieve recién caída en Navidad" }
+hot_chocolate:   { rgb: [ 105, 60, 40 ],   en: "A mug of hot chocolate",        es: "Una taza de chocolate caliente" }
+eggnog:          { rgb: [ 245, 225, 160 ], en: "A glass of eggnog",             es: "Un vaso de ponche de huevo" }
+mince_pie:       { rgb: [ 205, 155, 90 ],  en: "The crust of a Christmas pie",  es: "La masa dorada de un pastel navideño" }
+roast_turkey:    { rgb: [ 175, 105, 45 ],  en: "A roast turkey",                es: "Un pavo asado" }
+mistletoe:       { rgb: [ 120, 160, 70 ],  en: "A sprig of mistletoe",          es: "Una ramita de muérdago" }
+night_sky:       { rgb: [ 20, 30, 70 ],    en: "The sky on Christmas Eve",      es: "El cielo en Nochebuena" }
+elf_hat:         { rgb: [ 40, 150, 60 ],   en: "An elf's green hat",            es: "El gorro verde de un elfo" }
+gift_bow:        { rgb: [ 215, 40, 60 ],   en: "A red bow on a present",        es: "El lazo rojo de un regalo" }
+pine_cone:       { rgb: [ 110, 70, 40 ],   en: "A pine cone",                   es: "Una piña de pino" }
+fireplace:       { rgb: [ 240, 110, 30 ],  en: "Flames in a fireplace",         es: "Las llamas de una chimenea" }
+cranberry:       { rgb: [ 160, 20, 50 ],   en: "Cranberry sauce",               es: "Salsa de arándanos rojos" }
+turron:          { rgb: [ 230, 205, 160 ], en: "A bar of nougat",               es: "Una tableta de turrón" }

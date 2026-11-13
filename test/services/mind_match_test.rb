@@ -55,10 +55,25 @@ class MindMatchTest < ActiveSupport::TestCase
     assert_includes GameServices::MindMatch::CATEGORIES["es"], category
   end
 
-  test "both languages have the same number of categories, all different" do
-    en, es = GameServices::MindMatch::CATEGORIES.values_at("en", "es")
-    assert_equal en.size, es.size
-    assert_equal es.uniq, es
+  test "both languages have the same number of categories, all different, in every theme" do
+    GameServices::MindMatch::THEMES.each_value do |lists|
+      en, es = lists.values_at("en", "es")
+      assert_equal en.size, es.size
+      assert_equal es.uniq, es
+      assert_operator en.size, :>=, 10, "enough for the longest game"
+    end
+  end
+
+  test "the Christmas theme plays only Christmas categories; an unknown theme plays them all" do
+    @room.atomic_set("game_state.theme" => "christmas")
+    GameServices::MindMatch.new(Room.find(@room.id)).setup_game!
+    picked = Array.new(10) { GameServices::MindMatch.new(Room.find(@room.id)).pick_category! }
+    assert_empty picked - GameServices::MindMatch::CHRISTMAS_CATEGORIES["en"]
+    assert_equal 10, picked.uniq.size
+
+    @room.atomic_set("game_state.theme" => "nope")
+    GameServices::MindMatch.new(Room.find(@room.id)).setup_game!
+    assert_equal "all", @room.reload.game_state["theme"]
   end
 
   test "Spanish answers match without accents and in singular or plural" do

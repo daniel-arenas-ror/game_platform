@@ -488,6 +488,8 @@ es:
             match_desc: "se queda en la TV, ideal para niños"
             real_world: "🍌 Mundo real"
             real_world_desc: "sin color: \"un banano maduro\""
+            christmas: "🎄 Navidad"
+            christmas_desc: "sin color: \"el traje de Papá Noel\""
           rounds: "RONDAS"
           rounds_option: "%{count} rondas"
           difficulty: "DIFICULTAD"
@@ -548,6 +550,12 @@ es:
           normal: "Normal"
           relaxed: "Tranquilo"
           time_note: "Este es el tiempo que tienen los jugadores para escribir su palabra en cada ronda."
+          theme: "CATEGORÍAS"
+          themes:
+            all: "🎲 Todas"
+            all_desc: "cocinas, superhéroes, lunes…"
+            christmas: "🎄 Navidad"
+            christmas_desc: "árboles, regalos, villancicos…"
       sequence_memory:
         edit:
           grid: "TAMAÑO DE LA CUADRÍCULA"

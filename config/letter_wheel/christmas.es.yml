@@ -1,0 +1,237 @@
+# Pistas de Navidad de Letter Wheel para salas en español (la opción Navidad del selector de palabras).
+# Mismo formato y reglas que words.es.yml. Ninguna pista nombra otra respuesta de esta lista, y "Papá Noel"
+# y "reno" nunca son respuestas, porque muchas pistas los mencionan.
+a:
+  - answer: "adviento"
+    also: ["calendario de adviento"]
+    clue: "Las cuatro semanas antes de Navidad"
+  - answer: "ángel"
+    clue: "Figura con alas que a veces se pone en lo alto del árbol"
+  - answer: "aguinaldo"
+    clue: "Regalo o propina que se da por Navidad"
+b:
+  - answer: "belén"
+    also: ["pesebre", "nacimiento"]
+    clue: "Figuras que representan el nacimiento de Jesús en un establo"
+  - answer: "bola"
+    also: ["bola de navidad"]
+    clue: "Adorno redondo y brillante que cuelga del árbol"
+  - answer: "bastón de caramelo"
+    clue: "Dulce a rayas rojas y blancas con forma de gancho"
+c:
+  - answer: "chimenea"
+    clue: "Por ella baja Papá Noel a las casas"
+  - answer: "campana"
+    clue: "Suena «din, don» cuando la mueves"
+  - answer: "corona"
+    clue: "Aro de ramas verdes que se cuelga en la puerta"
+d:
+  - answer: "diciembre"
+    clue: "El mes de la Navidad"
+  - answer: "decoración"
+    also: ["decoraciones", "adornos"]
+    clue: "Lo que pones por la casa para que parezca festiva"
+  - answer: "deseo"
+    clue: "Lo que pides al escribir la carta a los Reyes"
+e:
+  - answer: "elfo"
+    also: ["duende"]
+    clue: "Ayudante de Papá Noel en su taller"
+  - answer: "escarcha"
+    clue: "Capa fina y blanca que cubre la hierba en una mañana helada"
+  - answer: "espumillón"
+    clue: "Tira brillante de colores que se cuelga en el árbol"
+f:
+  - answer: "familia"
+    clue: "Las personas que se reúnen en casa por Navidad"
+  - answer: "feliz"
+    also: ["feliz navidad"]
+    clue: "___ Navidad: lo que se desea a todos"
+  - answer: "frío"
+    clue: "Lo que hace en invierno"
+g:
+  - answer: "galletas de jengibre"
+    also: ["galleta de jengibre"]
+    clue: "Galletas especiadas con forma de muñequito"
+  - answer: "guirnalda"
+    clue: "Adorno largo de hojas verdes para la puerta o la escalera"
+  - answer: "gorro"
+    clue: "Papá Noel lleva uno rojo con un pompón blanco"
+h:
+  - answer: "hielo"
+    clue: "Agua congelada"
+  - answer: "horno"
+    clue: "Donde se asa la comida de Navidad"
+  - answer: "hogar"
+    clue: "La casa donde estás con los tuyos"
+i:
+  - answer: "iluminación"
+    clue: "Todas las bombillas que adornan las calles en estas fiestas"
+  - answer: "iglesia"
+    clue: "Lugar donde se celebra la misa del gallo"
+  - answer: "ilusión"
+    clue: "Lo que sienten los niños esperando los regalos"
+j:
+  - answer: "jersey"
+    also: ["suéter", "chompa"]
+    clue: "Prenda de lana calentita, a veces con dibujos navideños"
+  - answer: "José"
+    clue: "El esposo de María en la historia de Navidad"
+  - answer: "jamón"
+    clue: "Se corta en lonchas finas en las cenas navideñas"
+k:
+  - answer: "karaoke"
+    clue: "Cantar con micrófono y la letra en la pantalla"
+  - answer: "parka"
+    contains: true
+    clue: "Abrigo con capucha para la nieve"
+  - answer: "smoking"
+    also: ["esmoquin"]
+    contains: true
+    clue: "Traje elegante de chaqueta negra para la fiesta de fin de año"
+l:
+  - answer: "luces"
+    also: ["lucecitas"]
+    clue: "Brillan en el árbol y en los balcones"
+  - answer: "lazo"
+    clue: "Se ata encima del regalo"
+  - answer: "leña"
+    clue: "Troncos para hacer fuego"
+m:
+  - answer: "muérdago"
+    clue: "Planta de bayas blancas que se cuelga en las puertas"
+  - answer: "mazapán"
+    clue: "Dulce de almendra y azúcar típico de Navidad"
+  - answer: "Melchor"
+    clue: "Uno de los tres magos de Oriente, el de barba blanca"
+n:
+  - answer: "Nochebuena"
+    clue: "La noche antes del día de Navidad"
+  - answer: "Nochevieja"
+    clue: "La última noche del año"
+  - answer: "nevada"
+    clue: "Cuando cae mucha nieve de golpe"
+ñ:
+  - answer: "año nuevo"
+    also: ["año"]
+    contains: true
+    clue: "Lo que empieza el 1 de enero"
+  - answer: "muñeco de nieve"
+    contains: true
+    clue: "Lo haces en el jardín helado, con una zanahoria por nariz"
+  - answer: "castañas"
+    also: ["castaña"]
+    contains: true
+    clue: "Se asan en la calle en invierno y se comen calentitas"
+o:
+  - answer: "Olentzero"
+    clue: "Carbonero que trae regalos en el País Vasco"
+  - answer: "ornamento"
+    also: ["adorno"]
+    clue: "Cualquier cosa que cuelgas en el árbol para que quede bonito"
+  - answer: "ovillo"
+    clue: "Lana enrollada para tejer en invierno"
+p:
+  - answer: "pavo"
+    clue: "Ave grande que se asa en Navidad"
+  - answer: "pastores"
+    also: ["pastor"]
+    clue: "Cuidaban ovejas y fueron a ver al niño Jesús"
+  - answer: "polvorón"
+    also: ["polvorones"]
+    clue: "Dulce que se deshace en la boca"
+q:
+  - answer: "esquí"
+    contains: true
+    clue: "Deporte de nieve con dos tablas largas"
+  - answer: "bosque"
+    contains: true
+    clue: "Lugar lleno de pinos y abetos"
+  - answer: "paquete"
+    contains: true
+    clue: "Caja envuelta en papel de colores"
+r:
+  - answer: "Reyes Magos"
+    also: ["reyes", "los reyes magos"]
+    clue: "Llegan en camello desde Oriente el 6 de enero"
+  - answer: "Rodolfo"
+    also: ["rudolph"]
+    clue: "El reno de la nariz roja"
+  - answer: "roscón"
+    also: ["roscón de reyes"]
+    clue: "Dulce redondo con forma de anillo que se come el 6 de enero"
+s:
+  - answer: "Santa Claus"
+    also: ["san nicolas"]
+    clue: "Otro nombre de Papá Noel"
+  - answer: "sorpresa"
+    clue: "Lo que sientes al abrir un regalo que no esperabas"
+  - answer: "sobremesa"
+    clue: "La charla larga que sigue a la comida"
+t:
+  - answer: "turrón"
+    clue: "Dulce navideño de almendras, duro o blando"
+  - answer: "trineo"
+    clue: "Vehículo de Papá Noel tirado por renos"
+  - answer: "tarjeta"
+    also: ["postal"]
+    clue: "Felicitación de papel que se envía por correo"
+u:
+  - answer: "bufanda"
+    contains: true
+    clue: "Prenda que te abriga el cuello"
+  - answer: "abuelos"
+    also: ["abuelo", "abuela"]
+    contains: true
+    clue: "Los que más disfrutan viendo a los nietos abrir regalos"
+  - answer: "musgo"
+    contains: true
+    clue: "Planta suave y verde que crece en las piedras húmedas"
+v:
+  - answer: "villancico"
+    clue: "Canción típica de Navidad"
+  - answer: "vela"
+    clue: "Da luz con una llama"
+  - answer: "vacaciones"
+    clue: "Días sin colegio por Navidad"
+w:
+  - answer: "Hollywood"
+    contains: true
+    clue: "Donde se ruedan muchas películas de Navidad"
+  - answer: "show"
+    also: ["espectaculo"]
+    contains: true
+    clue: "Espectáculo navideño en la tele"
+  - answer: "wasap"
+    also: ["whatsapp", "whatsap"]
+    clue: "Mensaje de felicitación que se manda por el móvil"
+x:
+  - answer: "excursión"
+    contains: true
+    clue: "Salida de un día a la montaña o a la nieve"
+  - answer: "texto"
+    contains: true
+    clue: "Las palabras que escribes en una felicitación"
+  - answer: "Xmas"
+    clue: "Forma corta de escribir «Christmas» en inglés"
+y:
+  - answer: "playa"
+    contains: true
+    clue: "Donde pasan la Navidad muchas familias del hemisferio sur"
+  - answer: "Nueva York"
+    also: ["new york"]
+    contains: true
+    clue: "Ciudad con un árbol gigante frente a una pista de patinaje"
+  - answer: "joyas"
+    also: ["joya"]
+    contains: true
+    clue: "Collares y anillos que se regalan"
+z:
+  - answer: "zambomba"
+    clue: "Instrumento de barro que suena al frotar una caña"
+  - answer: "taza"
+    contains: true
+    clue: "Recipiente para el chocolate caliente"
+  - answer: "plaza"
+    contains: true
+    clue: "Lugar del pueblo donde ponen el árbol gigante"

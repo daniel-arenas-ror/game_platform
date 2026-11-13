@@ -31,9 +31,12 @@ module GameServices
 
     # Round modes: memory (the colour shows, then goes), blink (it shows for a moment), match (it
     # stays on the TV while players pick) and real_world (no colour: the TV names an everyday thing).
-    MODES      = %w[memory blink match real_world].freeze
-    SHOW_TIMES = { "memory" => 5, "blink" => 1, "match" => 3, "real_world" => 5 }.freeze
+    # christmas works like real_world with Christmas things (config/guess_the_color/christmas.yml).
+    MODES      = %w[memory blink match real_world christmas].freeze
+    SHOW_TIMES = { "memory" => 5, "blink" => 1, "match" => 3, "real_world" => 5, "christmas" => 5 }.freeze
     REAL_WORLD = YAML.load_file(Rails.root.join("config/guess_the_color/real_world.yml")).freeze
+    CHRISTMAS  = YAML.load_file(Rails.root.join("config/guess_the_color/christmas.yml")).freeze
+    THINGS     = { "real_world" => REAL_WORLD, "christmas" => CHRISTMAS }.freeze # the modes that name a thing
 
     # End-of-game awards: "most creative" goes to the furthest pick, if one was under this % match.
     CREATIVE_BELOW = 50
@@ -97,15 +100,16 @@ module GameServices
       SHOW_TIMES.fetch(mode, SHOW_TIMES["memory"])
     end
 
-    # The next round's target: { color:, prompt: } (prompt only in real_world mode, in the room's
+    # The next round's target: { color:, prompt: } (prompt only in real_world/christmas mode, in the room's
     # language). Real-world things don't repeat in a game until they've all been used.
     def next_target!
-      return { color: generate_color, prompt: nil } unless mode == "real_world"
+      things = THINGS[mode]
+      return { color: generate_color, prompt: nil } unless things
 
       used = @room.game_state["used_prompts"].to_a
-      key  = (REAL_WORLD.keys - used).sample || REAL_WORLD.keys.sample
+      key  = (things.keys - used).sample || things.keys.sample
       @room.atomic_set("game_state.used_prompts" => (used | [ key ]), "game_state.prompt" => key)
-      item = REAL_WORLD[key]
+      item = things[key]
       { color: %w[r g b].zip(item["rgb"]).to_h, prompt: item[@room.locale.to_s] || item["en"] }
     end
 

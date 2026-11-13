@@ -23,6 +23,7 @@ class PagesController < ApplicationController
     @occasions   = CHRISTMAS_OCCASIONS.transform_values { |codes| codes.filter_map { games[_1] }.first(3) }
     @billionaire = games["how_want_be_billionare"]
     @doodle_dash = games["doodle_dash"]
+    @christmas_packs = games.values_at("mind_match", "letter_wheel", "guess_the_color")
     @christmas_questions = HowWantBeBillionare::Question.where(pack: "christmas")
                                                         .where(HowWantBeBillionare::Question.match_for(I18n.locale)).count
   end

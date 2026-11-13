@@ -95,6 +95,47 @@ module GameServices
       ].freeze
     }.freeze
 
+    # The "christmas" theme plays only these (the settings' Categories picker); "all" plays CATEGORIES.
+    CHRISTMAS_CATEGORIES = {
+      "en" => [
+        "Things you hang on a Christmas tree",
+        "Things you eat at Christmas dinner",
+        "Christmas songs",
+        "Things in Santa's workshop",
+        "Things that are red and white",
+        "Things you find in a Christmas stocking",
+        "Christmas movies",
+        "Things you do on Christmas Eve",
+        "Presents everyone wants",
+        "Things that are cold in winter",
+        "Things a snowman needs",
+        "Winter clothes",
+        "Things that sparkle",
+        "Things you do on New Year's Eve",
+        "Things people say at a family dinner",
+        "New Year's resolutions"
+      ].freeze,
+      "es" => [
+        "Cosas que cuelgas en el árbol de Navidad",
+        "Cosas que se comen en la cena de Navidad",
+        "Villancicos",
+        "Cosas del taller de Papá Noel",
+        "Cosas rojas y blancas",
+        "Cosas que caben en un calcetín de Navidad",
+        "Películas de Navidad",
+        "Cosas que haces en Nochebuena",
+        "Regalos que todo el mundo quiere",
+        "Cosas frías del invierno",
+        "Cosas que necesita un muñeco de nieve",
+        "Ropa de invierno",
+        "Cosas que brillan",
+        "Cosas que haces en Nochevieja",
+        "Cosas que se dicen en una cena familiar",
+        "Propósitos de Año Nuevo"
+      ].freeze
+    }.freeze
+    THEMES = { "all" => CATEGORIES, "christmas" => CHRISTMAS_CATEGORIES }.freeze
+
     def initialize(room)
       @room    = room
       @players = room.players.to_a
@@ -112,6 +153,7 @@ module GameServices
           "round"            => 0,
           "total_rounds"     => total_rounds,
           "time_per_round"   => time_per_round,
+          "theme"            => THEMES.key?(@room.game_state["theme"]) ? @room.game_state["theme"] : "all",
           "scores"           => scores,
           "used_categories"  => [],
           "answers"          => {},
@@ -129,7 +171,8 @@ module GameServices
     def pick_category!
       @room.reload
       used = @room.game_state["used_categories"] || []
-      categories = CATEGORIES.fetch(@room.locale, CATEGORIES["en"])
+      lists      = THEMES.fetch(@room.game_state["theme"], CATEGORIES)
+      categories = lists.fetch(@room.locale, lists["en"])
       available  = categories - used
       available  = categories if available.empty?
 

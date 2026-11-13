@@ -35,7 +35,7 @@
       <%= render "pages/header", title: "Juegos de Navidad para todo el grupo", subtitle: "Una TV, el celular de cada uno y juegos que pueden jugar juntos los abuelos y los niños." %>
       <ul id="summary" class="space-y-2 rounded-2xl bg-slate-800 border border-slate-700 p-6 text-lg text-white">
         <li><strong>Qué es:</strong> juegos de fiesta gratis para las reuniones de Navidad. El juego se ve en una TV o portátil y todos juegan desde su celular a la vez.</li>
-        <li><strong>Paquetes de Navidad:</strong> preguntas de Navidad y un juego de dibujar de Navidad, además de juegos para cualquier grupo.</li>
+        <li><strong>Paquetes de Navidad:</strong> juegos navideños de preguntas, dibujo, palabras y colores, además de juegos para cualquier grupo.</li>
         <li><strong>Cómo empezar:</strong> abre <%= games_link %> en la pantalla grande y pulsa Empezar juego. Los jugadores escanean el código QR. Sin app y sin registro.</li>
       </ul>
       <%= render "shared/three_steps", css: "mt-6" %>
@@ -45,7 +45,10 @@
       <h2 id="packs-title" class="text-3xl font-bold text-white">Paquetes de Navidad</h2>
       <div class="grid gap-6 md:grid-cols-2">
         <% [ [ @billionaire, "Preguntas de Navidad", "#{@christmas_questions.positive? ? @christmas_questions : "Muchas"} preguntas de Navidad sobre tradiciones, villancicos, películas, comida e historia de la Navidad. En la configuración del juego, elige 🎄 Navidad como tema." ],
-             [ @doodle_dash, "Dibujos de Navidad", "30 palabras de Navidad para dibujar y adivinar: Papá Noel, un reno, un muñeco de nieve, el árbol de Navidad, regalos, calcetines y más. En la configuración del juego, elige el paquete 🎄 Navidad." ] ].each do |game, label, text| %>
+             [ @doodle_dash, "Dibujos de Navidad", "30 palabras de Navidad para dibujar y adivinar: Papá Noel, un reno, un muñeco de nieve, el árbol de Navidad, regalos, calcetines y más. En la configuración del juego, elige el paquete 🎄 Navidad." ],
+             [ @christmas_packs[0], "Palabras de Navidad", "16 categorías navideñas, como \"Cosas que cuelgas en el árbol de Navidad\" o \"Villancicos\": todos intentan escribir la misma palabra. En la configuración del juego, elige 🎄 Navidad en las categorías." ],
+             [ @christmas_packs[1], "Abecedario de Navidad", "Una pista navideña para cada letra: \"Empieza por T: vehículo de Papá Noel tirado por renos\". En la configuración del juego, elige 🎄 Navidad en las palabras." ],
+             [ @christmas_packs[2], "Colores de Navidad", "Mezcla de memoria el color del traje de Papá Noel, de un bastón de caramelo o de la estrella del árbol. En la configuración del juego, elige el modo 🎄 Navidad." ] ].each do |game, label, text| %>
           <% next unless game %>
           <div class="flex flex-col gap-4 rounded-3xl border border-slate-700 bg-slate-800 p-6">
             <p class="eyebrow text-green-400"><%= label %></p>

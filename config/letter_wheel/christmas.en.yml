@@ -1,0 +1,218 @@
+# Letter Wheel "Christmas" clues for English rooms (the level picker's Christmas option). Same format and
+# rules as words.en.yml. Clues never name another answer of this list, and "Santa" and "reindeer" are
+# never answers, since so many clues mention them.
+a:
+  - answer: "advent calendar"
+    also: ["advent"]
+    clue: "A calendar with a little door to open every day until Christmas"
+  - answer: "angel"
+    clue: "A figure with wings, often on top of the tree"
+  - answer: "antlers"
+    clue: "What reindeer have on their heads"
+b:
+  - answer: "bauble"
+    also: ["ball", "christmas ball"]
+    clue: "A shiny ball you hang on the Christmas tree"
+  - answer: "Bethlehem"
+    clue: "The town where, in the Christmas story, Jesus was born"
+  - answer: "boots"
+    clue: "Santa's are black and shiny"
+c:
+  - answer: "carol"
+    also: ["christmas carol"]
+    clue: "A song people sing at Christmas"
+  - answer: "chimney"
+    clue: "Santa climbs down it into the house"
+  - answer: "candle"
+    clue: "It gives a little light with a flame"
+d:
+  - answer: "decorations"
+    also: ["decoration"]
+    clue: "Things you put up around the house to make it look festive"
+  - answer: "December"
+    clue: "The month of Christmas"
+  - answer: "dinner"
+    also: ["christmas dinner"]
+    clue: "The big family meal on Christmas Day"
+e:
+  - answer: "elf"
+    also: ["elves"]
+    clue: "Santa's little helper in the workshop"
+  - answer: "eggnog"
+    clue: "A creamy Christmas drink made with eggs and milk"
+  - answer: "eve"
+    also: ["christmas eve"]
+    clue: "Christmas ___: the night before Christmas Day"
+f:
+  - answer: "fireplace"
+    clue: "Where a fire crackles in the living room"
+  - answer: "frost"
+    clue: "Thin white ice that covers the grass on a cold morning"
+  - answer: "fruitcake"
+    clue: "A heavy cake full of dried fruit and nuts"
+g:
+  - answer: "gingerbread"
+    also: ["gingerbread man"]
+    clue: "A spiced biscuit shaped like a little man"
+  - answer: "garland"
+    clue: "A long decoration of leaves you drape along the stairs"
+  - answer: "glitter"
+    clue: "Tiny sparkly bits that get everywhere when you make cards"
+h:
+  - answer: "holly"
+    clue: "A plant with spiky green leaves and red berries"
+  - answer: "hot chocolate"
+    also: ["hot cocoa", "cocoa"]
+    clue: "A warm sweet chocolate drink for cold days"
+  - answer: "ho ho ho"
+    clue: "What Santa says when he laughs"
+i:
+  - answer: "icicle"
+    clue: "A pointy piece of ice hanging from a roof"
+  - answer: "ice skates"
+    also: ["skates"]
+    clue: "Boots with blades for gliding on ice"
+  - answer: "ivy"
+    clue: "A climbing plant with dark green leaves that grows up walls"
+j:
+  - answer: "jingle"
+    clue: "___ Bells, a famous Christmas song"
+  - answer: "joy"
+    clue: "'___ to the World', a famous Christmas song"
+  - answer: "Joseph"
+    clue: "Mary's husband in the Christmas story"
+k:
+  - answer: "kiss"
+    clue: "A peck on the cheek from grandma"
+  - answer: "kitchen"
+    clue: "The room where the big Christmas meal is cooked"
+  - answer: "Kris Kringle"
+    also: ["kriss kringle"]
+    clue: "Another name for Santa Claus"
+l:
+  - answer: "lights"
+    also: ["fairy lights", "christmas lights"]
+    clue: "They twinkle on the tree and on houses"
+  - answer: "list"
+    clue: "Santa checks it twice"
+  - answer: "log"
+    also: ["yule log"]
+    clue: "A chocolate cake shaped like a piece of wood"
+m:
+  - answer: "mistletoe"
+    clue: "A plant with white berries that people hang in doorways"
+  - answer: "mittens"
+    clue: "Warm hand covers without separate fingers"
+  - answer: "marshmallow"
+    clue: "Soft, sweet and fluffy, it melts in a hot drink"
+n:
+  - answer: "North Pole"
+    also: ["pole"]
+    clue: "Where Santa lives"
+  - answer: "nativity"
+    also: ["nativity scene"]
+    clue: "The scene of baby Jesus in the stable, with the shepherds"
+  - answer: "nutcracker"
+    clue: "A wooden soldier that cracks nuts, from a famous ballet"
+o:
+  - answer: "oven"
+    clue: "Where the Christmas roast cooks"
+  - answer: "ornament"
+    clue: "Anything you hang on the tree to make it pretty"
+  - answer: "oats"
+    clue: "What children leave out for the reindeer"
+p:
+  - answer: "pudding"
+    also: ["christmas pudding", "plum pudding"]
+    clue: "A dark, rich dessert set on fire at a British Christmas"
+  - answer: "pine"
+    also: ["pine tree", "fir"]
+    clue: "The kind of tree most Christmas trees are"
+  - answer: "party"
+    clue: "A get-together with music, games and food"
+q:
+  - answer: "queue"
+    clue: "A long line of shoppers before Christmas"
+  - answer: "banquet"
+    contains: true
+    clue: "A big, festive feast"
+  - answer: "sequins"
+    contains: true
+    clue: "Tiny shiny discs sewn on a sparkly dress"
+r:
+  - answer: "Rudolph"
+    clue: "The reindeer with a shiny red nose"
+  - answer: "ribbon"
+    clue: "You tie it into a bow on a present"
+  - answer: "robin"
+    clue: "A small bird with a red chest, often on Christmas cards"
+s:
+  - answer: "sleigh"
+    clue: "Santa's flying sled"
+  - answer: "stocking"
+    also: ["stockings"]
+    clue: "A big sock you hang up for Santa to fill"
+  - answer: "snowflake"
+    clue: "Every one of these tiny ice crystals is different"
+t:
+  - answer: "tinsel"
+    clue: "Shiny strings that hang on the tree"
+  - answer: "turkey"
+    clue: "A big roast bird served at Christmas"
+  - answer: "toboggan"
+    also: ["sled", "sledge"]
+    clue: "A sled for sliding down snowy hills"
+u:
+  - answer: "unwrap"
+    clue: "What you do to a present to see what's inside"
+  - answer: "ugly sweater"
+    also: ["ugly christmas sweater", "christmas jumper"]
+    clue: "A silly, colourful knitted top worn to Christmas parties"
+  - answer: "under"
+    clue: "Presents go ___ the tree"
+v:
+  - answer: "Vixen"
+    clue: "One of Santa's reindeer, whose name also means a female fox"
+  - answer: "vacation"
+    also: ["holiday", "holidays"]
+    clue: "The school break over Christmas"
+  - answer: "velvet"
+    clue: "A soft fabric used for Santa's red suit"
+w:
+  - answer: "wreath"
+    clue: "A ring of green leaves hung on the front door"
+  - answer: "wrapping paper"
+    also: ["gift wrap", "wrapping"]
+    clue: "Colourful paper you cover presents with"
+  - answer: "winter"
+    clue: "The coldest season of the year"
+x:
+  - answer: "Xmas"
+    clue: "A short way to write Christmas"
+  - answer: "relax"
+    contains: true
+    clue: "What you do on the sofa after the big meal"
+  - answer: "exciting"
+    also: ["excited"]
+    contains: true
+    clue: "How waiting for presents feels for children"
+y:
+  - answer: "Yule"
+    clue: "An old name for the Christmas season, from long ago"
+  - answer: "toy"
+    also: ["toys"]
+    contains: true
+    clue: "Something the elves make in Santa's workshop"
+  - answer: "holy"
+    contains: true
+    clue: "'Silent night, ___ night'"
+z:
+  - answer: "frozen"
+    contains: true
+    clue: "What a pond becomes when it's very cold"
+  - answer: "blizzard"
+    contains: true
+    clue: "A big snowstorm with strong wind"
+  - answer: "freezing"
+    contains: true
+    clue: "Very, very cold"

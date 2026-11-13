@@ -35,7 +35,7 @@
       <%= render "pages/header", title: "Christmas party games for the whole group", subtitle: "One TV, everyone's phone, and games that the grandparents and the kids can play together." %>
       <ul id="summary" class="space-y-2 rounded-2xl bg-slate-800 border border-slate-700 p-6 text-lg text-white">
         <li><strong>What it is:</strong> free party games for Christmas get-togethers. The game shows on a TV or laptop, and everyone plays on their phone at the same time.</li>
-        <li><strong>Christmas packs:</strong> Christmas trivia and a Christmas drawing game, plus games for any group.</li>
+        <li><strong>Christmas packs:</strong> Christmas trivia, drawing, word and color games, plus games for any group.</li>
         <li><strong>How to start:</strong> open <%= games_link %> on the big screen and press Start game. Players scan the QR code. No app and no sign-up.</li>
       </ul>
       <%= render "shared/three_steps", css: "mt-6" %>
@@ -45,7 +45,10 @@
       <h2 id="packs-title" class="text-3xl font-bold text-white">Christmas packs</h2>
       <div class="grid gap-6 md:grid-cols-2">
         <% [ [ @billionaire, "Christmas trivia", "#{@christmas_questions.positive? ? @christmas_questions : "Lots of"} Christmas questions on traditions, songs, films, food and the history of Christmas. In the game's settings, pick 🎄 Christmas as the topic." ],
-             [ @doodle_dash, "Christmas drawing", "30 Christmas words to draw and guess: Santa, reindeer, a snowman, a Christmas tree, presents, stockings and more. In the game's settings, pick the 🎄 Christmas pack." ] ].each do |game, label, text| %>
+             [ @doodle_dash, "Christmas drawing", "30 Christmas words to draw and guess: Santa, reindeer, a snowman, a Christmas tree, presents, stockings and more. In the game's settings, pick the 🎄 Christmas pack." ],
+             [ @christmas_packs[0], "Christmas words", "16 Christmas categories, like \"Things you hang on a Christmas tree\" or \"Christmas songs\": everyone tries to write the same word. In the game's settings, pick 🎄 Christmas as the categories." ],
+             [ @christmas_packs[1], "Christmas alphabet", "A Christmas clue for every letter: \"Starts with S: Santa's flying sled\". In the game's settings, pick 🎄 Christmas as the words." ],
+             [ @christmas_packs[2], "Christmas colors", "Mix the color of Santa's suit, a candy cane or the gold star on the tree from memory. In the game's settings, pick the 🎄 Christmas mode." ] ].each do |game, label, text| %>
           <% next unless game %>
           <div class="flex flex-col gap-4 rounded-3xl border border-slate-700 bg-slate-800 p-6">
             <p class="eyebrow text-green-400"><%= label %></p>

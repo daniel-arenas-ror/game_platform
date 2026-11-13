@@ -9,10 +9,20 @@ class RoomsController < ApplicationController
   before_action :redirect_removed_player, only: %i[show playing]
   before_action :host_only, only: %i[players remove_player]
 
+  # Christmas mode (SiteSetting): a new room starts with the game's Christmas option picked. The host
+  # can still change it on the settings screen.
+  CHRISTMAS_SETTINGS = {
+    "how_want_be_billionare" => { "pack" => "christmas" },
+    "doodle_dash"            => { "word_source" => "christmas" },
+    "mind_match"             => { "theme" => "christmas" },
+    "letter_wheel"           => { "level" => "christmas" },
+    "guess_the_color"        => { "mode" => "christmas" }
+  }.freeze
+
   def create
     session[:player_id] = nil
     @game = Game.find(params[:game_id])
-    @room = Room.create!(game: @game, locale: I18n.locale)
+    @room = Room.create!(game: @game, locale: I18n.locale, game_state: starting_settings(@game))
     track_analytics("room_created", **@room.analytics_params)
 
     redirect_to edit_room_path(@room.code)
@@ -112,7 +122,7 @@ class RoomsController < ApplicationController
     ActionCable.server.broadcast(@room.game_stream_name, { action: "game_changed", room_code: @room.code })
 
     new_game = Game.find(params[:game_id])
-    @room.update!(game: new_game, status: "lobby", game_state: {})
+    @room.update!(game: new_game, status: "lobby", game_state: starting_settings(new_game))
 
     redirect_to edit_room_path(@room.code)
   end
@@ -135,6 +145,10 @@ class RoomsController < ApplicationController
   end
 
   private
+
+  def starting_settings(game)
+    SiteSetting.christmas? ? CHRISTMAS_SETTINGS.fetch(game.code, {}).dup : {}
+  end
 
   # The host is the screen without a player in its session.
   def host_only

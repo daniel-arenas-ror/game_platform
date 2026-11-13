@@ -40,3 +40,21 @@
   </div>
   <p class="text-slate-600 text-xs mt-2"><%= t(".time_note") %></p>
 </div>
+
+<%# Which categories: every one, or Christmas only %>
+<div class="space-y-4 bg-slate-900/50 p-6 rounded-2xl border border-slate-700 mt-2">
+  <label class="block text-xs font-bold text-slate-400 mb-3 tracking-widest"><%= t(".theme") %></label>
+  <div class="grid grid-cols-2 gap-3">
+    <% GameServices::MindMatch::THEMES.each_key do |theme| %>
+      <label class="relative cursor-pointer">
+        <input type="radio" name="room[game_state][theme]" value="<%= theme %>" class="peer hidden"
+               <%= 'checked' if (@room.game_state['theme'].presence || 'all') == theme %>>
+        <div class="h-full text-center py-4 bg-slate-800 border-2 border-slate-700 rounded-xl transition-all
+                    peer-checked:border-violet-500 peer-checked:bg-violet-500/10">
+          <p class="text-white font-bold"><%= t(".themes.#{theme}") %></p>
+          <p class="text-slate-500 text-xs mt-1"><%= t(".themes.#{theme}_desc") %></p>
+        </div>
+      </label>
+    <% end %>
+  </div>
+</div>

@@ -36,10 +36,10 @@
   </div>
 </div>
 
-<%# Which clues: everyday words, general knowledge, or both %>
+<%# Which clues: everyday words, general knowledge, both, or Christmas %>
 <div class="space-y-4 bg-slate-900/50 p-6 rounded-2xl border border-slate-700 mt-2">
   <label class="block text-xs font-bold text-slate-400 mb-3 tracking-widest"><%= t(".level") %></label>
-  <div class="grid grid-cols-3 gap-3">
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
     <% level = state["level"].presence || wheel::DEFAULT_LEVEL %>
     <% wheel::LEVEL_CHOICES.each do |option| %>
       <label class="relative cursor-pointer">

@@ -50,4 +50,19 @@ class ChristmasModeTest < ActionDispatch::IntegrationTest
     room&.delete
     game&.delete
   end
+
+  test "a new room starts with the game's Christmas option only in Christmas mode" do
+    game  = Game.create!(name: "Xmas Match #{SecureRandom.hex(2)}", code: "mind_match", description: "x")
+    rooms = []
+    [ true, false ].each do |on|
+      with_christmas(on) { post rooms_path, params: { game_id: game.id } }
+      rooms << Room.where(game_id: game.id).order_by(created_at: :desc).first
+    end
+    assert_equal "christmas", rooms.first.game_state["theme"]
+    assert_nil rooms.last.game_state["theme"]
+  ensure
+    Event.where(:room_id.in => rooms.compact.map(&:id)).delete_all
+    rooms&.compact&.each(&:delete)
+    game&.delete
+  end
 end

@@ -21,6 +21,8 @@ en:
           level_hard_hint: "History, science, geography"
           level_mix: "Mix"
           level_mix_hint: "Some of each"
+          level_christmas: "🎄 Christmas"
+          level_christmas_hint: "Sleighs, carols, tinsel"
         index:
           title: "Letter Wheel"
           sound: "Sound"

@@ -31,7 +31,8 @@ class LetterWheelTest < ActiveSupport::TestCase
       Wheel::WORDS[locale].each do |level, list|
         assert_equal alphabet.sort, list.keys.sort, "#{locale} #{level} letters"
         list.each do |letter, words|
-          assert words.size >= 5, "#{locale} #{level} #{letter}: at least 5 clues, so games don't repeat"
+          minimum = level == "christmas" ? 3 : 5 # Christmas words are few for some letters
+          assert words.size >= minimum, "#{locale} #{level} #{letter}: at least #{minimum} clues, so games don't repeat"
           words.each do |w|
             assert w["clue"].present?, "#{locale} #{level} #{letter}: clue"
             word = w["answer"].downcase
@@ -61,8 +62,13 @@ class LetterWheelTest < ActiveSupport::TestCase
     assert_empty state["words"].map { _1["answer"] } - hard.("en")
 
     picked = 20.times.flat_map { Wheel.pick_words("es", "full", "mix").map { _1["answer"] } }
-    assert_empty picked - hard.("es") - easy.("es")
+    assert_empty picked - hard.("es") - easy.("es"), "a mix never takes Christmas words"
     assert(picked.intersect?(hard.("es")) && picked.intersect?(easy.("es")), "a mix draws from both")
+
+    christmas = Wheel::WORDS["en"]["christmas"].values.flatten.map { _1["answer"] }
+    @room.atomic_set("game_state.level" => "christmas")
+    Wheel.new(@room).setup_game!
+    assert_empty state["words"].map { _1["answer"] } - christmas
 
     @room.atomic_set("game_state.level" => "impossible")
     Wheel.new(@room).setup_game!

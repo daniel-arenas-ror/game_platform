@@ -82,8 +82,8 @@ class GuessTheColorTest < ActiveSupport::TestCase
     game&.delete
   end
 
-  test "every real-world thing has a colour and both languages" do
-    Color::REAL_WORLD.each do |key, item|
+  test "every real-world and Christmas thing has a colour and both languages" do
+    Color::REAL_WORLD.merge(Color::CHRISTMAS).each do |key, item|
       assert_equal 3, item["rgb"].size, key
       assert(item["rgb"].all? { _1.between?(0, 255) }, key)
       assert item["en"].present? && item["es"].present?, key
@@ -100,6 +100,17 @@ class GuessTheColorTest < ActiveSupport::TestCase
       first = Color::REAL_WORLD[room.reload.game_state["used_prompts"].first]
       assert_equal first["es"], prompts.first[:prompt]
       assert_equal %w[r g b].zip(first["rgb"]).to_h, prompts.first[:color]
+    end
+  end
+
+  test "Christmas mode names Christmas things" do
+    with_room("mode" => "christmas") do |room|
+      svc = Color.new(room)
+      svc.setup_game!
+      target = svc.next_target!
+      key    = room.reload.game_state["used_prompts"].first
+      assert_includes Color::CHRISTMAS.keys, key
+      assert_equal Color::CHRISTMAS[key]["en"], target[:prompt]
     end
   end
 

@@ -21,6 +21,8 @@ es:
           level_hard_hint: "Historia, ciencia, geografía"
           level_mix: "Mezcla"
           level_mix_hint: "Un poco de cada"
+          level_christmas: "🎄 Navidad"
+          level_christmas_hint: "Trineos, villancicos, turrón"
         index:
           title: "Rueda de Letras"
           sound: "Sonido"
