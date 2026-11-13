@@ -28,7 +28,7 @@ class LetterWheelTest < ActiveSupport::TestCase
     Wheel::ALPHABETS.each do |locale, alphabet|
       assert_equal alphabet.sort, Wheel::WORDS[locale].keys.sort, "#{locale} letters"
       Wheel::WORDS[locale].each do |letter, words|
-        assert words.size >= 2, "#{locale} #{letter}: at least 2 clues"
+        assert words.size >= 5, "#{locale} #{letter}: at least 5 clues, so games don't repeat"
         words.each do |w|
           assert w["clue"].present?, "#{locale} #{letter}: clue"
           word = w["answer"].downcase
@@ -38,6 +38,8 @@ class LetterWheelTest < ActiveSupport::TestCase
           assert_not_includes w["clue"].downcase, word, "#{locale} #{letter}: the clue gives the answer away"
         end
       end
+      answers = Wheel::WORDS[locale].values.flatten.map { Wheel.comparable(_1["answer"], locale) }
+      assert_empty answers.tally.select { |_, n| n > 1 }.keys, "#{locale}: the same answer twice"
     end
   end
 

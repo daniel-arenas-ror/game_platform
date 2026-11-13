@@ -6,72 +6,163 @@ a:
     clue: Vuela por el cielo con alas y motores y lleva pasajeros
   - answer: árbol
     clue: Planta grande con tronco, ramas y hojas
+  - answer: abeja
+    clue: Insecto que hace miel
+  - answer: ardilla
+    clue: Animal pequeño de cola peluda que come nueces
+  - answer: arcoíris
+    also: [arco iris]
+    clue: Aparece en el cielo con muchos colores cuando llueve y sale el sol
 b:
   - answer: ballena
     clue: El animal más grande del mar
   - answer: bicicleta
     also: [bici]
     clue: Tiene dos ruedas y pedales
+  - answer: barco
+    clue: Navega por el mar
+  - answer: búho
+    clue: Ave que está despierta de noche y hace «uh, uh»
+  - answer: bombero
+    also: [bombera]
+    clue: Persona que apaga incendios
 c:
   - answer: cohete
     clue: Nave que despega hacia el espacio
   - answer: caracol
     clue: Animal muy lento que lleva su casa a cuestas
+  - answer: cebra
+    clue: Animal parecido a un caballo con rayas blancas y negras
+  - answer: camello
+    clue: Animal del desierto con jorobas
+  - answer: castillo
+    clue: Edificio grande de piedra donde vivían los reyes
 d:
   - answer: delfín
     clue: Mamífero del mar muy listo que salta fuera del agua
   - answer: dentista
     clue: El médico que te cuida los dientes
+  - answer: dragón
+    clue: Criatura de los cuentos que echa fuego
+  - answer: dado
+    clue: Cubo con puntos que se lanza en los juegos de mesa
+  - answer: domingo
+    clue: El día que va después del sábado
 e:
   - answer: elefante
     clue: El animal terrestre más grande, con trompa
   - answer: estrella
     clue: Brilla en el cielo por la noche
+  - answer: escalera
+    clue: La subes para llegar a lo alto
+  - answer: espejo
+    clue: Te miras en él para verte
+  - answer: enfermero
+    also: [enfermera]
+    clue: Persona que cuida a los pacientes en el hospital
 f:
   - answer: fresa
     clue: Fruta roja y pequeña con semillas por fuera
   - answer: fantasma
     clue: Espíritu de las historias de miedo que dice «buuu»
+  - answer: foca
+    clue: Animal del mar que aplaude con las aletas
+  - answer: flor
+    clue: Tiene pétalos y las abejas se posan en ella
+  - answer: fuego
+    clue: Quema, da calor y luz
 g:
   - answer: girasol
     clue: Flor amarilla y grande que mira hacia el sol
   - answer: guitarra
     clue: Instrumento musical de seis cuerdas
+  - answer: gato
+    clue: Mascota que maúlla
+  - answer: gafas
+    also: [lentes, anteojos]
+    clue: Las llevas sobre la nariz para ver mejor
+  - answer: globo
+    clue: Lo inflas en las fiestas y puede explotar
 h:
   - answer: helado
     clue: Postre frío que se come en cono o en tarrina
   - answer: huevo
     clue: Lo ponen las gallinas
+  - answer: hormiga
+    clue: Insecto pequeño que vive en colonias y carga migas
+  - answer: hipopótamo
+    clue: Animal enorme que pasa el día metido en el río
+  - answer: hada
+    clue: Personaje mágico y pequeño con alas y una varita
 i:
   - answer: iglú
     clue: Casa hecha con bloques de hielo
   - answer: isla
     clue: Tierra rodeada de agua por todas partes
+  - answer: imán
+    clue: Atrae los objetos de hierro
+  - answer: invierno
+    clue: La estación más fría del año
+  - answer: iguana
+    clue: Reptil verde parecido a un lagarto
 j:
   - answer: jirafa
     clue: El animal más alto, con un cuello muy largo
   - answer: jabón
     clue: Lo usas con agua para lavarte las manos
+  - answer: jardín
+    clue: Parte de una casa con plantas y flores
+  - answer: jueves
+    clue: El día que va después del miércoles
+  - answer: juguete
+    clue: Objeto con el que juegan los niños
 k:
   - answer: koala
     clue: Animal australiano que come hojas de eucalipto
   - answer: kiwi
     clue: Fruta marrón y peluda por fuera, verde por dentro
+  - answer: kárate
+    also: [karate]
+    clue: Arte marcial japonés con cinturones de colores
+  - answer: kétchup
+    also: [ketchup]
+    clue: Salsa roja de tomate para las patatas fritas
+  - answer: kilo
+    also: [kilogramo]
+    clue: Mil gramos
 l:
   - answer: luna
     clue: Brilla de noche y cambia de forma durante el mes
   - answer: león
     clue: El rey de la selva, con una gran melena
+  - answer: lápiz
+    clue: Sirve para escribir y se borra con goma
+  - answer: lluvia
+    clue: Agua que cae de las nubes
+  - answer: libro
+    clue: Tiene páginas y se lee
 m:
   - answer: mariposa
     clue: Insecto con alas de muchos colores
   - answer: mochila
     clue: La llevas a la espalda para ir al colegio
+  - answer: mono
+    clue: Animal que salta de árbol en árbol y come plátanos
+  - answer: manzana
+    clue: Fruta roja o verde que crece en los árboles
+  - answer: mar
+    clue: Gran extensión de agua salada
 n:
   - answer: nube
     clue: Flota en el cielo, es blanca o gris y trae la lluvia
   - answer: naranja
     clue: Es una fruta y también un color
+  - answer: nariz
+    clue: Parte de la cara con la que hueles
+  - answer: nieve
+    clue: Cae del cielo en invierno y es blanca y fría
+  - answer: nido
+    clue: Lo construyen los pájaros para poner sus huevos
 ñ:
   - answer: araña
     contains: true
@@ -79,46 +170,105 @@ n:
   - answer: montaña
     contains: true
     clue: Elevación de tierra muy alta, a veces con nieve en la cima
+  - answer: niño
+    also: [niña]
+    contains: true
+    clue: Persona pequeña que todavía no es adulta
+  - answer: uña
+    contains: true
+    clue: Crece en la punta de tus dedos
+  - answer: piñata
+    contains: true
+    clue: Se rompe en las fiestas y de ella caen caramelos
 o:
   - answer: oso
     clue: Animal grande y peludo que duerme todo el invierno
   - answer: oveja
     clue: Animal de granja que nos da lana
+  - answer: ojo
+    clue: Con él ves
+  - answer: ola
+    clue: La forma el mar y los surfistas se suben a ella
+  - answer: oro
+    clue: Metal amarillo y muy valioso
 p:
   - answer: pingüino
     clue: Ave blanca y negra que nada pero no vuela
   - answer: paraguas
     clue: Lo abres para no mojarte cuando llueve
+  - answer: pirata
+    clue: Navegante con parche en el ojo y un mapa del tesoro
+  - answer: payaso
+    clue: Artista del circo con la nariz roja
+  - answer: pájaro
+    clue: Animal con plumas que vuela
 q:
   - answer: queso
     clue: Alimento hecho con leche que les encanta a los ratones
   - answer: quince
     clue: El número que va después del catorce
+  - answer: quiosco
+    also: [kiosco]
+    clue: Puesto pequeño en la calle donde se venden periódicos y golosinas
+  - answer: quirófano
+    clue: Sala del hospital donde se hacen las operaciones
+  - answer: quieto
+    clue: Así estás cuando no te mueves nada
 r:
   - answer: robot
     clue: Máquina que se mueve y hace tareas ella sola
   - answer: reloj
     clue: Te dice la hora
+  - answer: rana
+    clue: Animal verde que salta y croa
+  - answer: rey
+    clue: Lleva corona y gobierna un reino
+  - answer: ratón
+    clue: Animal pequeño y gris que come queso
 s:
   - answer: sol
     clue: La estrella que nos da luz durante el día
   - answer: serpiente
     clue: Animal largo sin patas que se arrastra
+  - answer: silla
+    clue: Mueble para sentarse
+  - answer: sandía
+    clue: Fruta grande, verde por fuera y roja por dentro
+  - answer: sirena
+    clue: Mujer con cola de pez de los cuentos
 t:
   - answer: tortuga
     clue: Animal muy lento con caparazón
   - answer: tigre
     clue: Gran felino naranja con rayas negras
+  - answer: tren
+    clue: Va por las vías y tiene vagones
+  - answer: tomate
+    clue: Fruto rojo con el que se hace el kétchup
+  - answer: tiburón
+    clue: Pez grande con dientes muy afilados
 u:
   - answer: unicornio
     clue: Caballo mágico con un cuerno en la frente
   - answer: uva
     clue: Fruta pequeña que crece en racimos
+  - answer: uniforme
+    clue: Ropa igual que llevan todos los de un equipo o un colegio
+  - answer: universo
+    clue: "Todo lo que existe: estrellas, planetas y galaxias"
+  - answer: uno
+    clue: El primer número
 v:
   - answer: volcán
     clue: Montaña que puede expulsar lava
   - answer: vaca
     clue: Animal de granja que nos da leche
+  - answer: violín
+    clue: Instrumento de cuerda que se toca con un arco
+  - answer: verano
+    clue: La estación más calurosa del año
+  - answer: ventana
+    clue: Abertura de cristal en la pared por donde entra la luz
 w:
   - answer: wifi
     clue: Conexión a internet sin cables
@@ -126,6 +276,14 @@ w:
     also: [sanduche, sánduche, emparedado]
     contains: true
     clue: Dos rebanadas de pan con algo rico en medio
+  - answer: waterpolo
+    also: [water polo]
+    clue: Deporte de equipo que se juega en una piscina con una pelota
+  - answer: windsurf
+    clue: Deporte en el mar con una tabla y una vela
+  - answer: web
+    also: [página web]
+    clue: Página de internet
 x:
   - answer: taxi
     contains: true
@@ -133,14 +291,38 @@ x:
   - answer: examen
     contains: true
     clue: Prueba que haces en el colegio para ver lo que sabes
+  - answer: saxofón
+    also: [saxo]
+    contains: true
+    clue: Instrumento de viento dorado, muy típico del jazz
+  - answer: xilófono
+    clue: Instrumento con láminas que se golpean con baquetas
+  - answer: boxeo
+    contains: true
+    clue: Deporte en el que se pelea con guantes en un cuadrilátero
 y:
   - answer: yogur
     also: [yogurt]
     clue: Alimento cremoso hecho con leche
   - answer: yema
     clue: La parte amarilla del huevo
+  - answer: yate
+    clue: Barco de lujo para pasear por el mar
+  - answer: yoyó
+    also: [yoyo, yo-yo]
+    clue: Juguete que sube y baja por un hilo
+  - answer: yegua
+    clue: La hembra del caballo
 z:
   - answer: zapato
     clue: Lo llevas en el pie
   - answer: zanahoria
     clue: Verdura naranja que les encanta a los conejos
+  - answer: zorro
+    clue: Animal astuto de cola larga y pelo naranja
+  - answer: zumo
+    also: [jugo]
+    clue: Bebida que se hace exprimiendo fruta
+  - answer: zoológico
+    also: [zoo, zoologico]
+    clue: Lugar donde puedes ver leones, monos y jirafas

@@ -9,116 +9,262 @@ a:
     clue: A crunchy red or green fruit that grows on trees
   - answer: astronaut
     clue: A person who travels into space in a rocket
+  - answer: anchor
+    clue: A heavy metal hook that stops a ship from drifting away
+  - answer: ant
+    clue: A tiny insect that lives in a colony and carries crumbs
+  - answer: arrow
+    clue: You shoot it with a bow
 b:
   - answer: banana
     clue: A long yellow fruit that monkeys love
   - answer: bridge
     clue: It lets you cross over a river without getting wet
+  - answer: butterfly
+    clue: An insect with big colourful wings that used to be a caterpillar
+  - answer: balloon
+    clue: You blow it up for a party, and it can pop
+  - answer: bee
+    clue: A buzzing insect that makes honey
 c:
   - answer: carrot
     clue: An orange vegetable that rabbits love to eat
   - answer: cactus
     clue: A spiky desert plant that needs very little water
+  - answer: camel
+    clue: A desert animal with one or two humps
+  - answer: castle
+    clue: A big stone building where kings and queens lived
+  - answer: cheese
+    clue: A food made from milk that mice love
 d:
   - answer: dolphin
     clue: A clever sea mammal that clicks and leaps out of the water
   - answer: dentist
     clue: The doctor who looks after your teeth
+  - answer: dragon
+    clue: A fire-breathing creature from fairy tales
+  - answer: dice
+    also: [die]
+    clue: Cubes with dots you roll in board games
+  - answer: drum
+    clue: An instrument you hit with sticks
 e:
   - answer: elephant
     clue: The biggest animal on land, with a long trunk
   - answer: egg
     clue: Hens lay it, and you can fry or boil it
+  - answer: eagle
+    clue: A large bird of prey with very sharp eyes
+  - answer: earth
+    clue: The planet we live on
+  - answer: envelope
+    clue: You put a letter inside it before you post it
 f:
   - answer: feather
     clue: Birds are covered in these light, soft things
   - answer: fridge
     clue: The kitchen machine that keeps food cold
+  - answer: frog
+    clue: A green animal that jumps and says ribbit
+  - answer: fork
+    clue: You eat with it, and it has prongs
+  - answer: flamingo
+    clue: A pink bird that often stands on one leg
 g:
   - answer: giraffe
     clue: The tallest animal, with a very long neck
   - answer: guitar
     clue: A musical instrument with six strings
+  - answer: ghost
+    clue: A spooky spirit that says boo
+  - answer: glasses
+    also: [spectacles]
+    clue: You wear them on your nose to see better
+  - answer: grapes
+    clue: Small round fruit that grows in bunches
 h:
   - answer: honey
     clue: Sweet golden food made by bees
   - answer: helicopter
     clue: It flies with big blades spinning on top
+  - answer: hamburger
+    also: [burger]
+    clue: A meat patty served in a bun
+  - answer: hammer
+    clue: A tool for hitting nails
+  - answer: horse
+    clue: An animal you can ride that neighs
 i:
   - answer: igloo
     clue: A house made of blocks of snow
   - answer: island
     clue: Land with water all around it
+  - answer: ice cream
+    also: [icecream]
+    clue: A cold sweet treat served in a cone
+  - answer: insect
+    clue: A small creature with six legs, like a beetle
+  - answer: invisible
+    clue: Something you can't see at all is this
 j:
   - answer: jellyfish
     clue: A see-through sea animal that can sting
   - answer: jungle
     clue: A hot, thick forest full of monkeys and parrots
+  - answer: juice
+    clue: A drink made by squeezing fruit
+  - answer: jacket
+    clue: A short coat you wear when it's chilly
+  - answer: jigsaw
+    also: [jigsaw puzzle]
+    clue: A puzzle with lots of pieces that fit together
 k:
   - answer: kangaroo
     clue: An Australian animal that hops and carries its baby in a pouch
   - answer: kite
     clue: You fly it on a long string on a windy day
+  - answer: key
+    clue: You turn it in a lock to open a door
+  - answer: king
+    clue: A man who wears a crown and rules a country
+  - answer: koala
+    clue: A sleepy Australian animal that eats eucalyptus leaves
 l:
   - answer: lemon
     clue: A sour yellow fruit
   - answer: library
     clue: A place where you can borrow books for free
+  - answer: lion
+    clue: A big cat with a mane, known as the king of the jungle
+  - answer: ladder
+    clue: You climb it to reach high places
+  - answer: lighthouse
+    clue: A tall tower by the sea whose lamp guides ships
 m:
   - answer: moon
     clue: It shines in the night sky and changes shape during the month
   - answer: mirror
     clue: You look into it to see yourself
+  - answer: monkey
+    clue: An animal that swings through the trees and loves bananas
+  - answer: mountain
+    clue: Very high land, sometimes with snow on top
+  - answer: map
+    clue: A drawing that shows where places are
 n:
   - answer: nest
     clue: Birds build it to lay their eggs in
   - answer: nose
     clue: The part of your face you smell with
+  - answer: night
+    clue: When it's dark and the stars come out
+  - answer: needle
+    clue: A thin, sharp tool with a hole for thread
+  - answer: nurse
+    clue: A person who looks after patients in a hospital
 o:
   - answer: octopus
     clue: A sea animal with eight arms
   - answer: owl
     clue: A bird that stays awake at night and hoots
+  - answer: orange
+    clue: A round fruit that is also a colour
+  - answer: ocean
+    clue: A huge body of salty water, like the Pacific
+  - answer: onion
+    clue: A vegetable that can make you cry when you cut it
 p:
   - answer: penguin
     clue: A black and white bird that swims but can't fly
   - answer: pizza
     clue: Round Italian food with tomato and cheese on top
+  - answer: pirate
+    clue: A sailor with a treasure map and maybe a parrot
+  - answer: pencil
+    clue: You write and draw with it, and rub it out with an eraser
+  - answer: pumpkin
+    clue: A big orange vegetable people carve at Halloween
 q:
   - answer: queen
     clue: A woman who rules a country, wearing a crown
   - answer: quiet
     clue: The opposite of loud
+  - answer: question
+    clue: Something you ask, which ends with a special mark
+  - answer: quarter
+    clue: One of four equal parts
+  - answer: quilt
+    clue: A warm bed cover made of patches sewn together
 r:
   - answer: rainbow
     clue: A curve of colours in the sky after the rain
   - answer: robot
     clue: A machine that can move and do jobs by itself
+  - answer: rabbit
+    also: [bunny]
+    clue: An animal with long ears that hops
+  - answer: rocket
+    clue: It blasts off into space
+  - answer: river
+    clue: Water that flows across the land to the sea
 s:
   - answer: snake
     clue: A long animal with no legs that hisses
   - answer: snowman
     clue: You build it in winter, with a carrot for a nose
+  - answer: spider
+    clue: It has eight legs and spins webs
+  - answer: sun
+    clue: The star that gives us daylight
+  - answer: shark
+    clue: A big fish with sharp teeth and a fin on its back
 t:
   - answer: tiger
     clue: A big orange cat with black stripes
   - answer: teacher
     clue: The person who helps you learn at school
+  - answer: tomato
+    clue: A red fruit used to make ketchup
+  - answer: turtle
+    also: [tortoise]
+    clue: A slow animal that carries a shell
+  - answer: train
+    clue: It runs on rails and pulls carriages
 u:
   - answer: umbrella
     clue: You open it to stay dry in the rain
   - answer: unicorn
     clue: A magical horse with one horn
+  - answer: uniform
+    clue: Clothes that everyone in a team or school wears the same
+  - answer: universe
+    clue: "Everything that exists: all the stars and planets"
+  - answer: up
+    clue: The opposite of down
 v:
   - answer: volcano
     clue: A mountain that can explode with hot lava
   - answer: violin
     clue: A small string instrument you play with a bow
+  - answer: vegetable
+    also: [veggie, veg]
+    clue: Carrots, peas and broccoli are all one
+  - answer: vampire
+    clue: A spooky creature with fangs that sleeps in a coffin
+  - answer: van
+    clue: A vehicle bigger than a car, used to carry things
 w:
   - answer: whale
     clue: The biggest animal in the sea
   - answer: window
     clue: A glass opening in a wall that lets the light in
+  - answer: watermelon
+    clue: A big green fruit that is red inside with black seeds
+  - answer: wizard
+    clue: A man who does magic with a wand
+  - answer: wheel
+    clue: The round part that turns on a car or a bike
 x:
   - answer: box
     contains: true
@@ -126,14 +272,36 @@ x:
   - answer: fox
     contains: true
     clue: A clever wild animal with orange fur and a bushy tail
+  - answer: six
+    contains: true
+    clue: The number after five
+  - answer: taxi
+    contains: true
+    clue: A car you pay to take you somewhere
+  - answer: xylophone
+    clue: An instrument with bars you hit with small sticks
 y:
   - answer: yogurt
     also: [yoghurt, yogourt]
     clue: A creamy food made from milk, often with fruit in it
   - answer: yellow
     clue: The colour of a banana
+  - answer: yo-yo
+    also: [yoyo]
+    clue: A toy that goes up and down on a string
+  - answer: yawn
+    clue: You do it with your mouth wide open when you're tired
+  - answer: year
+    clue: Twelve months
 z:
   - answer: zebra
     clue: A wild horse with black and white stripes
   - answer: zoo
     clue: A place where you can visit lions, monkeys and bears
+  - answer: zero
+    clue: The number before one
+  - answer: zip
+    also: [zipper]
+    clue: It closes a jacket or a bag
+  - answer: zigzag
+    clue: A line that goes sharply one way, then the other
