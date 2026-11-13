@@ -1,0 +1,146 @@
+# Pistas de Letter Wheel para salas en español. Mismas reglas que words.en.yml; la Ñ va con `contains`
+# cuando la palabra no empieza por ella. Las respuestas se comparan sin tildes, mayúsculas, artículo
+# ("el", "la", "un"…) ni plural.
+a:
+  - answer: avión
+    clue: Vuela por el cielo con alas y motores y lleva pasajeros
+  - answer: árbol
+    clue: Planta grande con tronco, ramas y hojas
+b:
+  - answer: ballena
+    clue: El animal más grande del mar
+  - answer: bicicleta
+    also: [bici]
+    clue: Tiene dos ruedas y pedales
+c:
+  - answer: cohete
+    clue: Nave que despega hacia el espacio
+  - answer: caracol
+    clue: Animal muy lento que lleva su casa a cuestas
+d:
+  - answer: delfín
+    clue: Mamífero del mar muy listo que salta fuera del agua
+  - answer: dentista
+    clue: El médico que te cuida los dientes
+e:
+  - answer: elefante
+    clue: El animal terrestre más grande, con trompa
+  - answer: estrella
+    clue: Brilla en el cielo por la noche
+f:
+  - answer: fresa
+    clue: Fruta roja y pequeña con semillas por fuera
+  - answer: fantasma
+    clue: Espíritu de las historias de miedo que dice «buuu»
+g:
+  - answer: girasol
+    clue: Flor amarilla y grande que mira hacia el sol
+  - answer: guitarra
+    clue: Instrumento musical de seis cuerdas
+h:
+  - answer: helado
+    clue: Postre frío que se come en cono o en tarrina
+  - answer: huevo
+    clue: Lo ponen las gallinas
+i:
+  - answer: iglú
+    clue: Casa hecha con bloques de hielo
+  - answer: isla
+    clue: Tierra rodeada de agua por todas partes
+j:
+  - answer: jirafa
+    clue: El animal más alto, con un cuello muy largo
+  - answer: jabón
+    clue: Lo usas con agua para lavarte las manos
+k:
+  - answer: koala
+    clue: Animal australiano que come hojas de eucalipto
+  - answer: kiwi
+    clue: Fruta marrón y peluda por fuera, verde por dentro
+l:
+  - answer: luna
+    clue: Brilla de noche y cambia de forma durante el mes
+  - answer: león
+    clue: El rey de la selva, con una gran melena
+m:
+  - answer: mariposa
+    clue: Insecto con alas de muchos colores
+  - answer: mochila
+    clue: La llevas a la espalda para ir al colegio
+n:
+  - answer: nube
+    clue: Flota en el cielo, es blanca o gris y trae la lluvia
+  - answer: naranja
+    clue: Es una fruta y también un color
+ñ:
+  - answer: araña
+    contains: true
+    clue: Animal de ocho patas que atrapa insectos en su red
+  - answer: montaña
+    contains: true
+    clue: Elevación de tierra muy alta, a veces con nieve en la cima
+o:
+  - answer: oso
+    clue: Animal grande y peludo que duerme todo el invierno
+  - answer: oveja
+    clue: Animal de granja que nos da lana
+p:
+  - answer: pingüino
+    clue: Ave blanca y negra que nada pero no vuela
+  - answer: paraguas
+    clue: Lo abres para no mojarte cuando llueve
+q:
+  - answer: queso
+    clue: Alimento hecho con leche que les encanta a los ratones
+  - answer: quince
+    clue: El número que va después del catorce
+r:
+  - answer: robot
+    clue: Máquina que se mueve y hace tareas ella sola
+  - answer: reloj
+    clue: Te dice la hora
+s:
+  - answer: sol
+    clue: La estrella que nos da luz durante el día
+  - answer: serpiente
+    clue: Animal largo sin patas que se arrastra
+t:
+  - answer: tortuga
+    clue: Animal muy lento con caparazón
+  - answer: tigre
+    clue: Gran felino naranja con rayas negras
+u:
+  - answer: unicornio
+    clue: Caballo mágico con un cuerno en la frente
+  - answer: uva
+    clue: Fruta pequeña que crece en racimos
+v:
+  - answer: volcán
+    clue: Montaña que puede expulsar lava
+  - answer: vaca
+    clue: Animal de granja que nos da leche
+w:
+  - answer: wifi
+    clue: Conexión a internet sin cables
+  - answer: sándwich
+    also: [sanduche, sánduche, emparedado]
+    contains: true
+    clue: Dos rebanadas de pan con algo rico en medio
+x:
+  - answer: taxi
+    contains: true
+    clue: Coche que te lleva a donde quieras si le pagas
+  - answer: examen
+    contains: true
+    clue: Prueba que haces en el colegio para ver lo que sabes
+y:
+  - answer: yogur
+    also: [yogurt]
+    clue: Alimento cremoso hecho con leche
+  - answer: yema
+    clue: La parte amarilla del huevo
+z:
+  - answer: zapato
+    clue: Lo llevas en el pie
+  - answer: zanahoria
+    clue: Verdura naranja que les encanta a los conejos

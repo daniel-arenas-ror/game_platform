@@ -201,37 +201,9 @@ module GameServices
 
     private
 
-    # Normalize a word for matching: lowercase, collapse spaces, strip leading/trailing
-    # punctuation, and fold common English plurals (strip trailing 's' for words > 4 chars
-    # that don't already end in 'ss', 'us', 'is', 'as', 'os').
+    # Normalize a word for matching (WordMatch: accents, case, punctuation, plurals in the room's language).
     def normalize_word(raw)
-      w = raw.to_s
-             .unicode_normalize(:nfkd).gsub(/\p{Mn}/, "") # no accents: "camión" = "camion"
-             .downcase
-             .strip
-             .gsub(/[[:punct:]]+\z/, "")   # strip trailing punctuation
-             .gsub(/\A[[:punct:]]+/, "")   # strip leading punctuation
-             .gsub(/\s+/, " ")             # collapse internal spaces
-
-      @room.locale == "es" ? fold_spanish_plural(w) : fold_english_plural(w)
-    end
-
-    # "cats" → "cat", but keep "grass", "plus", "virus"
-    def fold_english_plural(w)
-      return w.chomp("s") if w.length > 3 && w.end_with?("s") && !w.end_with?("ss", "us", "is", "as", "os")
-
-      w
-    end
-
-    # Singular and plural fold to the same stem, so they match whichever one people type:
-    # "gato"/"gatos" → "gato", "flor"/"flores" → "flor", "clase"/"clases" → "clas", "luz"/"luces" → "luz".
-    def fold_spanish_plural(w)
-      return w if w.length < 4 || w.include?(" ")
-      return w.sub(/ces\z/, "z") if w.match?(/[aeiou]ces\z/)
-
-      w = w.chomp("s")
-      w = w.chomp("e") if w.match?(/[^aeiou]e\z/)
-      w
+      WordMatch.normalize(raw, @room.locale)
     end
   end
 end

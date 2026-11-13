@@ -67,6 +67,7 @@ A real-time multiplayer game platform. A host creates a **Room**, shares a QR co
 | `monster_mash` | Monster Mash | Halloween drawing relay: head → body → legs passed around, guide strip from the part above, reveal + vote; drawings in `MonsterMash::Drawing` |
 | `tug_of_war` | Tug of War | Team math race: right answers pull the rope, wrong ones freeze the phone |
 | `color_chain` | Color Chain | Repeat the TV's colour sequence, one colour longer each round; the colours go to the TV alone (`_host` stream) until the reveal |
+| `letter_wheel` | Letter Wheel | Alphabet clue game: one clue per letter ("starts with" / "contains"), every phone answers at once, one try each; base + speed points, most words wins (points break ties). Clues in `config/letter_wheel/words.{en,es}.yml` (Spanish adds Ñ). Engine only so far: no screens, not in `GAME_STREAM_PREFIXES` or the seeds yet |
 | `impostor` | Impostor | TODO stub in GameFactory |
 
 FIFA World Cup has data models only (no game logic).
@@ -219,7 +220,7 @@ English and Spanish (`config/initializers/locale.rb`). Strings live in `config/l
 - **Game content per language:** every room gets content in its own language.
   - Billionaire: `db/questions/how_want_be_billionare/*.yml` (English) and `es/*.yml` (Spanish, same order and points). Fisherman: `db/questions/fisherman/{en,es}.yml`. Both models include `LocalizedQuestion` (`locale` field; no locale = English; a language with no questions falls back to English). Re-run the import tasks after editing.
   - Doodle Dash: `config/doodle_dash/words.yml` / `words.es.yml`; `blocked_words.yml` covers both languages (keep drawable words out of it — a test checks).
-  - Mind Match: `MindMatch::CATEGORIES` per locale; `normalize_word` ignores accents and folds English or Spanish plurals by room language.
+  - Mind Match: `MindMatch::CATEGORIES` per locale; `normalize_word` (shared `WordMatch`, also used by Letter Wheel) ignores accents and folds English or Spanish plurals by room language.
   - Matching Pairs: `Catalog::LABELS["es"]` names every card (image alt text).
 - **SEO:** each public page has hreflang alternates + `og:locale`; the sitemap lists every page in both languages.
 - **Game content:** `Game::TRANSLATED_FIELDS` (name, description, tagline, how_to_play, faq…) read `translations[locale]` and fall back to English; the Spanish lives in each `db/seeds/games/<code>.yml` under `translations: es:`. Re-run `bin/rails db:seed` after editing.

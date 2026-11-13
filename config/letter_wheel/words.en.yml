@@ -1,0 +1,139 @@
+# Letter Wheel clues for English rooms: a list per letter, one picked at random each game.
+#   answer:   the word (it must start with the letter, or contain it with `contains: true`)
+#   clue:     shown on the TV; never says the word, family-friendly (ages 8+)
+#   also:     other answers that count (optional)
+# Guesses are compared without accents, case, a leading "the/a/an" or a plural "s", and one typo is
+# forgiven on words of 6+ letters. A test checks every letter has clues and every answer fits its letter.
+a:
+  - answer: apple
+    clue: A crunchy red or green fruit that grows on trees
+  - answer: astronaut
+    clue: A person who travels into space in a rocket
+b:
+  - answer: banana
+    clue: A long yellow fruit that monkeys love
+  - answer: bridge
+    clue: It lets you cross over a river without getting wet
+c:
+  - answer: carrot
+    clue: An orange vegetable that rabbits love to eat
+  - answer: cactus
+    clue: A spiky desert plant that needs very little water
+d:
+  - answer: dolphin
+    clue: A clever sea mammal that clicks and leaps out of the water
+  - answer: dentist
+    clue: The doctor who looks after your teeth
+e:
+  - answer: elephant
+    clue: The biggest animal on land, with a long trunk
+  - answer: egg
+    clue: Hens lay it, and you can fry or boil it
+f:
+  - answer: feather
+    clue: Birds are covered in these light, soft things
+  - answer: fridge
+    clue: The kitchen machine that keeps food cold
+g:
+  - answer: giraffe
+    clue: The tallest animal, with a very long neck
+  - answer: guitar
+    clue: A musical instrument with six strings
+h:
+  - answer: honey
+    clue: Sweet golden food made by bees
+  - answer: helicopter
+    clue: It flies with big blades spinning on top
+i:
+  - answer: igloo
+    clue: A house made of blocks of snow
+  - answer: island
+    clue: Land with water all around it
+j:
+  - answer: jellyfish
+    clue: A see-through sea animal that can sting
+  - answer: jungle
+    clue: A hot, thick forest full of monkeys and parrots
+k:
+  - answer: kangaroo
+    clue: An Australian animal that hops and carries its baby in a pouch
+  - answer: kite
+    clue: You fly it on a long string on a windy day
+l:
+  - answer: lemon
+    clue: A sour yellow fruit
+  - answer: library
+    clue: A place where you can borrow books for free
+m:
+  - answer: moon
+    clue: It shines in the night sky and changes shape during the month
+  - answer: mirror
+    clue: You look into it to see yourself
+n:
+  - answer: nest
+    clue: Birds build it to lay their eggs in
+  - answer: nose
+    clue: The part of your face you smell with
+o:
+  - answer: octopus
+    clue: A sea animal with eight arms
+  - answer: owl
+    clue: A bird that stays awake at night and hoots
+p:
+  - answer: penguin
+    clue: A black and white bird that swims but can't fly
+  - answer: pizza
+    clue: Round Italian food with tomato and cheese on top
+q:
+  - answer: queen
+    clue: A woman who rules a country, wearing a crown
+  - answer: quiet
+    clue: The opposite of loud
+r:
+  - answer: rainbow
+    clue: A curve of colours in the sky after the rain
+  - answer: robot
+    clue: A machine that can move and do jobs by itself
+s:
+  - answer: snake
+    clue: A long animal with no legs that hisses
+  - answer: snowman
+    clue: You build it in winter, with a carrot for a nose
+t:
+  - answer: tiger
+    clue: A big orange cat with black stripes
+  - answer: teacher
+    clue: The person who helps you learn at school
+u:
+  - answer: umbrella
+    clue: You open it to stay dry in the rain
+  - answer: unicorn
+    clue: A magical horse with one horn
+v:
+  - answer: volcano
+    clue: A mountain that can explode with hot lava
+  - answer: violin
+    clue: A small string instrument you play with a bow
+w:
+  - answer: whale
+    clue: The biggest animal in the sea
+  - answer: window
+    clue: A glass opening in a wall that lets the light in
+x:
+  - answer: box
+    contains: true
+    clue: A cardboard container you pack things in
+  - answer: fox
+    contains: true
+    clue: A clever wild animal with orange fur and a bushy tail
+y:
+  - answer: yogurt
+    also: [yoghurt, yogourt]
+    clue: A creamy food made from milk, often with fruit in it
+  - answer: yellow
+    clue: The colour of a banana
+z:
+  - answer: zebra
+    clue: A wild horse with black and white stripes
+  - answer: zoo
+    clue: A place where you can visit lions, monkeys and bears

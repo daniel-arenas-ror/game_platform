@@ -33,6 +33,8 @@ class GameFactory
       GameServices::TugOfWar.new(room)
     when 'color_chain'
       GameServices::ColorChain.new(room)
+    when "letter_wheel"
+      GameServices::LetterWheel.new(room)
     when 'impostor'
       ## TODO
     else
